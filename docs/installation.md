@@ -8,6 +8,10 @@ tags:
 title: Compose Examples
 ---
 
+<div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
+  <img src="/img/logo.png" alt="M3U Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
+</div>
+
 # Docker Compose Installation
 
 Get M3U Editor up and running in minutes with Docker!
