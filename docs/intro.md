@@ -15,7 +15,9 @@ title: Welcome
   {' '}
   <img src="https://img.shields.io/github/stars/sparkison/m3u-editor?style=for-the-badge&logo=github" alt="GitHub Stars" />
   {' '}
-  <img src="https://img.shields.io/discord/1341113998971768953?style=for-the-badge&logo=discord&label=Discord" alt="Discord" />
+  <a href="https://discord.gg/rS3abJ5dz7" target="_blank" rel="noopener noreferrer">
+    <img src="https://dcbadge.limes.pink/api/server/rS3abJ5dz7" alt="Discord" />
+  </a>
 </div>
 
 # Welcome to M3U Editor

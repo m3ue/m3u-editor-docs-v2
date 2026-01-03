@@ -27,9 +27,11 @@
   transition: box-shadow 0.3s;
   overflow: hidden;
   cursor: pointer;
+  text-decoration: none;
 }
 .downloadBadge:hover {
   animation: shake 0.5s ease-in-out;
+  text-decoration: none;
 }
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

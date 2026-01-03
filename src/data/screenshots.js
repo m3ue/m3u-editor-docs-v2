@@ -4,10 +4,47 @@
 export default [
   {
     "src": "/img/screenshots/m3u-editor_dashboard.png",
-    "alt": "M3u Editor Dashboard"
+    "alt": "Dashboard - Overview and statistics"
   },
   {
     "src": "/img/screenshots/m3u-editor_playlists.png",
-    "alt": "M3u Editor Playlists"
-  }
+    "alt": "Playlists - Manage multiple playlists"
+  },
+  {
+    "src": "/img/screenshots/in-app-playlist-epg-preview.png",
+    "alt": "EPG Preview - Built-in TV guide"
+  },
+  {
+    "src": "/img/screenshots/in-app-playlist-epg-playback.png",
+    "alt": "EPG with Playback - Stream player integration"
+  },
+  {
+    "src": "/img/screenshots/in-app-epg-preview.png",
+    "alt": "EPG Preview - Program guide interface"
+  },
+  {
+    "src": "/img/screenshots/channel-editing.png",
+    "alt": "Channel Editor - Full customization options"
+  },
+
+  {
+    "src": "/img/screenshots/series-mgmt.png",
+    "alt": "Series Management - VOD organization"
+  },
+  {
+    "src": "/img/screenshots/proxy-monitor.png",
+    "alt": "Proxy Monitor - Real-time statistics"
+  },
+  {
+    "src": "/img/screenshots/post-processing.png",
+    "alt": "Post Processing - Webhooks and scripts"
+  },
+  {
+    "src": "/img/screenshots/proxy-config.png",
+    "alt": "Proxy Configuration - M3U Proxy settings"
+  },
+  {
+    "src": "/img/screenshots/api.png",
+    "alt": "API Documentation - Xtream API output"
+  },
 ];
