@@ -38,7 +38,7 @@ Single container. Same pooling concept, no Redis. Good for light to moderate use
 
 Better reliability than SQLite. PostgreSQL container managed by Docker Compose. Better for concurrent access and crash resilience.
 
-**\[Jump to example]\(#deployment-internal\_postgres "Internal PostgreSQL)**
+**[Jump to example](#deployment-internal_postgres "Internal PostgreSQL")**
 
 **External PostgreSQL**
 
