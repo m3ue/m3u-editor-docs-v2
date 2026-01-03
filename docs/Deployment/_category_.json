@@ -1,0 +1,8 @@
+{
+  "label": "Deployment",
+  "position": 4,
+  "link": {
+    "type": "generated-index",
+    "description": "Production deployment guides for M3U Editor."
+  }
+}

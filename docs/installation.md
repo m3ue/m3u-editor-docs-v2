@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 2
 description: Get started with M3U Editor - Installation and quick setup guide
 tags:
   - Getting Started
