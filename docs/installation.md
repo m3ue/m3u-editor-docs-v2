@@ -98,6 +98,6 @@ Once your containers are running:
 
 ## Need Help?
 
-- 📖 Check our [FAQ](/docs/help/faq)
-- 💬 Join our [Discord](https://discord.gg/rS3abJ5dz7)
+- � Join our [Discord](https://discord.gg/rS3abJ5dz7)
 - 🐛 [Report an issue](https://github.com/sparkison/m3u-editor/issues/new?template=bug_report.md)
+- 📖 [GitHub Discussions](https://github.com/sparkison/m3u-editor/discussions)
