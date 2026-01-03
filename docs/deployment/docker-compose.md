@@ -172,7 +172,7 @@ Choose fully external deployment when you need:
 - Custom reverse proxy configuration
 - Multi-instance deployment
 
-See [External Services Setup](/docs/deployment/external-services) for detailed configuration.
+See the deployment guides for detailed configuration options.
 
 ## Port Configuration
 

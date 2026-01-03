@@ -102,15 +102,15 @@ const config = {
             items: [
               {
                 label: 'Getting Started',
-                to: '/docs/getting-started/installation',
+                to: '/docs/installation',
               },
               {
                 label: 'Deployment',
-                to: '/docs/deployment/docker-compose',
+                to: '/docs/Deployment/docker-compose',
               },
               {
                 label: 'Advanced Topics',
-                to: '/docs/advanced/auto-merge-channels',
+                to: '/docs/Advanced/auto-merge-channels',
               },
             ],
           },

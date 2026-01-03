@@ -90,7 +90,7 @@ docker-compose -f docker-compose.proxy.yml up -d
 # Access at http://localhost:36400
 ```
 
-See [Installation](/docs/getting-started/installation) for detailed setup instructions.
+See [Installation](/docs/installation) for detailed setup instructions.
 
 ## 📖 Documentation Sections
 
