@@ -4,14 +4,14 @@ description: Configure M3U Editor environment variables and settings
 tags:
   - Getting Started
   - Configuration
-title: Configuration
+title: Editor Configuration
 hide_title: true
 ---
 <div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
   <img src="/img/logo.png" alt="M3U Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
 </div>
 
-# Configuration
+# Editor Configuration
 
 M3U Editor uses environment variables for configuration. This guide covers the most important settings.
 
