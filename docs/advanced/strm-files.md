@@ -531,27 +531,6 @@ find /path/to/media/Series -name "*.strm" -mtime -1
 
 ## 🆘 Getting Help
 
-### Log Files
-
-Check these logs for .strm sync issues:
-```bash
-# Main log
-tail -f /var/www/config/logs/laravel.log | grep -i "strm"
-
-# Queue log (sync happens in background)
-tail -f /var/www/config/logs/queue.log
-```
-
-### Support
-
 - 💬 [Discord](https://discord.gg/rS3abJ5dz7)
 - 🐛 [GitHub Issues](https://github.com/sparkison/m3u-editor/issues)
 
----
-
-## Next Steps
-
-- [Settings Reference](/docs/settings-reference) - Detailed settings guide
-- [TMDB Integration](/docs/integrations/tmdb) - Setup TMDB for metadata
-- [Plex Integration](/docs/integrations/plex) - Plex-specific tips
-- [Jellyfin Integration](/docs/integrations/jellyfin) - Jellyfin setup guide
