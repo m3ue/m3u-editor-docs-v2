@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 description: Import VOD and Series data into M3U-Editor
 title: Emby Integration
 hide_title: true
