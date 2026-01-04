@@ -57,7 +57,7 @@ Provide the same content with user-specific access:
 
 ## Related Resources
 
-- [Adding Playlists](adding-playlists.md) - How to add source playlists
+- [Adding Playlists](playlists.md) - How to add source playlists
 - [Playlist Auth](playlist-auth.md) - Authentication configuration
 - [Custom Playlist](custom-playlist.md) - Creating custom playlists
 - [Merged Playlist](merged-playlist.md) - Merging multiple playlists

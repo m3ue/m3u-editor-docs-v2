@@ -85,7 +85,7 @@ Use the search and filter options to find specific content:
 
 ## Related Resources
 
-- [Adding Playlists](adding-playlists.md) - Source playlist setup
+- [Adding Playlists](playlists.md) - Source playlist setup
 - [Merged Playlist](merged-playlist.md) - Combining entire playlists
 - [Playlist Alias](playlist-alias.md) - Alternative configurations
 - [Playlist Auth](playlist-auth.md) - Authentication setup

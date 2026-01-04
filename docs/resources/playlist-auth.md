@@ -158,7 +158,7 @@ Each Playlist Auth shows:
 
 ## Related Resources
 
-- [Adding Playlists](adding-playlists.md) - Setting up playlists
+- [Adding Playlists](playlists.md) - Setting up playlists
 - [Playlist Alias](playlist-alias.md) - Creating playlist variations
 - [Custom Playlist](custom-playlist.md) - Curated playlists
 - [Merged Playlist](merged-playlist.md) - Combined playlists

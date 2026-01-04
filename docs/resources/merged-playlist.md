@@ -89,7 +89,7 @@ Each source playlist in a merge can have a priority setting:
 
 ## Related Resources
 
-- [Adding Playlists](adding-playlists.md) - Setting up source playlists
+- [Adding Playlists](playlists.md) - Setting up source playlists
 - [Custom Playlist](custom-playlist.md) - Manual curation
 - [Playlist Alias](playlist-alias.md) - Alternative configurations
 - [Playlist Auth](playlist-auth.md) - Authentication

@@ -229,6 +229,6 @@ cp .env.proxy.example .env
 
 ## Next Steps
 
-- [Adding Playlists](/docs/resources/adding-playlists) - Import your first M3U playlist
+- [Adding Playlists](/docs/resources/playlists) - Import your first M3U playlist
 - [Deployment Guides](/docs/deployment/docker-compose) - Advanced deployment options
 - [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - Setup external proxy

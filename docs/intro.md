@@ -98,7 +98,7 @@ See [Installation](/docs/installation) for detailed setup instructions.
 New to M3U Editor? Start here:
 - [Installation](/docs/installation)
 - [Configuration](/docs/configuration)
-- [Adding Playlists](/docs/resources/adding-playlists)
+- [Adding Playlists](/docs/resources/playlists)
 - [EPG Setup](/docs/resources/epg-setup)
 
 ### 🚀 Deployment
