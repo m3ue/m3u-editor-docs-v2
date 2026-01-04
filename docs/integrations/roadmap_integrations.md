@@ -22,7 +22,7 @@ tags:
 Below is a list of features that are currently in development or that are planned.
 
 :::info
-As of 1/3/2025 -- Integrations are currently only deployed in the **experimentale branch**
+As of 1/3/2025 -- Integrations are currently only deployed in the **experimental branch**
 :::
 
 - [x] Initial Emby and Jellyfin integration **Experimental Branch**
