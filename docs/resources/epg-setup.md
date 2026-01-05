@@ -1,14 +1,14 @@
 ---
-sidebar_position: 4
+sidebar_position: 6
 description: Set up Electronic Program Guide (EPG) data
 tags:
   - Getting Started
   - EPG
   - XMLTV
-title: EPG Setup
+title: EPGs
 ---
 
-# EPG Setup
+# EPGs
 
 Electronic Program Guide (EPG) data provides TV listings for your channels. M3U Editor supports multiple EPG sources.
 

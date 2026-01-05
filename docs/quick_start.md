@@ -63,78 +63,95 @@ M3U Editor is available in the following versions:
 ```yaml
 services:
   m3u-editor:
-    image: sparkison/m3u-editor:latest
+    image: sparkison/m3u-editor:${IMAGE_TAG:-latest}
     container_name: m3u-editor
     environment:
+      # Timezone
       - TZ=Etc/UTC
-      - APP_URL=http://localhost
-      - APP_PORT=36400
-      # Postgres (recommended for performance)
-      - ENABLE_POSTGRES=true
-      - PG_DATABASE=m3ue
-      - PG_USER=m3ue
-      - PG_PASSWORD=changeme
+      
+      # Application URL (change to your domain or IP)
+      - APP_URL=${APP_URL:-http://localhost}
+      - APP_PORT=${APP_PORT:-36400}
+
+      # Postgres Configuration
+      - ENABLE_POSTGRES=true # Use embedded Postgres, disable to use your own Postgres service
+      - PG_DATABASE=${PG_DATABASE:-m3ue}
+      - PG_USER=${PG_USER:-m3ue}
+      - PG_PASSWORD=${PG_PASSWORD:-changeme}
+      - PG_PORT=${PG_PORT:-5432}
+
+      # Database Connection (m3u-editor)
       - DB_CONNECTION=pgsql
       - DB_HOST=localhost
-      - DB_PORT=5432
-      - DB_DATABASE=m3ue
-      - DB_USERNAME=m3ue
-      - DB_PASSWORD=changeme
-      # Redis (external)
-      - REDIS_ENABLED=false
-      - REDIS_HOST=redis
-      - REDIS_SERVER_PORT=6379
-      # M3U Proxy (external)
-      - M3U_PROXY_ENABLED=false
-      - M3U_PROXY_HOST=m3u-proxy
-      - M3U_PROXY_PORT=38085
-      - M3U_PROXY_TOKEN=your-secure-token
+      - DB_PORT=${PG_PORT:-5432}
+      - DB_DATABASE=${PG_DATABASE:-m3ue}
+      - DB_USERNAME=${PG_USER:-m3ue}
+      - DB_PASSWORD=${PG_PASSWORD:-changeme}
+
+      # Redis configuration
+      - REDIS_ENABLED=true # Use embedded Redis
+      - REDIS_SERVER_PORT=${REDIS_PORT:-6379}
+      # -REDIS_PASSWORD=${M3U_PROXY_TOKEN:-changeme} # Automatically set to API_TOKEN
+      
+      # M3U Proxy Configuration (External)
+      - M3U_PROXY_ENABLED=false # Disable embedded and use external m3u-proxy
+      - M3U_PROXY_PORT=${M3U_PROXY_PORT:-38085}
+      - M3U_PROXY_HOST=${M3U_PROXY_HOST:-m3u-proxy} # Internal network hostname of m3u-proxy container
+      - M3U_PROXY_TOKEN=${M3U_PROXY_TOKEN:-changeme}
     volumes:
+      # Persistent configuration data
       - ./data:/var/www/config
+      
+      # PostgreSQL data persistence
       - pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     ports:
-      - 36400:36400
+      - "${APP_PORT:-36400}:${APP_PORT:-36400}"  # Main application port
+      # - "${PG_PORT:-5432}:${PG_PORT:-5432}"  # Uncomment to expose PostgreSQL
     networks:
       - m3u-network
-    depends_on:
-      - m3u-proxy
-      - redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${APP_PORT:-36400}/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   m3u-proxy:
-    image: sparkison/m3u-proxy:latest
+    image: sparkison/m3u-proxy:${IMAGE_TAG:-latest}
     container_name: m3u-proxy
     environment:
-      - API_TOKEN=your-secure-token  # Must match M3U_PROXY_TOKEN above
-      - PORT=38085
+      # API Authentication Token (must match M3U_PROXY_TOKEN above)
+      - API_TOKEN=${M3U_PROXY_TOKEN:-changeme}
+      - PORT=${M3U_PROXY_PORT:-38085}
+
+      # Redis Configuration (for stream pooling)
       - REDIS_ENABLED=true
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_DB=6
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_HOST=m3u-editor # Connect to m3u-editor's embedded Redis instance
+      - REDIS_DB=6 # 1-5 used by m3u-editor, so use 6 for m3u-proxy
+      # -REDIS_PASSWORD=${M3U_PROXY_TOKEN:-changeme} # Automatically set to API_TOKEN
       - ENABLE_REDIS_POOLING=true
+      
+      # Logging
       - LOG_LEVEL=INFO
     restart: unless-stopped
+    # Don't expose port externally - only accessible via internal network
+    # ports:
+    #   - "${PROXY_PORT:-38085}:${PROXY_PORT:-38085}"  # Uncomment only if you need direct external access
     networks:
       - m3u-network
     depends_on:
-      - redis
-    # Optional: Hardware acceleration
-    # devices:
-    #   - /dev/dri:/dev/dri
-
-  redis:
-    image: redis:alpine
-    container_name: redis
-    restart: unless-stopped
-    networks:
-      - m3u-network
-    volumes:
-      - redis_data:/data
+      m3u-editor:
+        condition: service_healthy
+    #devices:
+    #  - /dev/dri:/dev/dri
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${PROXY_PORT:-38085}/health?api_token=${M3U_PROXY_TOKEN:-changeme}"]
+      interval: 30s
+      timeout: 2s
+      retries: 12
+      start_period: 10s
 
 networks:
   m3u-network:
@@ -142,7 +159,8 @@ networks:
 
 volumes:
   pgdata:
-  redis_data:
+    driver: local
+
 ```
 
 ### M3U-Proxy Embedded (Simple Alternative){#deployment-proxy\_embedded}

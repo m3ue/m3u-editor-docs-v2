@@ -8,9 +8,23 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Softer gradient hero that matches logo */
+  /* Animated gradient hero that matches logo */
   background: linear-gradient(135deg, rgba(244,63,94,0.85) 0%, rgba(179,80,159,0.75) 45%, rgba(99,102,241,0.8) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
   color: white;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Overlay to slightly mute the background and improve readability */

@@ -1,13 +1,13 @@
 ---
-sidebar_position: 3
+sidebar_position: 0
 description: Add your first M3U playlist to M3U Editor
 tags:
   - Getting Started
   - Playlists
-title: Playlist Setup
+title: Playlists
 ---
 
-# Adding Playlists
+# Playlists
 
 Learn how to import and manage M3U playlists in M3U Editor.
 
