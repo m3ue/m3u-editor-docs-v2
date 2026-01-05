@@ -49,7 +49,7 @@ const config = {
           sidebarPath: './sidebars.js',
           breadcrumbs: false,
           showLastUpdateTime: true,
-          editUrl: 'https://github.com/sparkison/m3u-editor-docs-v2/edit/main/',
+          editUrl: 'https://github.com/sparkison/m3u-editor-docs-v2/tree/master',
         },
         blog: false,
         theme: {
