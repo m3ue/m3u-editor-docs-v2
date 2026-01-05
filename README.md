@@ -32,19 +32,33 @@ Generates static content into the `build` directory for deployment.
 
 ```
 docs/
-├── intro.md                     # Documentation homepage
-├── getting-started/
-│   ├── installation.md          # Installation guide
-│   ├── configuration.md         # Configuration guide
-│   ├── adding-playlists.md      # Adding playlists
-│   └── epg-setup.md            # EPG setup
+├── intro.md                       # Documentation homepage
+├── installation.md                # Installation guide
+├── quick_start.md                 # Quick start guide
+├── configuration.md               # Configuration guide
+├── client_configuration.md        # Client configuration
 ├── deployment/
-│   ├── docker-compose.md        # Docker Compose options
-│   ├── m3u-proxy-integration.md # M3U Proxy setup
-│   └── caddy-vs-nginx.md       # Reverse proxy comparison
+│   ├── docker-compose.md          # Docker Compose options
+│   ├── m3u-proxy-integration.md   # M3U Proxy setup
+│   └── caddy-vs-nginx.md          # Reverse proxy comparison
+├── integrations/
+│   ├── emby_integration.md        # Emby integration guide
+│   ├── emby_integration_settings.md # Emby settings reference
+│   └── roadmap_integrations.md    # Integration roadmap
+├── resources/
+│   ├── playlists.md               # Playlists overview
+│   ├── custom-playlist.md         # Custom playlist guide
+│   ├── merged-playlist.md         # Merged playlist setup
+│   ├── playlist-alias.md          # Playlist aliasing
+│   ├── playlist-auth.md           # Playlist authentication
+│   ├── playlist-pooled_providers.md # Pooled providers
+│   └── epg-setup.md               # EPG setup guide
 └── advanced/
-    ├── auto-merge-channels.md   # Auto-merge feature
-    └── epg-optimization.md      # EPG caching & performance
+    ├── auto-merge-channels.md     # Auto-merge feature
+    ├── environment-variables.md   # Environment variables
+    ├── epg-optimization.md        # EPG caching & performance
+    ├── settings-reference.md      # Settings reference
+    └── strm-files.md              # STRM files guide
 ```
 
 ## 🌐 Deployment
