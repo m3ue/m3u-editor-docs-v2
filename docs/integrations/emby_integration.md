@@ -7,6 +7,7 @@ tags:
   - Integrations
   - Emby
   - Jellyfin
+  - Experimental
  
 ---
 
