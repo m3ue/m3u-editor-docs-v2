@@ -193,26 +193,6 @@ HLS_GC_INTERVAL=600        # 10 minutes
 HLS_GC_AGE_THRESHOLD=3600  # 1 hour
 ```
 
-### Queue Configuration
-
-```bash
-# Queue driver (sync, database, redis)
-QUEUE_CONNECTION=database
-
-# Number of queue workers
-QUEUE_WORKERS=4
-```
-
-### Logging
-
-```bash
-# Log level (debug, info, warning, error)
-LOG_LEVEL=info
-
-# Log channel
-LOG_CHANNEL=stack
-```
-
 ## Environment File Examples
 
 M3U Editor provides example environment files for different setups:
@@ -232,3 +212,4 @@ cp .env.proxy.example .env
 - [Adding Playlists](/docs/resources/playlists) - Import your first M3U playlist
 - [Deployment Guides](/docs/deployment/docker-compose) - Advanced deployment options
 - [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - Setup external proxy
+- [Environment Variables](/docs/advanced/environment-variables) - List of available variables
