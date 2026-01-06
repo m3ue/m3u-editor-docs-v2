@@ -47,5 +47,5 @@ You will need to make sure you have your url for your Emby Server. This can be i
   ![Create Media Server integration for Emby](/img/doc_imgs/media_server_integration_configuration.png)
 
 :::tip
-Your media server should not be displayed under the Media Servers integrations
+Your media server should now be displayed under the Media Servers integrations
 :::
