@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 5
 description: EPG caching and performance optimization
 tags:
   - Advanced

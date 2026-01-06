@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 4
 description: Complete Settings page reference for M3U Editor
 tags:
   - Settings

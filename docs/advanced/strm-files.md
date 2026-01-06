@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 3
 description: Complete guide to .strm file generation for media server integration
 tags:
   - Series
