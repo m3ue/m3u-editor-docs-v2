@@ -123,7 +123,7 @@ const config = {
               },
               {
                 label: 'Advanced Topics',
-                to: '/docs/advanced/auto-merge-channels',
+                to: '/docs/category/advanced',
               },
             ],
           },
