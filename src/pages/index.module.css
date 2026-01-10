@@ -91,9 +91,13 @@
 
 .featuresHeading {
   text-align: center;
-  color: var(--ifm-font-color-base);
+  font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 2rem;
-  font-size: 2rem;
+  background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .featureCard {
@@ -224,7 +228,11 @@
 
 .screenshotsHeading {
   text-align: center;
-  color: var(--ifm-font-color-base);
+  font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 2rem;
-  font-size: 2rem;
+  background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
