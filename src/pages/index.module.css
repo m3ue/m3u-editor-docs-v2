@@ -8,11 +8,74 @@
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Animated gradient hero that matches logo */
-  background: linear-gradient(135deg, rgba(244,63,94,0.85) 0%, rgba(179,80,159,0.75) 45%, rgba(99,102,241,0.8) 100%);
+  /* Vibrant retro animated gradient hero that matches logo */
+  background: linear-gradient(135deg, rgba(244,63,94,0.9) 0%, rgba(179,80,159,0.85) 45%, rgba(99,102,241,0.9) 100%);
   background-size: 200% 200%;
   animation: gradientShift 8s ease infinite;
   color: white;
+}
+
+/* Animated grid background */
+.gridBackground {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes gridMove {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(50px, 50px);
+  }
+}
+
+/* Floating pixels container */
+.floatingPixels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Individual floating pixels */
+.pixel {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatPixel 10s ease-in-out infinite;
+  box-shadow: 
+    0 0 4px rgba(255, 255, 255, 0.8),
+    0 0 8px rgba(244, 63, 94, 0.6),
+    0 0 12px rgba(99, 102, 241, 0.4);
+}
+
+@keyframes floatPixel {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) scale(1);
+    opacity: 0;
+  }
 }
 
 @keyframes gradientShift {
@@ -32,16 +95,43 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
   pointer-events: none;
+  z-index: 3;
 }
 
-/* Improve title readability on gradient */
-.heroBanner .hero__title {
-  text-shadow: 0 6px 20px rgba(0,0,0,0.35);
+/* Ensure content appears above grid and pixels */
+.heroBanner .container {
+  position: relative;
+  z-index: 10;
 }
+
+/* Improve title readability on gradient with enhanced glow */
+.heroBanner .hero__title {
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.3),
+    0 0 40px rgba(244, 63, 94, 0.4),
+    0 6px 20px rgba(0, 0, 0, 0.4);
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.3),
+      0 0 40px rgba(244, 63, 94, 0.4),
+      0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+  to {
+    text-shadow: 
+      0 0 30px rgba(255, 255, 255, 0.4),
+      0 0 60px rgba(99, 102, 241, 0.5),
+      0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
 .heroBanner .hero__subtitle {
-  text-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3), 0 0 20px rgba(255, 255, 255, 0.1);
   justify-content: center;
 }
 
@@ -51,12 +141,24 @@
   display: block;
   margin: 0 auto 1rem auto;
   border-radius: 9999px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-  background: rgba(255,255,255,0.92);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 40px rgba(244, 63, 94, 0.3),
+    0 0 60px rgba(99, 102, 241, 0.2);
+  background: rgba(255,255,255,0.95);
   padding: 8px;
-  /* slight transparency to reduce glare */
   opacity: 0.98;
   transform: translateZ(0);
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0) translateZ(0);
+  }
+  50% {
+    transform: translateY(-10px) translateZ(0);
+  }
 }
 
 .buttons {
@@ -64,6 +166,20 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.buttons .button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.buttons .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(244, 63, 94, 0.4);
 }
 
 @media (max-width: 600px) {
@@ -98,26 +214,51 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.3));
 }
 
 .featureCard {
-  background: linear-gradient(90deg, rgb(161 83 173 / 15%), rgba(99, 102, 241, 0.035));
-  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(135deg, rgb(161 83 173 / 18%), rgba(99, 102, 241, 0.08));
+  border: 1px solid rgba(244, 63, 94, 0.2);
   padding: 1.5rem 1.75rem;
   border-radius: 1.25rem;
-  box-shadow: 0 6px 18px rgba(15,23,42,0.04);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+  box-shadow: 
+    0 6px 18px rgba(15, 23, 42, 0.08),
+    0 0 30px rgba(244, 63, 94, 0.05);
+  transition: all 0.3s ease;
   text-align: left;
   min-height: 160px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.featureCard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.featureCard:hover::before {
+  opacity: 1;
 }
 
 .featureCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(15,23,42,0.08);
-  background: linear-gradient(90deg, rgb(161 83 173 / 18%), rgba(99, 102, 241, 0.055));
+  transform: translateY(-6px);
+  box-shadow: 
+    0 12px 28px rgba(15, 23, 42, 0.12),
+    0 0 40px rgba(244, 63, 94, 0.2),
+    0 0 60px rgba(99, 102, 241, 0.15);
+  border-color: rgba(244, 63, 94, 0.4);
+  background: linear-gradient(135deg, rgb(161 83 173 / 22%), rgba(99, 102, 241, 0.12));
 }
 
 .featureCard h3 { margin-top: 0; color: var(--ifm-color-primary); }
@@ -235,4 +376,5 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.3));
 }

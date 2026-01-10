@@ -15,6 +15,16 @@ export default function Home() {
   return (
     <Layout title={siteConfig.title} description={siteConfig.tagline}>
       <header className={clsx('hero hero--primary', styles.heroBanner)}>
+        <div className={styles.gridBackground}></div>
+        <div className={styles.floatingPixels}>
+          {[...Array(20)].map((_, i) => (
+            <div key={i} className={styles.pixel} style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${8 + Math.random() * 4}s`
+            }}></div>
+          ))}
+        </div>
         <div className="container">
           <img src="/img/logo.svg" alt="logo" className={styles.logo} />
           <h1 className="hero__title">M3U Editor</h1>
