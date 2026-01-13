@@ -50,20 +50,6 @@ M3U Editor uses environment variables for configuration. These are typically set
 - **Description**: Default timezone for the application
 - **Example**: `America/New_York`, `Europe/London`
 
-## Localization
-
-### APP_LOCALE
-- **Default**: `en`
-- **Description**: Default application locale
-
-### APP_FALLBACK_LOCALE
-- **Default**: `en`
-- **Description**: Fallback locale when current locale is unavailable
-
-### APP_FAKER_LOCALE
-- **Default**: `en_US`
-- **Description**: Locale for fake data generation (development/testing)
-
 ## Database Configuration
 
 ### DB_CONNECTION
