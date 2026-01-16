@@ -44,16 +44,24 @@
 }
 
 .contributorsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  justify-content: center;
 }
 
 @media (max-width: 768px) {
   .contributorsGrid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 1rem;
+  }
+  
+  .contributorCard {
+    width: 150px;
+  }
+  
+  .minorContributor {
+    width: 100px;
   }
 }
 
@@ -70,6 +78,8 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  width: 200px;
+  flex-shrink: 0;
 }
 
 .contributorCard::before {
@@ -109,21 +119,23 @@
 
 /* Smaller styling for minor contributors (< 5 contributions) */
 .minorContributor {
-  padding: 1rem 0.75rem;
+  padding: 0.75rem 0.5rem;
+  width: 120px;
 }
 
 .minorContributor .avatar {
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-width: 2px;
+  margin-bottom: 0.5rem;
 }
 
 .minorContributor .username {
-  font-size: 0.875rem;
+  font-size: 0.8rem;
 }
 
 .minorContributor .contributions {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .contributorInfo {

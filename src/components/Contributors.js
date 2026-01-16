@@ -95,6 +95,10 @@ export default function Contributors() {
         );
     }
 
+    // Separate contributors by contribution count
+    const majorContributors = contributors.filter(c => c.contributions >= 10);
+    const minorContributors = contributors.filter(c => c.contributions < 10);
+
     return (
         <section className={styles.contributorsSection}>
             <div className="container">
@@ -102,16 +106,17 @@ export default function Contributors() {
                 <p className={styles.subtitle}>
                     Thank you to all the amazing people who have contributed to the M3U Editor project! 🙌
                 </p>
-                <div className={styles.contributorsGrid}>
-                    {contributors.map((contributor) => {
-                        const isMinorContributor = contributor.contributions < 5;
-                        return (
+
+                {/* Major Contributors */}
+                {contributors.length > 0 && (
+                    <div className={styles.contributorsGrid}>
+                        {contributors.map((contributor) => (
                             <a
                                 key={contributor.login}
                                 href={contributor.html_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className={`${styles.contributorCard} ${isMinorContributor ? styles.minorContributor : ''}`}
+                                className={styles.contributorCard}
                                 title={`${contributor.login} - ${contributor.contributions} contributions`}
                             >
                                 <img
@@ -127,9 +132,9 @@ export default function Contributors() {
                                     </div>
                                 </div>
                             </a>
-                        );
-                    })}
-                </div>
+                        ))}
+                    </div>
+                )}
                 <p className={styles.footer}>
                     Contributors are fetched from the{' '}
                     <a href="https://github.com/sparkison/m3u-editor" target="_blank" rel="noopener noreferrer">
