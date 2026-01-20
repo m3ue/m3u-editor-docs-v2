@@ -7,7 +7,7 @@ tags:
   - Integrations
   - Emby
   - Jellyfin
-  - Experimental
+  - Plex
  
 ---
 
