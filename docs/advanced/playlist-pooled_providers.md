@@ -11,10 +11,6 @@ title: Pooled Provider Profiles
 
 # Pooled Provider Profiles
 
-:::info
-As of 1/16/2025 -- provider profiles are only available in the **dev** and **experimental** branches
-:::
-
 ## Overview
 
 Provider Profiles allow you to pool multiple Xtream API accounts into a single playlist, effectively raising your concurrency ceiling. This enables more simultaneous streams by combining the connection limits of individual accounts into one larger, unified pool of available functionality.
