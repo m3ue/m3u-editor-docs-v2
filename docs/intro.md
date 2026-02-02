@@ -11,9 +11,9 @@ title: Welcome
 </div>
 
 <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-  <img src="https://img.shields.io/docker/pulls/sparkison/m3u-editor?style=for-the-badge&logo=docker&label=Docker%20Downloads" alt="Docker Downloads" />
+  <img src="https://img.shields.io/docker/pulls/m3ue/m3u-editor?style=for-the-badge&logo=docker&label=Docker%20Downloads" alt="Docker Downloads" />
   {' '}
-  <img src="https://img.shields.io/github/stars/sparkison/m3u-editor?style=for-the-badge&logo=github" alt="GitHub Stars" />
+  <img src="https://img.shields.io/github/stars/m3ue/m3u-editor?style=for-the-badge&logo=github" alt="GitHub Stars" />
   {' '}
   <a href="https://discord.gg/rS3abJ5dz7" target="_blank" rel="noopener noreferrer">
     <img src="https://dcbadge.limes.pink/api/server/rS3abJ5dz7" alt="Discord" />
@@ -82,7 +82,7 @@ Get up and running in minutes:
 
 ```bash
 # Download recommended configuration
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/docker-compose.proxy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy.yml
 
 # Start services
 docker-compose -f docker-compose.proxy.yml up -d
@@ -115,8 +115,8 @@ Deep dives into advanced features:
 ### 💬 Community & Support
 Get help and contribute:
 - [Discord Server](https://discord.gg/rS3abJ5dz7)
-- [Report Issues](https://github.com/sparkison/m3u-editor/issues)
-- [GitHub Repository](https://github.com/sparkison/m3u-editor)
+- [Report Issues](https://github.com/m3ue/m3u-editor/issues)
+- [GitHub Repository](https://github.com/m3ue/m3u-editor)
 
 ## 📸 Screenshots
 

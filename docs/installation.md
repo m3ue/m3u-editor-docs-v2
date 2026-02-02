@@ -46,7 +46,7 @@ This setup runs separate containers for **m3u-editor**, **m3u-proxy** (external 
 
 ```bash
 # Download the configuration
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/docker-compose.proxy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy.yml
 
 # Start the services
 docker-compose -f docker-compose.proxy.yml up -d
@@ -70,7 +70,7 @@ Everything runs in a single container for quick setup and testing.
 
 ```bash
 # Download the configuration
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/docker-compose.aio.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.aio.yml
 
 # Start the service
 docker-compose -f docker-compose.aio.yml up -d
@@ -88,7 +88,7 @@ Modular deployment with Gluetun VPN integration.
 
 ```bash
 # Download the configuration
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/docker-compose.proxy-vpn.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy-vpn.yml
 
 # Configure your VPN settings in the file
 # Then start the services
@@ -113,5 +113,5 @@ Once your containers are running:
 ## Need Help?
 
 - Join our [Discord](https://discord.gg/rS3abJ5dz7)
-- [Report an issue](https://github.com/sparkison/m3u-editor/issues/new?template=bug_report.md)
-- [GitHub Discussions](https://github.com/sparkison/m3u-editor/discussions)
+- [Report an issue](https://github.com/m3ue/m3u-editor/issues/new?template=bug_report.md)
+- [GitHub Discussions](https://github.com/m3ue/m3u-editor/discussions)

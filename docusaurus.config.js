@@ -20,14 +20,14 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://sparkison.github.io',
+  url: 'https://m3ue.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'sparkison', // Usually your GitHub org/user name.
+  organizationName: 'm3ue', // Usually your GitHub org/user name.
   projectName: 'm3u-editor-docs-v2', // Usually your repo name.
 
   onBrokenLinks: 'throw',
@@ -136,7 +136,7 @@ const config = {
               },
               {
                 label: 'GitHub Discussions',
-                href: 'https://github.com/sparkison/m3u-editor/discussions',
+                href: 'https://github.com/m3ue/m3u-editor/discussions',
               },
             ],
           },
@@ -145,15 +145,15 @@ const config = {
             items: [
               {
                 label: 'GitHub (Main Project)',
-                href: 'https://github.com/sparkison/m3u-editor',
+                href: 'https://github.com/m3ue/m3u-editor',
               },
               {
                 label: 'GitHub (Proxy)',
-                href: 'https://github.com/sparkison/m3u-proxy',
+                href: 'https://github.com/m3ue/m3u-proxy',
               },
               {
                 label: 'GitHub (Docs)',
-                href: 'https://github.com/sparkison/m3u-editor-docs-v2',
+                href: 'https://github.com/m3ue/m3u-editor-docs-v2',
               },
               {
                 label: 'Issue Tracker',
@@ -161,7 +161,7 @@ const config = {
               },
               {
                 label: 'Report Issues',
-                href: 'https://github.com/sparkison/m3u-editor/issues',
+                href: 'https://github.com/m3ue/m3u-editor/issues',
               },
             ],
           },

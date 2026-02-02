@@ -531,5 +531,5 @@ find /path/to/media/Series -name "*.strm" -mtime -1
 ## 🆘 Getting Help
 
 - 💬 [Discord](https://discord.gg/rS3abJ5dz7)
-- 🐛 [GitHub Issues](https://github.com/sparkison/m3u-editor/issues)
+- 🐛 [GitHub Issues](https://github.com/m3ue/m3u-editor/issues)
 

@@ -28,8 +28,8 @@ Running m3u-proxy as a separate container provides:
 
 ```bash
 # Download docker-compose and example env
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/docker-compose.proxy.yml
-curl -O https://raw.githubusercontent.com/sparkison/m3u-editor/main/.env.proxy.example
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/.env.proxy.example
 
 # Setup environment
 cp .env.proxy.example .env

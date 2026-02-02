@@ -52,9 +52,9 @@ M3U Editor is available in the following versions:
 
 |                                               Version                                              |                     Description                     |                  Docker Image                 |
 | :------------------------------------------------------------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------: |
-|       **[sparkison/m3u-editor:latest](https://github.com/sparkison/m3u-editor/tree/master)**       |              Recommended Stable Branch              |    docker pull sparkison/m3u-editor:latest    |
-|          **[sparkison/m3u-editor:dev](https://github.com/sparkison/m3u-editor/tree/dev)**          |             Stable-ish, quick bug fixes             |      docker pull sparkison/m3u-editor:dev     |
-| **[sparkison/m3u-editor:experimental](https://github.com/sparkison/m3u-editor/tree/experimental)** | Bleeding edge features -- **There be dragons here** | docker pull sparkison/m3u-editor:experimental |
+|       **[sparkison/m3u-editor:latest](https://github.com/m3ue/m3u-editor/tree/master)**       |              Recommended Stable Branch              |    docker pull sparkison/m3u-editor:latest    |
+|          **[sparkison/m3u-editor:dev](https://github.com/m3ue/m3u-editor/tree/dev)**          |             Stable-ish, quick bug fixes             |      docker pull sparkison/m3u-editor:dev     |
+| **[sparkison/m3u-editor:experimental](https://github.com/m3ue/m3u-editor/tree/experimental)** | Bleeding edge features -- **There be dragons here** | docker pull sparkison/m3u-editor:experimental |
 
 ## 🐳 Deployment Examples
 

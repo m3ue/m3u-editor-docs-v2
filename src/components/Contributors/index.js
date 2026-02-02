@@ -141,7 +141,7 @@ export default function Contributors() {
                         m3u-editor
                     </a>
                     ,{' '}
-                    <a href="https://github.com/sparkison/m3u-proxy" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/m3ue/m3u-proxy" target="_blank" rel="noopener noreferrer">
                         m3u-proxy
                     </a>
                     , and{' '}
