@@ -9,7 +9,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const REPO = 'sparkison/m3u-editor';
+const REPO = 'm3ue/m3u-editor';
 const VERSIONS_PATH = path.join(__dirname, 'src/components/ReleaseVersions/index.js');
 
 function fetchAllReleases() {

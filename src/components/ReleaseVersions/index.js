@@ -6,27 +6,27 @@ const RELEASE_VERSIONS_TEMPLATE = [
     type: 'Production',
     description: 'Stable, production-ready release with all tested features',
     status: 'stable',
-    downloadUrl: 'https://github.com/sparkison/m3u-editor/tree/master',
+    downloadUrl: 'https://github.com/m3ue/m3u-editor/tree/master',
     color: 'var(--ifm-color-primary)',
-    configUrl: 'https://raw.githubusercontent.com/sparkison/m3u-editor/refs/heads/master/config/dev.php',
+    configUrl: 'https://raw.githubusercontent.com/m3ue/m3u-editor/refs/heads/master/config/dev.php',
     versionField: 'version'
   },
   {
     type: 'Development',
     description: 'Latest development build with new features and improvements',
     status: 'beta',
-    downloadUrl: 'https://github.com/sparkison/m3u-editor/tree/dev',
+    downloadUrl: 'https://github.com/m3ue/m3u-editor/tree/dev',
     color: '#fbbf24',
-    configUrl: 'https://raw.githubusercontent.com/sparkison/m3u-editor/refs/heads/dev/config/dev.php',
+    configUrl: 'https://raw.githubusercontent.com/m3ue/m3u-editor/refs/heads/dev/config/dev.php',
     versionField: 'dev_version'
   },
   {
     type: 'Experimental',
     description: 'Cutting-edge experimental features (use with caution) -- There be dragons!',
     status: 'experimental',
-    downloadUrl: 'https://github.com/sparkison/m3u-editor/tree/experimental',
+    downloadUrl: 'https://github.com/m3ue/m3u-editor/tree/experimental',
     color: '#f87171',
-    configUrl: 'https://raw.githubusercontent.com/sparkison/m3u-editor/refs/heads/experimental/config/dev.php',
+    configUrl: 'https://raw.githubusercontent.com/m3ue/m3u-editor/refs/heads/experimental/config/dev.php',
     versionField: 'experimental_version'
   }
 ];

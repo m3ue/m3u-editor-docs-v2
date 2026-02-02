@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 const LATEST_RELEASE = {
   tag_name: 'v0.8.19',
   published_at: '2024-12-15T10:30:00Z',
-  html_url: 'https://github.com/sparkison/m3u-editor/releases/latest',
+  html_url: 'https://github.com/m3ue/m3u-editor/releases/latest',
   body: `## What's New
 
 ### ✨ New Features
@@ -24,7 +24,7 @@ const LATEST_RELEASE = {
 - Optimized database queries`
 };
 
-export default function GitHubRelease({ repo = 'sparkison/m3u-editor' }) {
+export default function GitHubRelease({ repo = 'm3ue/m3u-editor' }) {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',

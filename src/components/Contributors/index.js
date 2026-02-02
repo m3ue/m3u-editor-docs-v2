@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
 const REPOS = [
-    'sparkison/m3u-editor',
-    'sparkison/m3u-proxy',
-    'sparkison/m3u-editor-docs-v2'
+    'm3ue/m3u-editor',
+    'm3ue/m3u-proxy',
+    'm3ue/m3u-editor-docs-v2'
 ];
 
 export default function Contributors() {
@@ -137,7 +137,7 @@ export default function Contributors() {
                 )}
                 <p className={styles.footer}>
                     Contributors are fetched from the{' '}
-                    <a href="https://github.com/sparkison/m3u-editor" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/m3ue/m3u-editor" target="_blank" rel="noopener noreferrer">
                         m3u-editor
                     </a>
                     ,{' '}
@@ -145,7 +145,7 @@ export default function Contributors() {
                         m3u-proxy
                     </a>
                     , and{' '}
-                    <a href="https://github.com/sparkison/m3u-editor-docs-v2" target="_blank" rel="noopener noreferrer">
+                    <a href="https://github.com/m3ue/m3u-editor-docs-v2" target="_blank" rel="noopener noreferrer">
                         m3u-editor-docs-v2
                     </a>
                     {' '}repositories.
