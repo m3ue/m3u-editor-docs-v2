@@ -11,7 +11,7 @@ title: Welcome
 </div>
 
 <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-  <img src="https://img.shields.io/docker/pulls/m3ue/m3u-editor?style=for-the-badge&logo=docker&label=Docker%20Downloads" alt="Docker Downloads" />
+  <img src="https://img.shields.io/docker/pulls/sparkison/m3u-editor?style=for-the-badge&logo=docker&label=Docker%20Downloads" alt="Docker Downloads" />
   {' '}
   <img src="https://img.shields.io/github/stars/m3ue/m3u-editor?style=for-the-badge&logo=github" alt="GitHub Stars" />
   {' '}
