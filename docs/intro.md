@@ -82,7 +82,7 @@ Get up and running in minutes:
 
 ```bash
 # Download recommended configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
 
 # Start services
 docker-compose -f docker-compose.proxy.yml up -d

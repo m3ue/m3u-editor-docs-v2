@@ -39,7 +39,7 @@ This is the **recommended production setup** with separate containers for each s
 
 ```bash
 # Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
 
 # Generate secure tokens
 echo "M3U_PROXY_TOKEN=$(openssl rand -hex 32)" >> .env
@@ -93,7 +93,7 @@ Simple single-container deployment for testing and development.
 
 ```bash
 # Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.aio.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.aio.yml
 
 # Start service
 docker-compose -f docker-compose.aio.yml up -d
@@ -119,7 +119,7 @@ Route proxy traffic through a VPN using Gluetun.
 
 ```bash
 # Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/main/docker-compose.proxy-vpn.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy-vpn.yml
 
 # Configure VPN settings in the file
 # Edit the gluetun service section
