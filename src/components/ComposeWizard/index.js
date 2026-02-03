@@ -216,7 +216,7 @@ const DeploymentTypeTabs = ({ selected, onSelect }) => {
           title={type.description}
         >
           {type.name}
-          {type.recommended && <span className={styles.recBadge}>*</span>}
+          {type.recommended && <span className={styles.recBadge}>⭐️</span>}
         </button>
       ))}
     </div>

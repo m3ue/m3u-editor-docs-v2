@@ -11,7 +11,7 @@ export const DEPLOYMENT_TYPES = [
   {
     id: 'modular',
     name: 'Modular (Recommended)',
-    description: 'Separate containers for m3u-editor, m3u-proxy, and Redis. Best for production.',
+    description: 'Separate containers for m3u-editor and m3u-proxy. Best for production.',
     features: ['Hardware acceleration support', 'Independent service scaling', 'Redis-based stream pooling', 'Easy to manage'],
     recommended: true,
   },
