@@ -176,7 +176,6 @@ const WizardSection = ({ section, values, onChange, deploymentType }) => {
       >
         <span className={styles.sectionIcon}>{section.icon}</span>
         <span className={styles.sectionTitle}>{section.title}</span>
-        <span className={styles.sectionDescription}>{section.description}</span>
         <span className={clsx(styles.sectionChevron, !isCollapsed && styles.expanded)}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -200,52 +199,38 @@ const WizardSection = ({ section, values, onChange, deploymentType }) => {
   );
 };
 
-// Deployment type selector
-const DeploymentTypeSelector = ({ selected, onSelect }) => {
+// Deployment type selector (compact tabs)
+const DeploymentTypeTabs = ({ selected, onSelect }) => {
   return (
-    <div className={styles.deploymentTypes}>
-      <h3 className={styles.stepTitle}>1. Select Deployment Type</h3>
-      <div className={styles.deploymentGrid}>
-        {DEPLOYMENT_TYPES.map((type) => (
-          <button
-            key={type.id}
-            type="button"
-            className={clsx(
-              styles.deploymentCard,
-              selected === type.id && styles.selected,
-              type.recommended && styles.recommended
-            )}
-            onClick={() => onSelect(type.id)}
-          >
-            {type.recommended && <span className={styles.recommendedBadge}>Recommended</span>}
-            <h4 className={styles.deploymentName}>{type.name}</h4>
-            <p className={styles.deploymentDescription}>{type.description}</p>
-            <ul className={styles.featureList}>
-              {type.features?.map((feature, idx) => (
-                <li key={idx} className={styles.featureItem}>
-                  <span className={styles.checkIcon}>✓</span> {feature}
-                </li>
-              ))}
-              {type.limitations?.map((limitation, idx) => (
-                <li key={idx} className={clsx(styles.featureItem, styles.limitation)}>
-                  <span className={styles.crossIcon}>✗</span> {limitation}
-                </li>
-              ))}
-            </ul>
-          </button>
-        ))}
-      </div>
+    <div className={styles.deploymentTabs}>
+      {DEPLOYMENT_TYPES.map((type) => (
+        <button
+          key={type.id}
+          type="button"
+          className={clsx(
+            styles.deploymentTab,
+            selected === type.id && styles.activeTab,
+            type.recommended && styles.recommendedTab
+          )}
+          onClick={() => onSelect(type.id)}
+          title={type.description}
+        >
+          {type.name}
+          {type.recommended && <span className={styles.recBadge}>*</span>}
+        </button>
+      ))}
     </div>
   );
 };
 
-// Code output component
-const CodeOutput = ({ title, code, filename }) => {
+// Live code preview component
+const LivePreview = ({ code, filename, envCode }) => {
   const [copied, setCopied] = useState(false);
+  const [activeTab, setActiveTab] = useState('compose');
 
-  const handleCopy = async () => {
+  const handleCopy = async (text) => {
     try {
-      await navigator.clipboard.writeText(code);
+      await navigator.clipboard.writeText(text);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -253,44 +238,77 @@ const CodeOutput = ({ title, code, filename }) => {
     }
   };
 
-  const handleDownload = () => {
-    const blob = new Blob([code], { type: 'text/yaml' });
+  const handleDownload = (content, name) => {
+    const blob = new Blob([content], { type: 'text/yaml' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+    a.download = name;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
+  const hasEnvFile = envCode && envCode.split('\n').length > 3;
+
   return (
-    <div className={styles.codeOutput}>
-      <div className={styles.codeHeader}>
-        <span className={styles.codeTitle}>{title}</span>
-        <div className={styles.codeActions}>
+    <div className={styles.livePreview}>
+      <div className={styles.previewHeader}>
+        <div className={styles.previewTabs}>
           <button
             type="button"
-            onClick={handleCopy}
-            className={styles.codeBtn}
+            className={clsx(styles.previewTab, activeTab === 'compose' && styles.activePreviewTab)}
+            onClick={() => setActiveTab('compose')}
+          >
+            docker-compose.yml
+          </button>
+          {hasEnvFile && (
+            <button
+              type="button"
+              className={clsx(styles.previewTab, activeTab === 'env' && styles.activePreviewTab)}
+              onClick={() => setActiveTab('env')}
+            >
+              .env
+            </button>
+          )}
+        </div>
+        <div className={styles.previewActions}>
+          <button
+            type="button"
+            onClick={() => handleCopy(activeTab === 'compose' ? code : envCode)}
+            className={styles.actionBtn}
             title="Copy to clipboard"
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
             {copied ? 'Copied!' : 'Copy'}
           </button>
           <button
             type="button"
-            onClick={handleDownload}
-            className={styles.codeBtn}
+            onClick={() => handleDownload(
+              activeTab === 'compose' ? code : envCode,
+              activeTab === 'compose' ? 'docker-compose.yml' : '.env'
+            )}
+            className={styles.actionBtn}
             title="Download file"
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
             Download
           </button>
         </div>
       </div>
-      <pre className={styles.codeBlock}>
-        <code>{code}</code>
-      </pre>
+      <div className={styles.previewContent}>
+        <pre className={styles.codeBlock}>
+          <code>{activeTab === 'compose' ? code : envCode}</code>
+        </pre>
+      </div>
     </div>
   );
 };
@@ -299,117 +317,101 @@ const CodeOutput = ({ title, code, filename }) => {
 export default function ComposeWizard() {
   const [deploymentType, setDeploymentType] = useState('modular');
   const [values, setValues] = useState(() => getDefaultValues('modular'));
-  const [showOutput, setShowOutput] = useState(false);
 
   const handleDeploymentChange = useCallback((type) => {
     setDeploymentType(type);
     setValues(getDefaultValues(type));
-    setShowOutput(false);
   }, []);
 
   const handleValueChange = useCallback((name, value) => {
     setValues((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleGenerate = () => {
-    setShowOutput(true);
-  };
-
   const handleReset = () => {
     setValues(getDefaultValues(deploymentType));
-    setShowOutput(false);
   };
 
+  // Live generated output
   const composeOutput = useMemo(() => {
-    if (!showOutput) return '';
     return generateComposeFile(deploymentType, values);
-  }, [showOutput, deploymentType, values]);
+  }, [deploymentType, values]);
 
   const envOutput = useMemo(() => {
-    if (!showOutput) return '';
     return generateEnvFile(values);
-  }, [showOutput, values]);
+  }, [values]);
+
+  // Get current deployment type info
+  const currentDeployment = DEPLOYMENT_TYPES.find(d => d.id === deploymentType);
 
   return (
     <div className={styles.wizard}>
-      <div className={styles.wizardContent}>
-        <DeploymentTypeSelector
+      {/* Deployment Type Selection */}
+      <div className={styles.deploymentSection}>
+        <DeploymentTypeTabs
           selected={deploymentType}
           onSelect={handleDeploymentChange}
         />
+        <p className={styles.deploymentDescription}>
+          {currentDeployment?.description}
+          {currentDeployment?.recommended && ' (Recommended)'}
+        </p>
+      </div>
 
-        <div className={styles.configuration}>
-          <h3 className={styles.stepTitle}>2. Configure Settings</h3>
-          <p className={styles.stepDescription}>
-            Customize your deployment. Collapsed sections contain optional advanced settings.
-          </p>
-
-          {WIZARD_SECTIONS.map((section) => (
-            <WizardSection
-              key={section.id}
-              section={section}
-              values={values}
-              onChange={handleValueChange}
-              deploymentType={deploymentType}
-            />
-          ))}
-        </div>
-
-        <div className={styles.actions}>
-          <button
-            type="button"
-            onClick={handleGenerate}
-            className={styles.generateButton}
-          >
-            Generate Docker Compose
-          </button>
-          <button
-            type="button"
-            onClick={handleReset}
-            className={styles.resetButton}
-          >
-            Reset to Defaults
-          </button>
-        </div>
-
-        {showOutput && (
-          <div className={styles.output}>
-            <h3 className={styles.stepTitle}>3. Your Configuration</h3>
-            <p className={styles.stepDescription}>
-              Copy or download the files below. Save them in the same directory and run{' '}
-              <code>docker-compose up -d</code> to start.
-            </p>
-
-            <CodeOutput
-              title="docker-compose.yml"
-              code={composeOutput}
-              filename="docker-compose.yml"
-            />
-
-            {envOutput.split('\n').length > 3 && (
-              <CodeOutput
-                title=".env (Optional - for sensitive values)"
-                code={envOutput}
-                filename=".env"
-              />
-            )}
-
-            <div className={styles.quickStart}>
-              <h4>Quick Start Commands</h4>
-              <pre className={styles.commandBlock}>
-                <code>{`# Download and start
-# Save the above file as docker-compose.yml, then:
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down`}</code>
-              </pre>
-            </div>
+      {/* Main Content - Side by Side */}
+      <div className={styles.mainContent}>
+        {/* Left: Configuration Panel */}
+        <div className={styles.configPanel}>
+          <div className={styles.configHeader}>
+            <h3 className={styles.configTitle}>Configuration</h3>
+            <button
+              type="button"
+              onClick={handleReset}
+              className={styles.resetBtn}
+              title="Reset to defaults"
+            >
+              Reset
+            </button>
           </div>
-        )}
+          <div className={styles.configSections}>
+            {WIZARD_SECTIONS.map((section) => (
+              <WizardSection
+                key={section.id}
+                section={section}
+                values={values}
+                onChange={handleValueChange}
+                deploymentType={deploymentType}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Right: Live Preview */}
+        <div className={styles.previewPanel}>
+          <LivePreview
+            code={composeOutput}
+            filename="docker-compose.yml"
+            envCode={envOutput}
+          />
+        </div>
+      </div>
+
+      {/* Quick Start Commands */}
+      <div className={styles.quickStart}>
+        <h4>Quick Start</h4>
+        <div className={styles.commandSteps}>
+          <div className={styles.commandStep}>
+            <span className={styles.stepNumber}>1</span>
+            <span>Save the generated <code>docker-compose.yml</code> file</span>
+          </div>
+          <div className={styles.commandStep}>
+            <span className={styles.stepNumber}>2</span>
+            <span>Run: <code>docker-compose up -d</code></span>
+          </div>
+          <div className={styles.commandStep}>
+            <span className={styles.stepNumber}>3</span>
+            <span>Access at: <code>{values.APP_URL || 'http://localhost'}:{values.APP_PORT || '36400'}</code></span>
+          </div>
+        </div>
       </div>
     </div>
   );

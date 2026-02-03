@@ -1,20 +1,20 @@
 /* Compose Wizard Page Styles */
 
 .main {
-  padding: 2rem 0 4rem;
+  padding: 1.5rem 0 3rem;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2.5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--ifm-color-emphasis-200);
 }
 
 .title {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -22,30 +22,31 @@
 }
 
 .subtitle {
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: var(--ifm-color-emphasis-700);
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .subtitle code {
-  padding: 0.2rem 0.5rem;
+  padding: 0.15rem 0.4rem;
   background: var(--ifm-color-emphasis-200);
   border-radius: 4px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .footer {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
   border-top: 1px solid var(--ifm-color-emphasis-200);
   text-align: center;
 }
 
 .footer p {
   color: var(--ifm-color-emphasis-600);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 .footer a {
@@ -60,11 +61,11 @@
 /* Responsive */
 @media (max-width: 768px) {
   .title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .main {
