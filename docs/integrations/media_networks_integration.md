@@ -481,14 +481,14 @@ services:
       - HLS_GC_INTERVAL=600
       - HLS_GC_AGE_THRESHOLD=7200
       
-      # Proxy Configuration
-      - M3U_PROXY_ENABLED=false  # Disable embedded proxy, using external
+      # Proxy Configuration (using external m3u-proxy container)
+      - M3U_PROXY_ENABLED=false  # false = use external proxy service
       - M3U_PROXY_HOST=m3u-proxy
       - M3U_PROXY_PORT=38085
       - M3U_PROXY_TOKEN=${M3U_PROXY_TOKEN}
       
-      # Redis Configuration
-      - REDIS_ENABLED=false  # Disable embedded Redis, using external
+      # Redis Configuration (using external Redis container)
+      - REDIS_ENABLED=false  # false = use external Redis service
       - REDIS_HOST=redis
       - REDIS_SERVER_PORT=6379
       - REDIS_PASSWORD=${REDIS_PASSWORD}
