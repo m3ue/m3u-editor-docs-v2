@@ -516,12 +516,12 @@
 
 /* Dark mode adjustments */
 [data-theme='dark'] .deploymentTab {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(30, 41, 57, 0.5);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .deploymentTab:hover {
-  background: rgba(30, 41, 59, 0.8);
+  background: rgba(30, 41, 57, 0.8);
 }
 
 [data-theme='dark'] .deploymentTab.activeTab {
@@ -529,7 +529,7 @@
 }
 
 [data-theme='dark'] .section {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(30, 41, 57, 0.5);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
@@ -540,7 +540,7 @@
 [data-theme='dark'] .input,
 [data-theme='dark'] .select,
 [data-theme='dark'] .textarea {
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(16, 24, 40, 0.8);
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -550,12 +550,12 @@
 }
 
 [data-theme='dark'] .livePreview {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(30, 41, 57, 0.5);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .previewHeader {
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(16, 24, 40, 0.5);
   border-color: rgba(255, 255, 255, 0.1);
 }
 
