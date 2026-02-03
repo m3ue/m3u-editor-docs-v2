@@ -363,6 +363,7 @@ export const generateVpnCompose = (config) => {
   const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
   const redisExternal = isRedisExternal(config);
+  const imageTag = getImageTag(config);
 
   // VPN-specific environment variables
   let vpnEnv = `      - VPN_SERVICE_PROVIDER=${config.VPN_SERVICE_PROVIDER}
@@ -425,7 +426,7 @@ ${vpnEnv}`;
       - m3u-network
 
   m3u-editor:
-    image: sparkison/m3u-editor:latest
+    image: sparkison/m3u-editor:${imageTag}
     container_name: m3u-editor
     environment:
 ${editorEnv}
@@ -480,6 +481,7 @@ export const generateExternalNginxCompose = (config) => {
   const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
   const redisExternal = isRedisExternal(config);
+  const imageTag = getImageTag(config);
 
   // Build depends_on for editor
   const editorDependsOn = [];
@@ -495,7 +497,7 @@ export const generateExternalNginxCompose = (config) => {
 
 services:
   m3u-editor:
-    image: sparkison/m3u-editor:latest
+    image: sparkison/m3u-editor:${imageTag}
     container_name: m3u-editor
     environment:
 ${editorEnv}
@@ -596,6 +598,7 @@ export const generateExternalCaddyCompose = (config) => {
   const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
   const redisExternal = isRedisExternal(config);
+  const imageTag = getImageTag(config);
 
   // Extract domain from APP_URL
   const domain = config.APP_URL?.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'localhost';
@@ -613,7 +616,7 @@ export const generateExternalCaddyCompose = (config) => {
 
 services:
   m3u-editor:
-    image: sparkison/m3u-editor:latest
+    image: sparkison/m3u-editor:${imageTag}
     container_name: m3u-editor
     environment:
 ${editorEnv}
