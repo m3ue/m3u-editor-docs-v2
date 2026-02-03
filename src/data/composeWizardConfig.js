@@ -259,7 +259,7 @@ export const WIZARD_SECTIONS = [
         label: 'Redis Port',
         description: 'Redis server port',
         type: FIELD_TYPES.NUMBER,
-        default: '6379',
+        default: '63790',
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {

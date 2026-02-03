@@ -305,6 +305,8 @@
   position: sticky;
   top: calc(var(--ifm-navbar-height) + 1rem);
   align-self: start;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .livePreview {
@@ -316,6 +318,7 @@
   flex-direction: column;
   max-height: calc(100vh - var(--ifm-navbar-height) - 120px);
   min-height: 400px;
+  min-width: 0;
 }
 
 .previewHeader {
@@ -399,6 +402,8 @@
   line-height: 1.5;
   min-height: 100%;
   white-space: pre;
+  word-break: keep-all;
+  overflow-wrap: normal;
   font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
 }
 
