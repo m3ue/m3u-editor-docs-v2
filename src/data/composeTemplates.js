@@ -60,44 +60,45 @@ const generateEditorEnv = (config, deploymentType) => {
     addEnvVar(envVars, 'DB_PORT', config.DB_PORT);
   }
 
-  // Proxy settings (not for AIO)
+  // Proxy settings
+  // AIO always uses embedded proxy, other deployment types can choose
+  const useEmbeddedProxy = deploymentType === 'aio' || !proxyExternal;
+
+  // M3U_PROXY_ENABLED: true = embedded, false = external (not needed for AIO as it's always embedded)
   if (deploymentType !== 'aio') {
-    // M3U_PROXY_ENABLED: true = embedded, false = external
     addEnvVar(envVars, 'M3U_PROXY_ENABLED', !proxyExternal);
-
-    if (proxyExternal) {
-      // External proxy - use configured host (127.0.0.1 for VPN, m3u-proxy for others)
-      addEnvVar(envVars, 'M3U_PROXY_HOST', config.M3U_PROXY_HOST || 'm3u-proxy');
-      addEnvVar(envVars, 'M3U_PROXY_PORT', '8085'); // Internal container port
-    } else {
-      // Embedded proxy - runs on localhost inside editor
-      addEnvVar(envVars, 'M3U_PROXY_HOST', 'localhost');
-      addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '8085');
-      // Embedded proxy settings - these go to editor since proxy runs inside it
-      if (config.ENABLE_TRANSCODING_POOLING !== false) {
-        addEnvVar(envVars, 'ENABLE_TRANSCODING_POOLING', true);
-      }
-    }
-
-    addEnvVar(envVars, 'M3U_PROXY_TOKEN', config.M3U_PROXY_TOKEN);
-    addEnvVar(envVars, 'M3U_PROXY_LOG_LEVEL', config.M3U_PROXY_LOG_LEVEL, config.M3U_PROXY_LOG_LEVEL);
   }
 
-  // Redis settings (not for AIO)
-  if (deploymentType !== 'aio') {
-    if (redisExternal) {
-      // External Redis - use configured host (127.0.0.1 for VPN, m3u-redis for others)
-      // Disable embedded Redis since we're using external
-      addEnvVar(envVars, 'REDIS_ENABLED', false);
-      addEnvVar(envVars, 'REDIS_HOST', config.REDIS_HOST || 'm3u-redis');
-      addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
-      addEnvVar(envVars, 'REDIS_PASSWORD', config.REDIS_PASSWORD);
-    } else {
-      // Internal Redis - runs on localhost inside editor
-      addEnvVar(envVars, 'REDIS_ENABLED', true);
-      addEnvVar(envVars, 'REDIS_HOST', 'localhost');
-      addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
-    }
+  if (!useEmbeddedProxy) {
+    // External proxy - use configured host (127.0.0.1 for VPN, m3u-proxy for others)
+    addEnvVar(envVars, 'M3U_PROXY_HOST', config.M3U_PROXY_HOST || 'm3u-proxy');
+    addEnvVar(envVars, 'M3U_PROXY_PORT', '8085'); // Internal container port
+  } else {
+    // Embedded proxy - runs on localhost inside editor
+    // ENABLE_TRANSCODING_POOLING is enabled by default for embedded, no need to set it
+    addEnvVar(envVars, 'M3U_PROXY_HOST', 'localhost');
+    addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '8085');
+  }
+
+  addEnvVar(envVars, 'M3U_PROXY_TOKEN', config.M3U_PROXY_TOKEN);
+  addEnvVar(envVars, 'M3U_PROXY_LOG_LEVEL', config.M3U_PROXY_LOG_LEVEL, config.M3U_PROXY_LOG_LEVEL);
+
+  // Redis settings
+  // AIO always uses internal Redis, other deployment types can choose
+  const useInternalRedis = deploymentType === 'aio' || !redisExternal;
+
+  if (!useInternalRedis) {
+    // External Redis - use configured host (127.0.0.1 for VPN, m3u-redis for others)
+    // Disable embedded Redis since we're using external
+    addEnvVar(envVars, 'REDIS_ENABLED', false);
+    addEnvVar(envVars, 'REDIS_HOST', config.REDIS_HOST || 'm3u-redis');
+    addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
+    addEnvVar(envVars, 'REDIS_PASSWORD', config.REDIS_PASSWORD);
+  } else {
+    // Internal Redis - runs on localhost inside editor
+    addEnvVar(envVars, 'REDIS_ENABLED', true);
+    addEnvVar(envVars, 'REDIS_HOST', 'localhost');
+    addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
   }
 
   // Web server settings
@@ -119,8 +120,8 @@ const generateEditorEnv = (config, deploymentType) => {
   addEnvVar(envVars, 'INVALIDATE_IMPORT', config.INVALIDATE_IMPORT, config.INVALIDATE_IMPORT);
   addEnvVar(envVars, 'INVALIDATE_IMPORT_THRESHOLD', config.INVALIDATE_IMPORT_THRESHOLD, config.INVALIDATE_IMPORT);
 
-  // HLS settings (not for AIO, and only when proxy is embedded since proxy handles HLS)
-  if (deploymentType !== 'aio' && !proxyExternal) {
+  // HLS settings (only when proxy is embedded since proxy handles HLS)
+  if (useEmbeddedProxy) {
     addEnvVar(envVars, 'HLS_TEMP_DIR', config.HLS_TEMP_DIR, config.HLS_TEMP_DIR !== '/tmp/hls');
     addEnvVar(envVars, 'HLS_GC_ENABLED', config.HLS_GC_ENABLED, !config.HLS_GC_ENABLED);
     addEnvVar(envVars, 'HLS_GC_INTERVAL', config.HLS_GC_INTERVAL, config.HLS_GC_INTERVAL !== '60');

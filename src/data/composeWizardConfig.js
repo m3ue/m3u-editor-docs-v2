@@ -219,7 +219,7 @@ export const WIZARD_SECTIONS = [
         description: 'Port for the proxy service',
         type: FIELD_TYPES.NUMBER,
         default: '38085',
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'M3U_PROXY_HOST',
@@ -237,7 +237,7 @@ export const WIZARD_SECTIONS = [
         type: FIELD_TYPES.PASSWORD,
         default: '',
         placeholder: 'Auto-generated if empty',
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
         generateButton: true,
       },
       {
@@ -253,7 +253,7 @@ export const WIZARD_SECTIONS = [
           { value: 'WARN', label: 'Warning' },
           { value: 'ERROR', label: 'Error' },
         ],
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'ENABLE_TRANSCODING_POOLING',
@@ -261,6 +261,7 @@ export const WIZARD_SECTIONS = [
         description: 'Enable connection pooling for transcoding streams (requires Redis)',
         type: FIELD_TYPES.BOOLEAN,
         default: true,
+        showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
     ],
@@ -298,7 +299,7 @@ export const WIZARD_SECTIONS = [
         description: 'Redis server port',
         type: FIELD_TYPES.NUMBER,
         default: '63790',
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'REDIS_PASSWORD',
@@ -511,7 +512,7 @@ export const WIZARD_SECTIONS = [
         description: 'Directory for storing HLS segments',
         type: FIELD_TYPES.TEXT,
         default: '/tmp/hls',
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'HLS_GC_ENABLED',
@@ -519,7 +520,7 @@ export const WIZARD_SECTIONS = [
         description: 'Automatically clean up old HLS segments',
         type: FIELD_TYPES.BOOLEAN,
         default: true,
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'HLS_GC_INTERVAL',
@@ -528,7 +529,7 @@ export const WIZARD_SECTIONS = [
         type: FIELD_TYPES.NUMBER,
         default: '60',
         showWhen: { field: 'HLS_GC_ENABLED', value: true },
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'HLS_GC_AGE_THRESHOLD',
@@ -537,7 +538,7 @@ export const WIZARD_SECTIONS = [
         type: FIELD_TYPES.NUMBER,
         default: '300',
         showWhen: { field: 'HLS_GC_ENABLED', value: true },
-        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
     ],
   },
