@@ -403,6 +403,7 @@ export default function ComposeWizard() {
       {/* Quick Start Commands */}
       <div className={styles.quickStart}>
         <h4>Quick Start</h4>
+        <p>Default username/password is: <strong>admin</strong>/<strong>admin</strong></p>
         <div className={styles.commandSteps}>
           <div className={styles.commandStep}>
             <span className={styles.stepNumber}>1</span>
