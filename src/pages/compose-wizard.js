@@ -12,7 +12,7 @@ export default function ComposeWizardPage() {
       <main className={styles.main}>
         <div className="container">
           <header className={styles.header}>
-            <h1 className={styles.title}>Docker Compose Wizard ✨</h1>
+            <h1 className={styles.title}>✨ Docker Compose Wizard ✨</h1>
             <p className={styles.subtitle}>
               Generate a customized <code>docker-compose.yml</code> configuration for your M3U Editor deployment.
               Select your deployment type and configure the settings below.
