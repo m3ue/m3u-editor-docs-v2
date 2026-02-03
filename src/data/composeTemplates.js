@@ -2,6 +2,15 @@
  * Docker Compose Template Generator
  *
  * Generates docker-compose.yml content based on wizard configuration.
+ *
+ * Service inclusion logic:
+ * - AIO: Only m3u-editor (everything embedded)
+ * - Proxy Mode:
+ *   - embedded: No m3u-proxy container
+ *   - external: Include m3u-proxy container
+ * - Redis Mode:
+ *   - internal: Redis embedded in editor, no m3u-redis container
+ *   - external: Include m3u-redis container with password
  */
 
 // Helper to format environment variables
@@ -18,9 +27,17 @@ const addEnvVar = (envVars, name, value, condition = true) => {
   }
 };
 
+// Check if external proxy is enabled
+const isProxyExternal = (config) => config.M3U_PROXY_ENABLED === 'external';
+
+// Check if external redis is enabled
+const isRedisExternal = (config) => config.REDIS_MODE === 'external';
+
 // Generate environment section for m3u-editor
-const generateEditorEnv = (config) => {
+const generateEditorEnv = (config, deploymentType) => {
   const envVars = [];
+  const proxyExternal = isProxyExternal(config);
+  const redisExternal = isRedisExternal(config);
 
   // Application settings
   addEnvVar(envVars, 'APP_URL', config.APP_URL);
@@ -39,28 +56,46 @@ const generateEditorEnv = (config) => {
     addEnvVar(envVars, 'DB_PORT', config.DB_PORT);
   }
 
-  // Proxy settings (for modular/vpn deployments)
-  if (config.M3U_PROXY_ENABLED !== undefined) {
-    const proxyEnabled = config.M3U_PROXY_ENABLED === 'embedded';
-    addEnvVar(envVars, 'M3U_PROXY_ENABLED', proxyEnabled);
-    addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT);
-    addEnvVar(envVars, 'M3U_PROXY_HOST', config.M3U_PROXY_HOST);
+  // Proxy settings (not for AIO)
+  if (deploymentType !== 'aio') {
+    // M3U_PROXY_ENABLED: true = embedded, false = external
+    addEnvVar(envVars, 'M3U_PROXY_ENABLED', !proxyExternal);
+
+    if (proxyExternal) {
+      // External proxy - editor connects to m3u-proxy container
+      addEnvVar(envVars, 'M3U_PROXY_HOST', 'm3u-proxy');
+      addEnvVar(envVars, 'M3U_PROXY_PORT', '8085'); // Internal container port
+    } else {
+      // Embedded proxy - runs on localhost inside editor
+      addEnvVar(envVars, 'M3U_PROXY_HOST', 'localhost');
+      addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '8085');
+    }
+
     addEnvVar(envVars, 'M3U_PROXY_TOKEN', config.M3U_PROXY_TOKEN);
     addEnvVar(envVars, 'M3U_PROXY_LOG_LEVEL', config.M3U_PROXY_LOG_LEVEL, config.M3U_PROXY_LOG_LEVEL);
   }
 
-  // Redis settings
-  if (config.REDIS_ENABLED !== undefined) {
-    addEnvVar(envVars, 'REDIS_ENABLED', !config.REDIS_ENABLED ? false : undefined, !config.REDIS_ENABLED);
-    addEnvVar(envVars, 'REDIS_HOST', config.REDIS_HOST, config.REDIS_ENABLED);
-    addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT, config.REDIS_ENABLED);
+  // Redis settings (not for AIO)
+  if (deploymentType !== 'aio') {
+    if (redisExternal) {
+      // External Redis - editor connects to m3u-redis container
+      addEnvVar(envVars, 'REDIS_HOST', 'm3u-redis');
+      addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
+      addEnvVar(envVars, 'REDIS_PASSWORD', config.REDIS_PASSWORD);
+    } else {
+      // Internal Redis - runs on localhost inside editor
+      addEnvVar(envVars, 'REDIS_ENABLED', true);
+      addEnvVar(envVars, 'REDIS_HOST', 'localhost');
+      addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
+    }
   }
 
   // Web server settings
-  if (config.NGINX_ENABLED !== undefined) {
-    addEnvVar(envVars, 'NGINX_ENABLED', config.NGINX_ENABLED, !config.NGINX_ENABLED);
-    addEnvVar(envVars, 'FPMPORT', config.FPMPORT, !config.NGINX_ENABLED);
+  if (deploymentType === 'external-nginx' || deploymentType === 'external-caddy') {
+    addEnvVar(envVars, 'NGINX_ENABLED', false);
+    addEnvVar(envVars, 'FPMPORT', config.FPMPORT || '9000');
   }
+
   addEnvVar(envVars, 'XTREAM_ONLY_ENABLED', config.XTREAM_ONLY_ENABLED, config.XTREAM_ONLY_ENABLED);
   addEnvVar(envVars, 'XTREAM_PORT', config.XTREAM_PORT, config.XTREAM_ONLY_ENABLED);
 
@@ -74,11 +109,13 @@ const generateEditorEnv = (config) => {
   addEnvVar(envVars, 'INVALIDATE_IMPORT', config.INVALIDATE_IMPORT, config.INVALIDATE_IMPORT);
   addEnvVar(envVars, 'INVALIDATE_IMPORT_THRESHOLD', config.INVALIDATE_IMPORT_THRESHOLD, config.INVALIDATE_IMPORT);
 
-  // HLS settings
-  addEnvVar(envVars, 'HLS_TEMP_DIR', config.HLS_TEMP_DIR, config.HLS_TEMP_DIR !== '/tmp/hls');
-  addEnvVar(envVars, 'HLS_GC_ENABLED', config.HLS_GC_ENABLED, !config.HLS_GC_ENABLED);
-  addEnvVar(envVars, 'HLS_GC_INTERVAL', config.HLS_GC_INTERVAL, config.HLS_GC_INTERVAL !== '60');
-  addEnvVar(envVars, 'HLS_GC_AGE_THRESHOLD', config.HLS_GC_AGE_THRESHOLD, config.HLS_GC_AGE_THRESHOLD !== '300');
+  // HLS settings (not for AIO)
+  if (deploymentType !== 'aio') {
+    addEnvVar(envVars, 'HLS_TEMP_DIR', config.HLS_TEMP_DIR, config.HLS_TEMP_DIR !== '/tmp/hls');
+    addEnvVar(envVars, 'HLS_GC_ENABLED', config.HLS_GC_ENABLED, !config.HLS_GC_ENABLED);
+    addEnvVar(envVars, 'HLS_GC_INTERVAL', config.HLS_GC_INTERVAL, config.HLS_GC_INTERVAL !== '60');
+    addEnvVar(envVars, 'HLS_GC_AGE_THRESHOLD', config.HLS_GC_AGE_THRESHOLD, config.HLS_GC_AGE_THRESHOLD !== '300');
+  }
 
   // Auth settings
   addEnvVar(envVars, 'AUTO_LOGIN', config.AUTO_LOGIN, config.AUTO_LOGIN);
@@ -98,15 +135,130 @@ const generateVolumes = (config) => {
   return volumes.join('\n');
 };
 
+// Generate m3u-proxy service
+const generateProxyService = (config, useVpnNetwork = false) => {
+  const redisExternal = isRedisExternal(config);
+  const redisAddr = redisExternal
+    ? `m3u-redis:${config.REDIS_SERVER_PORT || '6379'}`
+    : `m3u-editor:${config.REDIS_SERVER_PORT || '6379'}`;
+
+  let service = `
+  m3u-proxy:
+    image: sparkison/m3u-proxy:latest
+    container_name: m3u-proxy`;
+
+  if (useVpnNetwork) {
+    service += `
+    network_mode: "service:gluetun"`;
+  }
+
+  service += `
+    environment:
+      - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
+      - REDIS_ADDR=${redisAddr}`;
+
+  if (redisExternal && config.REDIS_PASSWORD) {
+    service += `
+      - REDIS_PASSWORD=\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}`;
+  }
+
+  service += `
+      - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}`;
+
+  if (!useVpnNetwork) {
+    service += `
+    ports:
+      - "${config.M3U_PROXY_PORT || '38085'}:8085"`;
+  }
+
+  service += `
+    restart: unless-stopped`;
+
+  if (useVpnNetwork) {
+    service += `
+    depends_on:
+      - gluetun`;
+    if (redisExternal) {
+      service += `
+      - m3u-redis`;
+    }
+  } else {
+    if (redisExternal) {
+      service += `
+    depends_on:
+      - m3u-redis
+    networks:
+      - m3u-network`;
+    } else {
+      service += `
+    depends_on:
+      - m3u-editor
+    networks:
+      - m3u-network`;
+    }
+  }
+
+  return service;
+};
+
+// Generate m3u-redis service
+const generateRedisService = (config) => {
+  let service = `
+  m3u-redis:
+    image: redis:alpine
+    container_name: m3u-redis`;
+
+  if (config.REDIS_PASSWORD) {
+    service += `
+    command: redis-server --appendonly yes --requirepass "\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}"`;
+  } else {
+    service += `
+    command: redis-server --appendonly yes`;
+  }
+
+  service += `
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    networks:
+      - m3u-network`;
+
+  return service;
+};
+
 // Template generators for each deployment type
 export const generateModularCompose = (config) => {
-  const editorEnv = generateEditorEnv(config);
+  const editorEnv = generateEditorEnv(config, 'modular');
   const volumes = generateVolumes(config);
+  const proxyExternal = isProxyExternal(config);
+  const redisExternal = isRedisExternal(config);
 
-  return `# Docker Compose - Modular Deployment
+  // Build depends_on for editor
+  const editorDependsOn = [];
+  if (proxyExternal) editorDependsOn.push('m3u-proxy');
+  if (redisExternal) editorDependsOn.push('m3u-redis');
+
+  let compose = `# Docker Compose - Modular Deployment
 # Generated by M3U Editor Compose Wizard
 # https://m3u-editor.com/compose-wizard
+`;
 
+  // Add note about embedded services
+  if (!proxyExternal && !redisExternal) {
+    compose += `#
+# Note: Proxy and Redis are running embedded in the editor container.
+`;
+  } else if (!proxyExternal) {
+    compose += `#
+# Note: Proxy is running embedded in the editor container.
+`;
+  } else if (!redisExternal) {
+    compose += `#
+# Note: Redis is running embedded in the editor container.
+`;
+  }
+
+  compose += `
 services:
   m3u-editor:
     image: sparkison/m3u-editor:latest
@@ -118,49 +270,49 @@ ${volumes}
     ports:
       - "${config.APP_PORT}:${config.APP_PORT}"${config.XTREAM_ONLY_ENABLED ? `
       - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"` : ''}
-    restart: unless-stopped
-    depends_on:
-      - m3u-proxy
-      - m3u-redis
-    networks:
-      - m3u-network
+    restart: unless-stopped`;
 
-  m3u-proxy:
-    image: sparkison/m3u-proxy:latest
-    container_name: m3u-proxy
-    environment:
-      - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
-      - REDIS_ADDR=m3u-redis:${config.REDIS_SERVER_PORT || '6379'}
-      - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}
-    ports:
-      - "${config.M3U_PROXY_PORT}:8085"
-    restart: unless-stopped
+  if (editorDependsOn.length > 0) {
+    compose += `
     depends_on:
-      - m3u-redis
-    networks:
-      - m3u-network
+${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+  }
 
-  m3u-redis:
-    image: redis:alpine
-    container_name: m3u-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
+  compose += `
     networks:
-      - m3u-network
+      - m3u-network`;
+
+  // Add m3u-proxy service if external
+  if (proxyExternal) {
+    compose += generateProxyService(config);
+  }
+
+  // Add m3u-redis service if external
+  if (redisExternal) {
+    compose += generateRedisService(config);
+  }
+
+  compose += `
 
 networks:
   m3u-network:
-    driver: bridge
+    driver: bridge`;
+
+  // Add volumes section if redis is external
+  if (redisExternal) {
+    compose += `
 
 volumes:
-  redis-data:
-`;
+  redis-data:`;
+  }
+
+  compose += '\n';
+
+  return compose;
 };
 
 export const generateAioCompose = (config) => {
-  const editorEnv = generateEditorEnv(config);
+  const editorEnv = generateEditorEnv(config, 'aio');
   const volumes = generateVolumes(config);
 
   return `# Docker Compose - All-in-One Deployment
@@ -168,7 +320,8 @@ export const generateAioCompose = (config) => {
 # https://m3u-editor.com/compose-wizard
 #
 # Note: This configuration does NOT support hardware acceleration.
-# For hardware acceleration, use the Modular deployment.
+# Proxy and Redis run embedded in the editor container.
+# For hardware acceleration, use the Modular deployment with external proxy.
 
 services:
   m3u-editor:
@@ -186,8 +339,10 @@ ${volumes}
 };
 
 export const generateVpnCompose = (config) => {
-  const editorEnv = generateEditorEnv(config);
+  const editorEnv = generateEditorEnv(config, 'vpn');
   const volumes = generateVolumes(config);
+  const proxyExternal = isProxyExternal(config);
+  const redisExternal = isRedisExternal(config);
 
   // VPN-specific environment variables
   let vpnEnv = `      - VPN_SERVICE_PROVIDER=${config.VPN_SERVICE_PROVIDER}
@@ -204,13 +359,27 @@ export const generateVpnCompose = (config) => {
     vpnEnv += `\n      - SERVER_COUNTRIES=${config.SERVER_COUNTRIES}`;
   }
 
-  return `# Docker Compose - VPN Deployment (Gluetun)
+  // Build depends_on for editor
+  const editorDependsOn = [];
+  if (proxyExternal) editorDependsOn.push('m3u-proxy');
+  if (redisExternal) editorDependsOn.push('m3u-redis');
+
+  let compose = `# Docker Compose - VPN Deployment (Gluetun)
 # Generated by M3U Editor Compose Wizard
 # https://m3u-editor.com/compose-wizard
 #
 # IMPORTANT: Configure your VPN provider settings below.
 # See https://github.com/qdm12/gluetun for provider-specific configuration.
+`;
 
+  if (!proxyExternal) {
+    compose += `#
+# Note: Proxy is running embedded in the editor container (not through VPN).
+# For VPN protection on proxy traffic, use External proxy mode.
+`;
+  }
+
+  compose += `
 services:
   gluetun:
     image: qmcgaw/gluetun:latest
@@ -220,9 +389,15 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
-${vpnEnv}
+${vpnEnv}`;
+
+  if (proxyExternal) {
+    compose += `
     ports:
-      - "${config.M3U_PROXY_PORT}:8085"  # m3u-proxy
+      - "${config.M3U_PROXY_PORT || '38085'}:8085"  # m3u-proxy`;
+  }
+
+  compose += `
     volumes:
       - gluetun-data:/gluetun
     restart: unless-stopped
@@ -239,51 +414,59 @@ ${volumes}
     ports:
       - "${config.APP_PORT}:${config.APP_PORT}"${config.XTREAM_ONLY_ENABLED ? `
       - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"` : ''}
-    restart: unless-stopped
-    depends_on:
-      - m3u-proxy
-      - m3u-redis
-    networks:
-      - m3u-network
+    restart: unless-stopped`;
 
-  m3u-proxy:
-    image: sparkison/m3u-proxy:latest
-    container_name: m3u-proxy
-    network_mode: "service:gluetun"
-    environment:
-      - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
-      - REDIS_ADDR=m3u-redis:${config.REDIS_SERVER_PORT || '6379'}
-      - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}
-    restart: unless-stopped
+  if (editorDependsOn.length > 0) {
+    compose += `
     depends_on:
-      - gluetun
-      - m3u-redis
+${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+  }
 
-  m3u-redis:
-    image: redis:alpine
-    container_name: m3u-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
+  compose += `
     networks:
-      - m3u-network
+      - m3u-network`;
+
+  // Add m3u-proxy service if external (runs through VPN)
+  if (proxyExternal) {
+    compose += generateProxyService(config, true);
+  }
+
+  // Add m3u-redis service if external
+  if (redisExternal) {
+    compose += generateRedisService(config);
+  }
+
+  compose += `
 
 networks:
   m3u-network:
     driver: bridge
 
 volumes:
-  redis-data:
-  gluetun-data:
-`;
+  gluetun-data:`;
+
+  if (redisExternal) {
+    compose += `
+  redis-data:`;
+  }
+
+  compose += '\n';
+
+  return compose;
 };
 
 export const generateExternalNginxCompose = (config) => {
-  const editorEnv = generateEditorEnv({ ...config, NGINX_ENABLED: false });
+  const editorEnv = generateEditorEnv(config, 'external-nginx');
   const volumes = generateVolumes(config);
+  const proxyExternal = isProxyExternal(config);
+  const redisExternal = isRedisExternal(config);
 
-  return `# Docker Compose - External Nginx Deployment
+  // Build depends_on for editor
+  const editorDependsOn = [];
+  if (proxyExternal) editorDependsOn.push('m3u-proxy');
+  if (redisExternal) editorDependsOn.push('m3u-redis');
+
+  let compose = `# Docker Compose - External Nginx Deployment
 # Generated by M3U Editor Compose Wizard
 # https://m3u-editor.com/compose-wizard
 #
@@ -296,39 +479,31 @@ services:
     container_name: m3u-editor
     environment:
 ${editorEnv}
-      - NGINX_ENABLED=false
-      - FPMPORT=${config.FPMPORT || '9000'}
     volumes:
 ${volumes}
-    restart: unless-stopped
-    depends_on:
-      - m3u-proxy
-      - m3u-redis
-    networks:
-      - m3u-network
+    restart: unless-stopped`;
 
-  m3u-proxy:
-    image: sparkison/m3u-proxy:latest
-    container_name: m3u-proxy
-    environment:
-      - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
-      - REDIS_ADDR=m3u-redis:${config.REDIS_SERVER_PORT || '6379'}
-      - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}
-    restart: unless-stopped
+  if (editorDependsOn.length > 0) {
+    compose += `
     depends_on:
-      - m3u-redis
-    networks:
-      - m3u-network
+${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+  }
 
-  m3u-redis:
-    image: redis:alpine
-    container_name: m3u-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
+  compose += `
     networks:
-      - m3u-network
+      - m3u-network`;
+
+  // Add m3u-proxy service if external
+  if (proxyExternal) {
+    compose += generateProxyService(config);
+  }
+
+  // Add m3u-redis service if external
+  if (redisExternal) {
+    compose += generateRedisService(config);
+  }
+
+  compose += `
 
   nginx:
     image: nginx:alpine
@@ -346,10 +521,16 @@ ${volumes}
 
 networks:
   m3u-network:
-    driver: bridge
+    driver: bridge`;
+
+  if (redisExternal) {
+    compose += `
 
 volumes:
-  redis-data:
+  redis-data:`;
+  }
+
+  compose += `
 
 # -----------------------------------------------------------
 # NGINX CONFIGURATION
@@ -386,16 +567,25 @@ volumes:
 #     }
 # }
 `;
+
+  return compose;
 };
 
 export const generateExternalCaddyCompose = (config) => {
-  const editorEnv = generateEditorEnv({ ...config, NGINX_ENABLED: false });
+  const editorEnv = generateEditorEnv(config, 'external-caddy');
   const volumes = generateVolumes(config);
+  const proxyExternal = isProxyExternal(config);
+  const redisExternal = isRedisExternal(config);
 
   // Extract domain from APP_URL
   const domain = config.APP_URL?.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'localhost';
 
-  return `# Docker Compose - External Caddy Deployment
+  // Build depends_on for editor
+  const editorDependsOn = [];
+  if (proxyExternal) editorDependsOn.push('m3u-proxy');
+  if (redisExternal) editorDependsOn.push('m3u-redis');
+
+  let compose = `# Docker Compose - External Caddy Deployment
 # Generated by M3U Editor Compose Wizard
 # https://m3u-editor.com/compose-wizard
 #
@@ -407,39 +597,31 @@ services:
     container_name: m3u-editor
     environment:
 ${editorEnv}
-      - NGINX_ENABLED=false
-      - FPMPORT=${config.FPMPORT || '9000'}
     volumes:
 ${volumes}
-    restart: unless-stopped
-    depends_on:
-      - m3u-proxy
-      - m3u-redis
-    networks:
-      - m3u-network
+    restart: unless-stopped`;
 
-  m3u-proxy:
-    image: sparkison/m3u-proxy:latest
-    container_name: m3u-proxy
-    environment:
-      - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
-      - REDIS_ADDR=m3u-redis:${config.REDIS_SERVER_PORT || '6379'}
-      - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}
-    restart: unless-stopped
+  if (editorDependsOn.length > 0) {
+    compose += `
     depends_on:
-      - m3u-redis
-    networks:
-      - m3u-network
+${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+  }
 
-  m3u-redis:
-    image: redis:alpine
-    container_name: m3u-redis
-    command: redis-server --appendonly yes
-    volumes:
-      - redis-data:/data
-    restart: unless-stopped
+  compose += `
     networks:
-      - m3u-network
+      - m3u-network`;
+
+  // Add m3u-proxy service if external
+  if (proxyExternal) {
+    compose += generateProxyService(config);
+  }
+
+  // Add m3u-redis service if external
+  if (redisExternal) {
+    compose += generateRedisService(config);
+  }
+
+  compose += `
 
   caddy:
     image: caddy:alpine
@@ -463,9 +645,15 @@ networks:
     driver: bridge
 
 volumes:
-  redis-data:
   caddy-data:
-  caddy-config:
+  caddy-config:`;
+
+  if (redisExternal) {
+    compose += `
+  redis-data:`;
+  }
+
+  compose += `
 
 # -----------------------------------------------------------
 # CADDYFILE CONFIGURATION
@@ -482,6 +670,8 @@ volumes:
 #     reverse_proxy @proxy m3u-proxy:8085
 # }
 `;
+
+  return compose;
 };
 
 // Main generator function
@@ -516,6 +706,9 @@ export const generateEnvFile = (config) => {
   }
   if (config.PG_PASSWORD) {
     lines.push(`PG_PASSWORD=${config.PG_PASSWORD}`);
+  }
+  if (config.REDIS_PASSWORD && config.REDIS_MODE === 'external') {
+    lines.push(`REDIS_PASSWORD=${config.REDIS_PASSWORD}`);
   }
 
   return lines.join('\n');
