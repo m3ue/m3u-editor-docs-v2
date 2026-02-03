@@ -106,7 +106,7 @@ const config = {
             position: 'right',
           },
           {
-            href: 'https://github.com/sparkison/m3u-editor',
+            href: 'https://github.com/m3ue/m3u-editor',
             label: 'GitHub',
             position: 'right',
           },
