@@ -79,6 +79,8 @@ const generateEditorEnv = (config, deploymentType) => {
   if (deploymentType !== 'aio') {
     if (redisExternal) {
       // External Redis - editor connects to m3u-redis container
+      // Disable embedded Redis since we're using external
+      addEnvVar(envVars, 'REDIS_ENABLED', false);
       addEnvVar(envVars, 'REDIS_HOST', 'm3u-redis');
       addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
       addEnvVar(envVars, 'REDIS_PASSWORD', config.REDIS_PASSWORD);
@@ -138,9 +140,9 @@ const generateVolumes = (config) => {
 // Generate m3u-proxy service
 const generateProxyService = (config, useVpnNetwork = false) => {
   const redisExternal = isRedisExternal(config);
-  const redisAddr = redisExternal
-    ? `m3u-redis:${config.REDIS_SERVER_PORT || '6379'}`
-    : `m3u-editor:${config.REDIS_SERVER_PORT || '6379'}`;
+  // When redis is external, proxy connects to m3u-redis container
+  // When redis is internal (embedded in editor), proxy connects to m3u-editor container
+  const redisHost = redisExternal ? 'm3u-redis' : 'm3u-editor';
 
   let service = `
   m3u-proxy:
@@ -155,11 +157,20 @@ const generateProxyService = (config, useVpnNetwork = false) => {
   service += `
     environment:
       - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
-      - REDIS_ADDR=${redisAddr}`;
+      - REDIS_ENABLED=true
+      - REDIS_HOST=${redisHost}
+      - REDIS_SERVER_PORT=${config.REDIS_SERVER_PORT || '6379'}
+      - REDIS_DB=6`;
 
   if (redisExternal && config.REDIS_PASSWORD) {
     service += `
       - REDIS_PASSWORD=\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}`;
+  }
+
+  // Only add ENABLE_TRANSCODING_POOLING if it's enabled (default true)
+  if (config.ENABLE_TRANSCODING_POOLING !== false) {
+    service += `
+      - ENABLE_TRANSCODING_POOLING=true`;
   }
 
   service += `
@@ -181,6 +192,9 @@ const generateProxyService = (config, useVpnNetwork = false) => {
     if (redisExternal) {
       service += `
       - m3u-redis`;
+    } else {
+      service += `
+      - m3u-editor`;
     }
   } else {
     if (redisExternal) {

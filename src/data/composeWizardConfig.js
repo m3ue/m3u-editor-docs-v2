@@ -234,6 +234,15 @@ export const WIZARD_SECTIONS = [
         ],
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
+      {
+        name: 'ENABLE_TRANSCODING_POOLING',
+        label: 'Enable Transcoding Pooling',
+        description: 'Enable connection pooling for transcoding streams (requires Redis)',
+        type: FIELD_TYPES.BOOLEAN,
+        default: true,
+        showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
+        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+      },
     ],
   },
   {
