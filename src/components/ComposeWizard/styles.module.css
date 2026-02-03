@@ -393,18 +393,27 @@
   min-height: 0;
 }
 
+/* CodeBlock wrapper styling */
 .codeBlock {
-  margin: 0;
-  padding: 1rem;
-  background: #0f172a;
-  color: #e2e8f0;
-  font-size: 0.8rem;
-  line-height: 1.5;
+  margin: 0 !important;
+  border-radius: 0 !important;
   min-height: 100%;
-  white-space: pre;
-  word-break: keep-all;
-  overflow-wrap: normal;
-  font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+}
+
+.codeBlock pre {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.8rem !important;
+  line-height: 1.6 !important;
+}
+
+.codeBlock code {
+  font-family: 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace !important;
+}
+
+/* Hide the default copy button since we have our own */
+.codeBlock button[class*="copyButton"] {
+  display: none !important;
 }
 
 /* Quick Start */

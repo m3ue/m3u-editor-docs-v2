@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import clsx from 'clsx';
+import CodeBlock from '@theme/CodeBlock';
 import {
   DEPLOYMENT_TYPES,
   WIZARD_SECTIONS,
@@ -305,9 +306,13 @@ const LivePreview = ({ code, filename, envCode }) => {
         </div>
       </div>
       <div className={styles.previewContent}>
-        <pre className={styles.codeBlock}>
-          <code>{activeTab === 'compose' ? code : envCode}</code>
-        </pre>
+        <CodeBlock
+          language={activeTab === 'compose' ? 'yaml' : 'bash'}
+          className={styles.codeBlock}
+          showLineNumbers
+        >
+          {activeTab === 'compose' ? code : envCode}
+        </CodeBlock>
       </div>
     </div>
   );
