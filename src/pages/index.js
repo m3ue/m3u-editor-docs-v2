@@ -34,7 +34,6 @@ export default function Home() {
           </div>
           <div className={styles.buttons}>
             <Link className="button button--primary button--lg" to="/docs/quick_start">Quick Start</Link>
-            <Link className="button button--secondary button--lg" to="/compose-wizard">Compose Wizard</Link>
             <Link className="button button--secondary button--lg" to="/docs/intro">Documentation</Link>
             <a className="button button--secondary button--lg" href="https://github.com/m3ue/m3u-editor" target="_blank">
               <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
