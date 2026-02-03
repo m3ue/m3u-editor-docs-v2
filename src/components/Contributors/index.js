@@ -40,7 +40,7 @@ export default function Contributors() {
                 // Merge contributors, filtering out bots
                 data.forEach(contributor => {
                     // Skip bots (any login ending with [bot])
-                    if (contributor.login.endsWith('[bot]')) {
+                    if (contributor.login.endsWith('[bot]') || contributor.login === 'Copilot') {
                         return;
                     }
 
