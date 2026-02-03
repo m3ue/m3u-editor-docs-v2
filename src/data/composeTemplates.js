@@ -47,6 +47,7 @@ const generateEditorEnv = (config, deploymentType) => {
   addEnvVar(envVars, 'APP_PORT', config.APP_PORT);
   addEnvVar(envVars, 'TZ', config.TZ);
   addEnvVar(envVars, 'APP_DEBUG', config.APP_DEBUG, config.APP_DEBUG);
+  addEnvVar(envVars, 'NETWORK_BROADCAST_ENABLED', config.NETWORK_BROADCAST_ENABLED, config.NETWORK_BROADCAST_ENABLED);
 
   // Database settings
   addEnvVar(envVars, 'DB_CONNECTION', config.DB_CONNECTION);
@@ -72,6 +73,10 @@ const generateEditorEnv = (config, deploymentType) => {
       // Embedded proxy - runs on localhost inside editor
       addEnvVar(envVars, 'M3U_PROXY_HOST', 'localhost');
       addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '8085');
+      // Embedded proxy settings - these go to editor since proxy runs inside it
+      if (config.ENABLE_TRANSCODING_POOLING !== false) {
+        addEnvVar(envVars, 'ENABLE_TRANSCODING_POOLING', true);
+      }
     }
 
     addEnvVar(envVars, 'M3U_PROXY_TOKEN', config.M3U_PROXY_TOKEN);
@@ -114,8 +119,8 @@ const generateEditorEnv = (config, deploymentType) => {
   addEnvVar(envVars, 'INVALIDATE_IMPORT', config.INVALIDATE_IMPORT, config.INVALIDATE_IMPORT);
   addEnvVar(envVars, 'INVALIDATE_IMPORT_THRESHOLD', config.INVALIDATE_IMPORT_THRESHOLD, config.INVALIDATE_IMPORT);
 
-  // HLS settings (not for AIO)
-  if (deploymentType !== 'aio') {
+  // HLS settings (not for AIO, and only when proxy is embedded since proxy handles HLS)
+  if (deploymentType !== 'aio' && !proxyExternal) {
     addEnvVar(envVars, 'HLS_TEMP_DIR', config.HLS_TEMP_DIR, config.HLS_TEMP_DIR !== '/tmp/hls');
     addEnvVar(envVars, 'HLS_GC_ENABLED', config.HLS_GC_ENABLED, !config.HLS_GC_ENABLED);
     addEnvVar(envVars, 'HLS_GC_INTERVAL', config.HLS_GC_INTERVAL, config.HLS_GC_INTERVAL !== '60');
@@ -186,6 +191,24 @@ const generateProxyService = (config, useVpnNetwork = false) => {
 
   service += `
       - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}`;
+
+  // HLS settings (proxy handles HLS storage when running externally)
+  if (config.HLS_TEMP_DIR && config.HLS_TEMP_DIR !== '/tmp/hls') {
+    service += `
+      - HLS_TEMP_DIR=${config.HLS_TEMP_DIR}`;
+  }
+  if (config.HLS_GC_ENABLED === false) {
+    service += `
+      - HLS_GC_ENABLED=false`;
+  }
+  if (config.HLS_GC_INTERVAL && config.HLS_GC_INTERVAL !== '60') {
+    service += `
+      - HLS_GC_INTERVAL=${config.HLS_GC_INTERVAL}`;
+  }
+  if (config.HLS_GC_AGE_THRESHOLD && config.HLS_GC_AGE_THRESHOLD !== '300') {
+    service += `
+      - HLS_GC_AGE_THRESHOLD=${config.HLS_GC_AGE_THRESHOLD}`;
+  }
 
   if (!useVpnNetwork) {
     service += `

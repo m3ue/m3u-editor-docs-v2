@@ -109,6 +109,14 @@ export const WIZARD_SECTIONS = [
         default: false,
         deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
+      {
+        name: 'NETWORK_BROADCAST_ENABLED',
+        label: 'Network Broadcast',
+        description: 'Enable broadcasting for local media server content. Requires media server integration.',
+        type: FIELD_TYPES.BOOLEAN,
+        default: false,
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
     ],
   },
   {
@@ -253,7 +261,6 @@ export const WIZARD_SECTIONS = [
         description: 'Enable connection pooling for transcoding streams (requires Redis)',
         type: FIELD_TYPES.BOOLEAN,
         default: true,
-        showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
     ],
