@@ -96,6 +96,11 @@ const config = {
             label: 'Documentation',
           },
           {
+            to: '/compose-wizard',
+            label: 'Compose Wizard',
+            position: 'left',
+          },
+          {
             href: 'https://discord.gg/rS3abJ5dz7',
             label: 'Discord',
             position: 'right',
@@ -120,6 +125,10 @@ const config = {
               {
                 label: 'Deployment',
                 to: '/docs/deployment/docker-compose',
+              },
+              {
+                label: 'Compose Wizard',
+                to: '/compose-wizard',
               },
               {
                 label: 'Advanced Topics',

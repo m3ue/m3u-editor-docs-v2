@@ -1,0 +1,73 @@
+/* Compose Wizard Page Styles */
+
+.main {
+  padding: 2rem 0 4rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.subtitle code {
+  padding: 0.2rem 0.5rem;
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  text-align: center;
+}
+
+.footer p {
+  color: var(--ifm-color-emphasis-600);
+  font-size: 0.95rem;
+}
+
+.footer a {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .main {
+    padding: 1rem 0 2rem;
+  }
+}
