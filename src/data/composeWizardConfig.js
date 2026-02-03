@@ -277,6 +277,15 @@ export const WIZARD_SECTIONS = [
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
+        name: 'REDIS_HOST',
+        label: 'Redis Host',
+        description: 'Hostname for the Redis service (auto-set based on deployment type)',
+        type: FIELD_TYPES.TEXT,
+        default: 'm3u-redis',
+        showWhen: { field: 'REDIS_MODE', value: 'external' },
+        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
         name: 'REDIS_SERVER_PORT',
         label: 'Redis Port',
         description: 'Redis server port',
@@ -614,5 +623,16 @@ export const getDefaultValues = (deploymentType) => {
       }
     });
   });
+
+  // Set deployment-type specific defaults
+  // VPN deployments use 127.0.0.1 for all service hosts (Gluetun network)
+  if (deploymentType === 'vpn') {
+    defaults.M3U_PROXY_HOST = '127.0.0.1';
+    defaults.REDIS_HOST = '127.0.0.1';
+  } else {
+    defaults.M3U_PROXY_HOST = 'm3u-proxy';
+    defaults.REDIS_HOST = 'm3u-redis';
+  }
+
   return defaults;
 };

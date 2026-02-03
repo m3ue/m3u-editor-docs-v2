@@ -65,8 +65,8 @@ const generateEditorEnv = (config, deploymentType) => {
     addEnvVar(envVars, 'M3U_PROXY_ENABLED', !proxyExternal);
 
     if (proxyExternal) {
-      // External proxy - editor connects to m3u-proxy container
-      addEnvVar(envVars, 'M3U_PROXY_HOST', 'm3u-proxy');
+      // External proxy - use configured host (127.0.0.1 for VPN, m3u-proxy for others)
+      addEnvVar(envVars, 'M3U_PROXY_HOST', config.M3U_PROXY_HOST || 'm3u-proxy');
       addEnvVar(envVars, 'M3U_PROXY_PORT', '8085'); // Internal container port
     } else {
       // Embedded proxy - runs on localhost inside editor
@@ -81,10 +81,10 @@ const generateEditorEnv = (config, deploymentType) => {
   // Redis settings (not for AIO)
   if (deploymentType !== 'aio') {
     if (redisExternal) {
-      // External Redis - editor connects to m3u-redis container
+      // External Redis - use configured host (127.0.0.1 for VPN, m3u-redis for others)
       // Disable embedded Redis since we're using external
       addEnvVar(envVars, 'REDIS_ENABLED', false);
-      addEnvVar(envVars, 'REDIS_HOST', 'm3u-redis');
+      addEnvVar(envVars, 'REDIS_HOST', config.REDIS_HOST || 'm3u-redis');
       addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
       addEnvVar(envVars, 'REDIS_PASSWORD', config.REDIS_PASSWORD);
     } else {
@@ -144,9 +144,16 @@ const generateVolumes = (config) => {
 const generateProxyService = (config, useVpnNetwork = false) => {
   const redisExternal = isRedisExternal(config);
   const imageTag = getImageTag(config);
-  // When redis is external, proxy connects to m3u-redis container
-  // When redis is internal (embedded in editor), proxy connects to m3u-editor container
-  const redisHost = redisExternal ? 'm3u-redis' : 'm3u-editor';
+  // Use the configured redis host from the form
+  // For VPN, this will be 127.0.0.1; for others, it will be m3u-redis or m3u-editor
+  let redisHost;
+  if (redisExternal) {
+    redisHost = config.REDIS_HOST || 'm3u-redis';
+  } else {
+    // Redis is embedded in editor, so proxy needs to connect to editor
+    // Use 127.0.0.1 for VPN (same network), m3u-editor for others
+    redisHost = useVpnNetwork ? '127.0.0.1' : 'm3u-editor';
+  }
 
   let service = `
   m3u-proxy:
@@ -410,11 +417,13 @@ services:
     devices:
       - /dev/net/tun:/dev/net/tun
     environment:
-${vpnEnv}`;
+${vpnEnv}
+    ports:
+      - "${config.APP_PORT}:${config.APP_PORT}"  # m3u-editor${config.XTREAM_ONLY_ENABLED ? `
+      - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"  # xtream-only` : ''}`;
 
   if (proxyExternal) {
     compose += `
-    ports:
       - "${config.M3U_PROXY_PORT || '38085'}:8085"  # m3u-proxy`;
   }
 
@@ -428,24 +437,19 @@ ${vpnEnv}`;
   m3u-editor:
     image: sparkison/m3u-editor:${imageTag}
     container_name: m3u-editor
+    network_mode: "service:gluetun"
     environment:
 ${editorEnv}
     volumes:
 ${volumes}
-    ports:
-      - "${config.APP_PORT}:${config.APP_PORT}"${config.XTREAM_ONLY_ENABLED ? `
-      - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"` : ''}
-    restart: unless-stopped`;
-
-  if (editorDependsOn.length > 0) {
-    compose += `
+    restart: unless-stopped
     depends_on:
-${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
-  }
+      - gluetun`;
 
-  compose += `
-    networks:
-      - m3u-network`;
+  if (redisExternal) {
+    compose += `
+      - m3u-redis`;
+  }
 
   // Add m3u-proxy service if external (runs through VPN)
   if (proxyExternal) {

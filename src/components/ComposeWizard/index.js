@@ -134,7 +134,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
 
 // Section component
 const WizardSection = ({ section, values, onChange, deploymentType }) => {
-  const [isCollapsed, setIsCollapsed] = useState(section.collapsed || false);
+  const [isCollapsed, setIsCollapsed] = useState(section.collapsed || section.id !== 'application');
 
   // Filter variables for current deployment type
   const visibleVariables = section.variables.filter((variable) => {
