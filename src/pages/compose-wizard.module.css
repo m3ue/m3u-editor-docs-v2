@@ -12,13 +12,15 @@
 }
 
 .title {
-  font-size: 2rem;
+text-align: center;
+  font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 2rem;
   background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 20px rgba(244, 63, 94, 0.3));
 }
 
 .subtitle {
