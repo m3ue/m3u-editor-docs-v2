@@ -263,10 +263,30 @@ http://your-m3u-editor-url/network/{network-uuid}/epg
 3. Paste the URL and play
 
 #### IPTV Apps (TiviMate, etc.)
+
+:::note Important
+For VOD and Series content from media integrated networks, use the **Xtream API** method instead of M3U URLs for full compatibility.
+:::
+
+**Xtream API Setup (Recommended for VOD/Series):**
+1. Open your IPTV app
+2. Select **Add Playlist** or **Add Provider**
+3. Choose **Xtream Codes API** or **Xtream Codes**
+4. Enter connection details:
+   * **Server URL:** `http://your-m3u-editor-url:36400`
+   * **Username:** Your playlist username (from M3U Editor → Playlists → Edit → Step 1)
+   * **Password:** Your playlist password (from M3U Editor → Playlists → Edit → Step 1)
+5. Save and refresh the playlist
+
+**Alternative M3U Setup (Live TV only):**
 1. Create a new playlist in your IPTV app
 2. Use the M3U URL from the playlist containing your networks
 3. Add the EPG URL for program guide
 4. Refresh the playlist
+
+:::tip
+The Xtream API provides better support for VOD and Series content, including proper categorization, metadata, and playback capabilities that may not work correctly with M3U URLs.
+:::
 
 ## Managing Networks
 
