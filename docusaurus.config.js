@@ -177,10 +177,10 @@ const config = {
         ],
         copyright: `Copyright © ${new Date().getFullYear()} M3U Editor. Licensed under CC BY-NC-SA 4.0. Built with Docusaurus.`,
       },
-      prism: {
-        theme: prismThemes.github,
-        darkTheme: prismThemes.dracula,
-      },
+      // prism: {
+      //   theme: prismThemes.vsLight,
+      //   darkTheme: prismThemes.vsDark,
+      // },
     }),
 };
 
