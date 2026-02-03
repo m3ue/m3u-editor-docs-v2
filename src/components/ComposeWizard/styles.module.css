@@ -304,8 +304,7 @@
 .previewPanel {
   position: sticky;
   top: calc(var(--ifm-navbar-height) + 1rem);
-  height: fit-content;
-  max-height: calc(100vh - var(--ifm-navbar-height) - 2rem);
+  align-self: start;
 }
 
 .livePreview {
@@ -315,7 +314,7 @@
   background: var(--ifm-background-surface-color);
   display: flex;
   flex-direction: column;
-  height: calc(100vh - var(--ifm-navbar-height) - 180px);
+  max-height: calc(100vh - var(--ifm-navbar-height) - 120px);
   min-height: 400px;
 }
 
@@ -460,18 +459,11 @@
 
   .previewPanel {
     position: static;
-    max-height: none;
   }
 
   .livePreview {
-    height: 500px;
+    max-height: 500px;
     min-height: 400px;
-  }
-
-  .configSections {
-    max-height: none;
-    overflow-y: visible;
-    padding-right: 0;
   }
 
   .deploymentTabs {
