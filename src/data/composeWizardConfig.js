@@ -214,14 +214,6 @@ export const WIZARD_SECTIONS = [
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
-        name: 'M3U_PROXY_PORT',
-        label: 'Proxy Port',
-        description: 'Port for the proxy service',
-        type: FIELD_TYPES.NUMBER,
-        default: '38085',
-        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
-      },
-      {
         name: 'M3U_PROXY_HOST',
         label: 'Proxy Host',
         description: 'Hostname for the proxy service',
@@ -229,6 +221,14 @@ export const WIZARD_SECTIONS = [
         default: 'm3u-proxy',
         showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
         deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'M3U_PROXY_PORT',
+        label: 'Proxy Port',
+        description: 'Port for the proxy service',
+        type: FIELD_TYPES.NUMBER,
+        default: '38085',
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
         name: 'M3U_PROXY_TOKEN',

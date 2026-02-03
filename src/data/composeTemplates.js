@@ -72,12 +72,12 @@ const generateEditorEnv = (config, deploymentType) => {
   if (!useEmbeddedProxy) {
     // External proxy - use configured host (127.0.0.1 for VPN, m3u-proxy for others)
     addEnvVar(envVars, 'M3U_PROXY_HOST', config.M3U_PROXY_HOST || 'm3u-proxy');
-    addEnvVar(envVars, 'M3U_PROXY_PORT', '8085'); // Internal container port
+    addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '38085'); // Internal container port
   } else {
     // Embedded proxy - runs on localhost inside editor
     // ENABLE_TRANSCODING_POOLING is enabled by default for embedded, no need to set it
     addEnvVar(envVars, 'M3U_PROXY_HOST', 'localhost');
-    addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '8085');
+    addEnvVar(envVars, 'M3U_PROXY_PORT', config.M3U_PROXY_PORT || '38085');
   }
 
   addEnvVar(envVars, 'M3U_PROXY_TOKEN', config.M3U_PROXY_TOKEN);
@@ -173,6 +173,7 @@ const generateProxyService = (config, useVpnNetwork = false) => {
 
   service += `
     environment:
+      - PORT=${config.M3U_PROXY_PORT || '38085'}
       - API_TOKEN=\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}
       - REDIS_ENABLED=true
       - REDIS_HOST=${redisHost}
@@ -214,7 +215,7 @@ const generateProxyService = (config, useVpnNetwork = false) => {
   if (!useVpnNetwork) {
     service += `
     ports:
-      - "${config.M3U_PROXY_PORT || '38085'}:8085"`;
+      - "${config.M3U_PROXY_PORT || '38085'}:${config.M3U_PROXY_PORT || '38085'}"`;
   }
 
   service += `
@@ -448,7 +449,7 @@ ${vpnEnv}
 
   if (proxyExternal) {
     compose += `
-      - "${config.M3U_PROXY_PORT || '38085'}:8085"  # m3u-proxy`;
+      - "${config.M3U_PROXY_PORT || '38085'}:${config.M3U_PROXY_PORT || '38085'}"  # m3u-proxy`;
   }
 
   compose += `
@@ -718,7 +719,7 @@ volumes:
 #     encode gzip
 #
 #     @proxy path /proxy/*
-#     reverse_proxy @proxy m3u-proxy:8085
+#     reverse_proxy @proxy m3u-proxy:${config.M3U_PROXY_PORT || '38085'}
 # }
 `;
 
