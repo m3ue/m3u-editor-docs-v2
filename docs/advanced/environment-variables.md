@@ -244,6 +244,16 @@ DB_PORT=5433
 - **Description**: Delete HLS segments older than this value (in seconds)
 - **Recommendation**: Adjust based on your stream buffering needs
 
+## Network Broadcasting Configuration
+
+### NETWORK_BROADCAST_ENABLED
+- **Default**: `false`
+- **Description**: Enable network broadcasting feature for pseudo-TV channels
+- **Options**: `true`, `false`
+- **Note**: Available in **experimental** branch only. When enabled, networks with `broadcast_enabled=true` will stream live HLS content
+- **Use Case**: Create virtual TV channels that continuously broadcast content from integrated media servers
+- **See Also**: [Media Networks Integration](../integrations/media_networks_integration.md) for complete setup guide
+
 ## Web Server Configuration
 
 ### NGINX_ENABLED
