@@ -61,6 +61,19 @@ export const WIZARD_SECTIONS = [
     icon: '⚙️',
     variables: [
       {
+        name: 'IMAGE_TAG',
+        label: 'Version',
+        description: 'Docker image version tag for editor and proxy',
+        type: FIELD_TYPES.SELECT,
+        default: 'latest',
+        options: [
+          { value: 'latest', label: 'Latest (Stable)' },
+          { value: 'dev', label: 'Dev (Development)' },
+          { value: 'experimental', label: 'Experimental (Bleeding edge)' },
+        ],
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
         name: 'APP_URL',
         label: 'Application URL',
         description: 'The base URL where your application will be accessible',
