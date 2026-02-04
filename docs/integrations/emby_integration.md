@@ -60,7 +60,7 @@ Your media server should now be displayed under the Media Servers integrations
 
 ## What Gets Synced
 
-When you sync your Emby server, M3U-Editor imports:
+When you sync your Emby server, M3U Editor imports:
 
 - **Movies**: All movies from selected libraries, including metadata (title, year, genre, rating, overview, cast, poster art)
 - **TV Series**: Complete series with seasons and episodes, including all associated metadata
