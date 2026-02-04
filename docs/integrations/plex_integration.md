@@ -19,6 +19,10 @@ You will need to make sure you have your URL for your Plex Server. This can be i
 
 ## Obtain Your Plex Token
 
+:::info Info
+As of 2/4/2026 -- Plex integration is only available in the **experimental** branch
+:::
+
 Unlike Emby and Jellyfin which use API keys generated from the dashboard, Plex uses an authentication token. There are several ways to find your Plex token:
 
 ### Method 1: From Plex Web App (Recommended)
