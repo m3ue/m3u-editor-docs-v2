@@ -37,14 +37,35 @@ You will need to make sure you have your url for your Emby Server. This can be i
 ## 🛠️ Configure the Integration
 
 1. In M3U-Editor expand the sidebar (left side), locate the integrations section and select **Media Servers**
-  
+
   ![Media Server Integration Sidenav](/img/doc_imgs/media_server_integration_sidenav.png)
 
 2. Click **Add Media Server**
-3. FIll in the details that were gathered earlier and click **Create**
-   
-  ![Create Media Server integration for Emby](/img/doc_imgs/media_server_integration_configuration.png)
+3. Fill in the details:
+   - **Display Name**: A friendly name for your server (e.g., "My Emby Server")
+   - **Server Type**: Select **Emby** or **Jellyfin** (depending on your server type) from the dropdown
+   - **Host / IP Address**: Your Emby server address (e.g., `192.168.1.100` or `emby.example.com`)
+   - **Port**: The default Emby port is `8096`
+   - **Use HTTPS**: Enable if your server uses SSL/TLS
+   - **API Key/Token**: Paste your Emby token obtained above
+
+4. Click **Test Connection & Discover Libraries** to verify the connection and discover available libraries
+5. Select which libraries you want to import (Movies and/or TV Shows)
+6. Click **Create** to save the integration
+
 
 :::tip
 Your media server should now be displayed under the Media Servers integrations
+:::
+
+## What Gets Synced
+
+When you sync your Emby server, M3U-Editor imports:
+
+- **Movies**: All movies from selected libraries, including metadata (title, year, genre, rating, overview, cast, poster art)
+- **TV Series**: Complete series with seasons and episodes, including all associated metadata
+- **Artwork**: Posters and backdrop images are proxied through M3U-Editor to protect your token
+
+:::info
+The sync process respects your library selection and genre handling settings. For large libraries, the initial sync may take several minutes.
 :::
