@@ -11,36 +11,44 @@ export default [
     "alt": "02 M3u Editor Playlists"
   },
   {
-    "src": "/img/screenshots/03_in-app-playlist-epg-preview.png",
-    "alt": "03 In App Playlist Epg Preview"
+    "src": "/img/screenshots/03_series-view.png",
+    "alt": "03 Series View"
   },
   {
-    "src": "/img/screenshots/04_in-app-playlist-epg-playback.png",
-    "alt": "04 In App Playlist Epg Playback"
+    "src": "/img/screenshots/04_series-mgmt.png",
+    "alt": "04 Series Mgmt"
   },
   {
-    "src": "/img/screenshots/05_in-app-epg-preview.png",
-    "alt": "05 In App Epg Preview"
+    "src": "/img/screenshots/05_movie-detail.png",
+    "alt": "05 Movie Detail"
   },
   {
-    "src": "/img/screenshots/06_channel-editing.png",
-    "alt": "06 Channel Editing"
+    "src": "/img/screenshots/06_in-app-epg-preview.png",
+    "alt": "06 In App Epg Preview"
   },
   {
-    "src": "/img/screenshots/07_series-mgmt.png",
-    "alt": "07 Series Mgmt"
+    "src": "/img/screenshots/07_in-app-playlist-epg-preview.png",
+    "alt": "07 In App Playlist Epg Preview"
   },
   {
-    "src": "/img/screenshots/08_post-processing.png",
-    "alt": "08 Post Processing"
+    "src": "/img/screenshots/08_in-app-playlist-epg-playback.png",
+    "alt": "08 In App Playlist Epg Playback"
+  },
+  {
+    "src": "/img/screenshots/09_channel-editing.png",
+    "alt": "09 Channel Editing"
   },
   {
     "src": "/img/screenshots/09_proxy-config.png",
     "alt": "09 Proxy Config"
   },
   {
-    "src": "/img/screenshots/10_proxy-monitor.png",
-    "alt": "10 Proxy Monitor"
+    "src": "/img/screenshots/10_post-processing.png",
+    "alt": "10 Post Processing"
+  },
+  {
+    "src": "/img/screenshots/11_proxy-monitor.png",
+    "alt": "11 Proxy Monitor"
   },
   {
     "src": "/img/screenshots/99__api.png",
