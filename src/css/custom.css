@@ -14,6 +14,7 @@
   --ifm-color-primary-light: #7b6ff8;
   --ifm-color-primary-lighter: #927ffc;
   --ifm-color-primary-lightest: #bfa6ff;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(101, 76, 175, 0.06);
 }
@@ -49,6 +50,10 @@
 .navbar__search {
   margin-right: 0.5rem;
   order: 99;
+}
+
+.text-white {
+  color: #ffffff !important;
 }
 
 /* Light mode search input */

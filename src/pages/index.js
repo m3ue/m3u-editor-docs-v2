@@ -34,10 +34,6 @@ export default function Home() {
           </div>
           <div className={styles.buttons}>
             <Link className="button button--secondary button--lg" to="/docs/intro">Documentation</Link>
-            <a className="button button--primary button--lg" href="https://ko-fi.com/sparkison" target="_blank">
-              ☕️
-              <span>Support this project</span>
-            </a>
             <a className="button button--secondary button--lg" href="https://github.com/m3ue/m3u-editor" target="_blank">
               <svg width="20px" height="20px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <g>
@@ -46,6 +42,10 @@ export default function Home() {
                 </g>
               </svg>
               <span>GitHub</span>
+            </a>
+            <a className="button button--secondary button--lg" href="https://ko-fi.com/sparkison" target="_blank">
+              ☕️
+              <span>Support this project</span>
             </a>
           </div>
         </div>

@@ -170,10 +170,6 @@ const config = {
                 href: 'https://github.com/m3ue/m3u-editor-docs-v2',
               },
               {
-                label: 'Issue Tracker',
-                href: 'https://github.com/users/sparkison/projects/2/views/1',
-              },
-              {
                 label: 'Report Issues',
                 href: 'https://github.com/m3ue/m3u-editor/issues',
               },
