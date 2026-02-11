@@ -110,6 +110,11 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+          {
+            href: 'https://ko-fi.com/sparkison',
+            label: 'Support',
+            position: 'right',
+          }
         ],
       },
       footer: {
