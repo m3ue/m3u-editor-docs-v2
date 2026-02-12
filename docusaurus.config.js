@@ -173,6 +173,10 @@ const config = {
                 label: 'Report Issues',
                 href: 'https://github.com/m3ue/m3u-editor/issues',
               },
+              {
+                label: 'Issue Tracker',
+                href: 'https://github.com/orgs/m3ue/projects/4/views/1'
+              }
             ],
           },
         ],
