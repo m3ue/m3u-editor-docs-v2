@@ -139,7 +139,7 @@ const generateEditorEnv = (config, deploymentType) => {
 // Generate volumes section
 const generateVolumes = (config) => {
   const volumes = [];
-  volumes.push(`      - ${config.CONFIG_PATH || './data'}:/config`);
+  volumes.push(`      - ${config.CONFIG_PATH || './data'}:/var/www/config`);
   if (config.STRM_PATH) {
     volumes.push(`      - ${config.STRM_PATH}:/strm`);
   }
