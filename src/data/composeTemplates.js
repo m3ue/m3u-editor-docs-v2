@@ -228,24 +228,20 @@ const generateProxyService = (config, useVpnNetwork = false) => {
     if (redisExternal) {
       service += `
       - m3u-redis`;
-    } else {
-      service += `
-      - m3u-editor`;
     }
+    // Note: No dependency on m3u-editor for embedded Redis to avoid circular dependency
+    // The proxy can connect to editor's Redis via hostname without depends_on
   } else {
     if (redisExternal) {
       service += `
     depends_on:
-      - m3u-redis
-    networks:
-      - m3u-network`;
-    } else {
-      service += `
-    depends_on:
-      - m3u-editor
-    networks:
-      - m3u-network`;
+      - m3u-redis`;
     }
+    // Note: No dependency on m3u-editor for embedded Redis to avoid circular dependency
+    // The proxy can connect to editor's Redis via hostname without depends_on
+    service += `
+    networks:
+      - m3u-network`;
   }
 
   return service;
@@ -285,8 +281,9 @@ export const generateModularCompose = (config) => {
   const imageTag = getImageTag(config);
 
   // Build depends_on for editor
+  // Note: Editor only depends on external Redis (if used)
+  // Proxy is not a startup dependency - it's a runtime service
   const editorDependsOn = [];
-  if (proxyExternal) editorDependsOn.push('m3u-proxy');
   if (redisExternal) editorDependsOn.push('m3u-redis');
 
   let compose = `# Docker Compose - Modular Deployment
@@ -413,8 +410,9 @@ export const generateVpnCompose = (config) => {
   }
 
   // Build depends_on for editor
+  // Note: Editor only depends on external Redis (if used) and gluetun
+  // Proxy is not a startup dependency - it's a runtime service
   const editorDependsOn = [];
-  if (proxyExternal) editorDependsOn.push('m3u-proxy');
   if (redisExternal) editorDependsOn.push('m3u-redis');
 
   let compose = `# Docker Compose - VPN Deployment (Gluetun)
@@ -513,8 +511,9 @@ export const generateExternalNginxCompose = (config) => {
   const imageTag = getImageTag(config);
 
   // Build depends_on for editor
+  // Note: Editor only depends on external Redis (if used)
+  // Proxy is not a startup dependency - it's a runtime service
   const editorDependsOn = [];
-  if (proxyExternal) editorDependsOn.push('m3u-proxy');
   if (redisExternal) editorDependsOn.push('m3u-redis');
 
   let compose = `# Docker Compose - External Nginx Deployment
@@ -633,8 +632,9 @@ export const generateExternalCaddyCompose = (config) => {
   const domain = config.APP_URL?.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'localhost';
 
   // Build depends_on for editor
+  // Note: Editor only depends on external Redis (if used)
+  // Proxy is not a startup dependency - it's a runtime service
   const editorDependsOn = [];
-  if (proxyExternal) editorDependsOn.push('m3u-proxy');
   if (redisExternal) editorDependsOn.push('m3u-redis');
 
   let compose = `# Docker Compose - External Caddy Deployment
