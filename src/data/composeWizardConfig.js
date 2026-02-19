@@ -652,5 +652,8 @@ export const getDefaultValues = (deploymentType) => {
     defaults.REDIS_HOST = 'm3u-redis';
   }
 
+  // Auto-generate a proxy token on page load
+  defaults.M3U_PROXY_TOKEN = generateToken();
+
   return defaults;
 };
