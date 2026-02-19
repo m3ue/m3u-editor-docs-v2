@@ -140,6 +140,9 @@ const generateEditorEnv = (config, deploymentType) => {
 const generateVolumes = (config) => {
   const volumes = [];
   volumes.push(`      - ${config.CONFIG_PATH || './data'}:/var/www/config`);
+  if (config.DB_CONNECTION === 'pgsql') {
+    volumes.push(`      - ${config.PG_DATA_PATH || './pgdata'}:/var/lib/postgresql/data`);
+  }
   if (config.STRM_PATH) {
     volumes.push(`      - ${config.STRM_PATH}:/strm`);
   }

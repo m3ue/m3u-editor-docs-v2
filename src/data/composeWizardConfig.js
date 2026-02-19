@@ -591,6 +591,16 @@ export const WIZARD_SECTIONS = [
         deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
+        name: 'PG_DATA_PATH',
+        label: 'PostgreSQL Data Volume',
+        description: 'Host path for PostgreSQL data persistence',
+        type: FIELD_TYPES.TEXT,
+        default: './pgdata',
+        placeholder: '/path/to/pgdata',
+        showWhen: { field: 'DB_CONNECTION', value: 'pgsql' },
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
         name: 'STRM_PATH',
         label: 'STRM Volume',
         description: 'Host path for STRM files (optional)',
