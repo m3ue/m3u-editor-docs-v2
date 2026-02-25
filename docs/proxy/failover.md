@@ -141,6 +141,40 @@ When [Sticky Sessions](./sticky-sessions.md) are enabled, the proxy locks to a s
 3. If the original URL also fails, trigger failover to the next failover URL
 4. The sticky session locks to the new provider's backend
 
+## Advanced Failover (M3U Editor)
+
+The M3U Editor adds a higher-level **failover resolver** on top of the proxy's built-in URL cycling. When enabled, the proxy calls back to the editor to determine which playlist to use next, taking into account playlist stream limits and health state.
+
+Configure this under **Settings → Preferences → Proxy** in the editor.
+
+### Failover Resolver
+
+| Setting | Description |
+|---------|-------------|
+| **Enable advanced failover logic** | Proxy calls the editor to resolve the next failover source based on playlist capacity |
+| **Resolver URL** | The URL the proxy uses to reach the editor (e.g. `http://m3u-editor:36400`). Must be reachable from the proxy container |
+
+When enabled, the proxy sends a request to the editor's resolver endpoint during failover, and the editor returns the best available backup source — respecting stream limits, marked-invalid playlists, and provider health.
+
+### Fail Conditions
+
+| Setting | Description |
+|---------|-------------|
+| **Enable playlist fail conditions** | Mark playlists as temporarily unavailable when specific HTTP errors are returned by the provider |
+| **HTTP status codes** | Codes that trigger an invalid state (e.g. `403`, `404`, `502`, `503`) |
+| **Invalid timeout (minutes)** | How long a playlist stays invalid before being retried. Default: 5 minutes |
+| **Clear failed playlists** | Immediately un-marks all playlists currently flagged as invalid |
+
+This is particularly useful when providers return `403` or `503` errors under load — the editor will temporarily route traffic away from that source without requiring a manual fix.
+
+### Stream Limit Handling
+
+| Setting | Description |
+|---------|-------------|
+| **Stop oldest stream when limit reached** | When a playlist's stream limit is hit, automatically stops the oldest active stream to free capacity for the new request. Enables instant channel switching on single-connection providers |
+
+---
+
 ## Before vs After Failover
 
 ### Without failover

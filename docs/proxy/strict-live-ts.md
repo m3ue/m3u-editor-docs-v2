@@ -54,16 +54,23 @@ Monitors upstream data flow. If no data arrives for more than 2 seconds (configu
 
 HEAD requests for live TS streams return immediately without hitting the upstream provider. This avoids redundant connections that can interfere with live stream state.
 
-## Quick Start
+## Enabling Strict Live TS
 
-### Enable globally (all live TS streams)
+There are three ways to enable this feature, from most specific to most broad:
 
-```bash
-# .env or docker-compose environment
-STRICT_LIVE_TS=true
-```
+### Per-Playlist (M3U Editor UI)
 
-### Enable per stream (via API)
+Open a playlist in the editor and go to the **Proxy Settings** section. Toggle **Enable Strict Live TS Handling** on.
+
+This applies to all channels from that playlist. It is the recommended approach for most users — you can target specific providers without affecting others.
+
+:::note
+The **Enable Strict Live TS Handling** option is only relevant when the playlist is **not** using a transcoding profile. If a stream profile is assigned to the playlist, transcoding takes over and strict TS handling is bypassed.
+:::
+
+### Per-Stream (Proxy API)
+
+When calling the proxy API directly, pass `strict_live_ts: true` on the stream creation request:
 
 ```bash
 curl -X POST "http://localhost:8085/streams" \
@@ -76,7 +83,16 @@ curl -X POST "http://localhost:8085/streams" \
   }'
 ```
 
-Per-stream configuration overrides the global setting for that stream.
+### Globally (Environment Variable)
+
+Enable for all live TS streams across every playlist:
+
+```bash
+# .env or docker-compose environment
+STRICT_LIVE_TS=true
+```
+
+Per-stream and per-playlist settings override the global setting for that specific stream.
 
 ## Configuration
 

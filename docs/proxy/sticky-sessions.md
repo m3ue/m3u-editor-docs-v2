@@ -34,17 +34,19 @@ Player: stream jumped, must reload
 
 With sticky sessions enabled, after the first redirect the proxy locks to that backend for all subsequent requests, ensuring monotonic sequence progression.
 
-## Configuration
+## Enabling Sticky Sessions
 
-### Global setting
+There are three ways to enable sticky sessions, from most specific to most broad:
 
-```bash
-USE_STICKY_SESSION=true
-```
+### Per-Playlist (M3U Editor UI)
 
-Default is `false`.
+Open a playlist in the editor and go to the **Proxy Settings** section. Toggle **Enable Sticky Session Handler** on.
 
-### Per-stream override
+This applies to all channels from that playlist. It is the recommended approach — you can target only the providers that need it without affecting others.
+
+### Per-Stream (Proxy API)
+
+When calling the proxy API directly, pass `use_sticky_session: true` on the stream creation request:
 
 ```bash
 curl -X POST "http://localhost:8085/streams" \
@@ -56,7 +58,15 @@ curl -X POST "http://localhost:8085/streams" \
   }'
 ```
 
-Per-stream settings override the global configuration.
+### Globally (Environment Variable)
+
+Enable for all streams:
+
+```bash
+USE_STICKY_SESSION=true
+```
+
+Default is `false`. Per-stream and per-playlist settings override the global configuration.
 
 ## When to Enable
 

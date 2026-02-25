@@ -1,7 +1,7 @@
 ---
 sidebar_position: 12
-title: Transcoding & Profiles
-description: FFmpeg transcoding with configurable profiles and dynamic variable substitution
+title: Transcoding & Stream Profiles
+description: FFmpeg transcoding via Stream Profiles — configure in the Editor UI or directly via API
 tags:
   - Proxy
   - Transcoding
@@ -9,15 +9,109 @@ tags:
   - Profiles
 ---
 
-# Transcoding & Profiles
+# Transcoding & Stream Profiles
 
-The proxy can optionally transcode streams using FFmpeg before delivering them to clients. Transcoding is applied via named **profiles** — pre-built FFmpeg argument templates with configurable variables you can override at request time.
+The proxy can transcode streams using FFmpeg before delivering them to clients. Transcoding is configured through **Stream Profiles** — reusable FFmpeg argument templates with variable placeholders you can customise per use case.
 
 :::info
-Transcoding requires FFmpeg to be available in the container and is more resource-intensive than pass-through streaming. For live TV without re-encoding, pass-through is recommended. See [Hardware Acceleration](./hardware-acceleration.md) to GPU-accelerate transcoding.
+Transcoding requires FFmpeg and is more resource-intensive than pass-through streaming. For live TV without re-encoding, pass-through is recommended. See [Hardware Acceleration](./hardware-acceleration.md) to GPU-accelerate encoding.
 :::
 
-## Creating a Transcoded Stream
+There are two ways to use transcoding:
+
+1. **Via the M3U Editor UI** — create profiles in the editor and assign them to playlists (most users)
+2. **Via the proxy API** — call the `/transcode` endpoint directly
+
+---
+
+## Configuring via the M3U Editor
+
+### Step 1 — Create a Stream Profile
+
+Navigate to **Proxy → Stream Profiles** in the editor sidebar and click **New profile**.
+
+| Field | Description |
+|-------|-------------|
+| **Profile Name** | A descriptive label (e.g. "720p Standard", "1080p High Quality") |
+| **Description** | Optional notes |
+| **FFmpeg Template** | The FFmpeg argument string with `{variable}` placeholders |
+| **Stream Format** | Output container format: MP4, MPEG-TS, HLS, MKV, WebM, etc. |
+
+The default template is a good starting point for most setups:
+
+```
+-i {input_url} -c:v libx264 -preset faster -crf {crf|23} -maxrate {maxrate|2500k} -bufsize {bufsize|5000k} -c:a aac -b:a {audio_bitrate|192k} -f mpegts {output_args|pipe:1}
+```
+
+Hardware acceleration (NVENC, VAAPI) is applied **automatically** by the proxy based on detected GPU. You do not need to hardcode encoder names in your template.
+
+### Step 2 — Assign to a Playlist
+
+Open the playlist you want to apply transcoding to, go to the **Proxy Settings** section, and choose a profile:
+
+| Field | Description |
+|-------|-------------|
+| **Live Streaming Profile** | Applied to live TV channels from this playlist. Leave empty for direct pass-through |
+| **VOD and Series Streaming Profile** | Applied to VOD and series content. Leave empty for direct pass-through |
+
+:::note
+Time seeking (scrubbing) is not supported for VOD content when transcoding is active, because the output is a live-transcoded stream rather than a pre-encoded file.
+:::
+
+### Global Default Profiles
+
+If you want a profile to apply across all playlists by default, set it under **Settings → Preferences → Proxy**:
+
+- **Default Live Transcoding Profile** — used by the in-app player for live content
+- **VOD and Series Transcoding Profile** — used by the in-app player for VOD/Series
+
+Per-playlist profile assignments override the global defaults.
+
+---
+
+## FFmpeg Template Syntax
+
+Templates use `{variable}` for required values and `{variable|default}` for optional values with fallbacks.
+
+### Built-in variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `input_url` | (auto-set) | Source stream URL — always required in the template |
+| `output_args` | `pipe:1` | Output destination (stdout for streaming) |
+| `video_bitrate` | `2M` | Target video bitrate |
+| `audio_bitrate` | `128k` | Target audio bitrate |
+| `format` | `mp4` | Output container format |
+| `crf` | `23` | Constant Rate Factor — lower = higher quality |
+| `maxrate` | `2500k` | Maximum bitrate cap |
+| `bufsize` | `5000k` | Buffer size for rate control |
+
+### Quality examples
+
+```
+# High quality (for large screens / good connections)
+-crf {crf|18} -maxrate {maxrate|5000k} -bufsize {bufsize|10000k}
+
+# Medium quality (recommended default)
+-crf {crf|23} -maxrate {maxrate|2500k} -bufsize {bufsize|5000k}
+
+# Low quality (mobile / slow connections)
+-crf {crf|28} -maxrate {maxrate|1000k} -bufsize {bufsize|2000k}
+```
+
+### Bitrate suffix reference
+
+| Suffix | Meaning |
+|--------|---------|
+| `k` | kilobits/s (e.g. `2500k`) |
+| `M` | megabits/s (e.g. `2M`) |
+| _(none)_ | bits/s |
+
+---
+
+## Proxy API Usage
+
+If you are calling the proxy directly (bypassing the editor), use the `/transcode` endpoint:
 
 ```bash
 curl -X POST "http://localhost:8085/transcode" \
@@ -34,7 +128,9 @@ curl -X POST "http://localhost:8085/transcode" \
   }'
 ```
 
-## Built-in Profiles
+### Built-in proxy profiles
+
+These profiles are built into the proxy itself (not created via the editor):
 
 | Profile | Description | Key variables |
 |---------|-------------|--------------|
@@ -46,63 +142,9 @@ curl -X POST "http://localhost:8085/transcode" \
 | `hevc` | H.265/HEVC encoding | `video_bitrate`, `audio_bitrate` |
 | `audio` | Audio-only output | `audio_bitrate`, `format` |
 
-Profiles automatically use hardware acceleration when available (NVENC for NVIDIA, VAAPI for Intel/AMD) and fall back to software encoders (`libx264`, `libx265`) otherwise.
+### Custom profile templates via API
 
-## Profile Variables
-
-Profile templates use `{variable}` and `{variable|default}` placeholders. You override any variable in `profile_variables` at request time.
-
-### Built-in default variables
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `input_url` | (auto-set) | Source stream URL |
-| `output_args` | `pipe:1` | Output destination |
-| `video_bitrate` | `2M` | Target video bitrate |
-| `audio_bitrate` | `128k` | Target audio bitrate |
-| `format` | `mp4` | Output container format |
-| `crf` | `23` | Constant Rate Factor (quality) |
-
-### Examples
-
-**Lower bitrate for mobile:**
-```json
-{
-  "profile": "default",
-  "profile_variables": {
-    "video_bitrate": "800k",
-    "audio_bitrate": "64k"
-  }
-}
-```
-
-**High quality archival:**
-```json
-{
-  "profile": "hq",
-  "profile_variables": {
-    "crf": "18",
-    "maxrate": "5000k",
-    "bufsize": "10000k",
-    "audio_bitrate": "256k"
-  }
-}
-```
-
-**720p downscale:**
-```json
-{
-  "profile": "720p",
-  "profile_variables": {
-    "video_bitrate": "3000k",
-    "audio_bitrate": "192k"
-  }
-}
-```
-
-## Custom Profile Templates
-
-You can pass a raw FFmpeg argument string as the `profile` value. Custom profiles must start with `-`:
+You can also pass a raw FFmpeg argument string as the `profile` field. Custom profiles must start with `-`:
 
 ```json
 {
@@ -120,57 +162,33 @@ You can pass a raw FFmpeg argument string as the `profile` value. Custom profile
 Custom templates are validated before use. Dangerous command patterns (shell operators, `wget`, `curl`, `rm`, etc.) are rejected.
 :::
 
-## Profile Variable Rules
-
-- **Keys**: strings only
-- **Values**: strings only
-- Pass invalid types and the request is rejected with a `422` error
-- `{input_url}` must be present in any custom template
-- Braces must be balanced
-
-## Quality Presets Quick Reference
-
-```json
-// Low quality (mobile / slow connection)
-{ "video_bitrate": "800k", "audio_bitrate": "64k" }
-
-// Medium quality (default)
-{ "video_bitrate": "2500k", "audio_bitrate": "128k" }
-
-// High quality
-{ "crf": "18", "video_bitrate": "5000k", "audio_bitrate": "256k" }
-```
-
-## Bitrate Suffix Reference
-
-| Suffix | Meaning |
-|--------|---------|
-| `k` | kilobits/s (e.g. `2500k`) |
-| `M` | megabits/s (e.g. `2M`) |
-| _(none)_ | bits/s |
+---
 
 ## Combining with Redis Pooling
 
-When [Redis pooling](./redis-pooling.md) is enabled, clients requesting the same URL + profile combination share one FFmpeg process. The `STREAM_SHARING_STRATEGY` variable controls how the sharing key is computed:
+When [Redis pooling](./redis-pooling.md) is enabled, clients using the same URL + profile combination share one FFmpeg process. The `STREAM_SHARING_STRATEGY` variable controls how the key is computed:
 
 - `url_profile` — same URL **and** same profile → shared (default)
 - `url_only` — same URL regardless of profile → shared
 - `disabled` — always individual processes
 
+---
+
 ## Troubleshooting
 
-**"Variables not being substituted"**
-- Check the variable name spelling exactly matches the placeholder in the template
-- Ensure the variable is in the `profile_variables` object
+**Variables not substituted in output**
+- Check the variable name spelling matches the placeholder exactly
+- Ensure the variable is included in `profile_variables`
 
 **FFmpeg fails with invalid arguments**
-- Check the variable value is valid for the given FFmpeg flag
 - Verify bitrate strings include the correct suffix (`k` or `M`)
-
-**"profile_variables must be a dictionary"**
-- You're passing an array or string instead of an object — wrap it in `{}`
+- Check that `{input_url}` is present in any custom template
 
 **Poor quality output**
 - Lower the `crf` value (lower = better quality, more bits)
 - Increase `video_bitrate` and `audio_bitrate`
-- Check hardware acceleration is being used (see [Hardware Acceleration](./hardware-acceleration.md))
+- Confirm hardware acceleration is active (see [Hardware Acceleration](./hardware-acceleration.md))
+
+**Profile not applying to streams**
+- Confirm the profile is assigned to the playlist under **Proxy Settings** in the playlist edit form
+- Check that `enable_proxy` is enabled for the playlist
