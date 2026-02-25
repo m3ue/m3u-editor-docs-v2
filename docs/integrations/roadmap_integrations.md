@@ -17,7 +17,7 @@ tags:
 Below is a list of features that are currently in development or that are planned.
 
 - [x] Initial Emby and Jellyfin integration
-- [x] Basic Plex integration (**experimental** branch only currently)
-- [x] Media Networks / Pseudo-TV channels (**experimental** branch - see [Media Networks Integration](./media_networks_integration.md))
+- [x] Basic Plex integration
+- [x] Media Networks / Pseudo-TV channels (see [Media Networks Integration](./media_networks_integration.md))
+- [x] Local media integration.
 - [ ] Emby\Jellyfin user imports.
-- [ ] Local media integration.
