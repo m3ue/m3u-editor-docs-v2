@@ -38,15 +38,17 @@ The whole process typically takes 50–200ms.
 150ms  All clients streaming from Source 2
 ```
 
-### URL Cycling
+### URL Ordering
 
-Failover URLs are tried in order. After exhausting the list, the proxy cycles back to the primary URL:
+Failover URLs are tried in order. Once the list is exhausted the stream fails — the proxy does **not** cycle back to the primary URL. Up to 3 failover attempts are made per streaming session (hardcoded), so if more than 3 backup URLs are configured only the first 3 will ever be tried per session.
 
 ```
-Primary fails → Backup 1 → Backup 2 → Backup 3 → Primary (retry)
+Primary fails → Backup 1 → Backup 2 → Backup 3 → stream fails
 ```
 
-A maximum of 3 failover attempts is made per streaming session.
+:::tip
+When the **Advanced Failover** resolver is enabled (see below), this static limit does not apply — the editor decides what URL to return next based on live capacity and health data.
+:::
 
 ## Creating a Stream with Failover URLs
 
