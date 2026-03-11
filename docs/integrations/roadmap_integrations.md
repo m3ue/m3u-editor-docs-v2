@@ -9,6 +9,8 @@ tags:
   - Emby
   - Jellyfin
   - Plex
+  - Local Media
+  - WebDAV
   - Coming Soon
 ---
 
@@ -19,5 +21,6 @@ Below is a list of features that are currently in development or that are planne
 - [x] Initial Emby and Jellyfin integration
 - [x] Basic Plex integration
 - [x] Media Networks / Pseudo-TV channels (see [Media Networks Integration](./media_networks_integration.md))
-- [x] Local media integration.
+- [x] Local media integration (see [Local Media Integration](./local_media_integration.md))
+- [ ] WebDAV media integration — **in progress** (see [WebDAV Integration](./webdav_integration.md))
 - [ ] Emby\Jellyfin user imports.
