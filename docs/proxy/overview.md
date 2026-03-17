@@ -17,9 +17,9 @@ The M3U Proxy is a high-performance HTTP proxy server purpose-built for IPTV str
 The proxy is built around a **true live proxy** model: every byte delivered to a client comes directly from the upstream provider with no persistent buffering layer. This means:
 
 - **Zero transcoding by default** — pure pass-through for maximum performance
-- **Per-client connections** — each viewer gets an independent provider connection
-- **Immediate cleanup** — connections close the moment a client stops watching
-- **No shared state** — one client's problem never affects another
+- **Connection sharing for live streams** — multiple viewers share one upstream provider connection
+- **Immediate cleanup** — connections close the moment the last client stops watching
+- **Isolated failover** — one client's problem never affects another
 
 ## Stream Types
 
@@ -27,19 +27,19 @@ The proxy automatically detects the stream type and applies the correct delivery
 
 ### Continuous Streams (`.ts`, `.mp4`, `.mkv`, `.webm`, `.avi`)
 
-Each client receives their own direct connection to the upstream provider:
+For **live** streams, the proxy uses a **primary/subscriber broadcast model**: the first client opens a single upstream connection and broadcasts chunks to all subsequent clients via in-memory queues. Only one provider connection is ever opened per channel, regardless of how many viewers are watching.
 
 ```
-Client A → Provider (independent connection)
-Client B → Provider (independent connection)
-Client C → Provider (independent connection)
+Provider → primary client → Client A (direct yield)
+                          ↘ Queue → Client B (subscriber)
+                          ↘ Queue → Client C (subscriber)
 ```
 
-This is the default mode for live IPTV channels. Key properties:
-- Truly ephemeral — provider connection opens only when the client starts consuming
-- Instant cleanup — connection closes the moment the client disconnects
-- Per-client failover — a failed connection only affects that one client
-- No buffering — raw bytes forwarded directly
+Key properties:
+- **One upstream connection** per live channel — conserves provider connection slots
+- **Subscriber promotion** — if the primary disconnects, the longest-running subscriber seamlessly takes over and inherits the upstream TCP connection
+- Truly ephemeral — connection closes when the last client disconnects
+- **VOD is excluded** — each VOD client gets an independent connection for full seek/range support
 
 ### HLS Streams (`.m3u8`)
 
