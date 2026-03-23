@@ -34,6 +34,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
             id={name}
             value={value || ''}
             onChange={handleChange}
+            onKeyDown={(e) => e.stopPropagation()}
             className={styles.select}
           >
             {options.map((opt) => (
@@ -66,6 +67,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
               id={name}
               value={value || ''}
               onChange={handleChange}
+              onKeyDown={(e) => e.stopPropagation()}
               placeholder={placeholder}
               className={styles.input}
             />
@@ -89,6 +91,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
             id={name}
             value={value || ''}
             onChange={handleChange}
+            onKeyDown={(e) => e.stopPropagation()}
             placeholder={placeholder}
             className={styles.input}
           />
@@ -100,6 +103,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
             id={name}
             value={value || ''}
             onChange={handleChange}
+            onKeyDown={(e) => e.stopPropagation()}
             placeholder={placeholder}
             className={styles.textarea}
             rows={4}
@@ -113,6 +117,7 @@ const WizardField = ({ variable, value, onChange, allValues }) => {
             id={name}
             value={value || ''}
             onChange={handleChange}
+            onKeyDown={(e) => e.stopPropagation()}
             placeholder={placeholder}
             className={styles.input}
           />

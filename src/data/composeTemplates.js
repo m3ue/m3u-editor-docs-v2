@@ -36,6 +36,28 @@ const isRedisExternal = (config) => config.REDIS_MODE === 'external';
 // Get image tag (default to 'latest')
 const getImageTag = (config) => config.IMAGE_TAG || 'latest';
 
+// Resolve HLS container paths for editor (embedded proxy)
+// The wizard uses '/tmp/hls' as a UI default but the app's real default is different.
+const getEditorHlsTempDir = (config) =>
+  (config.HLS_TEMP_DIR && config.HLS_TEMP_DIR !== '/tmp/hls')
+    ? config.HLS_TEMP_DIR
+    : '/var/www/html/storage/app/hls-segments';
+
+const getEditorHlsBroadcastDir = (config) =>
+  config.HLS_BROADCAST_DIR || '/dev/shm';
+
+// Resolve HLS container paths for proxy (external proxy)
+const getProxyHlsTempDir = (config) =>
+  (config.HLS_TEMP_DIR && config.HLS_TEMP_DIR !== '/tmp/hls')
+    ? config.HLS_TEMP_DIR
+    : '/tmp/m3u-proxy-hls';
+
+const getProxyHlsBroadcastDir = (config) =>
+  // Proxy default differs from editor's /dev/shm
+  (config.HLS_BROADCAST_DIR && config.HLS_BROADCAST_DIR !== '/dev/shm')
+    ? config.HLS_BROADCAST_DIR
+    : '/tmp/m3u-proxy-broadcasts';
+
 // Generate environment section for m3u-editor
 const generateEditorEnv = (config, deploymentType) => {
   const envVars = [];
@@ -129,7 +151,14 @@ const generateEditorEnv = (config, deploymentType) => {
 
   // HLS settings (only when proxy is embedded since proxy handles HLS)
   if (useEmbeddedProxy) {
-    addEnvVar(envVars, 'HLS_TEMP_DIR', config.HLS_TEMP_DIR, config.HLS_TEMP_DIR !== '/tmp/hls');
+    // Emit HLS_TEMP_DIR if changed from default OR if a host volume path is configured
+    const hlsTempChanged = config.HLS_TEMP_DIR !== '/tmp/hls';
+    const hlsTempMounted = !!config.HLS_TEMP_DIR_HOST;
+    addEnvVar(envVars, 'HLS_TEMP_DIR', getEditorHlsTempDir(config), hlsTempChanged || hlsTempMounted);
+    // Emit HLS_BROADCAST_DIR if changed from /dev/shm OR if a host volume path is configured
+    const hlsBroadcastChanged = config.HLS_BROADCAST_DIR && config.HLS_BROADCAST_DIR !== '/dev/shm';
+    const hlsBroadcastMounted = !!config.HLS_BROADCAST_DIR_HOST;
+    addEnvVar(envVars, 'HLS_BROADCAST_DIR', getEditorHlsBroadcastDir(config), hlsBroadcastChanged || hlsBroadcastMounted);
     addEnvVar(envVars, 'HLS_GC_ENABLED', config.HLS_GC_ENABLED, !config.HLS_GC_ENABLED);
     addEnvVar(envVars, 'HLS_GC_INTERVAL', config.HLS_GC_INTERVAL, config.HLS_GC_INTERVAL !== '60');
     addEnvVar(envVars, 'HLS_GC_AGE_THRESHOLD', config.HLS_GC_AGE_THRESHOLD, config.HLS_GC_AGE_THRESHOLD !== '300');
@@ -143,8 +172,9 @@ const generateEditorEnv = (config, deploymentType) => {
   return envVars.filter(Boolean).join('\n');
 };
 
-// Generate volumes section
-const generateVolumes = (config) => {
+// Generate volumes section for the editor container
+// useEmbeddedProxy: true for AIO / embedded, false when proxy runs externally
+const generateVolumes = (config, useEmbeddedProxy = true) => {
   const volumes = [];
   volumes.push(`      - ${config.CONFIG_PATH || './data'}:/var/www/config`);
   if (config.DB_CONNECTION === 'pgsql') {
@@ -152,6 +182,16 @@ const generateVolumes = (config) => {
   }
   if (config.STRM_PATH) {
     volumes.push(`      - ${config.STRM_PATH}:/strm`);
+  }
+  // HLS volume mounts — only on the editor when proxy is embedded;
+  // for external proxy these are mounted on the proxy container instead.
+  if (useEmbeddedProxy) {
+    if (config.HLS_TEMP_DIR_HOST) {
+      volumes.push(`      - ${config.HLS_TEMP_DIR_HOST}:${getEditorHlsTempDir(config)}`);
+    }
+    if (config.HLS_BROADCAST_DIR_HOST) {
+      volumes.push(`      - ${config.HLS_BROADCAST_DIR_HOST}:${getEditorHlsBroadcastDir(config)}`);
+    }
   }
   return volumes.join('\n');
 };
@@ -205,9 +245,18 @@ const generateProxyService = (config, useVpnNetwork = false) => {
       - LOG_LEVEL=${config.M3U_PROXY_LOG_LEVEL || 'INFO'}`;
 
   // HLS settings (proxy handles HLS storage when running externally)
-  if (config.HLS_TEMP_DIR && config.HLS_TEMP_DIR !== '/tmp/hls') {
+  const hlsTempChanged = config.HLS_TEMP_DIR && config.HLS_TEMP_DIR !== '/tmp/hls';
+  const hlsTempMounted = !!config.HLS_TEMP_DIR_HOST;
+  if (hlsTempChanged || hlsTempMounted) {
     service += `
-      - HLS_TEMP_DIR=${config.HLS_TEMP_DIR}`;
+      - HLS_TEMP_DIR=${getProxyHlsTempDir(config)}`;
+  }
+  // Always emit HLS_BROADCAST_DIR for external proxy when it's set or a host volume is configured
+  const hlsBroadcastChanged = config.HLS_BROADCAST_DIR && config.HLS_BROADCAST_DIR !== '/dev/shm';
+  const hlsBroadcastMounted = !!config.HLS_BROADCAST_DIR_HOST;
+  if (hlsBroadcastChanged || hlsBroadcastMounted) {
+    service += `
+      - HLS_BROADCAST_DIR=${getProxyHlsBroadcastDir(config)}`;
   }
   if (config.HLS_GC_ENABLED === false) {
     service += `
@@ -222,10 +271,25 @@ const generateProxyService = (config, useVpnNetwork = false) => {
       - HLS_GC_AGE_THRESHOLD=${config.HLS_GC_AGE_THRESHOLD}`;
   }
 
+  // HLS volume mounts on the proxy container (only when external proxy)
+  const proxyVolumes = [];
+  if (config.HLS_TEMP_DIR_HOST) {
+    proxyVolumes.push(`      - ${config.HLS_TEMP_DIR_HOST}:${getProxyHlsTempDir(config)}`);
+  }
+  if (config.HLS_BROADCAST_DIR_HOST) {
+    proxyVolumes.push(`      - ${config.HLS_BROADCAST_DIR_HOST}:${getProxyHlsBroadcastDir(config)}`);
+  }
+
   if (!useVpnNetwork) {
     service += `
     ports:
       - "${config.M3U_PROXY_PORT || '38085'}:${config.M3U_PROXY_PORT || '38085'}"`;
+  }
+
+  if (proxyVolumes.length > 0) {
+    service += `
+    volumes:
+${proxyVolumes.join('\n')}`;
   }
 
   service += `
@@ -287,8 +351,8 @@ const generateRedisService = (config) => {
 // Template generators for each deployment type
 export const generateModularCompose = (config) => {
   const editorEnv = generateEditorEnv(config, 'modular');
-  const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
+  const volumes = generateVolumes(config, !proxyExternal);
   const redisExternal = isRedisExternal(config);
   const imageTag = getImageTag(config);
 
@@ -374,7 +438,7 @@ volumes:
 
 export const generateAioCompose = (config) => {
   const editorEnv = generateEditorEnv(config, 'aio');
-  const volumes = generateVolumes(config);
+  const volumes = generateVolumes(config, true); // AIO always uses embedded proxy
   const imageTag = getImageTag(config);
 
   return `# Docker Compose - All-in-One Deployment
@@ -402,8 +466,8 @@ ${volumes}
 
 export const generateVpnCompose = (config) => {
   const editorEnv = generateEditorEnv(config, 'vpn');
-  const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
+  const volumes = generateVolumes(config, !proxyExternal);
   const redisExternal = isRedisExternal(config);
   const imageTag = getImageTag(config);
 
@@ -519,8 +583,8 @@ volumes:
 
 export const generateExternalNginxCompose = (config) => {
   const editorEnv = generateEditorEnv(config, 'external-nginx');
-  const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
+  const volumes = generateVolumes(config, !proxyExternal);
   const redisExternal = isRedisExternal(config);
   const imageTag = getImageTag(config);
 
@@ -638,8 +702,8 @@ volumes:
 
 export const generateExternalCaddyCompose = (config) => {
   const editorEnv = generateEditorEnv(config, 'external-caddy');
-  const volumes = generateVolumes(config);
   const proxyExternal = isProxyExternal(config);
+  const volumes = generateVolumes(config, !proxyExternal);
   const redisExternal = isRedisExternal(config);
   const imageTag = getImageTag(config);
 
