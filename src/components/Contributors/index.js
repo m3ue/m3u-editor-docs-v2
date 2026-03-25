@@ -1,77 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 
-const REPOS = [
-    'm3ue/m3u-editor',
-    'm3ue/m3u-proxy',
-    'm3ue/m3u-editor-docs-v2'
-];
-
 export default function Contributors() {
     const [contributors, setContributors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchContributors();
+        fetch('/data/contributors.json')
+            .then((r) => {
+                if (!r.ok) throw new Error('Failed to fetch contributors data');
+                return r.json();
+            })
+            .then((data) => {
+                setContributors(data.contributors || []);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error loading contributors:', err);
+                setError(err.message);
+                setLoading(false);
+            });
     }, []);
-
-    const fetchContributors = async () => {
-        try {
-            const allContributors = new Map();
-
-            // Fetch contributors from all repos
-            for (const repo of REPOS) {
-                const response = await fetch(
-                    `https://api.github.com/repos/${repo}/contributors?per_page=100`,
-                    {
-                        headers: {
-                            'Accept': 'application/vnd.github.v3+json'
-                        }
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch contributors for ${repo}`);
-                }
-
-                const data = await response.json();
-
-                // Merge contributors, filtering out bots
-                data.forEach(contributor => {
-                    // Skip bots (any login ending with [bot])
-                    if (contributor.login.endsWith('[bot]') || contributor.login === 'Copilot') {
-                        return;
-                    }
-
-                    if (allContributors.has(contributor.login)) {
-                        // Add contributions from this repo to existing contributor
-                        const existing = allContributors.get(contributor.login);
-                        existing.contributions += contributor.contributions;
-                    } else {
-                        // Add new contributor
-                        allContributors.set(contributor.login, {
-                            login: contributor.login,
-                            avatar_url: contributor.avatar_url,
-                            html_url: contributor.html_url,
-                            contributions: contributor.contributions
-                        });
-                    }
-                });
-            }
-
-            // Convert to array and sort by contributions
-            const sortedContributors = Array.from(allContributors.values())
-                .sort((a, b) => b.contributions - a.contributions);
-
-            setContributors(sortedContributors);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error fetching contributors:', err);
-            setError(err.message);
-            setLoading(false);
-        }
-    };
 
     if (loading) {
         return (

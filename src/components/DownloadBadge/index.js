@@ -5,21 +5,17 @@ export default function DownloadBadge() {
     const [downloadsText, setDownloadsText] = useState('Loading...');
 
     useEffect(() => {
-        // Fetch from shields.io JSON endpoint (no CORS issues)
-        fetch('https://img.shields.io/docker/pulls/sparkison/m3u-editor.json')
+        fetch('/data/downloads.json')
             .then((r) => {
                 if (!r.ok) throw new Error('Failed to fetch');
                 return r.json();
             })
             .then((data) => {
-                if (data && data.value) {
-                    // shields.io returns the value already formatted (e.g., "178k")
-                    // If you want to show the exact number with "+", you can parse it
-                    setDownloadsText(`${data.value}+`);
+                if (data && data.formatted) {
+                    setDownloadsText(data.formatted);
                 }
             })
             .catch(() => {
-                // Fallback to hardcoded value (update periodically)
                 setDownloadsText('100,000+');
             });
     }, []);
