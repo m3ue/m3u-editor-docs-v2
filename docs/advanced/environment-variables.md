@@ -138,6 +138,53 @@ DB_PORT=5433
 - **Description**: Redirect unauthenticated users to the login page
 - **Options**: `true`, `false`
 
+## OIDC / SSO Authentication
+
+For a complete setup guide, see [OIDC Authentication (SSO)](./oidc-authentication.md).
+
+### OIDC_ENABLED
+- **Default**: `false`
+- **Description**: Enable OIDC (OpenID Connect) Single Sign-On
+- **Options**: `true`, `false`
+
+### OIDC_ISSUER_URL
+- **Default**: None
+- **Description**: Base URL of your OIDC provider (excluding `/.well-known/openid-configuration`)
+- **Example**: `https://auth.example.com/realms/myrealm`
+
+### OIDC_CLIENT_ID
+- **Default**: None
+- **Description**: OAuth2 client ID from your OIDC provider
+
+### OIDC_CLIENT_SECRET
+- **Default**: None
+- **Description**: OAuth2 client secret from your OIDC provider
+
+### OIDC_SCOPES
+- **Default**: `openid,profile,email`
+- **Description**: Comma-separated list of scopes to request from the OIDC provider
+
+### OIDC_AUTO_REDIRECT
+- **Default**: `false`
+- **Description**: Skip the login form and redirect unauthenticated users straight to the OIDC provider
+- **Options**: `true`, `false`
+- **Note**: Append `?local=1` to the login URL to bypass the redirect
+
+### OIDC_AUTO_CREATE_USERS
+- **Default**: `true`
+- **Description**: Automatically create a user account on first OIDC login when no matching account exists
+- **Options**: `true`, `false`
+
+### OIDC_BUTTON_LABEL
+- **Default**: `Login with SSO`
+- **Description**: Text displayed on the SSO login button
+
+### OIDC_ADMIN_EMAIL
+- **Default**: None
+- **Description**: Comma-separated list of OIDC user emails that should be treated as admins
+- **Example**: `admin@example.com,admin2@example.com`
+- **Note**: Required when OIDC users need admin access, since OIDC emails typically differ from the default `admin@test.com`
+
 ## User & Group IDs (Docker)
 
 ### PUID
