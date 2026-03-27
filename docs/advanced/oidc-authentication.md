@@ -54,7 +54,7 @@ services:
 | `OIDC_AUTO_REDIRECT` | `false` | Skip the login form and redirect straight to the OIDC provider |
 | `OIDC_AUTO_CREATE_USERS` | `true` | Automatically create a user account on first OIDC login |
 | `OIDC_BUTTON_LABEL` | `Login with SSO` | Text shown on the SSO login button |
-| `OIDC_ADMIN_EMAIL` | — | Comma-separated list of emails that should have admin access |
+| `OIDC_HIDE_LOGIN_FORM` | `false` | Hide the username/password form and show only the SSO button |
 
 ### Callback URL
 
@@ -80,33 +80,30 @@ On each OIDC login, the user's **name**, **email**, and **avatar** are synced fr
 
 ## Admin Access
 
-By default, admin status is determined by the email `admin@test.com`. Since OIDC users typically have a different email address, use the `OIDC_ADMIN_EMAIL` variable to grant admin access:
+Admin status is stored as a flag on the user record (`is_admin` column), not derived from the user's email address. This means:
 
-```yaml
-environment:
-  - OIDC_ADMIN_EMAIL=admin@example.com
-```
+- The first user created during setup is automatically an admin
+- Admin status is **preserved** when an OIDC login syncs a different email from the identity provider
+- Admins can freely change their email from the profile page without losing admin access
+- There is no need for a separate admin email environment variable
 
-Multiple emails can be specified as a comma-separated list:
+## Hiding the Login Form
 
-```yaml
-environment:
-  - OIDC_ADMIN_EMAIL=admin@example.com,admin2@example.com
-```
-
-:::warning
-If you do not set `OIDC_ADMIN_EMAIL`, your OIDC account will not have admin access even if it is linked to the original admin account, because the email synced from your OIDC provider will replace `admin@test.com`.
-:::
+Set `OIDC_HIDE_LOGIN_FORM=true` to hide the username/password fields and show only the SSO button on the login page. This is useful when OIDC is the sole authentication method.
 
 ## Auto-Redirect Mode
 
-Set `OIDC_AUTO_REDIRECT=true` to skip the login form entirely and redirect unauthenticated users straight to your OIDC provider.
+Set `OIDC_AUTO_REDIRECT=true` to skip the login page entirely and redirect unauthenticated users straight to your OIDC provider.
 
-To bypass the auto-redirect and access the local login form (e.g. if your OIDC provider is down), append `?local=1` to the login URL:
+## Local Login Bypass
+
+If your OIDC provider is down or you need to access the local login form, append `?local` to the login URL:
 
 ```
-https://your-m3u-editor-url/login?local=1
+https://your-m3u-editor-url/login?local
 ```
+
+This bypasses both auto-redirect and the hidden login form, showing the full username/password form as a fallback.
 
 ## Provider Examples
 
@@ -189,8 +186,8 @@ OIDC users cannot log in using the standard username/password form. They must al
 - Verify the user has an email address configured in your OIDC provider
 
 ### Lost admin access after OIDC login
-- Set `OIDC_ADMIN_EMAIL` to your OIDC email address
-- Access the local login form via `?local=1` if needed to regain access with the original admin account
+- Admin status is stored on the user record and should be preserved through OIDC login
+- Access the local login form via `?local` if needed to log in with the original admin credentials
 
 ### SSO button not showing on login page
 - Verify `OIDC_ENABLED=true` is set

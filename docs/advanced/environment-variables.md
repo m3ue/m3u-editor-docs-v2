@@ -179,11 +179,11 @@ For a complete setup guide, see [OIDC Authentication (SSO)](./oidc-authenticatio
 - **Default**: `Login with SSO`
 - **Description**: Text displayed on the SSO login button
 
-### OIDC_ADMIN_EMAIL
-- **Default**: None
-- **Description**: Comma-separated list of OIDC user emails that should be treated as admins
-- **Example**: `admin@example.com,admin2@example.com`
-- **Note**: Required when OIDC users need admin access, since OIDC emails typically differ from the default `admin@test.com`
+### OIDC_HIDE_LOGIN_FORM
+- **Default**: `false`
+- **Description**: Hide the username/password form and show only the SSO button on the login page
+- **Options**: `true`, `false`
+- **Note**: Append `?local` to the login URL to bypass and show the local login form
 
 ## User & Group IDs (Docker)
 
