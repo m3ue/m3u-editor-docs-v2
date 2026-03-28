@@ -1,0 +1,8 @@
+{
+  "label": "Plugins",
+  "position": 9,
+  "link": {
+    "type": "generated-index",
+    "description": "Extend M3U Editor with plugins — automate EPG repairs, channel sync, stream analysis, and more. Covers installation, the trust lifecycle, settings, and plugin development."
+  }
+}
