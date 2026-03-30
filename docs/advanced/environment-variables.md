@@ -122,6 +122,49 @@ DB_PORT=5433
 
 ## Authentication & Access Control
 
+### OIDC / SSO Authentication
+
+M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Connect](/docs/advanced/sso-oidc) guide for full setup instructions.
+
+#### OIDC_ENABLED
+- **Default**: `false`
+- **Description**: Enable OpenID Connect / SSO authentication
+- **Options**: `true`, `false`
+
+#### OIDC_ISSUER_URL
+- **Description**: Base URL of your OIDC identity provider (issuer)
+- **Example**: `https://auth.example.com/realms/myrealm`
+
+#### OIDC_CLIENT_ID
+- **Description**: OAuth 2.0 client ID registered with your identity provider
+
+#### OIDC_CLIENT_SECRET
+- **Description**: OAuth 2.0 client secret
+
+#### OIDC_SCOPES
+- **Default**: `openid,profile,email`
+- **Description**: Comma-separated list of scopes to request from the identity provider
+
+#### OIDC_AUTO_REDIRECT
+- **Default**: `false`
+- **Description**: Skip the login form and redirect directly to the identity provider
+- **Options**: `true`, `false`
+- **Note**: The standard login form can still be accessed by appending `?local` to the login URL
+
+#### OIDC_AUTO_CREATE_USERS
+- **Default**: `true`
+- **Description**: Automatically create a local account on first OIDC login if no matching account is found
+- **Options**: `true`, `false`
+
+#### OIDC_BUTTON_LABEL
+- **Default**: `Login with SSO`
+- **Description**: Text displayed on the SSO login button
+
+#### OIDC_HIDE_LOGIN_FORM
+- **Default**: `false`
+- **Description**: Hide the standard username/password login form when OIDC is enabled
+- **Options**: `true`, `false`
+
 ### AUTO_LOGIN
 - **Default**: `false`
 - **Description**: Enable auto-login functionality for development/testing
