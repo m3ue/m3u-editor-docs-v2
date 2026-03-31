@@ -15,11 +15,6 @@ tags:
 
 # Media Networks Integration
 
-:::info Experimental Feature
-Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
-Create pseudo-TV networks that broadcast content from your media server in a continuous loop.
-:::
-
 ## Overview
 
 Transform VOD content and Series into 24/7 live TV channels with automatic EPG generation and HLS streaming.

@@ -12,10 +12,6 @@ tags:
 
 # Local Media Integration
 
-:::info Experimental Feature
-Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
-:::
-
 The Local Media integration allows you to expose video files stored on your host machine (mounted into the Docker container) as VOD channels and TV series directly within M3U Editor — no separate media server required.
 
 ## How It Works
