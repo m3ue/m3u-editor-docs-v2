@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description: Environment variable reference for M3U Editor
 tags:
   - Advanced
