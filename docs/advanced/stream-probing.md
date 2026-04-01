@@ -12,7 +12,7 @@ title: Stream Probing (Fast Channel Switching)
 
 # Stream Probing (Fast Channel Switching)
 
-Probe live channels with ffprobe to collect stream metadata — enabling near-instant channel switching in Emby via the emby-xtream plugin.
+Probe live channels with ffprobe to collect stream metadata — enabling near-instant channel switching in Emby via the [emby-xtream](https://github.com/firestaerter3/emby-xtream) plugin.
 
 ## Overview
 
