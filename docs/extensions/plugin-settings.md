@@ -10,6 +10,12 @@ title: Plugin Settings
 
 Plugins can declare a **settings schema** in their manifest. M3U Editor renders this schema as a form on the plugin edit page, validates input, and passes the saved values to the plugin at runtime through the execution context.
 
+
+:::info Experimental Feature
+Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
+This integration is currently **in active development**. Core functionality is available; additional features and polish are ongoing.
+:::
+
 ## How settings work
 
 Settings are declared in `plugin.json` under the `settings` key. Each setting has a `type`, a `key`, a `label`, and optionally a `default` value, `required` flag, and helper text.
