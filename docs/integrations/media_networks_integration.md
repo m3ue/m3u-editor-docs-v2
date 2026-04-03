@@ -91,30 +91,30 @@ services:
 
 ## Quick Setup
 
-### 1. Sync Media Server
+### Step 1: Sync Media Server
 1. Navigate to **Integrations** → **Media Servers**
 2. Add your media server if needed
 3. Click **Sync Now**
 
-### 2. Create Network
+### Step 2: Create Network
 1. Go to **Networks** → **Create Network**
 2. Set **Name**, **Channel Number**, and **Media Server**
 3. Enable **Loop Content** and **Enabled**
 4. Save
 
-### 3. Add Content
+### Step 3: Add Content
 1. Open the network
 2. Click **Add Content**
 3. Select series episodes or movies
 4. Set **Sort Order** for playback sequence
 5. Save
 
-### 4. Generate Schedule
+### Step 4: Generate Schedule
 1. Click **Generate Schedule**
 2. Review in **Programme Schedule** section
 3. Enable **Auto-regenerate** to keep schedule updated
 
-### 5. Start Broadcasting
+### Step 5: Start Broadcasting
 1. Open **Broadcast Settings**
 2. Enable **Broadcast Enabled**
 3. Configure HLS and transcoding options (see below)

@@ -37,7 +37,7 @@ http://your-ip:36400/stream/episode/12345
 
 ## Quick Start
 
-### 1. Enable .strm File Generation
+### Step 1: Enable .strm File Generation
 
 **For Series**:
 1. Go to **Settings** → **Streams** tab
@@ -50,14 +50,14 @@ http://your-ip:36400/stream/episode/12345
 1. Same location, but under "VOD stream file settings"
 2. Set **VOD Sync Location**: `/path/to/your/Movies`
 
-### 2. Configure a Series/VOD
+### Step 2: Configure a Series/VOD
 
 1. Go to your Series or VOD channel
 2. Click **Edit**
 3. Enable the series/VOD
 4. Click **Sync .strm Files** (if available)
 
-### 3. Add to Media Server
+### Step 3: Add to Media Server
 
 1. In Plex/Jellyfin/Emby, add new library
 2. Point to your sync location (`/path/to/your/Series`)

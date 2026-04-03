@@ -41,7 +41,7 @@ If your plugin is private, the browser upload path is all you need. There is no 
 
 After staging, every install goes through the same steps in **Plugins → Installs**:
 
-### 1. Scan
+### Step 1: Scan
 
 Click **Scan** on the install review to run a malware scan.
 
@@ -57,15 +57,15 @@ You can also set `CLAMAV_UPDATE_DEFINITIONS=true` to refresh signatures at build
 
 A clean scan moves the review to `scanned`. An infected result automatically rejects it.
 
-### 2. Approve
+### Step 2: Approve
 
 Click **Approve** on the install review. This marks the review as approved and makes the plugin available for trust.
 
-### 3. Trust
+### Step 3: Trust
 
 Click **Trust** (either on the install review or on the plugin edit page after it has been registered). Trusting pins a SHA-256 snapshot of every file in the plugin directory. These hashes are stored and used for future integrity checks.
 
-### 4. Enable
+### Step 4: Enable
 
 After trust, the plugin appears in the **Plugins** list. Open the plugin and click **Enable**. The plugin will now run when its hooks fire or when you trigger actions manually.
 
