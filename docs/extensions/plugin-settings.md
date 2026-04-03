@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-description: How plugin settings work in M3U Editor — field types, how defaults are applied, and how settings reach plugin code.
+description: How plugin settings work in M3U Editor: field types, how defaults are applied, and how settings reach plugin code.
 tags:
   - Plugins
 title: Plugin Settings
@@ -14,7 +14,7 @@ Plugins can declare a **settings schema** in their manifest. M3U Editor renders 
 
 Settings are declared in `plugin.json` under the `settings` key. Each setting has a `type`, a `key`, a `label`, and optionally a `default` value, `required` flag, and helper text.
 
-When a plugin runs — whether triggered by a hook, a schedule, or a manual action — the current saved settings are passed in as `$context->settings`, a plain associative array.
+When a plugin runs: whether triggered by a hook, a schedule, or a manual action: the current saved settings are passed in as `$context->settings`, a plain associative array.
 
 ```php
 public function runAction(string $action, array $payload, PluginExecutionContext $context): PluginActionResult

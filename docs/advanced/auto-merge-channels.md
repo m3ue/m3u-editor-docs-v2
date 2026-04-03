@@ -16,10 +16,10 @@ Automatically merge duplicate channels into a single master channel with failove
 
 The Auto-Merge Channels feature streamlines playlist management by:
 
-- ✅ Automatically merging channels with identical stream IDs
-- ✅ Creating failover relationships for reliability
-- ✅ Optionally disabling failover channels to clean up your playlist
-- ✅ Supporting resolution-based prioritization (use with caution)
+- Automatically merging channels with identical stream IDs
+- Creating failover relationships for reliability
+- Optionally disabling failover channels to clean up your playlist
+- Supporting resolution-based prioritization (use with caution)
 
 ## How It Works
 
@@ -43,7 +43,7 @@ Two modes for selecting the master channel:
 
 #### Default Mode (Recommended for IPTV)
 
-**✅ Safe for all IPTV providers**
+**Safe for all IPTV providers**
 
 Selection priority:
 1. If **Preferred Playlist** is set: First channel from that playlist (sorted by ID)
@@ -56,7 +56,7 @@ Selection priority:
 
 #### Resolution Mode
 
-**⚠️ Use with caution - May trigger rate limiting**
+**Use with caution: may trigger rate limiting**
 
 Selection priority:
 1. Analyzes each stream to determine resolution
@@ -95,7 +95,7 @@ Remaining channels become failovers:
 Click **Advanced Settings** to configure:
 
 **Prioritize by resolution:**
-- ⚠️ Enables resolution-based master selection
+- Enables resolution-based master selection
 - Analyzes streams (may cause rate limiting)
 - Only use with provider permission
 
@@ -120,7 +120,7 @@ Merge channels manually from the Channels page:
 3. Configure:
    - **Preferred Playlist**: Playlist to prioritize as master
    - **Failover Playlists**: Playlists to use for failovers
-   - **Order by Resolution**: ⚠️ Enable resolution check (caution!)
+   - **Order by Resolution**: Enable resolution check (use with caution)
    - **Deactivate Failover Channels**: Disable failover channels
 
 4. Click **Merge**
@@ -152,12 +152,12 @@ When providers allow stream analysis:
 
 ### For IPTV Providers
 
-**✅ Recommended:**
+**Recommended:**
 - Use default mode (no resolution check)
 - Set preferred playlist for reliable provider
 - Enable **Deactivate failover channels** for clean output
 
-**❌ Avoid:**
+**Avoid:**
 - Resolution-based prioritization (unless confirmed safe)
 - Frequent force re-merges
 - Processing during peak hours
@@ -197,10 +197,10 @@ Watch for:
 ### Auto-merge Not Running
 
 **Check:**
-- ✅ Auto-merge is enabled in playlist settings
-- ✅ Playlist sync completed successfully
-- ✅ Queue workers are running
-- ✅ Channels have matching stream IDs
+- Auto-merge is enabled in playlist settings
+- Playlist sync completed successfully
+- Queue workers are running
+- Channels have matching stream IDs
 
 ### No Channels Merging
 

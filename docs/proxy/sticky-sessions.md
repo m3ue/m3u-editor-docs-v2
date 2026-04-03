@@ -24,7 +24,7 @@ Client → Load Balancer (provider.com)
          backend3.provider.com
 ```
 
-Without sticky sessions, each playlist request may land on a different backend. If those backends aren't perfectly in sync, the player sees HLS sequence numbers jump backwards — triggering a reload loop:
+Without sticky sessions, each playlist request may land on a different backend. If those backends aren't perfectly in sync, the player sees HLS sequence numbers jump backwards: triggering a reload loop:
 
 ```
 Playlist from backend1: sequence #1000
@@ -42,7 +42,7 @@ There are three ways to enable sticky sessions, from most specific to most broad
 
 Open a playlist in the editor and go to the **Proxy Settings** section. Toggle **Enable Sticky Session Handler** on.
 
-This applies to all channels from that playlist. It is the recommended approach — you can target only the providers that need it without affecting others.
+This applies to all channels from that playlist. It is the recommended approach: you can target only the providers that need it without affecting others.
 
 ### Per-Stream (Proxy API)
 
@@ -163,7 +163,7 @@ Sticky sessions prevent the load balancer from redirecting to geographically clo
 
 ## Best Practices
 
-1. **Start disabled** (the default) — only enable if you experience playback loops
-2. **Test per-stream first** — use the per-stream override to validate with a specific provider before enabling globally
-3. **Combine with failover** — use both sticky sessions and failover URLs for maximum reliability
-4. **Monitor logs** — watch for redirect patterns and sequence number issues during initial testing
+1. **Start disabled** (the default): only enable if you experience playback loops
+2. **Test per-stream first**: use the per-stream override to validate with a specific provider before enabling globally
+3. **Combine with failover**: use both sticky sessions and failover URLs for maximum reliability
+4. **Monitor logs**: watch for redirect patterns and sequence number issues during initial testing

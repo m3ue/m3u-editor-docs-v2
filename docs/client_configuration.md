@@ -3,7 +3,7 @@ sidebar_position: 4
 description: Configure clients to work with M3U Editor environment variables and settings
 tags:
   - Getting Started
-  - Configuratione
+  - Configuration
 title: Client Configuration
 hide_title: true
 ---
@@ -14,7 +14,7 @@ hide_title: true
 
 # Client Configuration
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before configuring any integration:
 
@@ -23,7 +23,7 @@ Before configuring any integration:
 3. Ensure m3u-editor is accessible from your client/media server (same network or via DNS)
 4. Replace `YOUR_M3U_EDITOR_IP` with your actual IP or hostname (e.g., `192.168.1.50`, `m3u.example.com`)
 
-## ➰ Output Methods
+## Output Methods
 
 m3u-editor provides multiple ways to consume your playlists. Choose based on what your client supports.
 
@@ -59,7 +59,7 @@ XMLTV format guide data for live TV listings. Works with HDHomeRun and some Xtre
 
 ***
 
-## 🔎 Finding Your Playlist Details
+## Finding Your Playlist Details
 
 :::tip
 Information in this section will be helpful for the steps outlined in** [Client Configurations](#client-config)**
@@ -77,7 +77,7 @@ Copy these values as needed for your client configuration.
 
 ***
 
-## 🔧 Client Configuration {#client-config}
+## Client Configuration {#client-config}
 
 ### TiviMate
 

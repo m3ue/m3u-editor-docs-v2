@@ -12,7 +12,7 @@ tags:
 
 # Local Media Integration
 
-The Local Media integration allows you to expose video files stored on your host machine (mounted into the Docker container) as VOD channels and TV series directly within M3U Editor — no separate media server required.
+The Local Media integration allows you to expose video files stored on your host machine (mounted into the Docker container) as VOD channels and TV series directly within M3U Editor: no separate media server required.
 
 ## How It Works
 
@@ -32,7 +32,7 @@ M3U Editor scans configured directory paths inside the Docker container, parses 
 - Media files accessible inside the Docker container via a volume mount
 - *(Optional but recommended)* A TMDB API key configured in M3U Editor Settings for metadata enrichment
 
-## Step 1 — Mount Your Media into the Container
+## Step 1: Mount Your Media into the Container
 
 Your media directories must be mounted into the Docker container. Add volume entries to your `docker-compose.yml`:
 
@@ -47,7 +47,7 @@ volumes:
 You can mount as many directories as you like. Use descriptive container paths like `/media/movies` or `/media/tvshows` to keep things organised.
 :::
 
-## Step 2 — Organise Your Media
+## Step 2: Organise Your Media
 
 M3U Editor parses metadata from filenames and folder structure. The patterns below are supported.
 
@@ -92,7 +92,7 @@ Supported episode filename formats:
 TV show folders must contain season sub-folders (`Season 1`, `Season 2`, etc.) with episode files inside. A flat folder of video files without series sub-folders will trigger a warning and may not import correctly.
 :::
 
-## Step 3 — Configure the Integration
+## Step 3: Configure the Integration
 
 1. In M3U Editor expand the sidebar, locate the **Integrations** section and select **Media Servers**
 

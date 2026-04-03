@@ -27,21 +27,21 @@ Choose between Nginx and Caddy for your reverse proxy setup.
 
 Choose Nginx if you:
 
-- ✅ Need maximum control and customization
-- ✅ Are already familiar with nginx configuration
-- ✅ Have complex routing requirements
-- ✅ Want to manage SSL certificates manually
-- ✅ Need specific nginx modules
+- Need maximum control and customization
+- Are already familiar with nginx configuration
+- Have complex routing requirements
+- Want to manage SSL certificates manually
+- Need specific nginx modules
 
 ## When to Choose Caddy
 
 Choose Caddy if you:
 
-- ✅ Want automatic HTTPS with zero configuration
-- ✅ Prefer simpler, more readable configurations
-- ✅ Want Let's Encrypt certificates automatically managed
-- ✅ Are setting up a new deployment
-- ✅ Value ease of use over maximum control
+- Want automatic HTTPS with zero configuration
+- Prefer simpler, more readable configurations
+- Want Let's Encrypt certificates automatically managed
+- Are setting up a new deployment
+- Value ease of use over maximum control
 
 ## Nginx Setup
 

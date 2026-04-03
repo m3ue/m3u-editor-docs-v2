@@ -10,7 +10,7 @@ tags:
 
 # Authentication
 
-The proxy supports optional API token authentication. When enabled, all management and monitoring endpoints require a valid token. Streaming endpoints are always public — your media player never needs a token.
+The proxy supports optional API token authentication. When enabled, all management and monitoring endpoints require a valid token. Streaming endpoints are always public: your media player never needs a token.
 
 ## Enabling Authentication
 
@@ -52,7 +52,7 @@ These endpoints are used by media players and must remain accessible without a t
 | `GET /hls/{stream_id}/segment` | HLS segment |
 | `GET /hls/{stream_id}/segment.ts` | HLS segment (alternative) |
 
-The `stream_id` itself acts as a security token for streaming — only callers who know it can access the stream.
+The `stream_id` itself acts as a security token for streaming: only callers who know it can access the stream.
 
 ## Providing the Token
 
@@ -107,14 +107,14 @@ http://localhost:8085/stats?api_token=my_secret_token
 
 ## Error Responses
 
-**401 Unauthorized** — token missing:
+**401 Unauthorized**: token missing:
 ```json
 {
   "detail": "API token required. Provide token via X-API-Token header."
 }
 ```
 
-**403 Forbidden** — token invalid:
+**403 Forbidden**: token invalid:
 ```json
 {
   "detail": "Invalid API token"
@@ -135,11 +135,11 @@ services:
 
 ## Security Best Practices
 
-1. **Use a strong token** — generate with `openssl rand -hex 32`
-2. **Use HTTPS** — always put the proxy behind a TLS-terminating reverse proxy in production
+1. **Use a strong token**: generate with `openssl rand -hex 32`
+2. **Use HTTPS**: always put the proxy behind a TLS-terminating reverse proxy in production
 3. **Prefer the header** over query parameters to keep the token out of logs
 4. **Rotate tokens** periodically
-5. **Store secrets securely** — use Docker secrets or an environment secrets manager; never hard-code tokens in source
+5. **Store secrets securely**: use Docker secrets or an environment secrets manager; never hard-code tokens in source
 
 ## Troubleshooting
 
@@ -153,4 +153,4 @@ services:
 
 **Stream playback requires a token**
 - Streaming endpoints (`/hls/*` and `/stream/*`) should never require auth
-- If they do, check your reverse proxy configuration — it may be stripping or adding headers
+- If they do, check your reverse proxy configuration: it may be stripping or adding headers

@@ -11,7 +11,7 @@ tags:
 
 # Hardware Acceleration
 
-The proxy includes automatic GPU detection and hardware-accelerated transcoding via FFmpeg. When a compatible GPU is available, encoding is offloaded from the CPU — dramatically increasing throughput and reducing latency.
+The proxy includes automatic GPU detection and hardware-accelerated transcoding via FFmpeg. When a compatible GPU is available, encoding is offloaded from the CPU: dramatically increasing throughput and reducing latency.
 
 :::warning
 Hardware acceleration is only available when using as an external instance. Using the AIO container with the embedded proxy instance **does not support hardware acceleration**.

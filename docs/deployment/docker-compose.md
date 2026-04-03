@@ -30,10 +30,10 @@ This is the **recommended production setup** with separate containers for each s
 
 ### Features
 
-- ✅ Hardware acceleration support (via external m3u-proxy)
-- ✅ Independent service scaling
-- ✅ Redis-based stream pooling
-- ✅ Easy to manage and troubleshoot
+- Hardware acceleration support (via external m3u-proxy)
+- Independent service scaling
+- Redis-based stream pooling
+- Easy to manage and troubleshoot
 
 ### Quick Start
 
@@ -85,9 +85,9 @@ Simple single-container deployment for testing and development.
 
 ### Features
 
-- ✅ Quick setup
-- ✅ Minimal configuration
-- ❌ No hardware acceleration support
+- Quick setup
+- Minimal configuration
+- No hardware acceleration support
 
 ### Quick Start
 
@@ -111,9 +111,9 @@ Route proxy traffic through a VPN using Gluetun.
 
 ### Features
 
-- ✅ All modular deployment benefits
-- ✅ VPN protection for streaming
-- ✅ Support for multiple VPN providers
+- All modular deployment benefits
+- VPN protection for streaming
+- Support for multiple VPN providers
 
 ### Quick Start
 
@@ -149,10 +149,10 @@ Maximum modularity with all services externalized.
 
 ### Features
 
-- ✅ Complete service isolation
-- ✅ Independent scaling
-- ✅ External reverse proxy (Nginx or Caddy)
-- ✅ Automatic HTTPS (Caddy only)
+- Complete service isolation
+- Independent scaling
+- External reverse proxy (Nginx or Caddy)
+- Automatic HTTPS (Caddy only)
 
 ### Architecture
 
@@ -180,12 +180,12 @@ Default ports for each setup:
 
 | Service | Default Port | Customizable |
 |---------|-------------|--------------|
-| M3U Editor | 36400 | ✅ `APP_PORT` |
-| M3U Proxy | 38085 | ✅ `M3U_PROXY_PORT` |
-| PostgreSQL | 5432 | ✅ `PG_PORT` |
-| Redis | 6379 | ✅ `REDIS_PORT` |
-| Nginx | 8080 | ✅ `NGINX_PORT` |
-| Caddy | 8080 | ✅ `CADDY_PORT` |
+| M3U Editor | 36400 | `APP_PORT` |
+| M3U Proxy | 38085 | `M3U_PROXY_PORT` |
+| PostgreSQL | 5432 | `PG_PORT` |
+| Redis | 6379 | `REDIS_PORT` |
+| Nginx | 8080 | `NGINX_PORT` |
+| Caddy | 8080 | `CADDY_PORT` |
 
 Change ports by setting environment variables in your `.env` file.
 

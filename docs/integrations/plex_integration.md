@@ -45,7 +45,7 @@ Unlike Emby and Jellyfin which use API keys generated from the dashboard, Plex u
 Your Plex token grants full access to your server. Never share it publicly or commit it to version control.
 :::
 
-## 🛠️ Configure the Integration
+## Configure the Integration
 
 1. In M3U-Editor expand the sidebar (left side), locate the integrations section and select **Media Servers**
 

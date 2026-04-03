@@ -11,7 +11,7 @@ tags:
 
 # Strict Live TS Mode
 
-Strict Live TS Mode is an optional feature that improves playback stability for live MPEG-TS streams delivered over HTTP — particularly with PVR clients like Kodi PVR IPTV Simple.
+Strict Live TS Mode is an optional feature that improves playback stability for live MPEG-TS streams delivered over HTTP: particularly with PVR clients like Kodi PVR IPTV Simple.
 
 ## The Problem It Solves
 
@@ -33,7 +33,7 @@ When Strict Live TS Mode is enabled, the proxy applies four optimisations:
 Strips incoming `Range` headers from live TS requests and always responds with `HTTP 200 OK` (never `206 Partial Content`). This prevents clients from treating a live stream like a seekable file.
 
 - Sets `Accept-Ranges: none` to tell clients not to retry with range requests
-- Sends no `Content-Length` header — the stream has no defined end
+- Sends no `Content-Length` header: the stream has no defined end
 
 ### 2. Startup Pre-buffering
 
@@ -62,7 +62,7 @@ There are three ways to enable this feature, from most specific to most broad:
 
 Open a playlist in the editor and go to the **Proxy Settings** section. Toggle **Enable Strict Live TS Handling** on.
 
-This applies to all channels from that playlist. It is the recommended approach for most users — you can target specific providers without affecting others.
+This applies to all channels from that playlist. It is the recommended approach for most users: you can target specific providers without affecting others.
 
 :::note
 The **Enable Strict Live TS Handling** option is only relevant when the playlist is **not** using a transcoding profile. If a stream profile is assigned to the playlist, transcoding takes over and strict TS handling is bypassed.
@@ -108,11 +108,11 @@ Per-stream and per-playlist settings override the global setting for that specif
 
 | Client | Status |
 |--------|--------|
-| Kodi PVR IPTV Simple | ✅ Primary use case |
-| VLC Media Player | ✅ |
-| MPV Player | ✅ |
-| FFplay | ✅ |
-| Android IPTV apps | ✅ (varies by app) |
+| Kodi PVR IPTV Simple | Supported (primary use case) |
+| VLC Media Player | Supported |
+| MPV Player | Supported |
+| FFplay | Supported |
+| Android IPTV apps | Supported (varies by app) |
 
 ## Logs
 
@@ -136,7 +136,7 @@ Circuit breaker activation:
 
 ## Performance Impact
 
-- **CPU**: Minimal — no transcoding, just buffering logic
+- **CPU**: Minimal: no transcoding, just buffering logic
 - **Memory**: ~256–512 KB per active stream for the pre-buffer
 - **Latency**: Adds ~0.5–1 second initial delay (pre-buffer time)
 - **Network**: Slightly increased upstream traffic due to pre-buffering
@@ -165,7 +165,7 @@ Circuit breaker activation:
 ## Best Practices
 
 1. **Enable globally** if most of your streams are live TS channels
-2. **Configure failover URLs** for critical streams — the circuit breaker is most effective with backup URLs available
+2. **Configure failover URLs** for critical streams: the circuit breaker is most effective with backup URLs available
 3. **Monitor logs** during initial rollout to tune pre-buffer and timeout settings
 4. **Start with defaults** and adjust based on your network conditions
 5. **Test channel switching** thoroughly with your client before rolling out to production

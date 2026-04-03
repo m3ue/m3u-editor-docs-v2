@@ -42,12 +42,12 @@ Creates a new proxy stream and returns a stream ID and endpoint URL.
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `url` | ✅ | Primary stream URL |
+| `url` | (required) | Primary stream URL |
 | `failover_urls` | — | Ordered list of backup URLs |
 | `user_agent` | — | User-Agent to send upstream |
 | `strict_live_ts` | — | Enable [Strict Live TS Mode](./strict-live-ts.md) for this stream |
 | `use_sticky_session` | — | Enable [Sticky Sessions](./sticky-sessions.md) for this stream |
-| `metadata` | — | Arbitrary key/value pairs — see [Stream Metadata](./stream-metadata.md) |
+| `metadata` | — | Arbitrary key/value pairs; see [Stream Metadata](./stream-metadata.md) |
 
 **Response:**
 
@@ -129,7 +129,7 @@ Returns streams matching a metadata field/value pair. See [Stream Metadata](./st
 
 ## Streaming
 
-These endpoints are **always public** — no authentication required.
+These endpoints are **always public**: no authentication required.
 
 ### Direct stream
 

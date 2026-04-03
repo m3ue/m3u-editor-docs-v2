@@ -16,11 +16,11 @@ The M3U Proxy handles stream restreaming, transcoding, and hardware acceleration
 
 Running m3u-proxy as a separate container provides:
 
-- ✅ **Hardware acceleration** support for transcoding
-- ✅ **Better performance** with independent scaling
-- ✅ **Redis-based pooling** for efficient stream management
-- ✅ **Independent updates** and configuration
-- ✅ **Resource isolation** from main application
+- **Hardware acceleration** support for transcoding
+- **Better performance** with independent scaling
+- **Redis-based pooling** for efficient stream management
+- **Independent updates** and configuration
+- **Resource isolation** from main application
 
 ## Quick Start
 

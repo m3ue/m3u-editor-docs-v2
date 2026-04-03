@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-description: Full reference for the plugin.json manifest — every field, its type, whether it is required, and what it does.
+description: Full reference for the plugin.json manifest: every field, its type, whether it is required, and what it does.
 tags:
   - Plugins
   - Reference
@@ -9,7 +9,7 @@ title: Manifest Reference
 
 # Manifest Reference
 
-Every plugin must include a `plugin.json` file at the root of its directory. This is the manifest — the host reads it to understand what the plugin is, what it needs, and what it declares ownership of.
+Every plugin must include a `plugin.json` file at the root of its directory. This is the manifest: the host reads it to understand what the plugin is, what it needs, and what it declares ownership of.
 
 ## Full example
 
@@ -67,7 +67,6 @@ Every plugin must include a `plugin.json` file at the root of its directory. Thi
 }
 ```
 
----
 
 ## Top-level fields
 
@@ -89,7 +88,6 @@ Every plugin must include a `plugin.json` file at the root of its directory. Thi
 | `schema` | object | No | Database tables the plugin owns. See [Schema](#schema). |
 | `data_ownership` | object | No | Declares which tables and storage paths belong to this plugin. See [Data ownership](#data-ownership). |
 
----
 
 ## Capabilities
 
@@ -102,7 +100,6 @@ Declare the capabilities your plugin provides. The validator checks that your PH
 | `stream_analysis` | `StreamAnalysisPluginInterface` |
 | `scheduled` | `ScheduledPluginInterface` |
 
----
 
 ## Hooks
 
@@ -118,11 +115,10 @@ Hooks your plugin subscribes to. If any hooks are declared, your class must impl
 | `before.epg.output.generate` | Just before EPG output is generated |
 | `after.epg.output.generate` | Just after EPG output is generated |
 
----
 
 ## Permissions
 
-Declare every permission your plugin needs. These are informational — the host does not enforce them at runtime — but the validator will warn if declared permissions do not match declared capabilities.
+Declare every permission your plugin needs. These are informational: the host does not enforce them at runtime: but the validator will warn if declared permissions do not match declared capabilities.
 
 | Permission | Risk | What it allows |
 |---|---|---|
@@ -136,7 +132,6 @@ Declare every permission your plugin needs. These are informational — the host
 | `hook_subscriptions` | Low | Required if any hooks are declared |
 | `scheduled_runs` | Low | Required if the `scheduled` capability is declared |
 
----
 
 ## Settings fields
 
@@ -165,7 +160,6 @@ Each entry in the `settings` array defines one setting field.
 | `select` | Drop-down from a static list defined in `options`. |
 | `model_select` | Drop-down populated from an Eloquent model relationship. |
 
----
 
 ## Action fields
 
@@ -205,7 +199,6 @@ Action fields (form inputs shown in the confirmation modal):
 
 The values the user fills in are passed as `$payload` to `runAction()`.
 
----
 
 ## Schema
 
@@ -255,7 +248,6 @@ All column definitions accept `nullable: true` to make the column nullable.
 
 **Supported index types:** `index`, `unique`.
 
----
 
 ## Data ownership
 

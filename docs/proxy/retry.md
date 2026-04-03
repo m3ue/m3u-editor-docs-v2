@@ -17,9 +17,9 @@ When a stream connection fails, the proxy can automatically retry before resorti
 When an error is detected (timeout, network error, lost connection), the proxy follows this sequence:
 
 1. **Retry the current URL** up to `STREAM_RETRY_ATTEMPTS` times with `STREAM_RETRY_DELAY` seconds between attempts
-2. **Respect the total timeout** — if `STREAM_TOTAL_TIMEOUT` is exceeded, retries stop regardless of the attempt count
-3. **Attempt failover** — if retries are exhausted and failover URLs exist, switch to the next URL
-4. **Fail the stream** — only after all retries and failover attempts are exhausted
+2. **Respect the total timeout**: if `STREAM_TOTAL_TIMEOUT` is exceeded, retries stop regardless of the attempt count
+3. **Attempt failover**: if retries are exhausted and failover URLs exist, switch to the next URL
+4. **Fail the stream**: only after all retries and failover attempts are exhausted
 
 ## Configuration
 
@@ -37,16 +37,16 @@ Add these to your `.env` file or Docker environment:
 
 Retries trigger automatically for:
 
-- **Chunk timeouts** — no data received within `LIVE_CHUNK_TIMEOUT_SECONDS`
-- **Connection errors** — network errors, timeout exceptions, HTTP errors
-- **Read errors** — connection lost before data is received
-- **Unexpected errors** — unhandled exceptions during streaming
+- **Chunk timeouts**: no data received within `LIVE_CHUNK_TIMEOUT_SECONDS`
+- **Connection errors**: network errors, timeout exceptions, HTTP errors
+- **Read errors**: connection lost before data is received
+- **Unexpected errors**: unhandled exceptions during streaming
 
 Retries are **not** applied for:
 
-- **VOD mid-stream failures** — once bytes have started flowing, VOD uses Range-header reconnection instead
-- **Client disconnections** — errors originating from the client side
-- **Streams with active data** — retries only apply when a connection fails before data is received
+- **VOD mid-stream failures**: once bytes have started flowing, VOD uses Range-header reconnection instead
+- **Client disconnections**: errors originating from the client side
+- **Streams with active data**: retries only apply when a connection fails before data is received
 
 ## Example Configurations
 
@@ -121,7 +121,7 @@ Retries keep you on the same URL; failover moves you to a different one. For mos
 - Increase `STREAM_RETRY_ATTEMPTS` to 5–10
 - Increase `STREAM_TOTAL_TIMEOUT` to 120–180 seconds
 - Enable `STREAM_RETRY_EXPONENTIAL_BACKOFF=true`
-- Check if `LIVE_CHUNK_TIMEOUT_SECONDS` is too aggressive — try 20–30 seconds
+- Check if `LIVE_CHUNK_TIMEOUT_SECONDS` is too aggressive: try 20–30 seconds
 
 **Streams taking too long to fail**
 - Decrease `STREAM_RETRY_ATTEMPTS` to 1–2
@@ -135,8 +135,8 @@ Retries keep you on the same URL; failover moves you to a different one. For mos
 
 ## Best Practices
 
-1. **Start conservative** — begin with the moderate preset and adjust based on real-world behaviour
-2. **Watch the logs** — retry frequency reveals your provider's reliability patterns
-3. **Account for distance** — if the upstream provider is geographically far, increase `STREAM_RETRY_DELAY`
-4. **Balance with failover** — if you have reliable failover URLs, keep retry attempts low for faster switching
+1. **Start conservative**: begin with the moderate preset and adjust based on real-world behaviour
+2. **Watch the logs**: retry frequency reveals your provider's reliability patterns
+3. **Account for distance**: if the upstream provider is geographically far, increase `STREAM_RETRY_DELAY`
+4. **Balance with failover**: if you have reliable failover URLs, keep retry attempts low for faster switching
 5. **Use exponential backoff** for providers with rate limiting or burst issues

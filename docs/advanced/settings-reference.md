@@ -15,7 +15,7 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 **Access**: Sidebar → **Settings** (⚙️ icon)
 
 
-## 🎨 Appearance Tab
+## Appearance Tab
 
 ### Layout & Display Options
 
@@ -41,7 +41,7 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 
-## 🔄 Proxy Tab
+## Proxy Tab
 
 ### M3U Proxy Settings
 
@@ -89,7 +89,7 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 
-## 🔗 Integrations Tab
+## Integrations Tab
 
 ### MediaFlow Proxy
 
@@ -133,7 +133,7 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 
-## 📺 Streams Tab
+## Streams Tab
 
 ### Series .strm File Settings
 
@@ -188,7 +188,7 @@ Same options as Series, but for VOD channels:
 
 
 
-## 💾 Backups Tab
+## Backups Tab
 
 ### Automated Backups
 
@@ -216,7 +216,7 @@ Same options as Series, but for VOD channels:
 
 
 
-## 🔔 Notifications Tab
+## Notifications Tab
 
 ### Email Settings
 
@@ -247,7 +247,7 @@ Configure email notifications for:
 
 
 
-## 🖥️ System Tab
+## System Tab
 
 ### Application Features
 
@@ -278,7 +278,7 @@ Configure email notifications for:
 
 
 
-## 🔧 Utility Buttons
+## Utility Buttons
 
 ### Reset Queue
 - **Location**: Top right of Settings page
@@ -303,7 +303,7 @@ Configure email notifications for:
 
 
 
-## 💡 Tips & Best Practices
+## Tips & Best Practices
 
 ### TMDB Integration
 - Get free API key at [themoviedb.org](https://www.themoviedb.org/settings/api)

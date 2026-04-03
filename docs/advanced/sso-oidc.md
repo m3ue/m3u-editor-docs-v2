@@ -33,7 +33,7 @@ On subsequent logins the account is updated with the latest profile data from th
 
 - A configured OIDC client/application on your identity provider.
 - The **redirect URI** must be set to: `https://your-m3u-editor-url/auth/oidc/callback`
-- Your provider must expose an OIDC discovery endpoint (`.well-known/openid-configuration`) — all major providers support this.
+- Your provider must expose an OIDC discovery endpoint (`.well-known/openid-configuration`). All major providers support this.
 
 ## Configuration
 
@@ -74,9 +74,9 @@ services:
 | Variable | Default | Description |
 |---|---|---|
 | `OIDC_ENABLED` | `false` | Enable or disable OIDC authentication |
-| `OIDC_ISSUER_URL` | — | Base URL of your OIDC provider (issuer) |
-| `OIDC_CLIENT_ID` | — | OAuth 2.0 client ID registered with your provider |
-| `OIDC_CLIENT_SECRET` | — | OAuth 2.0 client secret |
+| `OIDC_ISSUER_URL` | (required) | Base URL of your OIDC provider (issuer) |
+| `OIDC_CLIENT_ID` | (required) | OAuth 2.0 client ID registered with your provider |
+| `OIDC_CLIENT_SECRET` | (required) | OAuth 2.0 client secret |
 | `OIDC_SCOPES` | `openid,profile,email` | Scopes requested from the identity provider |
 | `OIDC_AUTO_REDIRECT` | `false` | Skip the login form and go straight to the IdP |
 | `OIDC_AUTO_CREATE_USERS` | `true` | Create a local account on first OIDC login |

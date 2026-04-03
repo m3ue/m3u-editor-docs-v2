@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-description: How to build a plugin for M3U Editor — scaffolding, manifest, contracts, execution context, and the install/trust flow.
+description: How to build a plugin for M3U Editor: scaffolding, manifest, contracts, execution context, and the install/trust flow.
 tags:
   - Plugins
   - Development
@@ -11,8 +11,8 @@ title: Developing Plugins
 
 A plugin is a directory containing two required files:
 
-- **`plugin.json`** — the manifest that declares the plugin's ID, capabilities, hooks, permissions, settings, and actions.
-- **`Plugin.php`** (or whichever entrypoint you declare in the manifest) — the PHP class that implements the plugin logic.
+- **`plugin.json`**: the manifest that declares the plugin's ID, capabilities, hooks, permissions, settings, and actions.
+- **`Plugin.php`** (or whichever entrypoint you declare in the manifest): the PHP class that implements the plugin logic.
 
 Everything else in the directory is optional: scripts, stubs, a README, CI configuration, and any support classes your plugin needs.
 
@@ -175,7 +175,7 @@ class Plugin implements PluginInterface, HookablePluginInterface, LifecyclePlugi
 
 | Interface | Required | When to implement |
 |---|---|---|
-| `PluginInterface` | Yes | All plugins — provides `runAction()` |
+| `PluginInterface` | Yes | All plugins: provides `runAction()` |
 | `HookablePluginInterface` | If hooks declared | Provides `runHook()` |
 | `ScheduledPluginInterface` | If `scheduled` capability | Provides `scheduledActions()` |
 | `LifecyclePluginInterface` | Optional | Provides `uninstall()` for custom cleanup |
@@ -332,6 +332,6 @@ Or they can upload the `.zip` directly from the admin UI.
 
 - Set `PLUGIN_SCAN_DRIVER=fake` in `.env` to skip ClamAV scanning during local development.
 - Use `--bare` with `make:plugin` if you just want the two core files without the starter kit.
-- Plugin settings are preserved across reinstalls — you do not need to re-configure after updating.
+- Plugin settings are preserved across reinstalls: you do not need to re-configure after updating.
 - Use `$context->heartbeat()` inside any loop that might run for more than a few seconds to prevent the run from being marked stale.
 - Always check `$context->cancellationRequested()` inside long-running loops so operators can stop a run cleanly from the UI.

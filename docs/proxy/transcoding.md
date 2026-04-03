@@ -1,7 +1,7 @@
 ---
 sidebar_position: 12
 title: Transcoding & Stream Profiles
-description: FFmpeg transcoding via Stream Profiles — configure in the Editor UI or directly via API
+description: FFmpeg transcoding via Stream Profiles: configure in the Editor UI or directly via API
 tags:
   - Proxy
   - Transcoding
@@ -11,7 +11,7 @@ tags:
 
 # Transcoding & Stream Profiles
 
-The proxy can transcode streams using FFmpeg before delivering them to clients. Transcoding is configured through **Stream Profiles** — reusable FFmpeg argument templates with variable placeholders you can customise per use case.
+The proxy can transcode streams using FFmpeg before delivering them to clients. Transcoding is configured through **Stream Profiles**: reusable FFmpeg argument templates with variable placeholders you can customise per use case.
 
 :::info
 Transcoding requires FFmpeg and is more resource-intensive than pass-through streaming. For live TV without re-encoding, pass-through is recommended. See [Hardware Acceleration](./hardware-acceleration.md) to GPU-accelerate encoding.
@@ -19,14 +19,13 @@ Transcoding requires FFmpeg and is more resource-intensive than pass-through str
 
 There are two ways to use transcoding:
 
-1. **Via the M3U Editor UI** — create profiles in the editor and assign them to playlists (most users)
-2. **Via the proxy API** — call the `/transcode` endpoint directly
+1. **Via the M3U Editor UI**: create profiles in the editor and assign them to playlists (most users)
+2. **Via the proxy API**: call the `/transcode` endpoint directly
 
----
 
 ## Configuring via the M3U Editor
 
-### Step 1 — Create a Stream Profile
+### Step 1: Create a Stream Profile
 
 Navigate to **Proxy → Stream Profiles** in the editor sidebar and click **New profile**.
 
@@ -45,7 +44,7 @@ The default template is a good starting point for most setups:
 
 Hardware acceleration (NVENC, VAAPI) is applied **automatically** by the proxy based on detected GPU. You do not need to hardcode encoder names in your template.
 
-### Step 2 — Assign to a Playlist
+### Step 2: Assign to a Playlist
 
 Open the playlist you want to apply transcoding to, go to the **Proxy Settings** section, and choose a profile:
 
@@ -62,12 +61,11 @@ Time seeking (scrubbing) is not supported for VOD content when transcoding is ac
 
 If you want a profile to apply across all playlists by default, set it under **Settings → Preferences → Proxy**:
 
-- **Default Live Transcoding Profile** — used by the in-app player for live content
-- **VOD and Series Transcoding Profile** — used by the in-app player for VOD/Series
+- **Default Live Transcoding Profile**: used by the in-app player for live content
+- **VOD and Series Transcoding Profile**: used by the in-app player for VOD/Series
 
 Per-playlist profile assignments override the global defaults.
 
----
 
 ## FFmpeg Template Syntax
 
@@ -77,12 +75,12 @@ Templates use `{variable}` for required values and `{variable|default}` for opti
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `input_url` | (auto-set) | Source stream URL — always required in the template |
+| `input_url` | (auto-set) | Source stream URL: always required in the template |
 | `output_args` | `pipe:1` | Output destination (stdout for streaming) |
 | `video_bitrate` | `2M` | Target video bitrate |
 | `audio_bitrate` | `128k` | Target audio bitrate |
 | `format` | `mp4` | Output container format |
-| `crf` | `23` | Constant Rate Factor — lower = higher quality |
+| `crf` | `23` | Constant Rate Factor: lower = higher quality |
 | `maxrate` | `2500k` | Maximum bitrate cap |
 | `bufsize` | `5000k` | Buffer size for rate control |
 
@@ -107,7 +105,6 @@ Templates use `{variable}` for required values and `{variable|default}` for opti
 | `M` | megabits/s (e.g. `2M`) |
 | _(none)_ | bits/s |
 
----
 
 ## Proxy API Usage
 
@@ -162,17 +159,15 @@ You can also pass a raw FFmpeg argument string as the `profile` field. Custom pr
 Custom templates are validated before use. Dangerous command patterns (shell operators, `wget`, `curl`, `rm`, etc.) are rejected.
 :::
 
----
 
 ## Combining with Redis Pooling
 
 When [Redis pooling](./redis-pooling.md) is enabled, clients using the same URL + profile combination share one FFmpeg process. The `STREAM_SHARING_STRATEGY` variable controls how the key is computed:
 
-- `url_profile` — same URL **and** same profile → shared (default)
-- `url_only` — same URL regardless of profile → shared
-- `disabled` — always individual processes
+- `url_profile`: same URL **and** same profile → shared (default)
+- `url_only`: same URL regardless of profile → shared
+- `disabled`: always individual processes
 
----
 
 ## Troubleshooting
 

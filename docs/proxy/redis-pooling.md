@@ -13,8 +13,8 @@ tags:
 
 Redis pooling enables two capabilities:
 
-1. **Shared streams** — multiple clients watching the same transcoded stream share one FFmpeg process instead of spawning one per client
-2. **Multi-worker coordination** — multiple proxy instances coordinate over Redis so streams survive worker restarts and load is distributed
+1. **Shared streams**: multiple clients watching the same transcoded stream share one FFmpeg process instead of spawning one per client
+2. **Multi-worker coordination**: multiple proxy instances coordinate over Redis so streams survive worker restarts and load is distributed
 
 Redis is **optional**. Without it, the proxy works perfectly for pass-through streaming and single-worker setups.
 
@@ -70,7 +70,7 @@ CLEANUP_INTERVAL=60             # Seconds between stale process cleanup
 |----------|-------------|
 | `url_profile` | Share based on URL + transcoding profile (default) |
 | `url_only` | Share based on URL only (ignores profile differences) |
-| `disabled` | No sharing — one process per client |
+| `disabled` | No sharing: one process per client |
 
 ## Docker Compose Setup
 
@@ -156,15 +156,15 @@ ps aux | grep ffmpeg
 | 100 clients, 10 channels | 100 processes | ~10 processes |
 | CPU usage | High | Low |
 | Memory usage | High | Low |
-| Multi-worker support | ❌ | ✅ |
-| Worker failover | ❌ | ✅ |
+| Multi-worker support | No | Yes |
+| Worker failover | No | Yes |
 | Startup time | Instant | Instant |
-| Pass-through streams | ✅ Same | ✅ Same |
+| Pass-through streams | Yes (same) | Yes (same) |
 
 ## Limitations
 
 - Redis pooling applies to **transcoded streams** only. Pass-through streams use per-client connections regardless of Redis configuration.
-- Stream state is stored in Redis memory — it is lost if Redis restarts without persistence configured.
+- Stream state is stored in Redis memory: it is lost if Redis restarts without persistence configured.
 - `MAX_CLIENTS_PER_SHARED_STREAM` limits how many clients share one process. Additional clients above this limit get their own process.
 
 ## Troubleshooting
@@ -181,4 +181,4 @@ ps aux | grep ffmpeg
 
 **High memory usage despite pooling**
 - Lower `MAX_CLIENTS_PER_SHARED_STREAM` to prevent one process from growing too large
-- Check `CLEANUP_INTERVAL` — stale processes should be cleaned up regularly
+- Check `CLEANUP_INTERVAL`: stale processes should be cleaned up regularly

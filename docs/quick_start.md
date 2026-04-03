@@ -13,14 +13,14 @@ title: Quick Start
 # Getting Started with m3u-editor
 
 :::tip Server Access
-M3U Editor Defaults to **Port 36400**. -- **This can be changed in the docker-compose file.**
+M3U Editor Defaults to **Port 36400**. This can be changed in the docker-compose file.
 
 **Default Username:** admin
 
 **Default Password:** admin
 :::
 
-## 🤔 Pick Your Deployment
+## Pick Your Deployment
 
 **M3U-Proxy with External Setup (Recommended)**
 
@@ -46,7 +46,7 @@ Point m3u-editor to your existing Postgres instance elsewhere.
 
 **[Jump to example](#deployment-external_postgres "External PostgreSQL")**
 
-## 🏷️ Image Versions
+## Image Versions
 
 M3U Editor is available in the following versions:
 
@@ -54,9 +54,9 @@ M3U Editor is available in the following versions:
 | :------------------------------------------------------------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------: |
 |       **[sparkison/m3u-editor:latest](https://github.com/m3ue/m3u-editor/tree/master)**       |              Recommended Stable Branch              |    docker pull sparkison/m3u-editor:latest    |
 |          **[sparkison/m3u-editor:dev](https://github.com/m3ue/m3u-editor/tree/dev)**          |             Stable-ish, quick bug fixes             |      docker pull sparkison/m3u-editor:dev     |
-| **[sparkison/m3u-editor:experimental](https://github.com/m3ue/m3u-editor/tree/experimental)** | Bleeding edge features -- **There be dragons here** | docker pull sparkison/m3u-editor:experimental |
+| **[sparkison/m3u-editor:experimental](https://github.com/m3ue/m3u-editor/tree/experimental)** | Bleeding edge features. **There be dragons here** | docker pull sparkison/m3u-editor:experimental |
 
-## 🐳 Deployment Examples
+## Deployment Examples
 
 ### M3U-Proxy with External Setup (Recommended){#deployment-recommended}
 
@@ -244,7 +244,7 @@ networks: {}
 Change **DB\_HOST** to wherever your PostgreSQL instance is running. Make sure the database and user already exist on that instance.
 :::
 
-### 💾 Data Persistence
+### Data Persistence
 
 Link a volume to **/var/www/config** to persist configurations, database, as well as logs accross container restarts
 
@@ -255,7 +255,7 @@ volumes:
   - ~/m3u-editor:/var/www/config        # Home directory
 ```
 
-### 🩺 Health Checks
+### Health Checks
 
 Add to m3u-editor service to monitor status:
 
@@ -279,5 +279,5 @@ depends_on:
 ***
 
 :::danger Disclaimer
-M3U Editor is an independent, open‑source playlist manager — not an IPTV provider. We don’t host channels or partner with streaming services; please only use content you’re authorized to access.
+M3U Editor is an independent, open‑source playlist manager: not an IPTV provider. We don’t host channels or partner with streaming services; please only use content you’re authorized to access.
 :::

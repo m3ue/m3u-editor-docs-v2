@@ -10,7 +10,7 @@ tags:
 
 # Failover
 
-The proxy supports automatic failover to backup stream URLs. When a primary stream fails — due to a network error, timeout, or provider outage — the proxy switches to the next URL in the failover list with less than 200ms interruption. Clients experience a brief buffer, not a stream restart.
+The proxy supports automatic failover to backup stream URLs. When a primary stream fails: due to a network error, timeout, or provider outage: the proxy switches to the next URL in the failover list with less than 200ms interruption. Clients experience a brief buffer, not a stream restart.
 
 ## How It Works
 
@@ -20,7 +20,7 @@ Each stream can be created with a list of `failover_urls`. The proxy tracks the 
 2. Proxy updates the active URL to the next failover URL
 3. Signals all connected clients via an async event
 4. Each client closes the old connection and opens a new one
-5. Streaming continues — the client's player sees a brief buffer
+5. Streaming continues: the client's player sees a brief buffer
 
 The whole process typically takes 50–200ms.
 
@@ -40,14 +40,14 @@ The whole process typically takes 50–200ms.
 
 ### URL Ordering
 
-Failover URLs are tried in order. Once the list is exhausted the stream fails — the proxy does **not** cycle back to the primary URL. Up to 3 failover attempts are made per streaming session (hardcoded), so if more than 3 backup URLs are configured only the first 3 will ever be tried per session.
+Failover URLs are tried in order. Once the list is exhausted the stream fails: the proxy does **not** cycle back to the primary URL. Up to 3 failover attempts are made per streaming session (hardcoded), so if more than 3 backup URLs are configured only the first 3 will ever be tried per session.
 
 ```
 Primary fails → Backup 1 → Backup 2 → Backup 3 → stream fails
 ```
 
 :::tip
-When the **Advanced Failover** resolver is enabled (see below), this static limit does not apply — the editor decides what URL to return next based on live capacity and health data.
+When the **Advanced Failover** resolver is enabled (see below), this static limit does not apply: the editor decides what URL to return next based on live capacity and health data.
 :::
 
 ## Creating a Stream with Failover URLs
@@ -81,7 +81,7 @@ This is useful for testing, or for manual intervention when you know a provider 
 
 Failover is **per-client** for continuous streams. If one viewer's connection drops, only that viewer experiences the failover sequence. Other clients continue streaming uninterrupted from their own provider connections.
 
-For HLS and transcoded streams, failover is shared — all clients on a stream switch together when the shared upstream fails.
+For HLS and transcoded streams, failover is shared: all clients on a stream switch together when the shared upstream fails.
 
 ## Performance Characteristics
 
@@ -99,7 +99,7 @@ For HLS streams, failover is transparent to the player:
 
 - The next playlist refresh automatically uses the new URL
 - Segment errors trigger automatic failover
-- The player never receives an error response — it just gets segments from a new source
+- The player never receives an error response: it just gets segments from a new source
 
 ## Transcoded Stream Failover
 
@@ -156,7 +156,7 @@ Configure this under **Settings → Preferences → Proxy** in the editor.
 | **Enable advanced failover logic** | Proxy calls the editor to resolve the next failover source based on playlist capacity |
 | **Resolver URL** | The URL the proxy uses to reach the editor (e.g. `http://m3u-editor:36400`). Must be reachable from the proxy container |
 
-When enabled, the proxy sends a request to the editor's resolver endpoint during failover, and the editor returns the best available backup source — respecting stream limits, marked-invalid playlists, and provider health.
+When enabled, the proxy sends a request to the editor's resolver endpoint during failover, and the editor returns the best available backup source: respecting stream limits, marked-invalid playlists, and provider health.
 
 ### Fail Conditions
 
@@ -167,7 +167,7 @@ When enabled, the proxy sends a request to the editor's resolver endpoint during
 | **Invalid timeout (minutes)** | How long a playlist stays invalid before being retried. Default: 5 minutes |
 | **Clear failed playlists** | Immediately un-marks all playlists currently flagged as invalid |
 
-This is particularly useful when providers return `403` or `503` errors under load — the editor will temporarily route traffic away from that source without requiring a manual fix.
+This is particularly useful when providers return `403` or `503` errors under load: the editor will temporarily route traffic away from that source without requiring a manual fix.
 
 ### Stream Limit Handling
 
@@ -175,7 +175,6 @@ This is particularly useful when providers return `403` or `503` errors under lo
 |---------|-------------|
 | **Stop oldest stream when limit reached** | When a playlist's stream limit is hit, automatically stops the oldest active stream to free capacity for the new request. Enables instant channel switching on single-connection providers |
 
----
 
 ## Before vs After Failover
 

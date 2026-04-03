@@ -16,10 +16,10 @@ M3U Editor includes comprehensive EPG caching for dramatically improved performa
 
 The EPG optimization system provides:
 
-- ✅ **Instant data retrieval** instead of slow XML parsing
-- ✅ **Date-chunked storage** for efficient access
-- ✅ **Memory-efficient pagination** support
-- ✅ **Automatic cache validation** based on file modification times
+- **Instant data retrieval** instead of slow XML parsing
+- **Date-chunked storage** for efficient access
+- **Memory-efficient pagination** support
+- **Automatic cache validation** based on file modification times
 
 ## How It Works
 
@@ -248,9 +248,9 @@ async function loadEPG() {
 ### Cache Not Generating
 
 **Check:**
-- ✅ EPG import completed successfully
-- ✅ Storage directory is writable
-- ✅ Sufficient disk space
+- EPG import completed successfully
+- Storage directory is writable
+- Sufficient disk space
 
 **Solution:**
 ```bash
@@ -292,7 +292,7 @@ tail -f storage/logs/laravel.log
 
 ### For Large EPG Files
 
-**✅ Recommended:**
+**Recommended:**
 - Enable automatic caching (default)
 - Use pagination in API calls
 - Limit date ranges when possible
@@ -300,7 +300,7 @@ tail -f storage/logs/laravel.log
 
 ### For API Integration
 
-**✅ Recommended:**
+**Recommended:**
 - Use `per_page` parameter to limit results
 - Implement progressive loading
 - Cache API responses client-side
@@ -308,7 +308,7 @@ tail -f storage/logs/laravel.log
 
 ### For Playlist Output
 
-**✅ Recommended:**
+**Recommended:**
 - Cache handles generation automatically
 - Use time-limited outputs (7-14 days)
 - Filter to only mapped channels

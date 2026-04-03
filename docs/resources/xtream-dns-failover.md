@@ -10,7 +10,7 @@ title: Xtream DNS Failover
 
 # Xtream DNS Failover
 
-M3U Editor supports configuring multiple server URLs for Xtream Codes playlists. When the primary server is unreachable, the application will automatically try the next URL in the list — no manual intervention required.
+M3U Editor supports configuring multiple server URLs for Xtream Codes playlists. When the primary server is unreachable, the application will automatically try the next URL in the list: no manual intervention required.
 
 This is useful when your IPTV provider supplies backup server addresses, or when you want to load-balance across multiple DNS entries pointing to the same service.
 
@@ -22,7 +22,7 @@ Each Xtream playlist has a **primary URL** and an optional list of **fallback UR
 2. On success, **promote** the working URL to primary and persist the change to the database, so future requests use the new primary without delay.
 3. If all URLs fail, the operation is aborted and an error is reported.
 
-URL promotion is permanent — the working URL stays as primary until another failover or until you reorder them manually.
+URL promotion is permanent: the working URL stays as primary until another failover or until you reorder them manually.
 
 ## Adding Fallback URLs
 
@@ -35,7 +35,7 @@ URL promotion is permanent — the working URL stays as primary until another fa
 7. Click **Save**.
 
 :::tip
-Enter only the base server URL, e.g. `https://backup.example.com:8080`. Do not include path or credentials — these are taken from the primary playlist configuration.
+Enter only the base server URL, e.g. `https://backup.example.com:8080`. Do not include path or credentials: these are taken from the primary playlist configuration.
 :::
 
 ## Health Status Panel
@@ -63,7 +63,7 @@ This means over time, the list self-organises to keep the fastest/most-reliable 
 
 ## Limitations
 
-- Fallback URLs are only available for **Xtream Codes API** playlists — not M3U URL or file-based playlists.
+- Fallback URLs are only available for **Xtream Codes API** playlists: not M3U URL or file-based playlists.
 - Up to **10** fallback URLs can be configured per playlist.
 - Health checks use the same credentials (username/password) as the primary URL.
 - SSL verification follows the playlist's existing SSL setting.
@@ -80,8 +80,8 @@ This means over time, the list self-organises to keep the fastest/most-reliable 
 
 - Confirm your network/Docker configuration allows outbound connections to the provider servers.
 - Try the URL directly in a browser to rule out a credential or provider issue.
-- Check your SSL settings — if the provider uses a self-signed certificate you may need to disable SSL verification on the playlist.
+- Check your SSL settings: if the provider uses a self-signed certificate you may need to disable SSL verification on the playlist.
 
 ### Promoted URL reverted after container restart
 
-This should not happen — promoted URLs are persisted to the database immediately after a successful failover. If you observe this, verify your database volume is correctly mounted and persisted.
+This should not happen: promoted URLs are persisted to the database immediately after a successful failover. If you observe this, verify your database volume is correctly mounted and persisted.

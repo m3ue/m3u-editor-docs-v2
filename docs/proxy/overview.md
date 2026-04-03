@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 title: Overview & Architecture
-description: How the M3U Proxy works — streaming design, stream types, and performance model
+description: How the M3U Proxy works: streaming design, stream types, and performance model
 tags:
   - Proxy
   - Architecture
@@ -10,16 +10,16 @@ tags:
 
 # M3U Proxy Overview
 
-The M3U Proxy is a high-performance HTTP proxy server purpose-built for IPTV streaming. It sits between your media players and IPTV providers, handling stream delivery, failover, transcoding, and monitoring — all without introducing unnecessary overhead.
+The M3U Proxy is a high-performance HTTP proxy server purpose-built for IPTV streaming. It sits between your media players and IPTV providers, handling stream delivery, failover, transcoding, and monitoring: all without introducing unnecessary overhead.
 
 ## Design Philosophy
 
 The proxy is built around a **true live proxy** model: every byte delivered to a client comes directly from the upstream provider with no persistent buffering layer. This means:
 
-- **Zero transcoding by default** — pure pass-through for maximum performance
-- **Connection sharing for live streams** — multiple viewers share one upstream provider connection
-- **Immediate cleanup** — connections close the moment the last client stops watching
-- **Isolated failover** — one client's problem never affects another
+- **Zero transcoding by default**: pure pass-through for maximum performance
+- **Connection sharing for live streams**: multiple viewers share one upstream provider connection
+- **Immediate cleanup**: connections close the moment the last client stops watching
+- **Isolated failover**: one client's problem never affects another
 
 ## Stream Types
 
@@ -36,10 +36,10 @@ Provider → primary client → Client A (direct yield)
 ```
 
 Key properties:
-- **One upstream connection** per live channel — conserves provider connection slots
-- **Subscriber promotion** — if the primary disconnects, the longest-running subscriber seamlessly takes over and inherits the upstream TCP connection
-- Truly ephemeral — connection closes when the last client disconnects
-- **VOD is excluded** — each VOD client gets an independent connection for full seek/range support
+- **One upstream connection** per live channel: conserves provider connection slots
+- **Subscriber promotion**: if the primary disconnects, the longest-running subscriber seamlessly takes over and inherits the upstream TCP connection
+- Truly ephemeral: connection closes when the last client disconnects
+- **VOD is excluded**: each VOD client gets an independent connection for full seek/range support
 
 ### HLS Streams (`.m3u8`)
 
@@ -78,7 +78,7 @@ Per-client metrics (bytes served, segments delivered, error counts) are tracked 
 
 ## Seamless Failover
 
-When an upstream connection fails, the proxy switches to a backup URL with less than 100ms interruption — transparent to the client. Failover is **per-client**, so a single viewer experiencing a hiccup doesn't impact anyone else.
+When an upstream connection fails, the proxy switches to a backup URL with less than 100ms interruption: transparent to the client. Failover is **per-client**, so a single viewer experiencing a hiccup doesn't impact anyone else.
 
 See [Failover](./failover.md) for the full architecture and configuration.
 
@@ -98,7 +98,7 @@ The proxy is designed to work well out of the box, but includes several advanced
 
 ## Quick Start
 
-The proxy ships as a Docker image. The quickest way to get started is via Docker Compose — see the [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) deployment guide.
+The proxy ships as a Docker image. The quickest way to get started is via Docker Compose: see the [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) deployment guide.
 
 For a standalone run:
 
@@ -113,8 +113,8 @@ The proxy starts on port `8085` by default. Visit `http://localhost:8085/health?
 
 ## Further Reading
 
-- [Configuration](./configuration.md) — All environment variables
-- [Authentication](./authentication.md) — Securing the management API
-- [Failover](./failover.md) — Automatic backup URL switching
-- [Retry Configuration](./retry.md) — Fine-tuning retry behaviour
-- [API Reference](./api-reference.md) — REST endpoint reference
+- [Configuration](./configuration.md): All environment variables
+- [Authentication](./authentication.md): Securing the management API
+- [Failover](./failover.md): Automatic backup URL switching
+- [Retry Configuration](./retry.md): Fine-tuning retry behaviour
+- [API Reference](./api-reference.md): REST endpoint reference

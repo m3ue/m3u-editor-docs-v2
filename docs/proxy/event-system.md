@@ -11,7 +11,7 @@ tags:
 
 # Event System & Webhooks
 
-The proxy fires events for key points in a stream's lifecycle. You can register webhook URLs to receive HTTP POST notifications for any combination of these events — useful for monitoring, alerting, analytics, and dashboard updates.
+The proxy fires events for key points in a stream's lifecycle. You can register webhook URLs to receive HTTP POST notifications for any combination of these events: useful for monitoring, alerting, analytics, and dashboard updates.
 
 The event system runs asynchronously and never blocks stream operations, even if a webhook endpoint is slow or unavailable.
 
@@ -221,7 +221,7 @@ INFO: Event: client_connected for stream abc123def456 at 2025-09-25 22:38:35
 ## Security Considerations
 
 - **Use HTTPS** for all webhook endpoints in production
-- **Validate payloads** on your server — verify the `event_type` is one you expect
-- **Set reasonable timeouts** — the default is 10 seconds; lower is better for high-traffic setups
-- **Monitor webhook failures** — failed deliveries are logged but not retried indefinitely
+- **Validate payloads** on your server: verify the `event_type` is one you expect
+- **Set reasonable timeouts**: the default is 10 seconds; lower is better for high-traffic setups
+- **Monitor webhook failures**: failed deliveries are logged but not retried indefinitely
 - **Add auth** to your webhook handler if needed (e.g. check a secret header)

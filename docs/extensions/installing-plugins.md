@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: How to install, activate, and manage plugins in M3U Editor — covering the UI workflow and all install sources.
+description: How to install, activate, and manage plugins in M3U Editor, covering the UI workflow and all install sources.
 tags:
   - Plugins
   - Installation
@@ -15,12 +15,11 @@ Every plugin goes through the same review flow regardless of where it comes from
 
 | Source | Best for |
 |---|---|
-| **Browser upload** | Most users — upload a `.zip` or `.tar.gz` directly from the admin UI. Works in all Docker setups. |
+| **Browser upload** | Most users: upload a `.zip` or `.tar.gz` directly from the admin UI. Works in all Docker setups. |
 | **Local directory** | Plugin developers staging a plugin folder already on the server. |
 | **Local archive** | Staging a `.zip` or `.tar.gz` already on the server filesystem. |
 | **GitHub release asset** | Installing plugins distributed as GitHub release assets, verified by checksum. |
 
----
 
 ## Installing via browser upload (recommended)
 
@@ -37,7 +36,6 @@ The new install review appears in the **Plugins → Installs** list with status 
 If your plugin is private, the browser upload path is all you need. There is no requirement to publish it to GitHub.
 :::
 
----
 
 ## The install review flow
 
@@ -75,7 +73,6 @@ After trust, the plugin appears in the **Plugins** list. Open the plugin and cli
 The Enable button is only active when the plugin is installed, validated, trusted, and has verified integrity. If any check is failing, use the **Validate** or **Verify Integrity** buttons to diagnose the issue.
 :::
 
----
 
 ## Managing installed plugins
 
@@ -89,7 +86,7 @@ Click **Verify Integrity** to re-hash all plugin files and compare against the s
 
 ### Plugin settings
 
-Each plugin may expose a settings form on its edit page. Fill in the settings and save — they take effect on the next plugin run. Settings are preserved across updates and reinstalls.
+Each plugin may expose a settings form on its edit page. Fill in the settings and save: they take effect on the next plugin run. Settings are preserved across updates and reinstalls.
 
 ### Update a plugin
 
@@ -120,25 +117,22 @@ If the plugin has an active run in progress, you must wait for it to finish (or 
 
 **Forget Registry Record** (in the **Manage** dropdown) removes the database row, all saved settings, and all run history. It does **not** delete the plugin files from disk and does **not** clean plugin-owned data. If the plugin folder still exists on disk, the next discovery pass will re-register it.
 
----
 
 ## Bundled plugins
 
-Some plugins ship as **bundled** plugins inside the application installation. These are trusted by default and do not go through the install review flow — they are discovered and registered automatically on startup.
+Some plugins ship as **bundled** plugins inside the application installation. These are trusted by default and do not go through the install review flow: they are discovered and registered automatically on startup.
 
----
 
 ## Docker and persistence
 
 The `plugins/` directory is symlinked to the persistent config volume, so **custom plugins survive image rebuilds and container restarts** automatically.
 
-- **Plugin files** — persisted via the config volume symlink.
-- **Plugin settings and run history** — stored in the database, persisted via your database volume.
-- **Staged upload archives** — stored in `storage/app/plugin-staging/`, persisted via the storage volume.
+- **Plugin files**: persisted via the config volume symlink.
+- **Plugin settings and run history**: stored in the database, persisted via your database volume.
+- **Staged upload archives**: stored in `storage/app/plugin-staging/`, persisted via the storage volume.
 
 If you are self-hosting outside of the standard Docker Compose setup and managing volumes manually, ensure that the path the `plugins/` symlink resolves to is on a persistent volume.
 
----
 
 ## Advanced: Artisan commands
 

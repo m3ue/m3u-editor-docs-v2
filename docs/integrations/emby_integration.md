@@ -34,7 +34,7 @@ You will need to make sure you have your url for your Emby Server. This can be i
 
 ![Emby New API Key](/img/doc_imgs/emby_api_new.png)
 
-## 🛠️ Configure the Integration
+## Configure the Integration
 
 1. In M3U-Editor expand the sidebar (left side), locate the integrations section and select **Media Servers**
 

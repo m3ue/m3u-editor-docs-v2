@@ -15,7 +15,7 @@ Silence Detection is an optional feature that monitors live streams for silent a
 
 ## The Problem It Solves
 
-Some upstream providers serve a technically valid stream (bytes are flowing, bitrate looks fine) but the audio is completely silent — for example:
+Some upstream providers serve a technically valid stream (bytes are flowing, bitrate looks fine) but the audio is completely silent: for example:
 
 - A provider switching sources mid-stream leaves a brief or extended dead-air period
 - An encoder issue produces a valid transport stream with no audio content
@@ -27,7 +27,7 @@ Standard failover triggers (bitrate monitoring, circuit breaker) won't catch thi
 
 When enabled, the proxy buffers incoming stream data over a configurable time window (default 10 seconds). At the end of each window, a short-lived `ffmpeg` process analyses the buffer using the `silencedetect` audio filter. If silence is detected in the window, a silence counter increments. When the counter reaches the configured threshold (default 3 consecutive windows), failover is triggered.
 
-- VOD streams are excluded — silence detection only applies to live streams
+- VOD streams are excluded: silence detection only applies to live streams
 - A grace period (default 15 seconds) at stream start prevents false positives during audio decoder startup
 - The silence counter resets automatically if audio recovers before the threshold is reached
 - All state is fully reset when a failover occurs
@@ -53,7 +53,7 @@ Enable globally for all live streams via the proxy's environment configuration:
 ENABLE_SILENCE_DETECTION=true
 ```
 
-The M3U Editor UI settings take precedence over the environment variable when the editor is connected to the proxy — the UI values are passed per-stream on creation.
+The M3U Editor UI settings take precedence over the environment variable when the editor is connected to the proxy: the UI values are passed per-stream on creation.
 
 ### Via the Proxy API
 
@@ -92,9 +92,9 @@ Per-stream API values override the global environment variable and the UI settin
 
 Silence detection spawns one short-lived `ffmpeg` subprocess per active stream per check interval. For example, with the default 10-second interval and 20 concurrent streams, that is approximately 2 ffmpeg processes per second.
 
-- **CPU**: Low-to-moderate — `ffmpeg` analysis runs on buffered data, not a live transcode
+- **CPU**: Low-to-moderate: `ffmpeg` analysis runs on buffered data, not a live transcode
 - **Memory**: Up to ~5 MB per active stream (hard-capped buffer)
-- **Upstream connections**: None — the buffer is filled from data already being proxied
+- **Upstream connections**: None: the buffer is filled from data already being proxied
 
 ## Logs
 
@@ -132,8 +132,8 @@ When ffmpeg times out during analysis:
 
 **Feature appears inactive (no log output)**
 - Confirm `ffmpeg` is installed in the proxy container: `docker exec <container> ffmpeg -version`
-- Verify the stream is live (not VOD) — silence detection is skipped for VOD streams
-- Check that failover URLs are configured — failover cannot trigger without a backup
+- Verify the stream is live (not VOD): silence detection is skipped for VOD streams
+- Check that failover URLs are configured: failover cannot trigger without a backup
 
 **High CPU usage**
 - Increase `SILENCE_CHECK_INTERVAL` to reduce ffmpeg invocation frequency
@@ -141,8 +141,8 @@ When ffmpeg times out during analysis:
 
 ## Best Practices
 
-1. **Start with defaults** — the default values are conservative and won't trigger on brief silent moments between programmes
-2. **Always configure failover URLs** — silence detection only helps if there is a backup to fail over to
+1. **Start with defaults**: the default values are conservative and won't trigger on brief silent moments between programmes
+2. **Always configure failover URLs**: silence detection only helps if there is a backup to fail over to
 3. **Combine with bitrate monitoring** for comprehensive stream health coverage
 4. **Monitor logs** during initial rollout to tune thresholds for your specific providers
-5. **Use the grace period** — leave it at 15 seconds or higher for providers with slow audio startup
+5. **Use the grace period**: leave it at 15 seconds or higher for providers with slow audio startup

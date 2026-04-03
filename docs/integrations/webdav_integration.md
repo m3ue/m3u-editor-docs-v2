@@ -19,7 +19,7 @@ Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
 This integration is currently **in active development**. Core functionality is available; additional features and polish are ongoing.
 :::
 
-The WebDAV integration allows you to expose video files hosted on any WebDAV-compatible server (Synology NAS, Nextcloud, Apache/Nginx WebDAV, etc.) as VOD channels and TV series within M3U Editor — without needing a dedicated media server like Emby or Plex.
+The WebDAV integration allows you to expose video files hosted on any WebDAV-compatible server (Synology NAS, Nextcloud, Apache/Nginx WebDAV, etc.) as VOD channels and TV series within M3U Editor: without needing a dedicated media server like Emby or Plex.
 
 ## How It Works
 
@@ -144,7 +144,7 @@ On the first sync, each item is grouped under the **Library Name** you configure
 
 ## Streaming
 
-Media files are streamed to clients by proxying HTTP requests through M3U Editor. Credentials are never exposed to the client — M3U Editor authenticates with the WebDAV server on the client's behalf.
+Media files are streamed to clients by proxying HTTP requests through M3U Editor. Credentials are never exposed to the client: M3U Editor authenticates with the WebDAV server on the client's behalf.
 
 :::note
 If your WebDAV server requires authentication, ensure the **WebDAV Username** and **WebDAV Password** are configured correctly. M3U Editor will use HTTP Basic Auth when fetching and proxying media files.

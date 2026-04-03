@@ -19,14 +19,14 @@ Provider Profiles allow you to pool multiple Xtream API accounts into a single p
 Provider Profiles is designed for **pooling multiple accounts from the same IPTV provider**. You can use different servers from that provider, but mixing completely different providers may cause issues!
 :::
 
----
-## 📝 Requirements
+## Requirements
+
 Before enabling Provider Profiles, ensure:
 
-- ✅ **Proxy mode is enabled** - Required for accurate connection tracking **This will get enabled when you toggle a playlist to use provider profiles**
-- ✅ **M3U_PROXY_URL and M3U_PROXY_TOKEN are configured** - Provider Profiles requires the m3u-proxy service
-- ✅ **Playlist is Xtream API type** - Profiles only work with Xtream playlists, not plain M3U files
-- ✅ **Multiple accounts from the same provider** - You need additional IPTV accounts to pool
+- **Proxy mode is enabled**: Required for accurate connection tracking. This will get enabled when you toggle a playlist to use provider profiles.
+- **M3U_PROXY_URL and M3U_PROXY_TOKEN are configured**: Provider Profiles requires the m3u-proxy service.
+- **Playlist is Xtream API type**: Profiles only work with Xtream playlists, not plain M3U files.
+- **Multiple accounts from the same provider**: You need additional IPTV accounts to pool.
 
 **Why Proxy is Required:**
 - Tracks active connections in real-time via Redis
@@ -34,7 +34,7 @@ Before enabling Provider Profiles, ensure:
 - Manages automatic profile selection based on capacity
 - Handles credential transformation for different accounts                                                                             
 
-## 💡 How It Works
+## How It Works
 
 ### The Basics
 
@@ -60,15 +60,13 @@ When multiple people watch the **same channel** with transcoding enabled, they c
 **Scenario:** 5 family members watching the same football game **with different devices**
 
 **Result:**
-- ✅ Only 1 provider connection used
-- ✅ All 5 viewers share the same transcoded stream
-- ✅ Maximum efficiency achieved!
+- Only 1 provider connection used
+- All 5 viewers share the same transcoded stream
+- Maximum efficiency achieved!
 
 Instead of 5 separate connections consuming bandwidth and provider resources, everyone shares a single optimized stream. This leaves more connections available for watching different channels.
 
----
-
-## 🛠️ Setting Up Provider Profiles
+## Setting Up Provider Profiles
 
 
 ### Step 1: Enable Provider Profiles
@@ -132,8 +130,6 @@ Total: 3/10 active | 7 available
 
 ✗ Account 3: 0/5 streams (Disabled)
 
----
-
 # Using Multiple Server URLs
 
 ### When to Use Different URLs
@@ -142,8 +138,7 @@ Total: 3/10 active | 7 available
 
 **Important**: Provider Profiles is designed for **the same provider with multiple accounts**. The `url` field allows different servers/endpoints from that same provider, not different providers entirely.
 
----
-## 💼 Managing Your Profiles
+## Managing Your Profiles
 
 ### Testing Profiles
 
@@ -190,7 +185,7 @@ You can manually override the connection limit:
    - Your manual limit
    - Provider's actual limit
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Profile Test Failed
 
@@ -205,8 +200,6 @@ You can manually override the connection limit:
 2. Verify the provider URL is correct (check for typos)
 3. Try accessing the provider's website to confirm it's online
 4. Test with a different URL if your provider has backup servers
-
----
 
 ### No Profiles Have Capacity
 
@@ -225,8 +218,6 @@ Unable to start new streams even though profiles are enabled
 4. Enable any disabled profiles
 5. Add a new profile if needed
 
----
-
 ### Streams Not Sharing Connections
 
 **Symptoms:**  
@@ -242,9 +233,7 @@ Multiple people watching the same channel but using separate connections
 2. All viewers should use the same transcoding profile
 3. Connection pooling happens automatically for the same channel + quality
 
----
-
-## 💬 Frequently Asked Questions
+## Frequently Asked Questions
 
 ### Q: Can I use accounts from completely different IPTV providers?
 

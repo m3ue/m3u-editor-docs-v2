@@ -16,7 +16,7 @@ title: .strm Files Guide
 Learn how to use M3U Editor's .strm file generation to integrate your IPTV content with Plex, Jellyfin, Emby, and other media servers.
 
 
-## 🎯 What are .strm Files?
+## What are .strm Files?
 
 **.strm files** are simple text files containing a stream URL. Media servers like Plex, Jellyfin, and Emby can read these files and play the streams as if they were local media files.
 
@@ -27,15 +27,15 @@ http://your-ip:36400/stream/episode/12345
 
 ### Benefits
 
-✅ **Organize IPTV content** like local media  
-✅ **Use media server features** (watched status, collections, etc.)  
-✅ **Better metadata** via TMDB integration  
-✅ **Automatic library updates** when content changes  
-✅ **Compatible** with existing media server workflows  
+- **Organize IPTV content** like local media
+- **Use media server features** (watched status, collections, etc.)
+- **Better metadata** via TMDB integration
+- **Automatic library updates** when content changes
+- **Compatible** with existing media server workflows
 
 
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Enable .strm File Generation
 
@@ -66,7 +66,7 @@ http://your-ip:36400/stream/episode/12345
 
 
 
-## ⚙️ Configuration Options
+## Configuration Options
 
 ### Path Structure
 
@@ -122,24 +122,24 @@ Category + Title:
 
 
 
-## 📝 Filename Metadata
+## Filename Metadata
 
 Customize what appears in the filename for better media server recognition:
 
 ### Year
 - **Format**: `Title (2024)`
 - **Source**: Release date from provider or TMDB
-- **Recommended**: ✅ Yes - helps media server matching
+- **Recommended**: Yes, helps with media server matching
 
 ### TMDB ID
 - **Format**: `Title [tmdb-12345]` or `Title {tmdb-12345}`
 - **Source**: TMDB integration (must be configured)
-- **Recommended**: ✅ Yes - ensures correct metadata matching
+- **Recommended**: Yes, ensures correct metadata matching
 
 ### Resolution (Series only)
 - **Format**: `S01E01 - 1080p`
 - **Source**: Detected from stream
-- **Recommended**: ⚠️ Optional - not all streams have resolution info
+- **Recommended**: Optional, not all streams have resolution info
 
 ### Examples
 
@@ -155,7 +155,7 @@ Customize what appears in the filename for better media server recognition:
 
 
 
-## 🔧 Advanced Settings
+## Advanced Settings
 
 ### TMDB ID Format
 
@@ -189,7 +189,7 @@ Remove unwanted text from folder/file names:
 
 
 
-## 🎬 Media Server Setup
+## Media Server Setup
 
 ### Plex Configuration
 
@@ -209,9 +209,9 @@ Remove unwanted text from folder/file names:
 
 #### Recommended Settings
 
-- **✅** Enable "Update my library automatically"
-- **✅** Enable "Scan my library periodically"
-- **⚠️** Disable "Empty trash automatically" (until stable)
+- Enable "Update my library automatically"
+- Enable "Scan my library periodically"
+- Disable "Empty trash automatically" (until stable)
 
 #### Troubleshooting
 
@@ -244,8 +244,8 @@ Remove unwanted text from folder/file names:
 
 - Metadata language: Your preference
 - Country: Your country
-- **✅** Save metadata into media folder
-- **✅** Enable "Monitor library"
+- Save metadata into media folder
+- Enable "Monitor library"
 
 ### Emby Configuration
 
@@ -259,19 +259,19 @@ Remove unwanted text from folder/file names:
 
 
 
-## 📂 Sync Location Requirements
+## Sync Location Requirements
 
 ### Path Requirements
 
 **Must be**:
-- ✅ Absolute path (e.g., `/media/Series`)
-- ✅ Writable by m3u-editor container
-- ✅ Accessible by media server
+- Absolute path (e.g., `/media/Series`)
+- Writable by m3u-editor container
+- Accessible by media server
 
 **Should not be**:
-- ❌ Relative path (e.g., `~/Series`)
-- ❌ URL or remote path
-- ❌ Temporary directory
+- Relative path (e.g., `~/Series`)
+- URL or remote path
+- Temporary directory
 
 ### Docker Volume Mapping
 
@@ -304,7 +304,7 @@ chmod -R 777 /path/to/media/Series
 
 
 
-## 🔄 Syncing Process
+## Syncing Process
 
 ### Automatic Sync
 
@@ -340,7 +340,7 @@ docker exec -it m3u-editor php artisan app:sync-vod-strm-files
 
 
 
-## 🎨 Filename Examples
+## Filename Examples
 
 ### Series Examples
 
@@ -388,7 +388,7 @@ docker exec -it m3u-editor php artisan app:sync-vod-strm-files
 
 
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Files Not Created
 
@@ -438,24 +438,24 @@ cat /path/to/media/Series/Show/S01E01.strm
 
 
 
-## 💡 Best Practices
+## Best Practices
 
 ### For Best Results
 
-✅ **Use TMDB Integration**
+**Use TMDB Integration**
 - Get free API key
 - Enable TMDB ID in filenames
 - Ensures perfect metadata matching
 
-✅ **Include Year in Filename**
+**Include Year in Filename**
 - Helps distinguish remakes/reboots
 - Improves media server matching
 
-✅ **Use Consistent Path Structure**
+**Use Consistent Path Structure**
 - Decide on folder structure early
 - Stick with it across all content
 
-✅ **Test with One Series First**
+**Test with One Series First**
 - Verify paths work
 - Check media server detection
 - Then enable for all content
@@ -478,7 +478,7 @@ cat /path/to/media/Series/Show/S01E01.strm
 
 
 
-## 🔗 Stream URLs
+## Stream URLs
 
 ### URL Format
 
@@ -508,7 +508,7 @@ http://your-ip:36400/stream/episode/12345?proxy=true
 
 
 
-## 📊 Monitoring
+## Monitoring
 
 ### Check Sync Status
 
@@ -528,7 +528,7 @@ find /path/to/media/Series -name "*.strm" -mtime -1
 
 
 
-## 🆘 Getting Help
+## Getting Help
 
 - 💬 [Discord](https://discord.gg/rS3abJ5dz7)
 - 🐛 [GitHub Issues](https://github.com/m3ue/m3u-editor/issues)

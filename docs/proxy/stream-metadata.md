@@ -14,7 +14,7 @@ You can attach arbitrary key/value pairs to any stream when it is created. Metad
 
 ## Use Cases
 
-**Channel identification** — associate your local channel IDs with proxy streams:
+**Channel identification**: associate your local channel IDs with proxy streams:
 ```json
 {
   "metadata": {
@@ -25,7 +25,7 @@ You can attach arbitrary key/value pairs to any stream when it is created. Metad
 }
 ```
 
-**Content classification** — tag streams with categories:
+**Content classification**: tag streams with categories:
 ```json
 {
   "metadata": {
@@ -37,7 +37,7 @@ You can attach arbitrary key/value pairs to any stream when it is created. Metad
 }
 ```
 
-**Provider tracking** — record which source provided a stream:
+**Provider tracking**: record which source provided a stream:
 ```json
 {
   "metadata": {
@@ -88,9 +88,9 @@ curl "http://localhost:8085/streams/by-metadata?field=provider&value=provider_a&
 ```
 
 **Query parameters:**
-- `field` (required) — metadata key to filter on
-- `value` (required) — value to match
-- `active_only` (optional, default `true`) — only return streams with active clients
+- `field` (required): metadata key to filter on
+- `value` (required): value to match
+- `active_only` (optional, default `true`): only return streams with active clients
 
 **Response:**
 ```json
@@ -129,7 +129,7 @@ curl -s "http://localhost:8085/streams/by-metadata?field=category&value=sports" 
 
 - **Keys**: strings only
 - **Values**: strings, integers, floats, or booleans (all stored as strings)
-- **Nesting**: flat key/value pairs only — arrays and nested objects are not supported
+- **Nesting**: flat key/value pairs only: arrays and nested objects are not supported
 - **Size**: keep under 1 KB per stream
 - **Persistence**: stored in memory; lost on proxy restart (same as all stream data)
 
@@ -179,8 +179,8 @@ print(f"HBO has {info['client_count']} viewers")
 
 ## Best Practices
 
-1. **Use server-side filtering** — the `/streams/by-metadata` endpoint is more efficient than fetching all streams
-2. **Define a consistent schema** — agree on standard key names across your application (`local_id`, `category`, etc.)
-3. **Always include a unique identifier** — a `local_id` field lets you look up streams without storing proxy stream IDs
+1. **Use server-side filtering**: the `/streams/by-metadata` endpoint is more efficient than fetching all streams
+2. **Define a consistent schema**: agree on standard key names across your application (`local_id`, `category`, etc.)
+3. **Always include a unique identifier**: a `local_id` field lets you look up streams without storing proxy stream IDs
 4. **Use `active_only=true`** when you only need streams with connected clients
-5. **Keep it flat and small** — metadata is not indexed; avoid large blobs
+5. **Keep it flat and small**: metadata is not indexed; avoid large blobs

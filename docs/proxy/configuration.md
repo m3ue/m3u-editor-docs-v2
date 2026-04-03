@@ -10,7 +10,7 @@ tags:
 
 # Configuration Reference
 
-All proxy settings are configured via environment variables — in a `.env` file, Docker Compose `environment:` block, or directly in the shell.
+All proxy settings are configured via environment variables: in a `.env` file, Docker Compose `environment:` block, or directly in the shell.
 
 ## Server
 
