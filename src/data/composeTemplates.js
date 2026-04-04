@@ -169,6 +169,19 @@ const generateEditorEnv = (config, deploymentType) => {
   addEnvVar(envVars, 'LOGIN_PATH', config.LOGIN_PATH, config.LOGIN_PATH !== 'login');
   addEnvVar(envVars, 'REDIRECT_GUEST_TO_LOGIN', config.REDIRECT_GUEST_TO_LOGIN, !config.REDIRECT_GUEST_TO_LOGIN);
 
+  // OIDC / SSO settings
+  addEnvVar(envVars, 'OIDC_ENABLED', config.OIDC_ENABLED, config.OIDC_ENABLED);
+  if (config.OIDC_ENABLED) {
+    addEnvVar(envVars, 'OIDC_ISSUER_URL', config.OIDC_ISSUER_URL);
+    addEnvVar(envVars, 'OIDC_CLIENT_ID', config.OIDC_CLIENT_ID);
+    addEnvVar(envVars, 'OIDC_CLIENT_SECRET', config.OIDC_CLIENT_SECRET);
+    addEnvVar(envVars, 'OIDC_SCOPES', config.OIDC_SCOPES, config.OIDC_SCOPES !== 'openid,profile,email');
+    addEnvVar(envVars, 'OIDC_AUTO_REDIRECT', config.OIDC_AUTO_REDIRECT, config.OIDC_AUTO_REDIRECT);
+    addEnvVar(envVars, 'OIDC_AUTO_CREATE_USERS', config.OIDC_AUTO_CREATE_USERS, !config.OIDC_AUTO_CREATE_USERS);
+    addEnvVar(envVars, 'OIDC_BUTTON_LABEL', config.OIDC_BUTTON_LABEL, config.OIDC_BUTTON_LABEL !== 'Login with SSO');
+    addEnvVar(envVars, 'OIDC_HIDE_LOGIN_FORM', config.OIDC_HIDE_LOGIN_FORM, config.OIDC_HIDE_LOGIN_FORM);
+  }
+
   return envVars.filter(Boolean).join('\n');
 };
 
