@@ -72,6 +72,16 @@ In the **Live Channels** → **Channels** table:
 - The **Probe Enabled** toggle column lets you enable/disable probing for individual channels
 - Disabled channels will be skipped during automatic probing after sync
 
+#### Bulk Enable / Disable Probing
+
+You can also toggle probing for multiple channels at once using bulk actions:
+
+1. Select the channels you want to change (use the checkboxes)
+2. Click **Actions** → **Bulk channel actions**
+3. Choose **Enable probing** or **Disable probing**
+
+This updates the `probe_enabled` flag on all selected channels in one go — useful when you want to exclude a large number of channels from automatic probing, or re-enable them after a temporary pause.
+
 :::info
 When you manually select channels and use the **Probe Streams** bulk action, the per-channel toggle is intentionally ignored — your explicit selection overrides it.
 :::
@@ -148,6 +158,57 @@ When a channel is probed, the following metadata is available via the Xtream API
 | `audio_channels` | Channel layout | `stereo`, `5.1` |
 | `sample_rate` | Audio sample rate | `48000` |
 | `audio_bitrate` | Audio bitrate in kbps | `128` |
+
+## Rate Limiting & Connection-Aware Probing
+
+When probing large playlists, sending rapid ffprobe connections can trigger provider bans or exhaust your allowed connection slots. M3U Editor integrates the global **Provider Request Delay** settings directly into the probing process to prevent this.
+
+### Request Delay Between Probes
+
+If **Provider Request Delay** is enabled in **Settings → Sync**, M3U Editor will automatically pause between each channel probe by the configured delay amount. This is the same delay that applies to normal playlist syncs, so you only need to enable it once.
+
+| Setting | Location | Effect on Probing |
+|---|---|---|
+| **Enable request delay** | Settings → Sync → Provider Request Delay | Inserts a pause between each individual channel probe |
+| **Request delay (ms)** | Settings → Sync → Provider Request Delay | Duration of the pause in milliseconds (default: 500 ms) |
+
+The delay is only inserted *between* channels — there is no artificial wait before the very first probe starts.
+
+### Connection-Aware Probing
+
+If your playlist uses **Playlist Profiles** and has a primary profile configured, the probing job will check your provider's active connection count before probing each channel. This prevents the prober from being kicked off the provider for exceeding the allowed concurrent stream limit.
+
+**How it works:**
+
+1. Before probing each channel, M3U Editor reads the connection info from the primary profile.
+2. If the provider reports no free slots (i.e. `active connections ≥ max streams`), the job pauses and waits.
+3. Provider connection info is refreshed every **5 seconds** while waiting.
+4. Once a slot becomes free, probing of the next channel begins immediately.
+5. If no slot opens within **120 seconds**, probing proceeds anyway to avoid the job being stuck indefinitely.
+
+```
+Channel → check slot free? ──yes──► ffprobe ──► next channel
+                   │
+                   no
+                   │
+             wait 500 ms → refresh provider info (every 5 s) → re-check
+```
+
+**Requirements:**
+- Playlist has **Playlist Profiles** enabled
+- A profile is configured as the **Primary Profile**
+- The profile has valid provider info (fetched during at least one sync)
+
+:::tip
+Connection-aware probing works entirely automatically — no extra configuration is needed beyond having a primary profile set up. If no primary profile is found, or if the provider has never been queried, the connection check is skipped and probing runs at full speed.
+:::
+
+:::info
+The request delay and connection check are complementary. You can use either or both:
+- **Request delay only**: slows down probing to avoid rate limits even when slots are available
+- **Connection-aware only**: pauses only when slots are actually exhausted
+- **Both together**: the delay is applied after each successful slot acquisition, giving the gentlest possible probing behaviour
+:::
 
 ## Tips & Troubleshooting
 
