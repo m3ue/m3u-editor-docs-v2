@@ -13,7 +13,7 @@ title: Overview
 The AI Copilot is an in-app chat assistant built into M3U Editor. It lives in the top navigation bar as a chat icon and lets admins interact with the application using plain English — searching records, creating or editing data, navigating pages, and looking up documentation — without ever leaving the UI.
 
 :::info
-The AI Copilot is only accessible to **admin users**.
+The AI Copilot is only accessible to **admin users** and users who have the **Use AI Copilot** permission added.
 :::
 
 ---
