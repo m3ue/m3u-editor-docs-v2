@@ -1,0 +1,8 @@
+{
+  "label": "AI Copilot",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "AI-powered in-app assistant for M3U Editor — search records, manage data, and navigate the app using natural language."
+  }
+}
