@@ -174,6 +174,25 @@ Choose fully external deployment when you need:
 
 See the deployment guides for detailed configuration options.
 
+## Persisting User-Uploaded Assets
+
+By default, all compose configurations mount `./data` for configuration persistence and a named volume for PostgreSQL. However, files uploaded through the **Assets** manager (logos, images, etc.) are stored in `storage/app/public` inside the container and are **not** covered by the `./data` mount.
+
+Without a volume for this path, uploaded assets will be lost whenever the container is recreated (e.g., after a `docker-compose pull` and `up`).
+
+All provided compose files already include this volume:
+
+```yaml
+volumes:
+  - ./storage:/var/www/html/storage/app/public
+```
+
+This maps a local `./storage` directory next to your compose file to the container's public storage path. The directory will be created automatically by Docker on first run.
+
+:::tip
+If you are migrating an existing deployment, copy the contents of the container's `/var/www/html/storage/app/public` to your local `./storage` directory before adding the volume mount to avoid losing existing uploaded files.
+:::
+
 ## Port Configuration
 
 Default ports for each setup:

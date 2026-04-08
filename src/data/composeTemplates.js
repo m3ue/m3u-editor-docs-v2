@@ -193,6 +193,8 @@ const generateVolumes = (config, useEmbeddedProxy = true) => {
   if (config.DB_CONNECTION === 'pgsql') {
     volumes.push(`      - ${config.PG_DATA_PATH || './pgdata'}:/var/lib/postgresql/data`);
   }
+  // Persist user-uploaded assets (logos, images, etc.) across container recreations
+  volumes.push(`      - ${config.STORAGE_PATH || './storage'}:/var/www/html/storage/app/public`);
   if (config.STRM_PATH) {
     volumes.push(`      - ${config.STRM_PATH}:/strm`);
   }

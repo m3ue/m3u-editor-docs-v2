@@ -683,6 +683,15 @@ export const WIZARD_SECTIONS = [
         deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
       {
+        name: 'STORAGE_PATH',
+        label: 'Assets Volume',
+        description: 'Host path for user-uploaded assets (logos, images, etc.). Without this, uploads are lost on container recreation.',
+        type: FIELD_TYPES.TEXT,
+        default: './storage',
+        placeholder: '/path/to/storage',
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
         name: 'PG_DATA_PATH',
         label: 'PostgreSQL Data Volume',
         description: 'Host path for PostgreSQL data persistence',
