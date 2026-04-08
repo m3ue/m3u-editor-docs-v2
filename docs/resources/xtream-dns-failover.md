@@ -59,7 +59,7 @@ Failover follows a round-robin rotation:
 - The list wraps around cyclically, so all URLs are eventually tried.
 - Once a working URL is found, it is promoted to primary and the previously-failed URL is moved to the fallback list.
 
-This means over time, the list self-organises to keep the fastest/most-reliable URL at the top.
+This means over time, the list self-organizes to keep the fastest/most-reliable URL at the top.
 
 ## Limitations
 

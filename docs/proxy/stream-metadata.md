@@ -10,7 +10,7 @@ tags:
 
 # Stream Metadata
 
-You can attach arbitrary key/value pairs to any stream when it is created. Metadata is preserved and returned in all stream queries, making it easy to identify, organise, and filter streams using your own identifiers.
+You can attach arbitrary key/value pairs to any stream when it is created. Metadata is preserved and returned in all stream queries, making it easy to identify, organize, and filter streams using your own identifiers.
 
 ## Use Cases
 

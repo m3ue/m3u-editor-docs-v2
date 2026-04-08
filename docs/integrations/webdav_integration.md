@@ -47,7 +47,7 @@ M3U Editor connects to your WebDAV server using the `PROPFIND` protocol to list 
 | Nginx WebDAV | `80` / `443` | Requires `nginx-dav-ext-module` for full PROPFIND support |
 | Caddy | `80` / `443` | Use `webdav` directive |
 
-## Organise Your Media
+## Organize Your Media
 
 The WebDAV integration uses the same filename and folder conventions as the [Local Media Integration](./local_media_integration.md).
 
@@ -130,7 +130,7 @@ After saving, the integration will appear under **Media Servers** and a playlist
 When you sync the integration, M3U Editor connects to the WebDAV server, lists all media files in the configured paths, and imports:
 
 - **Movies**: Discovered movie files as VOD channels, including title, year, and genre (via TMDB)
-- **TV Series**: Complete series imported with seasons and episodes, organised by folder and filename
+- **TV Series**: Complete series imported with seasons and episodes, organized by folder and filename
 - **TMDB Metadata** *(when enabled)*: Poster art, backdrop images, overviews, ratings, cast, and proper genre categorisation
 
 :::info Genre Handling
@@ -188,7 +188,7 @@ To enable WebDAV on a Synology NAS:
 - For Nextcloud, use your Nextcloud username and an app password (not your account password)
 
 ### TV Shows Not Importing Correctly
-- Ensure TV show files are organised under `Series Name / Season X / episode.mkv`
+- Ensure TV show files are organized under `Series Name / Season X / episode.mkv`
 - Use a recognised filename pattern (e.g., `S01E02` or `1x02`)
 
 ### TMDB Metadata Not Appearing

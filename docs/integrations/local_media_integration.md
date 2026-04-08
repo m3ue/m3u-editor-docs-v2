@@ -44,10 +44,10 @@ volumes:
 ```
 
 :::tip
-You can mount as many directories as you like. Use descriptive container paths like `/media/movies` or `/media/tvshows` to keep things organised.
+You can mount as many directories as you like. Use descriptive container paths like `/media/movies` or `/media/tvshows` to keep things organized.
 :::
 
-## Step 2 — Organise Your Media
+## Step 2 — Organize Your Media
 
 M3U Editor parses metadata from filenames and folder structure. The patterns below are supported.
 
@@ -64,7 +64,7 @@ Place movie files in your movies directory. Supported filename formats:
 
 ### TV Shows
 
-Organise TV show files in the following recommended folder structure:
+Organize TV show files in the following recommended folder structure:
 
 ```
 /media/tvshows/
@@ -127,7 +127,7 @@ After saving, the integration will appear under **Media Servers** and a playlist
 When you sync the integration, M3U Editor scans the configured paths and imports:
 
 - **Movies**: Discovered movie files as VOD channels, including title, year, and genre (via TMDB)
-- **TV Series**: Complete series imported with seasons and episodes, organised by folder and filename
+- **TV Series**: Complete series imported with seasons and episodes, organized by folder and filename
 - **TMDB Metadata** *(when enabled)*: Poster art, backdrop images, overviews, ratings, cast, and proper genre categorisation
 
 :::info Genre Handling
@@ -171,7 +171,7 @@ volumes:
 - Verify the file extension is included in the **Video File Extensions** list
 
 ### TV Shows Not Importing Correctly
-- Ensure TV show files are organised under `Series Name / Season X / episode.mkv`
+- Ensure TV show files are organized under `Series Name / Season X / episode.mkv`
 - Use a recognised filename pattern (e.g., `S01E02` or `1x02`)
 - Check M3U Editor logs for parsing warnings
 
