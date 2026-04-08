@@ -248,7 +248,7 @@ Multiple people watching the same channel but using separate connections
 
 ### Q: Can I use accounts from completely different IPTV providers?
 
-**AWhile technically possible by setting different URLs, it's **not recommended**. Provider Profiles is designed for the same provider with multiple accounts. Different providers may have:
+**A:** While technically possible by setting different URLs, it's **not recommended**. Provider Profiles is designed for the same provider with multiple accounts. Different providers may have:
 - Incompatible URL structures
 - Different API implementations  
 - Varying authentication methods

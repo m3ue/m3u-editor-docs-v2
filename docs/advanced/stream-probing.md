@@ -115,20 +115,20 @@ The emby-xtream plugin reads the `stream_stats` data automatically from the Xtre
 ## How Probing Data Flows
 
 ```
-┌─────────────┐     ffprobe      ┌─────────────┐
+┌─────────────┐     ffprobe      ┌──────────────┐
 │   Channel   │ ───────────────► │ stream_stats │
 │  Stream URL │                  │   (JSON)     │
 └─────────────┘                  └──────┬───────┘
                                         │
                                         ▼
-                               ┌─────────────────┐
+                               ┌──────────────────┐
                                │  Xtream API      │
                                │ get_live_streams │
                                │  → stream_stats  │
                                └────────┬─────────┘
                                         │
                                         ▼
-                               ┌─────────────────┐
+                               ┌──────────────────┐
                                │  emby-xtream     │
                                │  plugin in Emby  │
                                │  → fast switch   │
