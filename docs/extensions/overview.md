@@ -8,10 +8,6 @@ title: Plugin Overview
 
 # Plugin Overview
 
-:::info Experimental Feature
-Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
-:::
-
 Plugins let you add custom automation to M3U Editor without modifying the core application. A plugin can react to events, process channels or EPG data, run on a schedule, or expose actions you can trigger manually from the admin UI.
 
 ## What plugins can do

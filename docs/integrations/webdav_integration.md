@@ -14,11 +14,6 @@ tags:
 
 # WebDAV Integration
 
-:::info Experimental Feature
-Available in the **experimental** branch (`sparkison/m3u-editor:experimental`).
-This integration is currently **in active development**. Core functionality is available; additional features and polish are ongoing.
-:::
-
 The WebDAV integration allows you to expose video files hosted on any WebDAV-compatible server (Synology NAS, Nextcloud, Apache/Nginx WebDAV, etc.) as VOD channels and TV series within M3U Editor — without needing a dedicated media server like Emby or Plex.
 
 ## How It Works
