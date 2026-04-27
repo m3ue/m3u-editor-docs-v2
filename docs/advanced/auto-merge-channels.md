@@ -81,6 +81,68 @@ Remaining channels become failovers:
 - Optionally disabled if **Deactivate failover channels** is enabled
 - Existing relationships are updated automatically
 
+## Priority Order (multi-attribute ranking)
+
+Beyond the single Default / Resolution Mode toggle, you can configure a full **Priority Order** that ranks channels using a weighted combination of attributes. The Priority Order is configured under **Playlists → Edit → Auto-Merge Processing → Priority Order** and applies whenever auto-merge picks a master from a group of duplicates.
+
+The same Priority Order is also reused by:
+
+- The **Make smart channel** bulk action (initial ranking — see [Smart Channels](./smart-channels.md))
+- The per-channel **Rescore now** action on the channel info pane
+- The scheduled failover rescore job (see [Failover Rescoring](#failover-rescoring))
+
+So tuning it once propagates everywhere ranking happens.
+
+### Available attributes
+
+| Attribute | What it measures | Needs stream stats? |
+|---|---|---|
+| 📋 Playlist Priority | Position of the source's playlist in the failover list | No |
+| 📁 Group Priority | Weight assigned to the source's group in **Group Priorities** | No |
+| ⏪ Catch-up Support | Whether the source supports catch-up / replay | No |
+| 📺 Resolution | Pixel count of the probed video stream | Yes |
+| 🎞️ Frame Rate | Source frames-per-second (50/60 fps scores higher than 25/30) | Yes |
+| 📊 Bitrate | Probed video bitrate in kbps | Yes |
+| 🎬 Codec | Match against the configured **Preferred Codec** (e.g. HEVC over H.264) | Yes |
+| 🏷️ Keyword Match | Substring match against the configured priority keywords list | No |
+
+Drag attributes to reorder them. The **first attribute is weighted highest**, the last is weighted lowest, and each attribute contributes a 0–100 sub-score. The final score is normalised to 0–100, so adding or removing attributes never breaks comparability across channels.
+
+:::tip
+Resolution, Frame Rate, Bitrate, and Codec all need probed data. Make sure **Probe Streams After Sync** is enabled on the playlist — see [Stream Probing](./stream-probing.md) for setup.
+
+For live MPEG-TS and HLS sources where the container doesn't expose a bitrate, the probe pipeline runs a short packet-sampling pass to back-fill the video bitrate, so these attributes still produce useful scores on live streams.
+:::
+
+### What's new
+
+- **Frame Rate** and **Bitrate** are first-class priority attributes.
+- All scoring rules are normalised to a 0–100 sub-score, so the weighting is intuitive regardless of how many attributes you pick.
+- Score breakdowns persist on the failover row so you can come back later and see *why* a particular channel ranked where it did.
+
+## Failover Rescoring
+
+Stream quality drifts. A provider that was 1080p last month may have dropped to 720p; a new failover you added last week hasn't been probed yet. **Failover rescoring** re-probes stale members, recalculates scores using the configured Priority Order, and re-sorts the failover list — without ever touching the master channel.
+
+Configure it under **Playlists → Edit → Failover Rescoring**:
+
+| Setting | Description |
+|---|---|
+| **Periodic rescoring** | `Off` (default) / `Daily` / `Weekly`. When set, every failover group on the playlist is rescored on the schedule. |
+| **Re-probe channels older than (days)** | Default `7`. During a rescore, channels with stats older than this are re-probed first. Set to `0` to always re-probe. |
+
+A scheduler tick runs hourly and dispatches a `RescoreChannelFailovers` job per playlist whose configured interval has elapsed. You can also trigger a one-off run from the terminal:
+
+```bash
+php artisan app:rescore-channel-failovers <playlist_id>
+```
+
+Or from the UI: open any channel that has failovers attached, scroll to the **Failover Ranking** section in the info pane, and click **Rescore now**. This rescores just that one channel's failovers.
+
+Rescoring respects the global **Provider Request Delay** and uses a `WithoutOverlapping` middleware keyed on the playlist ID, so a manual click and a scheduled run never double up against the same provider.
+
+For the full picture of how rescoring is used alongside smart channels, see the [Smart Channels guide](./smart-channels.md#rescoring-failovers).
+
 ## Configuration
 
 ### Enable Auto-Merge
@@ -261,6 +323,8 @@ dispatch(new MergeChannels(
 
 ## Next Steps
 
+- [Smart Channels](./smart-channels.md) - Custom channels that auto-route to the highest-quality source
+- [Stream Probing](./stream-probing.md) - Probe live channels for the metadata used in scoring
 - [EPG Setup](/docs/resources/epg-setup) - Configure Electronic Program Guide
 - [EPG Cache Overview](/docs/advanced/epg-optimization) - Performance tuning
 - [Docker Compose Deployments](/docs/deployment/docker-compose) - Deploy to production
