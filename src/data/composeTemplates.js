@@ -78,8 +78,12 @@ const generateEditorEnv = (config, deploymentType) => {
     addEnvVar(envVars, 'PG_DATABASE', config.PG_DATABASE);
     addEnvVar(envVars, 'PG_USER', config.PG_USER);
     addEnvVar(envVars, 'PG_PASSWORD', config.PG_PASSWORD);
+    addEnvVar(envVars, 'PG_PORT', config.PG_PORT || '5432');
     addEnvVar(envVars, 'DB_HOST', config.DB_HOST);
-    addEnvVar(envVars, 'DB_PORT', config.DB_PORT);
+    addEnvVar(envVars, 'DB_PORT', config.DB_PORT || config.PG_PORT || '5432');
+    addEnvVar(envVars, 'DB_DATABASE', config.DB_DATABASE || config.PG_DATABASE);
+    addEnvVar(envVars, 'DB_USERNAME', config.DB_USERNAME || config.PG_USER);
+    addEnvVar(envVars, 'DB_PASSWORD', config.DB_PASSWORD || config.PG_PASSWORD);
   }
 
   // Proxy settings
@@ -128,6 +132,11 @@ const generateEditorEnv = (config, deploymentType) => {
     addEnvVar(envVars, 'REDIS_ENABLED', true);
     addEnvVar(envVars, 'REDIS_HOST', 'localhost');
     addEnvVar(envVars, 'REDIS_SERVER_PORT', config.REDIS_SERVER_PORT || '6379');
+    // Auto-match proxy token for embedded Redis password
+    const redisPassword = config.REDIS_PASSWORD || config.M3U_PROXY_TOKEN;
+    if (redisPassword) {
+      envVars.push(`      - REDIS_PASSWORD=\${M3U_PROXY_TOKEN:-${redisPassword}}`);
+    }
   }
 
   // Web server settings
@@ -226,6 +235,14 @@ const generateProxyService = (config, useVpnNetwork = false) => {
     redisHost = useVpnNetwork ? '127.0.0.1' : 'm3u-editor';
   }
 
+  // Determine Redis password for proxy
+  // External Redis: use explicit password
+  // Embedded Redis (VPN): auto-match M3U_PROXY_TOKEN
+  // Embedded Redis (non-VPN): auto-match M3U_PROXY_TOKEN via editor
+  const redisPassword = redisExternal
+    ? (config.REDIS_PASSWORD ? `\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}` : null)
+    : `\${M3U_PROXY_TOKEN:-${config.M3U_PROXY_TOKEN}}`;
+
   let service = `
   m3u-proxy:
     image: sparkison/m3u-proxy:${imageTag}
@@ -245,15 +262,21 @@ const generateProxyService = (config, useVpnNetwork = false) => {
       - REDIS_SERVER_PORT=${config.REDIS_SERVER_PORT || '6379'}
       - REDIS_DB=6`;
 
-  if (redisExternal && config.REDIS_PASSWORD) {
+  if (redisPassword) {
     service += `
-      - REDIS_PASSWORD=\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}`;
+      - REDIS_PASSWORD=${redisPassword}`;
   }
 
   // Only add ENABLE_TRANSCODING_POOLING if it's enabled (default true)
   if (config.ENABLE_TRANSCODING_POOLING !== false) {
     service += `
       - ENABLE_TRANSCODING_POOLING=true`;
+  }
+
+  // Add ENABLE_REDIS_POOLING if explicitly enabled
+  if (config.ENABLE_REDIS_POOLING !== false) {
+    service += `
+      - ENABLE_REDIS_POOLING=true`;
   }
 
   service += `
@@ -310,13 +333,24 @@ ${proxyVolumes.join('\n')}`;
   service += `
     restart: unless-stopped`;
 
+  // Healthcheck for proxy service
+  service += `
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${config.M3U_PROXY_PORT || '38085'}/health?api_token=${config.M3U_PROXY_TOKEN}"]
+      interval: 30s
+      timeout: 2s
+      retries: 12
+      start_period: 10s`;
+
   if (useVpnNetwork) {
     service += `
     depends_on:
-      - gluetun`;
+      gluetun:
+        condition: service_healthy`;
     if (redisExternal) {
       service += `
-      - m3u-redis`;
+      m3u-redis:
+        condition: service_healthy`;
     }
   } else {
     // When redis is external, proxy depends on redis
@@ -324,11 +358,13 @@ ${proxyVolumes.join('\n')}`;
     if (redisExternal) {
       service += `
     depends_on:
-      - m3u-redis`;
+      m3u-redis:
+        condition: service_healthy`;
     } else {
       service += `
     depends_on:
-      - m3u-editor`;
+      m3u-editor:
+        condition: service_healthy`;
     }
     service += `
     networks:
@@ -339,26 +375,54 @@ ${proxyVolumes.join('\n')}`;
 };
 
 // Generate m3u-redis service
-const generateRedisService = (config) => {
+const generateRedisService = (config, useVpnNetwork = false) => {
   let service = `
   m3u-redis:
     image: redis:alpine
     container_name: m3u-redis`;
 
+  if (useVpnNetwork) {
+    service += `
+    network_mode: "service:gluetun"`;
+  }
+
   if (config.REDIS_PASSWORD) {
     service += `
-    command: redis-server --appendonly yes --requirepass "\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}"`;
+    command: redis-server --port ${config.REDIS_SERVER_PORT || '6379'} --requirepass "\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}" --appendonly no --save "" --maxmemory 256mb --maxmemory-policy allkeys-lru`;
   } else {
     service += `
-    command: redis-server --appendonly yes`;
+    command: redis-server --port ${config.REDIS_SERVER_PORT || '6379'} --appendonly no --save "" --maxmemory 256mb --maxmemory-policy allkeys-lru`;
   }
 
   service += `
     volumes:
       - redis-data:/data
-    restart: unless-stopped
+    restart: unless-stopped`;
+
+  // Healthcheck
+  if (config.REDIS_PASSWORD) {
+    service += `
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "${config.REDIS_SERVER_PORT || '6379'}", "-a", "\${REDIS_PASSWORD:-${config.REDIS_PASSWORD}}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s`;
+  } else {
+    service += `
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "${config.REDIS_SERVER_PORT || '6379'}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s`;
+  }
+
+  if (!useVpnNetwork) {
+    service += `
     networks:
       - m3u-network`;
+  }
 
   return service;
 };
@@ -410,12 +474,18 @@ ${volumes}
     ports:
       - "${config.APP_PORT}:${config.APP_PORT}"${config.XTREAM_ONLY_ENABLED ? `
       - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"` : ''}
-    restart: unless-stopped`;
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${config.APP_PORT}/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s`;
 
   if (editorDependsOn.length > 0) {
     compose += `
     depends_on:
-${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+${editorDependsOn.map(d => `      ${d}:\n        condition: service_healthy`).join('\n')}`;
   }
 
   compose += `
@@ -476,6 +546,12 @@ ${volumes}
       - "${config.APP_PORT}:${config.APP_PORT}"${config.XTREAM_ONLY_ENABLED ? `
       - "${config.XTREAM_PORT}:${config.XTREAM_PORT}"` : ''}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${config.APP_PORT}/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 `;
 };
 
@@ -500,13 +576,6 @@ export const generateVpnCompose = (config) => {
   if (config.SERVER_COUNTRIES) {
     vpnEnv += `\n      - SERVER_COUNTRIES=${config.SERVER_COUNTRIES}`;
   }
-
-  // Build depends_on for editor
-  // Editor always depends on gluetun (VPN network)
-  // When redis is external: also depends on proxy (if external) + redis
-  const editorDependsOn = [];
-  if (proxyExternal && redisExternal) editorDependsOn.push('m3u-proxy');
-  if (redisExternal) editorDependsOn.push('m3u-redis');
 
   let compose = `# Docker Compose - VPN Deployment (Gluetun)
 # Generated by M3U Editor Compose Wizard
@@ -547,6 +616,12 @@ ${vpnEnv}
     volumes:
       - gluetun-data:/gluetun
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9999/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     networks:
       - m3u-network
 
@@ -559,12 +634,20 @@ ${editorEnv}
     volumes:
 ${volumes}
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${config.APP_PORT}/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     depends_on:
-      - gluetun`;
+      gluetun:
+        condition: service_healthy`;
 
   if (redisExternal) {
     compose += `
-      - m3u-redis`;
+      m3u-redis:
+        condition: service_healthy`;
   }
 
   // Add m3u-proxy service if external (runs through VPN)
@@ -572,9 +655,9 @@ ${volumes}
     compose += generateProxyService(config, true);
   }
 
-  // Add m3u-redis service if external
+  // Add m3u-redis service if external (runs through VPN for shared network namespace)
   if (redisExternal) {
-    compose += generateRedisService(config);
+    compose += generateRedisService(config, true);
   }
 
   compose += `
@@ -624,12 +707,18 @@ services:
 ${editorEnv}
     volumes:
 ${volumes}
-    restart: unless-stopped`;
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s`;
 
   if (editorDependsOn.length > 0) {
     compose += `
     depends_on:
-${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+${editorDependsOn.map(d => `      ${d}:\n        condition: service_healthy`).join('\n')}`;
   }
 
   compose += `
@@ -658,8 +747,10 @@ ${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
       - ${config.CONFIG_PATH || './data'}:/var/www/html:ro
     restart: unless-stopped
     depends_on:
-      - m3u-editor${proxyExternal ? `
-      - m3u-proxy` : ''}
+      m3u-editor:
+        condition: service_healthy${proxyExternal ? `
+      m3u-proxy:
+        condition: service_healthy` : ''}
     networks:
       - m3u-network
 
@@ -745,12 +836,18 @@ services:
 ${editorEnv}
     volumes:
 ${volumes}
-    restart: unless-stopped`;
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s`;
 
   if (editorDependsOn.length > 0) {
     compose += `
     depends_on:
-${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
+${editorDependsOn.map(d => `      ${d}:\n        condition: service_healthy`).join('\n')}`;
   }
 
   compose += `
@@ -782,8 +879,10 @@ ${editorDependsOn.map(d => `      - ${d}`).join('\n')}`;
       - ${config.CONFIG_PATH || './data'}:/var/www/html:ro
     restart: unless-stopped
     depends_on:
-      - m3u-editor${proxyExternal ? `
-      - m3u-proxy` : ''}
+      m3u-editor:
+        condition: service_healthy${proxyExternal ? `
+      m3u-proxy:
+        condition: service_healthy` : ''}
     networks:
       - m3u-network
 
@@ -854,6 +953,8 @@ export const generateEnvFile = (config) => {
   if (config.PG_PASSWORD) {
     lines.push(`PG_PASSWORD=${config.PG_PASSWORD}`);
   }
+  // Include REDIS_PASSWORD for external Redis or when explicitly set
+  // For embedded Redis, the compose file auto-matches M3U_PROXY_TOKEN
   if (config.REDIS_PASSWORD && config.REDIS_MODE === 'external') {
     lines.push(`REDIS_PASSWORD=${config.REDIS_PASSWORD}`);
   }
