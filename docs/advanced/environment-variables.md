@@ -70,8 +70,12 @@ DB_CONNECTION=pgsql
 PG_DATABASE=your_database_name
 PG_USER=your_username
 PG_PASSWORD=your_password
+PG_PORT=5432
 DB_HOST=127.0.0.1
-DB_PORT=5433
+DB_PORT=5432
+DB_DATABASE=your_database_name
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
 ```
 
 #### PG_DATABASE
@@ -83,6 +87,10 @@ DB_PORT=5433
 #### PG_PASSWORD
 - **Description**: PostgreSQL password
 
+#### PG_PORT
+- **Default**: `5432`
+- **Description**: Port for the embedded PostgreSQL container
+
 #### DB_HOST
 - **Default**: `127.0.0.1`
 - **Description**: PostgreSQL server host
@@ -90,6 +98,18 @@ DB_PORT=5433
 #### DB_PORT
 - **Default**: `5433`
 - **Description**: PostgreSQL server port
+
+#### DB_DATABASE
+- **Default**: Same as `PG_DATABASE`
+- **Description**: Database name for the Laravel application. If not set, defaults to `PG_DATABASE`.
+
+#### DB_USERNAME
+- **Default**: Same as `PG_USER`
+- **Description**: Database username for the Laravel application. If not set, defaults to `PG_USER`.
+
+#### DB_PASSWORD
+- **Default**: Same as `PG_PASSWORD`
+- **Description**: Database password for the Laravel application. If not set, defaults to `PG_PASSWORD`.
 
 ## M3U Proxy Configuration
 
