@@ -7,6 +7,7 @@ tags:
   - Transcoding
   - FFmpeg
   - Profiles
+  - Adaptive
 ---
 
 # Transcoding & Stream Profiles
@@ -34,7 +35,8 @@ Navigate to **Proxy → Stream Profiles** in the editor sidebar and click **New 
 |-------|-------------|
 | **Profile Name** | A descriptive label (e.g. "720p Standard", "1080p High Quality") |
 | **Description** | Optional notes |
-| **FFmpeg Template** | The FFmpeg argument string with `{variable}` placeholders |
+| **Stream Backend** | `FFmpeg`, `Streamlink`, `yt-dlp`, or `Adaptive (rule-based)` — see [Adaptive Profiles](#adaptive-rule-based-profiles) for the rule-based option |
+| **FFmpeg Template** | The FFmpeg argument string with `{variable}` placeholders (FFmpeg backend only) |
 | **Stream Format** | Output container format: MP4, MPEG-TS, HLS, MKV, WebM, etc. |
 
 The default template is a good starting point for most setups:
@@ -66,6 +68,94 @@ If you want a profile to apply across all playlists by default, set it under **S
 - **VOD and Series Transcoding Profile** — used by the in-app player for VOD/Series
 
 Per-playlist profile assignments override the global defaults.
+
+---
+
+## Adaptive (Rule-Based) Profiles
+
+An **Adaptive** profile doesn't carry its own FFmpeg / Streamlink / yt-dlp arguments. Instead, it picks one of your existing transcoding profiles at stream-start time based on the channel's probed metadata (codec, resolution, audio layout, etc.).
+
+This is most useful when you want to assign a single profile to many channels — for example via the channels bulk action — and let the system route each one to the right transcoder rather than maintaining separate playlist or per-channel assignments.
+
+:::info
+Adaptive profiles depend on **probed channel metadata**. Channels without `stream_stats` always fall through to the else fallback. See [Stream Probing](../advanced/stream-probing.md) for how to populate that data.
+:::
+
+### How rules are evaluated
+
+Each adaptive profile holds an ordered list of rules plus a mandatory **else** fallback. Evaluation walks the list top to bottom and the first match wins:
+
+```
+if (all conditions match) → use Profile X
+if (all conditions match) → use Profile Y
+…
+else → use Profile Z   (also used when probe data is missing)
+```
+
+- Conditions inside a rule are **ANDed** — every condition must match for the rule to fire.
+- To express **OR**, add another rule pointing at the same target profile.
+- The else fallback is required and also catches the "no probe data yet" case.
+- Adaptive profiles cannot point at other adaptive profiles, and a profile cannot reference itself — a stream always resolves in one hop.
+
+### Creating an Adaptive profile
+
+1. Go to **Proxy → Stream Profiles** and click **New profile**.
+2. Set **Stream Backend** to **Adaptive (rule-based)**. The FFmpeg / Streamlink / yt-dlp args, format, and cookies fields disappear and a **Rules** editor appears.
+3. Add one or more rules. For each rule:
+   - Add one or more **conditions** (field, operator, value). All conditions must match.
+   - Pick the **target profile** to use when the rule matches.
+4. Pick the **Otherwise (fallback)** profile.
+5. Save.
+
+The new profile appears in the table with a green **Adaptive** badge and shows under the **Adaptive** tab on the list page (alongside **All** and **Transcoding** tabs).
+
+Once created, an adaptive profile is assigned to playlists (or individual channels, or as a global default) just like any other stream profile.
+
+### Available condition fields
+
+| Group | Field | Type | Example value |
+|-------|-------|------|---------------|
+| Video | Codec | string | `hevc`, `h264`, `mpeg2video` |
+| Video | Height (px) | numeric | `1080` |
+| Video | Width (px) | numeric | `1920` |
+| Video | Bitrate (bps) | numeric | `5000000` |
+| Video | Frame rate (fps) | numeric | `60` |
+| Video | Profile | string | `High`, `Main` |
+| Video | Aspect ratio | string | `16:9` |
+| Audio | Codec | string | `aac`, `ac3`, `eac3` |
+| Audio | Channels | numeric | `2`, `6` |
+| Audio | Sample rate (Hz) | numeric | `48000` |
+| Format | Format name | string | `hls`, `mpegts` |
+
+### Operators
+
+The operator dropdown is filtered to the field type:
+
+| Type | Available operators |
+|------|--------------------|
+| Numeric (height, width, bitrate, frame rate, audio channels, sample rate) | `=`, `≠`, `>`, `≥`, `<`, `≤` |
+| String (codec, profile, aspect ratio, format name) | `=`, `≠`, `is one of`, `is not one of` |
+
+`is one of` / `is not one of` accept multiple values — press Enter, comma, or Tab to add each one. String comparisons are case-insensitive.
+
+### Worked example
+
+Suppose you want HEVC 1080p+ to use a high-quality NVENC profile, regular H.264 1080p+ to use a standard CBR profile, surround audio to use a passthrough profile, and everything else to use a default live profile:
+
+| Order | Conditions (ANDed) | Target |
+|-------|---------------------|--------|
+| 1 | `video.codec_name = hevc` AND `video.height ≥ 1080` | HEVC HQ |
+| 2 | `video.codec_name = h264` AND `video.height ≥ 1080` | H.264 HQ |
+| 3 | `audio.channels ≥ 6` | Surround Passthrough |
+| **else** | — | Default Live |
+
+A 4K HEVC channel matches rule 1. A 1080p H.264 channel matches rule 2. A 720p H.264 channel with 5.1 audio matches rule 3 (rule 2 fails the height check). An unprobed channel goes straight to the else fallback.
+
+### Deletion safety
+
+You cannot delete a transcoding profile that's referenced by an adaptive profile — either as a rule target or as the else fallback. The editor surfaces a notification listing the adaptive profiles that reference it; clear those references first, then delete.
+
+If a referenced target profile is removed by some other means (e.g. a foreign-key cascade), the channel falls back to raw bytes / no transcoding rather than erroring.
 
 ---
 
