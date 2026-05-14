@@ -37,6 +37,21 @@ Stream probing provides:
 | **Video** | H.264 (AVC), H.265 (HEVC), MPEG-2 |
 | **Audio** | AAC, AC3 (Dolby Digital), EAC3 (Dolby Digital Plus), MP2 |
 
+### Bitrate enrichment for live streams
+
+ffprobe is invoked with `-show_streams -show_format`, which returns both the per-stream metadata (codec, resolution, fps, etc.) and container-level metadata (overall duration, bit rate, format name).
+
+For VOD content this is enough — the container reports a video bitrate and probing finishes in a single pass. For **live MPEG-TS and HLS** sources, neither the per-stream `bit_rate` nor the format-level `bit_rate` is typically populated (there's no known total duration to compute one from). When that happens, M3U Editor runs a short follow-up packet-sampling probe to measure actual throughput:
+
+```
+ffprobe -read_intervals "%+5" -select_streams v:0 \
+        -show_entries packet=size,pts_time <url>
+```
+
+This reads roughly 5 seconds of the video stream and computes a real bitrate from the packet sizes and timestamps. The result is back-filled into the video stream's `bit_rate` field, so downstream consumers (Auto-Merge scoring, Smart Channel ranking, the stats UI) see a meaningful number on live channels.
+
+The sampling pass is capped at 10 seconds regardless of the metadata-pass timeout, so it doesn't materially extend probe time per channel even when many channels are probed in sequence.
+
 ## Setup Guide
 
 ### Step 1: Enable Probing on Your Playlist
@@ -227,3 +242,12 @@ If channel switching is still slow after probing:
 2. Verify your playlist has the **Xtream API** enabled
 3. In Emby, ensure the emby-xtream plugin is configured to use the Xtream API endpoint (not a plain M3U URL)
 4. Try restarting Emby after the initial probe to pick up the new metadata
+
+## Where probed data is used
+
+Beyond the Emby fast-switching integration, the same `stream_stats` blob feeds:
+
+- [Auto-Merge Channels](./auto-merge-channels.md) — Resolution, FPS, Bitrate, and Codec attributes in the Priority Order
+- [Smart Channels](./smart-channels.md) — both the initial ranking when a smart channel is created and the periodic rescoring that keeps it pointing at the highest-quality source
+
+So enabling probing pays off well beyond Emby — anything that ranks channels by quality reads from this data.
