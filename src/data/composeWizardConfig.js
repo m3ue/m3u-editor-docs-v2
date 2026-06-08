@@ -187,10 +187,49 @@ export const WIZARD_SECTIONS = [
       {
         name: 'DB_PORT',
         label: 'Database Port',
-        description: 'Database server port',
+        description: 'Database server port (mapped from PG_PORT)',
         type: FIELD_TYPES.NUMBER,
         default: '5432',
         showWhen: { field: 'DB_CONNECTION', values: ['pgsql', 'mysql'] },
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'PG_PORT',
+        label: 'PostgreSQL Port',
+        description: 'Port for the embedded PostgreSQL container',
+        type: FIELD_TYPES.NUMBER,
+        default: '5432',
+        showWhen: { field: 'DB_CONNECTION', value: 'pgsql' },
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'DB_DATABASE',
+        label: 'Laravel Database Name',
+        description: 'Database name for the Laravel application (defaults to PostgreSQL database name)',
+        type: FIELD_TYPES.TEXT,
+        default: '',
+        placeholder: 'Defaults to PostgreSQL database name',
+        showWhen: { field: 'DB_CONNECTION', value: 'pgsql' },
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'DB_USERNAME',
+        label: 'Laravel Database Username',
+        description: 'Database username for the Laravel application (defaults to PostgreSQL username)',
+        type: FIELD_TYPES.TEXT,
+        default: '',
+        placeholder: 'Defaults to PostgreSQL username',
+        showWhen: { field: 'DB_CONNECTION', value: 'pgsql' },
+        deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'DB_PASSWORD',
+        label: 'Laravel Database Password',
+        description: 'Database password for the Laravel application (defaults to PostgreSQL password)',
+        type: FIELD_TYPES.PASSWORD,
+        default: '',
+        placeholder: 'Defaults to PostgreSQL password',
+        showWhen: { field: 'DB_CONNECTION', value: 'pgsql' },
         deploymentTypes: ['modular', 'aio', 'vpn', 'external-nginx', 'external-caddy'],
       },
     ],
@@ -259,6 +298,15 @@ export const WIZARD_SECTIONS = [
         name: 'ENABLE_TRANSCODING_POOLING',
         label: 'Enable Transcoding Pooling',
         description: 'Enable connection pooling for transcoding streams (requires Redis)',
+        type: FIELD_TYPES.BOOLEAN,
+        default: true,
+        showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
+        deploymentTypes: ['modular', 'vpn', 'external-nginx', 'external-caddy'],
+      },
+      {
+        name: 'ENABLE_REDIS_POOLING',
+        label: 'Enable Redis Pooling',
+        description: 'Share transcoding processes across clients via Redis (requires external proxy + Redis)',
         type: FIELD_TYPES.BOOLEAN,
         default: true,
         showWhen: { field: 'M3U_PROXY_ENABLED', value: 'external' },
@@ -766,10 +814,17 @@ export const getDefaultValues = (deploymentType) => {
   if (deploymentType === 'vpn') {
     defaults.M3U_PROXY_HOST = '127.0.0.1';
     defaults.REDIS_HOST = '127.0.0.1';
+    defaults.DB_HOST = 'localhost'; // Embedded PG runs in editor's network namespace
   } else {
     defaults.M3U_PROXY_HOST = 'm3u-proxy';
     defaults.REDIS_HOST = 'm3u-redis';
   }
+
+  // Link Laravel DB vars to PostgreSQL vars if not explicitly set
+  if (!defaults.DB_DATABASE) defaults.DB_DATABASE = defaults.PG_DATABASE || 'm3ue';
+  if (!defaults.DB_USERNAME) defaults.DB_USERNAME = defaults.PG_USER || 'm3ue';
+  if (!defaults.DB_PASSWORD) defaults.DB_PASSWORD = defaults.PG_PASSWORD || '';
+  if (!defaults.DB_PORT) defaults.DB_PORT = defaults.PG_PORT || '5432';
 
   // Auto-generate a proxy token on page load
   defaults.M3U_PROXY_TOKEN = generateToken();
