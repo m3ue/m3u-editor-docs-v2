@@ -273,8 +273,8 @@ const generateProxyService = (config, useVpnNetwork = false) => {
       - ENABLE_TRANSCODING_POOLING=true`;
   }
 
-  // Add ENABLE_REDIS_POOLING if explicitly enabled
-  if (config.ENABLE_REDIS_POOLING !== false) {
+  // Add ENABLE_REDIS_POOLING only for external Redis deployments (requires shared Redis)
+  if (redisExternal && config.ENABLE_REDIS_POOLING !== false) {
     service += `
       - ENABLE_REDIS_POOLING=true`;
   }
@@ -334,9 +334,11 @@ ${proxyVolumes.join('\n')}`;
     restart: unless-stopped`;
 
   // Healthcheck for proxy service
+  // Uses $$API_TOKEN so Docker Compose passes the literal $API_TOKEN to the container shell,
+  // which expands the container's own env var — avoids embedding the token value in plain text.
   service += `
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:${config.M3U_PROXY_PORT || '38085'}/health?api_token=${config.M3U_PROXY_TOKEN}"]
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:${config.M3U_PROXY_PORT || '38085'}/health?api_token=$$API_TOKEN"]
       interval: 30s
       timeout: 2s
       retries: 12
@@ -394,6 +396,9 @@ const generateRedisService = (config, useVpnNetwork = false) => {
     command: redis-server --port ${config.REDIS_SERVER_PORT || '6379'} --appendonly no --save "" --maxmemory 256mb --maxmemory-policy allkeys-lru`;
   }
 
+  // NOTE: persistence is intentionally disabled (--appendonly no --save "").
+  // Redis is used as a transient cache/session store; data loss on restart is acceptable.
+  // If you need durability, add --appendonly yes and remove --save "".
   service += `
     volumes:
       - redis-data:/data

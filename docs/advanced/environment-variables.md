@@ -96,7 +96,7 @@ DB_PASSWORD=your_password
 - **Description**: PostgreSQL server host
 
 #### DB_PORT
-- **Default**: `5433`
+- **Default**: `5432`
 - **Description**: PostgreSQL server port
 
 #### DB_DATABASE
