@@ -51,6 +51,30 @@ This will automatically run ffprobe on all eligible channels after each playlist
 If you don't want to wait for a sync, you can manually trigger probing from the Channels table (see Step 3).
 :::
 
+### Auto-Probe Scope Settings
+
+When **Probe Streams After Sync** is enabled, two additional toggles control which channels are probed automatically:
+
+#### Live streams
+
+| Toggle | Default | Description |
+|---|---|---|
+| **Only probe Live streams that have not been probed before** | **On** | Skips channels that already have stored `stream_stats`. Keeps automatic probing incremental and fast for large playlists. |
+| **Include disabled Live streams** | Off | Also probes disabled channels during auto-probe. Ignored channels with per-channel probe opt-out set are always skipped. |
+
+#### VOD & Series streams
+
+When **Probe VOD & series streams after sync** is also enabled:
+
+| Toggle | Default | Description |
+|---|---|---|
+| **Only probe VOD and series streams that have not been probed before** | **On** | Skips VOD/series items that already have stored `stream_stats`. |
+| **Include disabled VOD/series streams** | Off | Also probes disabled VOD/series during auto-probe. |
+
+:::info Incremental by default
+The "only probe unprobed" defaults mean automatic probing is incremental: only new channels picked up during a sync get probed. This is the recommended behaviour for large playlists. If you want to re-probe everything (e.g. after a provider changes codecs), disable the toggle temporarily, trigger a sync or manual probe, then re-enable it.
+:::
+
 ### Step 2: Configure Per-Channel Probing
 
 By default, all new channels have probing enabled. You can control this at two levels:
@@ -152,6 +176,12 @@ When a channel is probed, the following metadata is available via the Xtream API
 | `audio_channels` | Channel layout | `stereo`, `5.1` |
 | `sample_rate` | Audio sample rate | `48000` |
 | `audio_bitrate` | Audio bitrate in kbps | `128` |
+
+## Parallel Probing
+
+By default, probing runs sequentially to avoid hammering your provider. If your provider allows multiple concurrent connections and you want faster probing, enable **parallel processing** in the playlist's probing settings.
+
+When parallel probing is on, multiple ffprobe processes run simultaneously. The exact concurrency is controlled by the queue worker configuration. Use this setting carefully — overly aggressive parallel probing can trigger rate limits or connection bans.
 
 ## Rate Limiting & Connection-Aware Probing
 

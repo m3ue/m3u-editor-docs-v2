@@ -48,6 +48,70 @@ Resource tools are context-aware — they are scoped to the resource you are cur
 
 ---
 
+## Database Tools
+
+Database tools allow the assistant to query and interact with your M3U Editor database directly. These are powerful tools intended for advanced users — enable them under **Preferences → AI Copilot → Global Tools**.
+
+:::warning Use with care
+Database execute tools can modify your data. The assistant will always describe what it is about to do before executing and will ask for confirmation on destructive operations. You can always say "no" or ask it to stop.
+:::
+
+| Tool | Description |
+|---|---|
+| **DB Query** | Runs a read-only SQL query against the database and returns results. Use this to look up data, count records, or investigate issues. |
+| **DB Execute** | Runs a write SQL statement (INSERT, UPDATE, DELETE). Use this to make targeted data corrections that would otherwise require going through the UI. |
+
+**Example prompts:**
+```
+How many channels are currently enabled across all playlists?
+```
+```
+What are the 10 most recently synced playlists?
+```
+```
+Set the enabled flag to false for all channels in the group "Adult"
+```
+
+---
+
+## Smart EPG Mapper
+
+The **Smart EPG Mapper** tool helps the AI automatically suggest or apply EPG channel ID mappings for channels that are missing EPG data.
+
+| Tool | Description |
+|---|---|
+| **Smart EPG Mapper** | Analyses unmapped channels and suggests EPG channel IDs based on name similarity and available EPG sources |
+
+Enable this tool under **Preferences → AI Copilot → Global Tools** and navigate to your Channels list, then ask the AI to map EPG for unmapped channels.
+
+---
+
+## AI Gateway Models
+
+The AI Copilot supports multiple model providers. Configure the active gateway under **Preferences → AI Copilot**.
+
+### Supported Gateways
+
+| Provider | Models available |
+|---|---|
+| **OpenAI** | GPT-4o, GPT-4o mini, and others |
+| **Anthropic** | Claude Sonnet, Claude Haiku |
+| **MiniMax** | MiniMax Text 01, Abab 6.5 |
+| **Ollama** | Any locally running model |
+
+### MiniMax
+
+MiniMax is a Chinese AI provider offering competitive models at low cost. To use MiniMax:
+
+1. Go to **Preferences → AI Copilot → AI Gateway**
+2. Select **MiniMax** as the provider
+3. Enter your MiniMax API key
+4. Choose a model (e.g. `MiniMax Text 01`)
+
+MiniMax is a good option if you want an alternative to OpenAI/Anthropic for cost or privacy reasons.
+
+---
+
 ## Memory
 
 The **Remember** and **Recall Memories** tools give the assistant a persistent memory scoped to your user account.
@@ -88,3 +152,4 @@ The assistant will search the docs, retrieve the most relevant sections, and sum
 - **Ask the AI what it can do** — type `What tools do you have available?` and it will list everything in the current context.
 - **Tools respect permissions** — the AI cannot create or delete records if your account does not have permission to do so.
 - **Tools are always confirmed** — destructive actions (delete, bulk update) will be clearly described by the AI before execution. You can always say "no" or ask it to stop.
+- **Autonomous mode** — the Copilot can be configured to operate as an automated agent for data management tasks. See [Configuration](./configuration.md) for details.

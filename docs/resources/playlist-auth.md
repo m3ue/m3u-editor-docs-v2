@@ -23,33 +23,29 @@ Playlist Auth is a reusable authentication credential that can be assigned to pl
 
 ## Use Cases
 
-### User Access Control
-Provide different users with individual credentials:
-- Track usage per user
-- Revoke access by disabling auth
-- Share specific playlists with specific users
-- Monitor and manage access centrally
+### Family Sharing
+Give household members their own credentials without sharing your main account:
+- One login per person or per TV
+- Revoke or pause access for an individual without affecting others
+- Point family members at different playlists tailored to their preferences (kids playlist, sports package, etc.)
 
-### Client Management
-Manage IPTV client access:
-- One credential per device/client
-- Easy rotation of credentials
-- Disable compromised credentials
-- Separate household members
+### Per-Device Access
+Keep each device independently credentialed:
+- One set of credentials per smart TV, phone, or media player
+- Swap or rotate credentials for a single device without touching others
+- Disable a credential if a device is lost or decommissioned
 
-### Subscription Management
-Implement basic subscription control:
-- Active/inactive subscription status via enabled toggle
-- Different access levels via playlist assignment
-- Time-based access (manually toggle enabled)
-- Trial accounts
+### Temporary or Time-Limited Access
+Share access with guests or for a limited period:
+- Set an **expiration date** so access stops automatically without manual intervention
+- Disable the credential when the period ends rather than deleting it
+- Re-enable it later if needed
 
 ### Testing and Development
-Create test accounts:
-- Development credentials
-- QA testing access
-- Demo accounts for evaluation
-- Temporary access credentials
+Create isolated credentials for testing:
+- Test a new playlist or stream profile without risking your main credentials
+- Create a throwaway account for evaluating client apps
+- Disable it when done
 
 ## Creating Playlist Auth
 
@@ -60,7 +56,8 @@ Create test accounts:
    - **Username**: Login username
    - **Password**: Login password
    - **Enabled**: Activate the authentication
-4. Click **Save**
+4. (Optional) Assign a playlist directly during creation
+5. Click **Save**
 
 ## Configuration Options
 
@@ -71,8 +68,8 @@ An internal descriptive name to identify this authentication credential. This is
 
 **Examples**:
 - `John's Living Room TV`
-- `Premium Subscription - User123`
-- `Trial Account - Expires 2026-02-01`
+- `User123`
+- `Expires 2026-02-01`
 - `Development Test Account`
 
 #### Username
@@ -84,12 +81,6 @@ The username that users/clients will use to authenticate. This is case-sensitive
 - Avoid special characters that may cause URL encoding issues
 - Keep it simple for users to type
 
-**Examples**:
-- `user123`
-- `john_smith`
-- `premium_user_456`
-- `test_account_dev`
-
 #### Password
 The password for authentication. This is case-sensitive.
 
@@ -99,6 +90,13 @@ The password for authentication. This is case-sensitive.
 - Consider using generated passwords
 - Don't reuse passwords across auths
 - Rotate periodically for security
+
+#### Expiration
+An optional date and time after which the auth credential stops working automatically.
+
+- Leave blank for no expiration
+- Once the expiration time passes, authentication attempts will fail
+- Useful for trial accounts or time-limited subscriptions
 
 #### Enabled
 Toggle to activate or deactivate the authentication without deleting it.
@@ -111,6 +109,32 @@ Toggle to activate or deactivate the authentication without deleting it.
 - Implement subscription expiration
 - Quick revocation of access
 - Testing purposes
+
+### Stream Limits
+
+Control how many concurrent streams a single auth credential can have active at once. This is enforced at the proxy level — the assigned playlist must have the proxy enabled.
+
+#### Max Connections
+The maximum number of simultaneously active streams allowed for this auth user.
+
+- Leave blank for unlimited connections
+- Only enforced when the assigned playlist has proxy enabled
+- When the limit is reached, new connection attempts are rejected unless **Stop Oldest Stream on Limit** is enabled
+
+**Example**:
+- `1` — single-stream subscription (one active stream at a time)
+- `2` — allows watching on two devices simultaneously
+
+#### Stop Oldest Stream on Limit
+
+When enabled, if this auth's connection limit is reached, the **oldest active stream** is automatically stopped to make room for the new connection request.
+
+- **Enabled**: Newest connection always wins; oldest stream is evicted
+- **Disabled**: New connection is rejected when limit is reached
+
+:::warning
+Enabling this may interrupt an active viewer if a new connection comes in. It is best suited for single-device subscriptions where you want channel-switching to work seamlessly rather than blocking.
+:::
 
 ## Assigning to Playlists
 
@@ -125,6 +149,9 @@ Playlist Auth can be assigned to:
 - **Playlist Aliases** (alternative configurations)
 
 ### How to Assign
+
+#### On Create
+When creating a new Playlist Auth, you can immediately assign it to a playlist in the same form — no need to edit afterwards.
 
 #### From Playlist Auth
 1. Open the Playlist Auth

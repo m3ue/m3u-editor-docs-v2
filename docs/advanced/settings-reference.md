@@ -123,8 +123,18 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 **Auto-lookup on Import**
 - **Type**: Toggle
 - **Default**: Disabled
-- **Description**: Automatically fetch TMDB metadata during VOD/Series import
+- **Description**: Automatically fetch TMDB metadata during VOD/Series import for channels that have the TMDB lookup option enabled
 - **Warning**: May slow down large imports
+
+**Auto-fetch TMDB for All New Entries from Sync**
+- **Type**: Toggle
+- **Default**: Disabled
+- **Description**: When enabled, automatically fetches TMDB metadata for **all** new VOD/series entries after each sync — not just entries that have the per-channel TMDB lookup enabled. This is a global override that catches everything new without requiring per-channel configuration.
+
+**TMDB Group/Category Creation**
+- **Type**: Toggle
+- **Default**: Enabled
+- **Description**: Controls whether TMDB lookups are allowed to create new groups/categories that don't already exist in your playlist. Disable this to prevent TMDB from adding unexpected new group names.
 
 **Rate Limit**
 - **Type**: Number (1-50)
@@ -134,6 +144,17 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 ## 📺 Streams Tab
+
+### TRaSH Guides Naming
+
+M3U Editor can use [TRaSH Guides](https://trash-guides.info/) naming conventions for VOD and series filenames, enabling better compatibility with media servers that follow TRaSH naming standards.
+
+**Enable TRaSH Guides Naming**
+- **Type**: Toggle
+- **Default**: Disabled
+- **Description**: When enabled, VOD and series .strm filenames are formatted according to TRaSH Guides conventions — including quality labels, codec identifiers, and HDR flags derived from stream stats or TMDB metadata.
+- **Requires**: Stream probing enabled (for codec/quality detection) or TMDB metadata (as fallback)
+- **Note**: Enabling this changes filename output format; test with a small batch before applying to your full library
 
 ### Series .strm File Settings
 
@@ -217,6 +238,16 @@ Same options as Series, but for VOD channels:
 
 
 ## 🔔 Notifications Tab
+
+### General Notification Settings
+
+**Disable Background Success Notifications**
+- **Type**: Toggle
+- **Default**: Disabled (notifications shown)
+- **Description**: When enabled, suppresses the green success toast notifications that appear after routine background operations complete (e.g. sync completed, probe finished). Error and warning notifications are never suppressed.
+- **Use Case**: If you find the constant success notifications distracting, enable this to silence them while keeping alerts for failures.
+
+
 
 ### Email Settings
 

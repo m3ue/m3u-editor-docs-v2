@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 description: Environment variable reference for M3U Editor
 tags:
   - Advanced
@@ -112,6 +112,12 @@ DB_PASSWORD=your_password
 - **Description**: Database password for the Laravel application. If not set, defaults to `PG_PASSWORD`.
 
 ## M3U Proxy Configuration
+
+### M3U_PROXY_INTEGRATION_ENABLED
+- **Default**: `true`
+- **Description**: Set to `false` to completely disable all proxy-related UI, settings, and screens in the editor. When disabled, proxy tabs in the navigation, proxy settings sections in the playlist edit forms, and the stream monitor are all hidden.
+- **Options**: `true`, `false`
+- **Use Case**: Deployments that don't use the proxy at all and want a cleaner, simpler UI
 
 ### M3U_PROXY_ENABLED
 - **Default**: Commented out (uses embedded proxy)
@@ -265,9 +271,10 @@ M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Con
 
 ### INVALIDATE_IMPORT_THRESHOLD
 - **Default**: `100`
-- **Description**: If current sync will have fewer channels than current count minus this value, sync will be canceled
+- **Description**: If the current sync result has fewer items than the current count minus this value, the sync is cancelled automatically.
 - **Note**: Only applies when `INVALIDATE_IMPORT=true`
-- **Example**: If you have 1000 channels and threshold is 100, sync will fail if new import has less than 900 channels
+- **Applies to**: Live channels, groups/categories, and series (not just channel count)
+- **Example**: If you have 1000 channels and threshold is 100, sync will fail if new import has fewer than 900 channels
 
 ### DISABLE_M3U_XTREAM_FORMAT
 - **Default**: `false`
@@ -355,6 +362,12 @@ M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Con
 - **Recommendation**: Higher values reduce bandwidth, lower values ensure logos stay current
 
 ## Debug Configuration
+
+### LOG_ANONYMIZE
+- **Default**: `true`
+- **Description**: Automatically redact sensitive data from application logs — including stream URLs, usernames, IP addresses, and UUIDs. Enabled by default to make sharing logs with support safer.
+- **Options**: `true`, `false`
+- **Note**: Set to `false` only in secure, private environments when you need full URL/IP visibility in logs for debugging
 
 ### SHARED_STREAMING_DEBUG
 - **Default**: `false`

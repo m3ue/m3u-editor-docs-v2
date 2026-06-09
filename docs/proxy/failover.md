@@ -143,6 +143,27 @@ When [Sticky Sessions](./sticky-sessions.md) are enabled, the proxy locks to a s
 3. If the original URL also fails, trigger failover to the next failover URL
 4. The sticky session locks to the new provider's backend
 
+## Timeshift Fallback
+
+When timeshift (time-based seeking/catch-up) is enabled on a channel, M3U Editor will normally use the primary source's timeshift URL. If the primary source does **not** support timeshift but a failover source does, enable **Timeshift fallback** to automatically route timeshift requests to the first failover source that supports it.
+
+Configure this per-channel in the channel edit form under the **Failover** section:
+- **Enable timeshift fallback**: when the primary has no timeshift URL, use a failover source's timeshift URL instead
+
+This is useful when you have a primary provider that lacks catch-up support but your backup provider does.
+
+---
+
+## TMDB ID Failover Merge
+
+When merging channels across playlists, M3U Editor normally matches channels by Xtream stream ID. If a channel cannot be matched by stream ID, the **TMDB ID failover merge** option allows matching by TMDB ID as a secondary strategy.
+
+This is useful for VOD and series content where the same movie/show exists across providers under different stream IDs but the same TMDB metadata.
+
+Enable this in the playlist's **Auto-Merge** settings.
+
+---
+
 ## Advanced Failover (M3U Editor)
 
 The M3U Editor adds a higher-level **failover resolver** on top of the proxy's built-in URL cycling. When enabled, the proxy calls back to the editor to determine which playlist to use next, taking into account playlist stream limits and health state.

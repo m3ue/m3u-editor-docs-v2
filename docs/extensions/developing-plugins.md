@@ -328,6 +328,55 @@ php artisan plugins:stage-github-release \
 
 Or they can upload the `.zip` directly from the admin UI.
 
+## Input helpers in the admin UI
+
+### Regex tester
+
+Any text input that accepts a regular expression automatically shows a **Regex tester** button in the UI. Click it to open a live preview panel where you can type test strings and see matches highlighted in real time — without leaving the settings form.
+
+To signal that a field expects a regex, set `"is_regex": true` in the field definition:
+
+```json
+{
+  "key": "filter_pattern",
+  "type": "text",
+  "label": "Filter Pattern",
+  "is_regex": true,
+  "helper_text": "Regular expression matched against channel names."
+}
+```
+
+### CRON tester
+
+Any text input containing a cron expression shows a **CRON tester** button. Click it to validate the expression and preview the next scheduled run times.
+
+Use the `schedule_cron` key name convention (or declare `"is_cron": true`) to activate the tester on a settings field.
+
+## Plugin Update Checker
+
+If you distribute your plugin via GitHub Releases, M3U Editor can notify admins when a newer version is available.
+
+### How it works
+
+1. M3U Editor periodically checks the GitHub Releases API for your repository.
+2. If the latest release tag is newer than the installed plugin `version` field, an **update available** notification appears in the admin UI on the plugin's page.
+3. Admins can install the update directly from the notification without SSH access.
+
+### Enabling GitHub release notifications
+
+Add the `repository` field to your `plugin.json` manifest:
+
+```json
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "version": "1.2.0",
+  "repository": "https://github.com/owner/my-plugin"
+}
+```
+
+The checker compares the installed `version` against the latest GitHub release tag (e.g. `v1.3.0` → `1.3.0` after stripping the leading `v`). Ensure your release tags match the semantic version format used in the manifest.
+
 ## Development tips
 
 - Set `PLUGIN_SCAN_DRIVER=fake` in `.env` to skip ClamAV scanning during local development.

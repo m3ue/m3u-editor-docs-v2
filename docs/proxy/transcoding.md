@@ -56,6 +56,24 @@ Open the playlist you want to apply transcoding to, go to the **Proxy Settings**
 | **Live Streaming Profile** | Applied to live TV channels from this playlist. Leave empty for direct pass-through |
 | **VOD and Series Streaming Profile** | Applied to VOD and series content. Leave empty for direct pass-through |
 
+### Bulk-Assign a Profile to Channels or Groups
+
+You can assign a stream profile to many channels in a single action without touching each one individually:
+
+1. Go to **Live Channels** → **Channels** (or **Groups**)
+2. Select the channels/groups using checkboxes
+3. Click **Actions** → **Bulk channel actions** → **Assign Stream Profile**
+4. Choose the profile to apply
+5. Confirm
+
+This is especially useful when assigning an [Adaptive profile](#adaptive-rule-based-profiles) — assign once and let the rules route each channel to the right encoder.
+
+### Per-Channel Profile Override
+
+Individual channels can override the playlist-level profile assignment. Open any channel's edit form and look for the **Stream Profile** field under the proxy settings section. A profile set here takes precedence over the playlist default.
+
+Per-channel overrides are also available for the **proxy enabled** toggle — you can exclude individual channels from proxying even when the playlist-level proxy is on.
+
 :::note
 Time seeking (scrubbing) is not supported for VOD content when transcoding is active, because the output is a live-transcoded stream rather than a pre-encoded file.
 :::
@@ -150,6 +168,26 @@ Suppose you want HEVC 1080p+ to use a high-quality NVENC profile, regular H.264 
 | **else** | — | Default Live |
 
 A 4K HEVC channel matches rule 1. A 1080p H.264 channel matches rule 2. A 720p H.264 channel with 5.1 audio matches rule 3 (rule 2 fails the height check). An unprobed channel goes straight to the else fallback.
+
+### Connection Limit (Streamlink / yt-dlp profiles)
+
+For profiles using the **Streamlink** or **yt-dlp** backend, you can set a **Connection Limit** — the maximum number of simultaneously active streams across all channels using this profile.
+
+| Field | Description |
+|---|---|
+| **Connection Limit** | Max concurrent streams for this profile. Leave blank for unlimited. |
+
+When the limit is reached, the **oldest active stream** using this profile is automatically stopped to make room for the new request. This matches the upstream platform constraint (e.g. a Streamlink account that only allows one concurrent connection).
+
+This is a global limit across all channels that share the profile — not per-channel or per-playlist.
+
+:::note
+Connection limits only apply to Streamlink and yt-dlp backends. For FFmpeg profiles, connection limits are managed at the playlist/provider level.
+:::
+
+### HLS fMP4 Profile Preset
+
+A **HLS fMP4** default profile preset is available under the presets menu when creating a new profile. It outputs HLS with Fragmented MP4 segments instead of MPEG-TS, which is better supported by Apple devices and some smart TV clients.
 
 ### Deletion safety
 

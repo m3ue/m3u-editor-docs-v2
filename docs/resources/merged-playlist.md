@@ -87,6 +87,33 @@ Each source playlist in a merge can have a priority setting:
 - Provider B (Backup): Priority 50
 - Free Provider: Priority 10
 
+## Merged EPG Detail View
+
+The **Merged EPG** resource gives you a detailed view of how EPG data is being mapped across merged sources.
+
+### Accessing the Detail View
+
+1. Navigate to **Merged Playlists** → open a merged playlist
+2. Go to the **EPG** tab
+3. Click on any EPG entry to open the **detail slide-over**
+
+The detail view shows:
+- Matched EPG channel details (ID, name, logo)
+- Source EPG provider
+- Current programme (if live EPG data is available)
+- Quality/mapping indicators
+- Raw EPG metadata for debugging
+
+This is useful for diagnosing missing or incorrect EPG data — you can see exactly which source the EPG entry came from and whether the channel ID matched correctly.
+
+## Provider URL Output
+
+By default, Merged Playlists use the editor's Xtream-formatted URLs in M3U output. You can change this per-playlist:
+
+### Disable Xtream-Formatted URLs
+
+Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of Xtream API format. Useful for clients that don't support Xtream Codes URL patterns.
+
 ## Related Resources
 
 - [Adding Playlists](playlists.md) - Setting up source playlists
