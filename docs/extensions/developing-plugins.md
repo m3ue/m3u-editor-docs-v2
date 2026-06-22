@@ -179,6 +179,7 @@ class Plugin implements PluginInterface, HookablePluginInterface, LifecyclePlugi
 | `HookablePluginInterface` | If hooks declared | Provides `runHook()` |
 | `ScheduledPluginInterface` | If `scheduled` capability | Provides `scheduledActions()` |
 | `LifecyclePluginInterface` | Optional | Provides `uninstall()` for custom cleanup |
+| `PluginSelectOptionsProviderInterface` | If using `options_provider` on UI table columns | Provides `selectOptions()` for dynamic column select options |
 
 The validator checks that the interfaces you implement match the capabilities and hooks you declared in the manifest.
 

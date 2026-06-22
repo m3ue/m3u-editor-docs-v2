@@ -235,6 +235,106 @@ If your plugin needs its own database tables, declare them here. The host create
 
 **Table naming rule:** all plugin-owned tables must be prefixed with `plugin_<plugin_id_underscored>_`. For a plugin with ID `my-plugin`, all tables must start with `plugin_my_plugin_`.
 
+### UI tables (`schema.ui_tables`)
+
+Alongside physical table declarations, you can declare admin CRUD interfaces for those tables. The host renders these on a **Data** tab on the plugin edit page — no PHP required.
+
+```json
+"schema": {
+  "tables": [ ... ],
+  "ui_tables": [
+    {
+      "id": "profiles",
+      "label": "Profiles",
+      "model_label": "Profile",
+      "table": "plugin_my_plugin_profiles",
+      "description": "Reusable configuration profiles.",
+      "export_formats": ["csv", "json"],
+      "columns": [
+        { "name": "name",    "label": "Name",    "searchable": true, "sortable": true },
+        { "name": "enabled", "label": "Enabled", "type": "boolean",  "editable": true }
+      ],
+      "fields": [
+        { "id": "name",    "label": "Name",    "type": "text",    "required": true },
+        { "id": "enabled", "label": "Enabled", "type": "boolean", "default": true  }
+      ]
+    }
+  ]
+}
+```
+
+**UI table fields:**
+
+| Field | Required | Description |
+|---|---|---|
+| `id` | Yes | Unique identifier within this plugin (used in the URL) |
+| `label` | Yes | Page heading |
+| `table` | Yes | Physical table name — must be declared in `schema.tables` |
+| `model_label` | No | Singular noun for the "New …" button (defaults to singular of `label`) |
+| `description` | No | Subheading shown on the table page |
+| `create` | No | Set `false` to hide the create action (default: `true`) |
+| `edit` | No | Set `false` to hide per-row edit action (default: `true`) |
+| `delete` | No | Set `false` to hide per-row delete action (default: `true`) |
+| `delete_behavior` | No | `"clear"` updates the row with `delete_payload` instead of deleting it |
+| `delete_payload` | No | Values to write when `delete_behavior` is `"clear"`; dot-notation keys write into `json` columns |
+| `delete_label` | No | Label for the clear action button |
+| `delete_icon` | No | Icon for the clear action (default: `heroicon-o-x-mark`) |
+| `delete_color` | No | Button color for the clear action (default: `gray`) |
+| `delete_description` | No | Modal body text for the clear action |
+| `delete_submit_label` | No | Modal submit label (default: `Clear`) |
+| `delete_success_message` | No | Success notification title after a clear action |
+| `export_formats` | No | On-demand download formats. `["csv"]`, `["json"]`, `["csv", "json"]`, or `[]` to disable. Defaults to both. |
+| `columns` | No | Column definitions for the list view (see below) |
+| `fields` | No | Field definitions for the create/edit form — same field types as `settings` |
+| `prefill` | No | Auto-populate rows from a source table on page mount |
+
+**Column definition fields:**
+
+| Field | Description |
+|---|---|
+| `name` | DB column name; dot-notation supported for `json` columns (e.g. `settings.mode`) |
+| `label` | Column header (also used as the CSV export header) |
+| `type` | `boolean` renders a check/cross icon; `datetime` formats by the user's date setting; omit for plain text |
+| `editable` | `true` makes the column inline-editable |
+| `searchable` | Enable full-text search (plain columns only) |
+| `sortable` | Enable column sort (plain columns only) |
+| `options` | Static `{ "value": "Label" }` map for display in a text or editable column |
+| `options_provider` | Provider name for dynamic options via `PluginSelectOptionsProviderInterface` |
+| `depends_on` | Column names whose current row values are passed to `options_provider` as context |
+| `lookup` | Resolve a stored FK value to a display label from another table |
+| `limit` | Character truncation limit for text columns (default: `80`) |
+
+**Exports** are generated on demand from the current DB rows. The downloaded file includes only the declared `columns`, in declaration order, with the declared `label` as the CSV header.
+
+### Run result tables
+
+When a `ui_table`'s physical table includes an `extension_plugin_run_id` column, the host automatically surfaces it on the plugin run detail page scoped to that run. If the run payload contains `playlist_id`, the table is also scoped to that playlist. Filters for run and playlist appear automatically.
+
+This makes it easy for plugins to write per-run audit or result rows and let operators review them in context without any additional declaration:
+
+```json
+{ "type": "foreignId", "name": "extension_plugin_run_id", "references": "extension_plugin_runs", "on_delete": "cascade" }
+```
+
+Typical read-only result table:
+
+```json
+{
+  "id": "run_results",
+  "label": "Run Results",
+  "table": "plugin_my_plugin_run_results",
+  "create": false, "edit": false, "delete": false,
+  "export_formats": ["csv"],
+  "columns": [
+    { "name": "created_at",  "label": "Created",  "type": "datetime", "sortable": true },
+    { "name": "result_type", "label": "Type",      "sortable": true },
+    { "name": "decision",    "label": "Decision",  "sortable": true },
+    { "name": "title",       "label": "Title",     "searchable": true }
+  ],
+  "fields": []
+}
+```
+
 **Supported column types:**
 
 | Type | Blueprint equivalent |
