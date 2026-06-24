@@ -304,7 +304,7 @@ Alongside physical table declarations, you can declare admin CRUD interfaces for
 | `lookup` | Resolve a stored FK value to a display label from another table |
 | `limit` | Character truncation limit for text columns (default: `80`) |
 
-**Exports** are generated on demand from the current DB rows. The downloaded file includes only the declared `columns`, in declaration order, with the declared `label` as the CSV header.
+**Exports** are generated on demand from the current DB rows. The downloaded file includes all physical table columns: declared `columns` appear first (in declaration order, using `label` as the CSV header), followed by any remaining database columns not covered by a declaration (using the raw column name as the header).
 
 ### Run result tables
 

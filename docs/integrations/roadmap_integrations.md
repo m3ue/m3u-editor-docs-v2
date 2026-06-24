@@ -24,5 +24,7 @@ Below is a list of features that are currently in development or that are planne
 - [x] Local media integration (see [Local Media Integration](./local_media_integration.md))
 - [x] Stream probing for fast channel switching (see [Stream Probing](../advanced/stream-probing.md))
 - [x] Plex DVR management (see [Plex Integration](./plex_integration.md#plex-management))
-- [ ] WebDAV media integration (in progress, see [WebDAV Integration](./webdav_integration.md))
-- [ ] Emby/Jellyfin user imports.
+- [x] WebDAV media integration — including TorBox and remote servers (see [WebDAV Integration](./webdav_integration.md))
+- [x] Built-in DVR — schedule and record from EPG (**experimental**, see [DVR Integration](./dvr_integration.md))
+- [x] Sonarr & Radarr integration — request and manage downloads (**experimental**, see [Sonarr & Radarr Integration](./arrs_integration.md))
+- [ ] Emby/Jellyfin user imports

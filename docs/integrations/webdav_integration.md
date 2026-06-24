@@ -1,6 +1,6 @@
 ---
 sidebar_position: 6
-description: Stream media files from a WebDAV server (NAS, Synology, Nextcloud, etc.) into M3U-Editor
+description: Stream media files from a WebDAV server (NAS, Synology, Nextcloud, TorBox, etc.) into M3U-Editor
 title: WebDAV Integration
 hide_title: true
 tags:
@@ -9,43 +9,53 @@ tags:
   - NAS
   - Synology
   - Nextcloud
+  - TorBox
   - TMDB
 ---
 
 # WebDAV Integration
 
-The WebDAV integration allows you to expose video files hosted on any WebDAV-compatible server (Synology NAS, Nextcloud, Apache/Nginx WebDAV, etc.) as VOD channels and TV series within M3U Editor — without needing a dedicated media server like Emby or Plex.
+The WebDAV integration allows you to expose video files hosted on any WebDAV-compatible server — including local NAS devices (Synology, Nextcloud) and remote services like **TorBox** — as VOD channels and TV series within M3U Editor, without needing a dedicated media server like Emby or Plex.
 
 ## How It Works
 
-M3U Editor connects to your WebDAV server using the `PROPFIND` protocol to list available media files, parses metadata from filenames and folder structure, and optionally enriches the results with TMDB metadata. Media files are streamed to clients by proxying the HTTP requests through M3U Editor using basic authentication.
+M3U Editor connects to your WebDAV server using the `PROPFIND` protocol to list available media files, parses metadata from filenames and folder structure, and optionally enriches the results with TMDB metadata. Media files are streamed to clients by proxying the HTTP requests through M3U Editor — your WebDAV credentials are never exposed to the client.
 
 **Key Features:**
-- Works with any WebDAV-compatible server (Synology DSM, Nextcloud, Apache, Nginx, Caddy, etc.)
+- Works with local NAS WebDAV servers (Synology DSM, Nextcloud, Apache, Nginx, Caddy, etc.)
+- Works with remote WebDAV services (TorBox and similar)
 - Username / password basic authentication
 - Automatic title, year, season, and episode parsing from filenames
+- Torrent/NZB-style filename parsing for remote download services
 - TMDB metadata enrichment (posters, overviews, ratings, cast)
 - Separate library paths for movies and TV shows
 - Recursive directory scanning
 - Configurable video file extensions
-- SSL/TLS support
+- SSL/TLS support with optional certificate verification skip
 
 ## Prerequisites
 
-- M3U Editor experimental branch
-- A running WebDAV server accessible from the M3U Editor host
+- A running WebDAV server accessible from the M3U Editor host (local or remote)
 - WebDAV credentials (username and password) if the server requires authentication
 - *(Optional but recommended)* A TMDB API key configured in M3U Editor Settings for metadata enrichment
 
 ## Compatible WebDAV Servers
 
+### Local / Self-Hosted
+
 | Server | Default Port | Notes |
 |---|---|---|
 | Synology DSM (WebDAV) | `5005` (HTTP) / `5006` (HTTPS) | Enable WebDAV in DSM → File Services |
-| Nextcloud | `80` / `443` | Use `/remote.php/dav/files/<username>/` as path prefix |
+| Nextcloud | `80` / `443` | Use `/remote.php/dav/files/<username>/` as Base Path |
 | Apache mod_dav | `80` / `443` | Standard WebDAV |
 | Nginx WebDAV | `80` / `443` | Requires `nginx-dav-ext-module` for full PROPFIND support |
 | Caddy | `80` / `443` | Use `webdav` directive |
+
+### Remote Services
+
+| Service | Host | Default Port | Notes |
+|---|---|---|---|
+| TorBox | `webdav.torbox.app` | `443` (HTTPS) | Use `/` as Base Path; Torrent/NZB parsing recommended |
 
 ## Organize Your Media
 
@@ -97,23 +107,26 @@ Supported episode filename formats:
 2. Click **Add Media Server**
 3. Set **Server Type** to **WebDAV**
 4. Fill in the connection details:
-   - **Display Name**: A friendly name (e.g., `My NAS Media`)
-   - **Host / IP Address**: Your WebDAV server address (e.g., `192.168.1.100` or `nas.example.com`)
-   - **Port**: The port your WebDAV server listens on (e.g., `5005` for Synology, `80` or `443` for standard servers)
-   - **Use HTTPS**: Enable if your server uses SSL/TLS
+   - **Display Name**: A friendly name (e.g., `My NAS Media` or `TorBox`)
+   - **Host / IP Address**: Your WebDAV server address (e.g., `192.168.1.100`, `nas.example.com`, or `webdav.torbox.app`)
+   - **Port**: The port your WebDAV server listens on (e.g., `443` for TorBox/remote, `5005` for Synology, `80` for plain HTTP)
+   - **Use HTTPS**: Enable for remote services and SSL-enabled NAS servers
    - **WebDAV Username**: Your WebDAV username *(leave blank for anonymous access)*
    - **WebDAV Password**: Your WebDAV password
+   - **Base Path** *(optional)*: URL path prefix for the WebDAV root (e.g., `/` for TorBox, `/remote.php/dav/files/<username>/` for Nextcloud). Leave blank if not needed.
+   - **Skip SSL Verification**: Disable certificate verification for self-signed certs on local NAS. **Leave off for remote services like TorBox.**
 
 5. Under **WebDAV Media Libraries**, click **Add Library Path** and configure each library:
    - **Library Name**: A descriptive name (e.g., `Movies`, `TV Shows`)
    - **WebDAV Path**: The path on the WebDAV server (e.g., `/movies`, `/tvshows`)
-   - **Content Type**: Select `Movies` or `TV Shows`
+   - **Content Type**: Select `Movies`, `TV Shows`, or `Both (auto-detect)`
 
    Repeat for each library you want to import.
 
 6. Configure scan options:
    - **Scan Recursively**: Scan sub-directories for media files *(enabled by default)*
    - **Auto-Fetch Metadata**: Automatically look up TMDB metadata after sync completes *(enabled by default)*
+   - **Torrent/NZB Title Parsing**: Enable smart parsing of torrent-style filenames. Recommended for TorBox and other remote download services — groups individual episode downloads into proper series.
    - **Metadata Source**: Choose `TMDB` for full metadata enrichment or `Filename Only` to skip external lookups
    - **Video File Extensions**: Customise which file extensions are scanned (default: `mp4, mkv, avi, mov, wmv, ts, m4v`)
 
@@ -156,6 +169,25 @@ The integration supports the same actions as other media server integrations. Se
 | **View Playlist** | Opens the generated playlist for editing |
 | **Cleanup Duplicates** | Merges duplicate series entries |
 | **Delete** | Removes the integration |
+
+## TorBox Example
+
+[TorBox](https://torbox.app) provides WebDAV access to your downloaded files at `webdav.torbox.app`.
+
+1. In M3U Editor, click **Add Media Server** → **WebDAV**
+2. Set:
+   - **Host**: `webdav.torbox.app`
+   - **Port**: `443`
+   - **Use HTTPS**: ✅ Enabled
+   - **Base Path**: `/`
+   - **Skip SSL Verification**: ✅ Disabled (leave off — TorBox uses a valid certificate)
+   - **Username / Password**: Your TorBox credentials
+3. Under **WebDAV Media Libraries**, add paths pointing to your downloaded content (e.g., `/torrents`)
+4. Enable **Torrent/NZB Title Parsing** — this groups individually-downloaded episodes into proper series
+
+:::tip
+TorBox filenames are typically torrent-style (e.g., `Breaking.Bad.S01E01.720p.BluRay.mkv`). The **Torrent/NZB Title Parsing** option handles these correctly.
+:::
 
 ## Synology DSM Example
 
