@@ -166,6 +166,10 @@ const config = {
                 href: 'https://github.com/m3ue/m3u-proxy',
               },
               {
+                label: 'GitHub (TV App)',
+                href: 'https://github.com/m3ue/m3u-tv',
+              },
+              {
                 label: 'GitHub (Docs)',
                 href: 'https://github.com/m3ue/m3u-editor-docs-v2',
               },

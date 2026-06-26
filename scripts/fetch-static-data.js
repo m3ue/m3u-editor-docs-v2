@@ -19,6 +19,7 @@ const REPOS = [
     'm3ue/m3u-editor',
     'm3ue/m3u-proxy',
     'm3ue/m3u-editor-docs-v2',
+    'm3ue/m3u-tv',
 ];
 
 /**
