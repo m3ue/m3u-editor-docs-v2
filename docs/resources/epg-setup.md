@@ -117,5 +117,6 @@ For very large EPG files:
 ## Next Steps
 
 - [EPG Cache Overview](/docs/advanced/epg-optimization) - EPG caching and optimization overview
+- [Advanced EPG Dummies (AED)](/docs/advanced/advanced-epg-dummies) - Smart dummy EPG from stream titles
 - [Auto-Merge Channels](/docs/advanced/auto-merge-channels) - Automatic channel management
 - [Docker Compose Deployments](/docs/deployment/docker-compose) - Deploy to production

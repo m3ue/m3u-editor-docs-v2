@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 9
 title: Job Monitoring
 description: Track background job progress, status, and errors in real time from the M3U Editor UI
 tags:

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 7
+sidebar_position: 8
 description: Probe live channels with ffprobe for fast channel switching in Emby
 tags:
   - Advanced

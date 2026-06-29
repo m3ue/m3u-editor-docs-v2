@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 7
 description: Configure Single Sign-On (SSO) via OpenID Connect for M3U Editor
 tags:
   - Advanced
