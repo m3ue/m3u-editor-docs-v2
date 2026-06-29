@@ -32,19 +32,20 @@ public function runAction(string $action, array $payload, PluginExecutionContext
 |---|---|
 | `boolean` | Renders as a toggle. Stored as `true` or `false`. |
 | `number` | Renders as a number input. Stored as an integer or float. |
-| `text` | Single-line text input. |
+| `text` | Single-line text input. Add `"secret": true` to mask the value (for API keys, tokens, passwords). Not encrypted at rest beyond normal DB security. |
 | `textarea` | Multi-line text input. |
-| `secret` | Password-style input — value is masked in the UI. Use for API keys, tokens, or passwords. Stored as a plain string (not encrypted at rest beyond normal DB security). |
-| `tags` | Tag/chip input for entering multiple values. Stored as an array of strings. Users press Enter, comma, or Tab to add each value. |
-| `select` | Drop-down with a static list of options defined in the manifest. |
-| `model_select` | Drop-down populated from an Eloquent model (e.g. select a Playlist). Supports `scope: owned` to limit choices to the current user's records. |
+| `tags` | Tag/chip input for entering multiple values. Stored as an array of strings. Users press Enter or Tab to add each value. |
+| `select` | Drop-down with a static list of options. Options are declared as a `{ "value_key": "Display Label" }` map. Supports `options_provider` for dynamic options. |
+| `model_select` | Drop-down populated from an Eloquent model (e.g. select a Playlist). Supports `scope: "owned"` to limit choices to the current user's records, `label_attribute` to control which model attribute is displayed, and `multiple: true` to allow multiple selections. |
+| `table_select` | Drop-down populated from a plugin-owned table. Specify `table` (the UI table ID or physical table name), `value_column` (stored value, default `id`), `label_column` (display label, default `name`), and optionally `enabled_only: true` to filter to enabled rows. Supports `multiple: true`. |
+| `section` | Groups nested fields under a labelled, optionally collapsible panel. Uses `fields` instead of a value — see [Grouping Settings into Sections](#grouping-settings-into-sections). |
 
 ## Example settings block in `plugin.json`
 
 ```json
 "settings": [
   {
-    "key": "dvr_host",
+    "id": "dvr_host",
     "type": "text",
     "label": "DVR Host",
     "default": "localhost",
@@ -52,110 +53,117 @@ public function runAction(string $action, array $payload, PluginExecutionContext
     "helper_text": "Hostname or IP address of your DVR server."
   },
   {
-    "key": "dvr_port",
+    "id": "dvr_port",
     "type": "number",
     "label": "DVR Port",
     "default": 8089
   },
   {
-    "key": "api_key",
-    "type": "secret",
+    "id": "api_key",
+    "type": "text",
+    "secret": true,
     "label": "API Key",
     "required": true,
     "helper_text": "Your provider API key. Value is masked once saved."
   },
   {
-    "key": "ignored_tags",
+    "id": "ignored_tags",
     "type": "tags",
     "label": "Ignored Tags",
     "default": [],
-    "helper_text": "Press Enter or comma to add each tag. Stored as an array."
+    "helper_text": "Press Enter or Tab to add each tag. Stored as an array."
   },
   {
-    "key": "default_playlist_id",
+    "id": "default_playlist_id",
     "type": "model_select",
     "label": "Default Playlist",
-    "model": "Playlist",
+    "model": "App\\Models\\Playlist",
+    "label_attribute": "name",
     "scope": "owned",
     "helper_text": "Playlist to sync stations into by default."
   },
   {
-    "key": "overwrite_existing",
+    "id": "overwrite_existing",
     "type": "boolean",
     "label": "Overwrite Existing Channels",
     "default": false
   },
   {
-    "key": "log_level",
+    "id": "log_level",
     "type": "select",
     "label": "Log Level",
     "default": "info",
-    "options": [
-      { "value": "info", "label": "Info" },
-      { "value": "debug", "label": "Debug" },
-      { "value": "warning", "label": "Warning" }
-    ]
+    "options": {
+      "info": "Info",
+      "debug": "Debug",
+      "warning": "Warning"
+    }
   }
 ]
 ```
 
 ## Grouping Settings into Sections
 
-For plugins with many settings, you can organise them into collapsible **sections** using the `section` key. Each setting that shares the same `section` value is grouped together under a labelled collapsible panel.
+For plugins with many settings, you can organise them into collapsible **sections** using `"type": "section"` entries in the `settings` array. Each section contains a `fields` array with its nested settings.
 
 ```json
 "settings": [
   {
-    "key": "server_host",
-    "type": "text",
-    "label": "Server Host",
-    "section": "Connection"
+    "id": "connection",
+    "type": "section",
+    "label": "Connection",
+    "collapsible": true,
+    "collapsed": false,
+    "fields": [
+      {
+        "id": "server_host",
+        "type": "text",
+        "label": "Server Host"
+      },
+      {
+        "id": "server_port",
+        "type": "number",
+        "label": "Server Port",
+        "default": 8080
+      }
+    ]
   },
   {
-    "key": "server_port",
-    "type": "number",
-    "label": "Server Port",
-    "default": 8080,
-    "section": "Connection"
+    "id": "authentication",
+    "type": "section",
+    "label": "Authentication",
+    "collapsible": true,
+    "fields": [
+      {
+        "id": "api_key",
+        "type": "text",
+        "secret": true,
+        "label": "API Key"
+      }
+    ]
   },
   {
-    "key": "api_key",
-    "type": "secret",
-    "label": "API Key",
-    "section": "Authentication"
-  },
-  {
-    "key": "log_level",
-    "type": "select",
-    "label": "Log Level",
-    "section": "Advanced",
-    "options": [
-      { "value": "info", "label": "Info" },
-      { "value": "debug", "label": "Debug" }
+    "id": "advanced",
+    "type": "section",
+    "label": "Advanced",
+    "collapsible": true,
+    "collapsed": true,
+    "fields": [
+      {
+        "id": "log_level",
+        "type": "select",
+        "label": "Log Level",
+        "options": {
+          "info": "Info",
+          "debug": "Debug"
+        }
+      }
     ]
   }
 ]
 ```
 
-Settings without a `section` key are rendered at the top level before any sections.
-
-## Manifest-Driven Table UI
-
-Plugins can declare a **table UI** directly in the manifest to display tabular data on their admin page — without writing any custom Filament code.
-
-Declare the table schema under the `table` key in `plugin.json`:
-
-```json
-"table": {
-  "columns": [
-    { "key": "name", "label": "Name", "sortable": true },
-    { "key": "status", "label": "Status" },
-    { "key": "last_run", "label": "Last Run", "type": "datetime" }
-  ]
-}
-```
-
-The plugin's data method populates the rows. See the [Developing Plugins](developing-plugins.md) guide for how to implement the data provider.
+Settings declared at the top level (outside any section) are rendered above the sections. Sections can be nested by placing another `section` entry inside a `fields` array.
 
 ## Scheduled plugin settings
 
@@ -163,13 +171,13 @@ Plugins with the `scheduled` capability typically include settings for the sched
 
 ```json
 {
-  "key": "schedule_enabled",
+  "id": "schedule_enabled",
   "type": "boolean",
   "label": "Enable Schedule",
   "default": false
 },
 {
-  "key": "schedule_cron",
+  "id": "schedule_cron",
   "type": "text",
   "label": "Cron Expression",
   "default": "0 * * * *",

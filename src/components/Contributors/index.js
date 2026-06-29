@@ -94,6 +94,10 @@ export default function Contributors() {
                     <a href="https://github.com/m3ue/m3u-proxy" target="_blank" rel="noopener noreferrer">
                         m3u-proxy
                     </a>
+                    ,{' '}
+                    <a href="https://github.com/m3ue/m3u-tv" target="_blank" rel="noopener noreferrer">
+                        m3u-tv
+                    </a>
                     , and{' '}
                     <a href="https://github.com/m3ue/m3u-editor-docs-v2" target="_blank" rel="noopener noreferrer">
                         m3u-editor-docs-v2

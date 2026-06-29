@@ -91,15 +91,15 @@ The manifest is the source of truth for everything the host needs to know about 
   "cleanup": "preserve",
   "settings": [
     {
-      "key": "log_level",
+      "id": "log_level",
       "type": "select",
       "label": "Log Level",
       "default": "info",
-      "options": [
-        { "value": "info",    "label": "Info" },
-        { "value": "debug",   "label": "Debug" },
-        { "value": "warning", "label": "Warning" }
-      ]
+      "options": {
+        "info":    "Info",
+        "debug":   "Debug",
+        "warning": "Warning"
+      }
     }
   ],
   "actions": [
@@ -111,7 +111,7 @@ The manifest is the source of truth for everything the host needs to know about 
     }
   ],
   "data_ownership": {
-    "storage_roots": ["plugin-data/epg-logger"],
+    "directories": ["plugin-data/epg-logger"],
     "tables": []
   }
 }
@@ -286,7 +286,7 @@ Declare the permissions your plugin needs in `plugin.json`. The validator will w
 
 ## File storage
 
-Plugin-owned files must be stored under declared `storage_roots` in the manifest:
+Plugin-owned files must be stored under paths declared in `data_ownership.directories` or `data_ownership.files` in the manifest:
 
 ```php
 use Illuminate\Support\Facades\Storage;
@@ -295,7 +295,7 @@ use Illuminate\Support\Facades\Storage;
 Storage::disk('local')->put('plugin-data/epg-logger/report.json', json_encode($data));
 ```
 
-Any path outside the declared `storage_roots` is not guaranteed to be preserved across uninstalls or purges.
+Any path outside the declared directories or files is not guaranteed to be preserved across uninstalls or purges.
 
 ## Validating your plugin locally
 
@@ -339,7 +339,7 @@ To signal that a field expects a regex, set `"is_regex": true` in the field defi
 
 ```json
 {
-  "key": "filter_pattern",
+  "id": "filter_pattern",
   "type": "text",
   "label": "Filter Pattern",
   "is_regex": true,
