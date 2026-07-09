@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 description: Compare Caddy and Nginx reverse proxy options
 tags:
   - Deployment

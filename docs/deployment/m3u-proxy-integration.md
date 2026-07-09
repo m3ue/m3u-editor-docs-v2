@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 3
 description: Complete M3U Proxy integration and configuration guide
 tags:
   - Deployment
