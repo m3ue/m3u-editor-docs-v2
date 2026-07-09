@@ -5,14 +5,18 @@ tags:
   - Deployment
   - Managed
   - ElfHosted
-title: ElfHosted (paid, managed)
+title: ElfHosted
 ---
 
 # ElfHosted
 
-**M3U Editor** is available as a paid product on **ElfHosted** – private instances require no self-hosting knowledge! 🎉
+**M3U Editor** is available as a paid and managed product on **ElfHosted** – private instances require no setup or self-hosting knowledge! 🎉
 
-- https://store.elfhosted.com/product/m3u-editor/
+- **Get started here**: https://store.elfhosted.com/product/m3u-editor/
+
+:::note Note
+[**M3U Proxy**](/docs/deployment/m3u-proxy-integration) is not supported on **ElfHosted** instances. However, you can use the [**MediaFlow Proxy**](/docs/advanced/settings-reference#mediaflow-proxy) integration located under settings as an alternative.
+:::
 
 ## Next Steps
 
