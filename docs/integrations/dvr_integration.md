@@ -20,7 +20,7 @@ The built-in DVR lets you schedule recordings of live TV channels directly from 
 
 ## How It Works
 
-M3U Editor monitors your EPG data for scheduled programmes. When a recording rule fires, the proxy captures the live stream and writes it to disk. The DVR scheduler runs continuously in the background, checking for upcoming recordings and managing concurrent capture limits.
+M3U Editor monitors your EPG data for scheduled programmes. When a recording rule fires, the proxy captures the live stream and writes it to disk. Scheduling runs in two parts: a per-minute check starts and stops recordings whose time has arrived, and a daily scan (by default at 3 AM, configurable via `DVR_DEEP_SCAN_HOUR`) matches your rules against the full EPG guide window so newly added programme data gets picked up automatically. Creating or re-enabling a rule also triggers an immediate match, so you see upcoming recordings right away instead of waiting for the next scan.
 
 **Key Features:**
 - Schedule single, series, and manual recordings
@@ -133,6 +133,8 @@ Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlis
 | Variable | Default | Description |
 |---|---|---|
 | `DVR_ENABLED` | `true` | Set to `false` to globally disable all DVR features |
+| `DVR_INITIAL_LOOKAHEAD_DAYS` | `14` | How many days ahead the scheduler scans when matching rules — used both for the immediate scan on rule create/re-enable and the daily deep scan |
+| `DVR_DEEP_SCAN_HOUR` | `3` | Hour of the day (0–23, server time) the daily deep scan runs to pick up EPG data added since the last scan |
 
 ## Troubleshooting
 
@@ -148,6 +150,7 @@ Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlis
 **No Matched Airings on a Series rule**
 - The series title must match the EPG programme title exactly (case-insensitive)
 - Run a manual playlist sync to refresh EPG data
+- If EPG data was added *after* the rule was created, it's picked up by the daily deep scan (default 3 AM, `DVR_DEEP_SCAN_HOUR`) — allow up to 24 hours, or disable and re-enable the rule to trigger an immediate re-match
 
 **Metadata / poster art missing**
 - Ensure a TMDB API key is configured in **Settings**
