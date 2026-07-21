@@ -41,11 +41,15 @@ M3U Editor monitors your EPG data for scheduled programmes. When a recording rul
 
 ## Enable DVR on a Playlist
 
-DVR is enabled per-playlist. Each playlist gets its own DVR settings.
+DVR is enabled per-playlist (or per-Merged/Custom playlist — see below). Each gets its own DVR settings.
 
 1. Go to **Playlists** and click **Edit** on the playlist you want to enable DVR for
 2. Open the **DVR** tab
 3. Toggle **Enable DVR** on
+
+### Merged & Custom Playlists
+
+DVR (and guest content **Requests**) are no longer limited to standard playlists — Merged Playlists and Custom Playlists have their own **DVR** tab with the same settings and Recording Rules described below. This lets you schedule recordings against a merged channel lineup or a hand-curated custom playlist, not just the source playlist it was built from.
 
 ### DVR Settings
 

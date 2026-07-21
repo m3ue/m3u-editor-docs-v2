@@ -1,17 +1,18 @@
 ---
 sidebar_position: 10
-title: Discord & Slack Alerts
-description: Send error notifications to Discord or Slack when syncs fail or provider connections have issues
+title: Alert Channels
+description: Send error notifications to Discord, Slack, or Telegram when syncs fail or provider connections have issues
 tags:
   - Integrations
   - Notifications
   - Discord
   - Slack
+  - Telegram
 ---
 
-# Discord & Slack Alerts
+# Alert Channels
 
-M3U Editor can send error-level notifications to a Discord channel or Slack workspace via incoming webhooks. This lets you catch sync failures, provider connection errors, and other issues without actively monitoring the app.
+M3U Editor can send error-level notifications to a Discord channel, Slack workspace, and/or Telegram chat via webhooks/bot. This lets you catch sync failures, provider connection errors, and other issues without actively monitoring the app. All three channels can be enabled at once — alerts are sent to every enabled channel.
 
 **Access**: Sidebar → **Settings** → **Integrations** → **Alerts** tab
 
@@ -33,17 +34,6 @@ M3U Editor can send error-level notifications to a Discord channel or Slack work
 
 Click **Send test alert** (visible when enabled + webhook URL is filled) to send a test message to your Discord channel and confirm the integration works.
 
-### What triggers an alert
-
-Discord alerts fire on **error-level events**, including:
-
-- Playlist sync failures (provider unreachable, bad credentials, parse errors)
-- Provider connection errors during sync
-- Job failures that exceed the retry limit
-- Database backup failures
-
-Routine events (sync completed successfully, probe finished) do not trigger Discord alerts.
-
 ---
 
 ## Slack
@@ -63,9 +53,58 @@ Routine events (sync completed successfully, probe finished) do not trigger Disc
 
 Click **Send test alert** to verify the Slack integration is working before relying on it for real alerts.
 
-### What triggers an alert
+---
 
-Slack alerts fire on the same error-level events as Discord alerts (see above).
+## Telegram
+
+Send alerts to a Telegram chat, group, or channel via a bot.
+
+### Setup
+
+1. Open Telegram and start a chat with [@BotFather](https://t.me/BotFather)
+2. Send `/newbot` and follow the prompts to name your bot
+3. Copy the **bot token** BotFather gives you
+4. Start a chat with your new bot and send it any message (for group alerts, add the bot to the group and post a message there)
+5. Open `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates` in your browser
+6. Find `"chat":{"id":...}` in the response — that's your **Chat ID** (group IDs are negative numbers)
+7. In M3U Editor: **Settings → Integrations → Alerts → Telegram**
+8. Enable **Telegram alerts**
+9. Paste the **Bot Token** and **Chat ID**
+10. Save
+
+### Testing
+
+Click **Send test alert** (visible when enabled + bot token and chat ID are filled) to confirm the bot can reach your chat.
+
+:::note Security
+The bot token is encrypted before it's queued for delivery, so it's never stored or transmitted in plain text as part of a job payload.
+:::
+
+---
+
+## What Triggers an Alert
+
+All three channels fire on the same **error-level events**, including:
+
+- Playlist sync failures (provider unreachable, bad credentials, parse errors)
+- Provider connection errors during sync
+- Job failures that exceed the retry limit
+- Database backup failures
+
+Routine events (sync completed successfully, probe finished) do not trigger alerts.
+
+A failed alert delivery itself is never re-alerted — this prevents a misconfigured channel (e.g. a broken webhook or expired bot token) from looping forever.
+
+---
+
+## Additional Notifications
+
+Beyond the default error-log forwarding, you can opt in to two targeted notifications once at least one alert channel is enabled. **Access**: **Settings → Integrations → Alerts → Additional Notifications**
+
+| Setting | Description |
+|---|---|
+| **Notify on queued job failures** | Sends an alert whenever a queued job (import, sync, probe, etc.) fails permanently after all retry attempts. |
+| **Notify on playlist import failures** | Sends an alert when a playlist sync fails entirely, e.g. all provider URLs were unreachable. |
 
 ---
 
@@ -85,11 +124,13 @@ Error: Connection refused to provider (https://provider.example.com)
 Time: 2026-06-08 14:32:11 UTC
 ```
 
+Telegram messages are sent as plain text (no Markdown parsing), so forwarded log content can never break message formatting.
+
 ---
 
 ## Routing Alerts to Multiple Channels
 
-You can configure one Discord webhook and one Slack webhook simultaneously — both will receive alerts. To route different alert types to different channels, use Discord or Slack's webhook routing capabilities (e.g. multiple webhooks in Discord, channel routing in Slack).
+You can configure Discord, Slack, and Telegram simultaneously — all enabled channels receive every alert. To route different alert types to different destinations, use each platform's own routing capabilities (e.g. multiple webhooks in Discord, channel routing in Slack, a dedicated bot/chat in Telegram).
 
 ---
 

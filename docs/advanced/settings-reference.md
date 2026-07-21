@@ -558,8 +558,25 @@ Connect MediaFlow Proxy to route playlists, EPG, and Xtream API through it. Once
 - **Description**: Create a Slack App with an Incoming Webhook and paste the URL here. A setup guide (including a copy-paste app manifest) is shown in the Settings page when Slack alerts are enabled.
 - **Test**: Use the **Send test alert** header action to verify the connection.
 
+### Telegram
+
+**Enable Telegram Alerts**
+- **Type**: Toggle
+- **Description**: When enabled, error-level log entries are forwarded to your Telegram chat.
+
+**Telegram Bot Token**
+- **Type**: Password input (revealable)
+- **Placeholder**: `123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`
+- **Description**: The bot token you received from [@BotFather](https://t.me/BotFather). A step-by-step setup guide is shown in the Settings page when Telegram alerts are enabled. Encrypted before being queued for delivery.
+
+**Telegram Chat ID**
+- **Type**: Text input
+- **Placeholder**: `e.g. 123456789 or -100123456789`
+- **Description**: The ID of the chat, group, or channel to send alerts to (group IDs are negative numbers).
+- **Test**: Use the **Send test alert** header action to verify the connection.
+
 ### Additional Notifications
-*(visible when Discord or Slack alerts are enabled)*
+*(visible when Discord, Slack, or Telegram alerts are enabled)*
 
 **Notify on Queued Job Failures**
 - **Type**: Toggle

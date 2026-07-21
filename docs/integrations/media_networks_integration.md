@@ -137,6 +137,12 @@ services:
   - High quality: 6000+ kbps
 - **Audio Bitrate**: Target audio bitrate in kbps (typically 96-192 kbps)
 
+#### Audio & Subtitle Track Preferences
+- **Preferred Audio Language**: Selects a preferred audio language (ISO 639) for the broadcast. Applies to every item in the schedule — useful for content with multiple dubbed audio tracks. Leave blank to use each item's default track.
+- **Preferred Subtitle Language**: Enables subtitles in the selected language for the broadcast. Leave blank to disable subtitles.
+
+These preferences are resolved per source item against the tracks reported by your media server (Plex, Emby, or Jellyfin) and passed through to the proxy, so the correct track is selected automatically without per-item configuration.
+
 :::warning Resource Usage
 Transcoding is CPU-intensive. Use hardware acceleration with external m3u-proxy container and GPU passthrough (`/dev/dri:/dev/dri`) for optimal performance.
 :::

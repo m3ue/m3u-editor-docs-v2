@@ -171,10 +171,15 @@ Enable **Use provider URLs directly** to include the raw upstream provider URLs 
 
 Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of Xtream API format. This is useful for clients that don't support Xtream Codes URL patterns.
 
+## DVR and Guest Requests
+
+Custom Playlists have their own **DVR** tab with the same recording rules, quotas, and settings as a standard playlist (see [DVR Integration](../integrations/dvr_integration.md)), and support guest content **Requests** the same way — so you can schedule recordings or accept guest requests against your curated lineup directly.
+
 ## Related Resources
 
 - [Adding Playlists](playlists.md) - Source playlist setup
 - [Merged Playlist](merged-playlist.md) - Combining entire playlists
 - [Playlist Alias](playlist-alias.md) - Alternative configurations
 - [Playlist Auth](playlist-auth.md) - Authentication setup
+- [DVR Integration](../integrations/dvr_integration.md) - Scheduling recordings
 - [Auto-Merge Channels](../advanced/auto-merge-channels.md) - Automatic channel merging

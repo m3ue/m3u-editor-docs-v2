@@ -114,6 +114,10 @@ By default, Merged Playlists use the editor's Xtream-formatted URLs in M3U outpu
 
 Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of Xtream API format. Useful for clients that don't support Xtream Codes URL patterns.
 
+## DVR and Guest Requests
+
+Merged Playlists are a first-class playlist type: they have their own **DVR** tab with the same recording rules, quotas, and settings as a standard playlist (see [DVR Integration](../integrations/dvr_integration.md)), and support guest content **Requests** the same way. This means you can schedule recordings or accept guest requests against the merged channel lineup directly, without needing DVR enabled on each individual source playlist.
+
 ## Related Resources
 
 - [Adding Playlists](playlists.md) - Setting up source playlists
@@ -121,3 +125,4 @@ Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of 
 - [Playlist Alias](playlist-alias.md) - Alternative configurations
 - [Playlist Auth](playlist-auth.md) - Authentication
 - [Auto-Merge Channels](../advanced/auto-merge-channels.md) - Advanced channel merging
+- [DVR Integration](../integrations/dvr_integration.md) - Scheduling recordings
