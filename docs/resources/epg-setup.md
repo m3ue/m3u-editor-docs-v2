@@ -78,6 +78,54 @@ EPG-to-channel matching is managed through the **EPG Maps** resource (sidebar �
 | **Minimum Similarity (%)** | Minimum similarity score required for a match (default `70`) |
 | **Maximum Fuzzy Distance** | Maximum Levenshtein distance allowed for a fuzzy match (default `25`) |
 | **Exact Match Distance** | Maximum distance still treated as an exact match (default `8`) |
+| **Widen matching with pg_trgm similarity (Postgres only)** | Postgres-only, disabled by default. See [Postgres Trigram Matching](#postgres-trigram-matching-advanced) below |
+
+### Postgres Trigram Matching (Advanced)
+
+On Postgres, EPG matching can optionally widen its candidate search using the `pg_trgm` extension's trigram similarity operator (`%`). This catches typos and transliteration differences (e.g. `Soprtsnet` vs `Sportsnet`) that literal substring (`LIKE`) matching misses.
+
+This is a per-**EPG Map** toggle in **Advanced Settings** → **Postgres Trigram Matching**, and is **disabled by default** — widening every search term with a trigram scan measurably slows down mapping runs on large EPGs/playlists, so it's opt-in per map rather than automatic or global.
+
+**Implications of enabling it:**
+
+- ⚠️ **Slower mapping jobs.** Every search term run against that map's EPG candidate pool gets an extra trigram condition, on top of the existing exact/`LIKE`/JSON matching. Expect noticeably longer mapping runs, especially on EPGs with many channels or when mapping a large playlist. Only the maps you enable it on are affected — other EPG Maps keep their existing speed.
+- ✅ **Better recall for typo/transliteration mismatches** that would otherwise surface as unmatched candidates.
+- It only takes effect on a Postgres connection with `pg_trgm` actually installed. On other database drivers, or on Postgres without the extension, the toggle is greyed out and disabled in the form.
+
+**If you're using the embedded Postgres image**, the extension and its supporting GIN indexes are already provisioned automatically — the toggle is enabled and ready to use.
+
+**If you're running your own external Postgres instance**, the toggle stays disabled until you provision `pg_trgm` yourself. Run the bundled setup command from the app container (or anywhere with `artisan` access and network access to your database):
+
+```bash
+php artisan app:configure-pg-trgm
+```
+
+By default it connects using the app's own configured `pgsql` connection. To target a different database (e.g. connecting as a superuser just for setup, separate from the app's regular role), pass overrides explicitly:
+
+```bash
+php artisan app:configure-pg-trgm \
+  --host=your-db-host \
+  --port=5432 \
+  --database=your_database_name \
+  --username=postgres \
+  --threshold=0.35
+```
+
+| Option | Description |
+|---|---|
+| `--host`, `--port`, `--database`, `--username`, `--password` | Override the connection to use. Defaults to the app's configured `pgsql` connection if omitted; you'll be prompted for a password if `--username` is given without one |
+| `--threshold` | `pg_trgm.similarity_threshold` to set. Defaults to `TRGM_THRESHOLD` or `0.35` |
+
+The command:
+
+1. Installs the `pg_trgm` and `fuzzystrmatch` extensions
+2. Sets `pg_trgm.similarity_threshold` at the database level (needs superuser or `GRANT SET ON PARAMETER` — if your role can't set it, the command warns and continues; matching still works using Postgres's built-in default of `0.3` instead)
+3. Builds the GIN trigram indexes on `epg_channels` (`channel_id`, `name`, `display_name`) using `CREATE INDEX CONCURRENTLY`, so it's safe to run against a database with EPG imports already in progress
+4. Refreshes table statistics with `ANALYZE`
+
+If `epg_channels` doesn't exist yet (a fresh install before its first `php artisan migrate`), the command installs the extensions and warns you to re-run it after migrating to build the indexes.
+
+Once it completes, reload the EPG Map form — the toggle becomes enabled immediately, no restart needed.
 
 ### Reviewing Candidates
 
