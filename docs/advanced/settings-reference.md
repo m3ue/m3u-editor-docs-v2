@@ -447,6 +447,8 @@ Strip provider prefixes from titles before matching with TMDB to improve accurac
 
 Connect MediaFlow Proxy to route playlists, EPG, and Xtream API through it. Once configured, proxied URLs are auto-generated on each playlist's detail page.
 
+This applies only to regular playlist/Xtream/EPG output — it is unrelated to AIOStreams, which manages its own resolution and proxying. See the [Integrations Overview](../integrations/overview.md) for how the two flows differ.
+
 **Proxy URL**
 - **Type**: URL input
 - **Placeholder**: `http://your-mediaflow-host:8888`

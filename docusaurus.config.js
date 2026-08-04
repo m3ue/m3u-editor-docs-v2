@@ -32,6 +32,10 @@ const config = {
 
   onBrokenLinks: 'throw',
 
+  markdown: {
+    mermaid: true,
+  },
+
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
@@ -70,6 +74,7 @@ const config = {
         searchResultContextMaxLength: 50,
       },
     ],
+    '@docusaurus/theme-mermaid',
   ],
 
   themeConfig:
@@ -189,6 +194,9 @@ const config = {
       prism: {
         theme: prismThemes.vsDark,
         // darkTheme: prismThemes.vsDark,
+      },
+      mermaid: {
+        theme: { light: 'neutral', dark: 'dark' },
       },
     }),
 };
