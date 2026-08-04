@@ -138,5 +138,3 @@ Guest requests use the same quality profile and root folder as the admin-configu
 ## Related Documentation
 
 - [DVR Integration](./dvr_integration.md)
-- [Alerts Integration](./alerts.md)
-- [Roadmap](./roadmap_integrations.md)

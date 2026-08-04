@@ -146,9 +146,13 @@ Because AIOStreams returns multiple stream options per item (different quality t
 
 **"No catalogs discovered yet"** — Click **Fetch Catalogs** (or **Test Connection & Fetch Catalogs**) after entering your manifest URL. The catalogs only populate after a successful connection test.
 
+**Connection test reports 0 catalogs, even though the manifest works elsewhere** — M3U Editor reads whatever `catalogs` array your manifest URL actually returns at request time; it doesn't filter or require any particular catalog shape. If you used an AIOStreams "wizard" (e.g. to add external/chained catalogs), confirm the change was actually saved/published on the AIOStreams side — `curl` your manifest URL directly and check the raw JSON's `catalogs` array is populated before assuming M3U Editor is at fault.
+
 **Manifest URL rejected** — Ensure the URL ends in `/manifest.json` and is reachable from your M3U Editor host. If AIOStreams runs behind a reverse proxy, verify SSL and routing are configured correctly.
 
 **Streams not loading in the TV app** — The stream fetch happens at play time and depends on your debrid service returning results. Check that your debrid provider account is active and that AIOStreams is functioning correctly by testing the stream URL directly in a browser.
+
+**A catalog browses fine but has no streams, even though the same manifest works in a full Stremio client (e.g. Telly)** — M3U Editor only ever queries the single AIOStreams instance/manifest URL you configured for both catalogs *and* streams — unlike a full Stremio client, it does not aggregate results across multiple installed addons. If a catalog was added via AIOStreams' add-ons marketplace but stream resolution for that catalog's content isn't enabled/configured on the *same* AIOStreams instance (e.g. no debrid service covers that content's ID namespace), M3U Editor will correctly get zero streams back even though your multi-addon Stremio client finds one from a different addon. Make sure the AIOStreams instance you point M3U Editor at is itself set up to resolve streams for every catalog you add — not just list it.
 
 **Continue watching not updating** — Watch progress is synced to the M3U Editor server. If progress isn't reflected, ensure the TV app is connected to the correct playlist and the AIOStreams integration is enabled.
 
