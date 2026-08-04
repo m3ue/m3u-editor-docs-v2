@@ -33,8 +33,10 @@ M3U Editor connects to your AIOStreams instance using the **Stremio addon protoc
 
 Your AIOStreams manifest URL contains all necessary authentication embedded in the path, so credentials are never exposed to clients.
 
-:::tip How this fits with MediaFlow / m3u-proxy
+:::tip How this fits with M3U Proxy / MediaFlow
 AIOStreams and MediaFlow Proxy are unrelated, parallel paths — AIOStreams is never routed through MediaFlow. See the [Integrations Overview](./overview.md) for a diagram of how requests flow.
+
+**Note:** "MediaFlow Proxy" is also a setting inside AIOStreams itself (its own **Proxy** configuration page, used for how AIOStreams resolves debrid streams). That is a completely separate configuration from M3U Editor's **Preferences → MediaFlow Proxy** setting — same product name, two unrelated instances. Configuring one has no effect on the other.
 :::
 
 ## Add the Integration

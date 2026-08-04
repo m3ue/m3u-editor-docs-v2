@@ -1,14 +1,14 @@
 ---
 sidebar_position: 0
-description: How requests flow between clients, M3U Editor, media server integrations, AIOStreams, and optional proxies like MediaFlow and m3u-proxy
+description: How requests flow between clients, M3U Editor, media server integrations, AIOStreams, and optional proxies like M3U Proxy and MediaFlow
 title: Integrations Overview
 hide_title: true
 tags:
   - Integrations
   - Architecture
   - AIOStreams
+  - M3U Proxy
   - MediaFlow
-  - Proxy
 ---
 
 # Integrations Overview
@@ -23,6 +23,14 @@ flowchart LR
 
 A common point of confusion is **AIOStreams + MediaFlow Proxy**, since both are "proxy-like" things you configure. They are unrelated, parallel paths — one is never chained through the other.
 
+:::warning Same setting name, two unrelated places
+"MediaFlow Proxy" exists as a setting in **two different, unrelated systems**:
+- **AIOStreams' own** `Proxy` configuration page — governs how *AIOStreams itself* resolves debrid streams internally.
+- **M3U Editor's own** `Preferences → MediaFlow Proxy` — rewrites M3U Editor's *own generated* playlist/Xtream/EPG output.
+
+Configuring one has zero effect on the other. If you're troubleshooting a MediaFlow issue, always check which system's setting you actually mean — M3U Editor never reads or writes AIOStreams' MediaFlow/Proxy config, and vice versa.
+:::
+
 ## AIOStreams flow
 
 AIOStreams is a *source* you add under **Integrations → Media Server Integrations**, not a destination you route other traffic through. M3U Editor always resolves AIOStreams streams itself and masks the real (debrid) URL before it ever reaches a client:
@@ -36,13 +44,13 @@ flowchart LR
 
 Nothing here touches MediaFlow. Your self-hosted AIOStreams instance's own proxy/MediaFlow settings govern how *it* resolves debrid links internally — M3U Editor doesn't see or need to change that layer. Setup is just: paste your AIOStreams **manifest URL** into the integration. See [AIOStreams Integration](./aiostreams_integration.md).
 
-## MediaFlow / m3u-proxy flow
+## M3U Proxy / MediaFlow flow
 
-MediaFlow Proxy and m3u-proxy are optional, global settings (**Preferences → MediaFlow Proxy**, or the [Proxy](../proxy/overview.md) system) that apply to M3U Editor's **own generated output** — regular playlists, merged/custom playlists, and Xtream/EPG streams. They're typically used to mask your server's IP/headers from upstream IPTV providers:
+M3U Proxy (the [Proxy](../proxy/overview.md) system) and MediaFlow Proxy are optional, global settings (**Preferences → MediaFlow Proxy**) that apply to M3U Editor's **own generated output** — regular playlists, merged/custom playlists, and Xtream/EPG streams. They're typically used to mask your server's IP/headers from upstream IPTV providers:
 
 ```mermaid
 flowchart LR
-    Client["Client<br/>(Xtream/M3U/playlist output)"] --> Rewrite["Optional rewrite<br/>MediaFlow Proxy or m3u-proxy<br/>(only one applies per stream)"]
+    Client["Client<br/>(Xtream/M3U/playlist output)"] --> Rewrite["Optional rewrite<br/>M3U Proxy or MediaFlow Proxy<br/>(only one applies per stream)"]
     Rewrite --> Origin["Origin IPTV source<br/>(your regular playlist's upstream)"]
 ```
 
@@ -61,7 +69,7 @@ flowchart TB
     AIOInstance --> DebridP["Debrid provider"]
 
     M3UE --> RegPath["Regular playlist streams"]
-    RegPath --> RegRewrite["Optionally rewritten via<br/>MediaFlow Proxy or m3u-proxy"]
+    RegPath --> RegRewrite["Optionally rewritten via<br/>M3U Proxy or MediaFlow Proxy"]
     RegRewrite --> RegOrigin["Your origin IPTV source"]
 ```
 

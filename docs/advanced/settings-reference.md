@@ -473,7 +473,7 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 
 **Automatically Rewrite Stream URLs**
 - **Type**: Toggle
-- **Description**: When enabled, individual stream URLs in generated playlists and Xtream API responses are rewritten to route through MediaFlow Proxy. Applies only when m3u-proxy is not already in use for a given playlist or stream.
+- **Description**: When enabled, individual stream URLs in generated playlists and Xtream API responses are rewritten to route through MediaFlow Proxy. Applies only when M3U Proxy is not already in use for a given playlist or stream.
 
 
 
