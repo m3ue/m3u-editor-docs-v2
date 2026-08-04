@@ -12,8 +12,8 @@ tags:
 
 # DVR Integration
 
-:::note Experimental Feature
-DVR is currently available on the **experimental** branch only. It requires the proxy integration to be enabled.
+:::note Version Requirement
+DVR requires **v0.12.45+**. It also requires the proxy integration to be enabled.
 :::
 
 The built-in DVR lets you schedule recordings of live TV channels directly from the EPG guide. Recordings are saved to a configured storage location and can be enriched with TMDB metadata and NFO sidecar files for easy import into media servers like Emby or Jellyfin.

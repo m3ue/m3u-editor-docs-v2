@@ -25,7 +25,7 @@ Below is a list of features that are currently in development or that are planne
 - [x] Stream probing for fast channel switching (see [Stream Probing](../advanced/stream-probing.md))
 - [x] Plex DVR management (see [Plex Integration](./plex_integration.md#plex-management))
 - [x] WebDAV media integration — including TorBox and remote servers (see [WebDAV Integration](./webdav_integration.md))
-- [x] Built-in DVR — schedule and record from EPG (**experimental**, see [DVR Integration](./dvr_integration.md))
-- [x] Sonarr & Radarr integration — request and manage downloads (**experimental**, see [Sonarr & Radarr Integration](./arrs_integration.md))
-- [x] AIOStreams integration — browse and stream debrid-sourced content (Real-Debrid, Torbox, etc.) via Stremio addon protocol (see [AIOStreams Integration](./aiostreams_integration.md))
+- [x] Built-in DVR — schedule and record from EPG (**v0.12.45+**, see [DVR Integration](./dvr_integration.md))
+- [x] Sonarr & Radarr integration — request and manage downloads (**v0.12.45+**, see [Sonarr & Radarr Integration](./arrs_integration.md))
+- [x] AIOStreams integration — browse and stream debrid-sourced content (Real-Debrid, Torbox, etc.) via Stremio addon protocol (**v0.12.45+**, see [AIOStreams Integration](./aiostreams_integration.md))
 - [ ] Emby/Jellyfin user imports

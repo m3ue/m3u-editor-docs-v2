@@ -13,8 +13,8 @@ tags:
 
 # Sonarr & Radarr (Arrs) Integration
 
-:::note Experimental Feature
-The Sonarr & Radarr integration is currently available on the **experimental** branch only.
+:::note Version Requirement
+The Sonarr & Radarr integration requires **v0.12.45+**.
 :::
 
 M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://radarr.video) to let you request TV shows and movies for download directly from the editor — including from the guest panel. Once connected, you can search content, browse by genre via TMDB, add items to your download queue, and monitor active downloads across all your *arr servers.

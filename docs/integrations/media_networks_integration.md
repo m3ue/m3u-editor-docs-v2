@@ -28,7 +28,7 @@ Transform VOD content and Series into 24/7 live TV channels with automatic EPG g
 
 ## Prerequisites
 
-- M3U Editor experimental branch
+- M3U Editor v0.12.45+
 - Media server integration configured (Emby/Jellyfin/Plex)
 - M3U Proxy enabled for streaming
 - Media content synced into M3U Editor

@@ -320,7 +320,7 @@ M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Con
 - **Default**: `false`
 - **Description**: Enable network broadcasting feature for pseudo-TV channels
 - **Options**: `true`, `false`
-- **Note**: Available in **experimental** branch only. When enabled, networks with `broadcast_enabled=true` will stream live HLS content
+- **Note**: Available in **v0.12.45+**. When enabled, networks with `broadcast_enabled=true` will stream live HLS content
 - **Use Case**: Create virtual TV channels that continuously broadcast content from integrated media servers
 - **See Also**: [Media Networks Integration](../integrations/media_networks_integration.md) for complete setup guide
 

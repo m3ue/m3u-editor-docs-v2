@@ -28,7 +28,7 @@ M3U Editor scans configured directory paths inside the Docker container, parses 
 
 ## Prerequisites
 
-- M3U Editor experimental branch
+- M3U Editor v0.12.45+
 - Media files accessible inside the Docker container via a volume mount
 - *(Optional but recommended)* A TMDB API key configured in M3U Editor Settings for metadata enrichment
 

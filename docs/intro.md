@@ -68,9 +68,10 @@ M3U Editor is a self-hosted web application for managing M3U playlists and IPTV 
 - **Queue System** — Background job processing
 - **API Access** — RESTful API for automation
 
-### Experimental Features
-- **Built-in DVR** — Schedule and record live TV from the EPG guide with Comskip, NFO generation, and disk quota management
-- **Sonarr & Radarr** — Request and manage TV/movie downloads with integrated download queue monitoring
+### Recently Added Features
+- **Built-in DVR** *(v0.12.45+)* — Schedule and record live TV from the EPG guide with Comskip, NFO generation, and disk quota management
+- **Sonarr & Radarr** *(v0.12.45+)* — Request and manage TV/movie downloads with integrated download queue monitoring
+- **AIOStreams** *(v0.12.45+)* — Browse and stream debrid-sourced content (Real-Debrid, Torbox, etc.) via the Stremio addon protocol
 - **WebDAV / TorBox** — Stream media from remote WebDAV services alongside local NAS servers
 
 ## 📋 Prerequisites
@@ -117,8 +118,9 @@ Connect M3U Editor to your media ecosystem:
 - [Emby Integration](/docs/integrations/emby_integration)
 - [Plex Integration](/docs/integrations/plex_integration)
 - [WebDAV / TorBox](/docs/integrations/webdav_integration)
-- [DVR (Experimental)](/docs/integrations/dvr_integration)
-- [Sonarr & Radarr (Experimental)](/docs/integrations/arrs_integration)
+- [DVR (v0.12.45+)](/docs/integrations/dvr_integration)
+- [Sonarr & Radarr (v0.12.45+)](/docs/integrations/arrs_integration)
+- [AIOStreams (v0.12.45+)](/docs/integrations/aiostreams_integration)
 
 ### ⚡ Advanced Topics
 Deep dives into advanced features:
