@@ -1,0 +1,8 @@
+{
+  "label": "M3U TV",
+  "position": 6.5,
+  "link": {
+    "type": "generated-index",
+    "description": "M3U TV — the cross-platform TV/mobile client for M3U Editor. Covers the app itself, device pairing, mobile push notifications, and cross-client Continue Watching."
+  }
+}
