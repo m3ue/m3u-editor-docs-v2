@@ -250,6 +250,94 @@ M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Con
 - **Options**: `true`, `false`
 - **Note**: Set to `false` when using external Redis server
 
+## Queue Worker (Horizon) Configuration
+
+M3U Editor uses [Laravel Horizon](https://laravel.com/docs/horizon) to manage background job queues. Each queue's worker pool can be tuned via environment variables. If a variable is not set, the documented default is used.
+
+:::caution
+Leave a variable **unset** to use the default rather than setting it to an empty value — an empty/non-numeric value is cast to `0`, which stops that queue's workers from processing any jobs.
+:::
+
+### General Queue (`m3u-editor-queue`)
+
+Handles `default`, `import`, and `file_sync` jobs.
+
+#### HORIZON_QUEUE_MAX_PROCESSES
+- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `12`
+- **Description**: Maximum number of worker processes for the general queue
+
+#### HORIZON_QUEUE_MAX_TIME
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of seconds a worker may run before restarting
+
+#### HORIZON_QUEUE_MAX_JOBS
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of jobs a worker may process before restarting
+
+#### HORIZON_QUEUE_MEMORY
+- **Default**: `512`
+- **Description**: Memory limit (in MB) per worker process before it's restarted
+
+### Schedules Direct Queue (`m3u-editor-sd-queue`)
+
+Handles EPG imports sourced from Schedules Direct.
+
+#### HORIZON_SD_MAX_PROCESSES
+- **Default**: `1`
+- **Description**: Maximum number of worker processes for Schedules Direct EPG syncs
+
+#### HORIZON_SD_MAX_TIME
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of seconds a worker may run before restarting
+
+#### HORIZON_SD_MAX_JOBS
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of jobs a worker may process before restarting
+
+#### HORIZON_SD_MEMORY
+- **Default**: `512`
+- **Description**: Memory limit (in MB) per worker process before it's restarted
+
+### DVR Queue (`dvr-queue`)
+
+Handles `dvr`, `dvr-post`, and `dvr-meta` jobs (recordings).
+
+#### HORIZON_DVR_MAX_PROCESSES
+- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `4`
+- **Description**: Maximum number of worker processes for DVR recording jobs
+
+#### HORIZON_DVR_MAX_TIME
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of seconds a worker may run before restarting
+
+#### HORIZON_DVR_MAX_JOBS
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of jobs a worker may process before restarting
+
+#### HORIZON_DVR_MEMORY
+- **Default**: `512`
+- **Description**: Memory limit (in MB) per worker process before it's restarted
+
+### AIOStreams Queue (`aiostreams-queue`)
+
+Handles AIOStreams channel/episode resolution jobs.
+
+#### HORIZON_AIOSTREAMS_MAX_PROCESSES
+- **Default**: `2`
+- **Description**: Maximum number of worker processes for AIOStreams resolution jobs
+
+#### HORIZON_AIOSTREAMS_MAX_TIME
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of seconds a worker may run before restarting
+
+#### HORIZON_AIOSTREAMS_MAX_JOBS
+- **Default**: `0` (no limit)
+- **Description**: Maximum number of jobs a worker may process before restarting
+
+#### HORIZON_AIOSTREAMS_MEMORY
+- **Default**: `512`
+- **Description**: Memory limit (in MB) per worker process before it's restarted
+
 ## Playlist Configuration
 
 ### MAX_CHANNELS
