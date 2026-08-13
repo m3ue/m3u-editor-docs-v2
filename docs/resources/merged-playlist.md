@@ -87,6 +87,16 @@ Each source playlist in a merge can have a priority setting:
 - Provider B (Backup): Priority 50
 - Free Provider: Priority 10
 
+### Per-Source Content Types
+
+Each attached source playlist has its own **Live**, **VOD**, and **Series** toggles, so you can pull only certain content types from a given source instead of everything it offers. All three default to enabled, so existing attachments keep pulling everything they already do.
+
+Set these when attaching a playlist (the attach dialog includes the toggles), or afterwards via the **Content Types** action (pencil icon) on the **Playlists** tab row for that source.
+
+**Example**: attach a movie-only provider with **Live** and **Series** disabled so it only contributes VOD, while your main provider keeps all three enabled for live channels, VOD, and series.
+
+The **Playlists** tab table shows a live count per content type for each source: a type shows `0` with an "Excluded from merge" note when disabled for that source, so you can see at a glance what's actually feeding the merge.
+
 ## Merged EPG Detail View
 
 The **Merged EPG** resource gives you a detailed view of how EPG data is being mapped across merged sources.

@@ -156,6 +156,22 @@ Returns an individual HLS segment.
 
 ---
 
+### DASH manifest
+
+`GET /dash/{stream_id}/manifest.mpd`
+
+Returns the DASH (MPD) manifest with `BaseURL` rewritten to route segment requests through the proxy. Used for channels whose source is a DASH stream. DASH sources are proxied for client-side playback only and cannot be transcoded.
+
+---
+
+### DASH segment
+
+`GET /dash/{stream_id}/segment/{encoded_base}/{path}`
+
+Returns an individual DASH segment, resolved relative to the rewritten `BaseURL` directory from the manifest.
+
+---
+
 ## Transcoding
 
 ### Create transcoded stream

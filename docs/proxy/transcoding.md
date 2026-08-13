@@ -37,7 +37,11 @@ Navigate to **Proxy → Stream Profiles** in the editor sidebar and click **New 
 | **Description** | Optional notes |
 | **Stream Backend** | `FFmpeg`, `Streamlink`, `yt-dlp`, or `Adaptive (rule-based)` — see [Adaptive Profiles](#adaptive-rule-based-profiles) for the rule-based option |
 | **FFmpeg Template** | The FFmpeg argument string with `{variable}` placeholders (FFmpeg backend only) |
-| **Stream Format** | Output container format: MP4, MPEG-TS, HLS, MKV, WebM, etc. |
+| **Stream Format** | Output container format: MP4, MPEG-TS, HLS, DASH, MKV, WebM, etc. |
+
+:::note DASH sources can't be transcoded
+If a channel's *source* is a DASH (`.mpd`) stream, it's always proxied through to clients as-is for playback (FFmpeg cannot decrypt DRM-protected DASH content, so transcoding a DASH source is rejected outright). The `mpd` stream format only applies when the source itself is a DASH manifest; the proxy rewrites the manifest and segment URLs to route through it, the same way it rewrites HLS playlists.
+:::
 
 The default template is a good starting point for most setups:
 

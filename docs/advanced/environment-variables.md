@@ -435,6 +435,13 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Description**: Delete HLS segments older than this value (in seconds)
 - **Recommendation**: Adjust based on your stream buffering needs
 
+## DVR Storage Configuration
+
+### DVR_STORAGE_PATH
+- **Default**: `storage/app/private/dvr` (inside the container)
+- **Description**: Root directory where completed DVR recording files are written
+- **Use Case**: Point this at a dedicated host-mounted volume so recordings survive container recreation and can be sized/backed up independently of the rest of `/config`. See [DVR Integration](../integrations/dvr_integration.md#persisting-recordings-in-docker) for a Docker Compose example.
+
 ## Network Broadcasting Configuration
 
 ### NETWORK_BROADCAST_ENABLED

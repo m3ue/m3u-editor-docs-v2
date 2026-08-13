@@ -20,7 +20,7 @@ The built-in DVR lets you schedule recordings of live TV channels directly from 
 
 ## How It Works
 
-M3U Editor monitors your EPG data for scheduled programmes. When a recording rule fires, the proxy captures the live stream and writes it to disk. Scheduling runs in two parts: a per-minute check starts and stops recordings whose time has arrived, and a daily scan (by default at 3 AM, configurable via `DVR_DEEP_SCAN_HOUR`) matches your rules against the full EPG guide window so newly added programme data gets picked up automatically. Creating or re-enabling a rule also triggers an immediate match, so you see upcoming recordings right away instead of waiting for the next scan.
+M3U Editor monitors your EPG data for scheduled programmes. When a recording rule fires, the proxy captures the live stream and writes it to disk. Scheduling runs in two parts: a per-minute check starts and stops recordings whose time has arrived, and a deep scan matches your rules against the EPG guide window (`DVR_INITIAL_LOOKAHEAD_DAYS` days ahead) so newly added programme data gets picked up automatically. The deep scan runs on every EPG sync, scoped to just the playlists that sync affected, rather than on a fixed daily schedule. Creating or re-enabling a rule also triggers an immediate match, so you see upcoming recordings right away instead of waiting for the next sync.
 
 **Key Features:**
 - Schedule single, series, and manual recordings
@@ -38,6 +38,23 @@ M3U Editor monitors your EPG data for scheduled programmes. When a recording rul
 - `DVR_ENABLED` environment variable set to `true` (default)
 - The `use_dvr` permission granted to your user account (Admin → Users → Permissions)
 - EPG data configured on your playlist so programme guides are available
+
+## Persisting Recordings in Docker
+
+By default, recording files are written inside the container to `storage/app/private/dvr`, which is **not** one of the paths persisted by the standard `docker-compose.yml` volumes (only the config directory, Postgres data, and the public asset storage are mounted by default). Without an explicit mount, recordings are lost if the container is recreated.
+
+To persist recordings on the host, set `DVR_STORAGE_PATH` to a container path and mount a host directory there:
+
+```yaml
+services:
+  m3u-editor:
+    environment:
+      - DVR_STORAGE_PATH=/recordings
+    volumes:
+      - ./recordings:/recordings
+```
+
+See [DVR_STORAGE_PATH](../advanced/environment-variables.md#dvr_storage_path) for the full variable reference.
 
 ## Enable DVR on a Playlist
 
@@ -119,10 +136,13 @@ Navigate to **DVR → Recordings** to see all recordings. Each row shows:
 |---|---|
 | **View** | Open the recording detail view with full metadata |
 | **Stop** | Interrupt an in-progress recording |
+| **Download** | Download the recording file directly (streamed from storage; only shown once the recording is `Completed`) |
 | **Re-run Post-Process** | Re-trigger post-processing on a completed recording |
 | **Regenerate NFO** | Re-create the `.nfo` sidecar file |
 | **Re-run Comskip** | Re-run commercial detection |
 | **Delete** | Permanently remove the recording and its file |
+
+**Download** is also available as a header action on the recording's **View** page. Both open the file URL in a new tab and stream it straight from the configured storage disk, so it works the same whether recordings are stored locally or on a remote/S3-compatible disk.
 
 ## Guest Panel
 
@@ -137,8 +157,7 @@ Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlis
 | Variable | Default | Description |
 |---|---|---|
 | `DVR_ENABLED` | `true` | Set to `false` to globally disable all DVR features |
-| `DVR_INITIAL_LOOKAHEAD_DAYS` | `14` | How many days ahead the scheduler scans when matching rules — used both for the immediate scan on rule create/re-enable and the daily deep scan |
-| `DVR_DEEP_SCAN_HOUR` | `3` | Hour of the day (0–23, server time) the daily deep scan runs to pick up EPG data added since the last scan |
+| `DVR_INITIAL_LOOKAHEAD_DAYS` | `14` | How many days ahead the scheduler scans when matching rules, used both for the immediate scan on rule create/re-enable and the deep scan triggered by EPG sync |
 
 ## Troubleshooting
 
@@ -153,8 +172,8 @@ Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlis
 
 **No Matched Airings on a Series rule**
 - The series title must match the EPG programme title exactly (case-insensitive)
-- Run a manual playlist sync to refresh EPG data
-- If EPG data was added *after* the rule was created, it's picked up by the daily deep scan (default 3 AM, `DVR_DEEP_SCAN_HOUR`) — allow up to 24 hours, or disable and re-enable the rule to trigger an immediate re-match
+- Run a manual playlist sync to refresh EPG data; the deep scan runs automatically as part of that sync and picks up newly added programme data right away
+- If it's still not matching after a sync, disable and re-enable the rule to trigger an immediate re-match
 
 **Metadata / poster art missing**
 - Ensure a TMDB API key is configured in **Settings**

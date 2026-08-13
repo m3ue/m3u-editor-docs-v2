@@ -69,3 +69,7 @@ When you sync your Emby server, M3U Editor imports:
 :::info
 The sync process respects your library selection and genre handling settings. For large libraries, the initial sync may take several minutes.
 :::
+
+## Publishing Content Back to Emby
+
+The steps above cover *importing* content from an existing Emby library. To go the other direction and publish M3U Editor's own VOD/series content out as a managed Emby library via a companion Emby plugin, see [Managed Emby Library Publishing](./emby_library_publishing.md).
