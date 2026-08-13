@@ -19,12 +19,18 @@ This feature is protocol-only on the M3U Editor side. The actual file placement 
 ## How it works
 
 ```mermaid
-flowchart LR
-    Plugin["m3u-editor-for-emby plugin<br/>(runs on your Emby server)"] -->|"register writable paths"| M3UE["M3U Editor<br/>Xtream API"]
-    Plugin -->|"fetch catalog"| M3UE
-    M3UE -->|"movies/series items,<br/>revision hash"| Plugin
-    Plugin -->|"create/link files,<br/>report sync result"| M3UE
-    Plugin --> Emby["Emby server<br/>(library scan)"]
+sequenceDiagram
+    participant Plugin as Emby plugin
+    participant M3UE as M3U Editor
+    participant Emby as Emby library
+
+    Plugin->>M3UE: register writable output paths
+    Note over M3UE: admin creates a Managed Library<br/>mapping (source + target path)
+    Plugin->>M3UE: fetch catalog
+    M3UE-->>Plugin: movies/series items + revision hash
+    Plugin->>Emby: create/link companion files
+    Plugin->>M3UE: report sync result (revision, success/failure)
+    Note over M3UE: mapping status updates<br/>(synced / failed / drifted)
 ```
 
 1. The Emby plugin registers its writable output paths with M3U Editor over the Xtream API.
