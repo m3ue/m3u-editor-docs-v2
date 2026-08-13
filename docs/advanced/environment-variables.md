@@ -146,6 +146,17 @@ DB_PASSWORD=your_password
 - **Options**: `DEBUG`, `INFO`, `WARN`, `ERROR`
 - **Note**: Logs written to `/var/www/html/storage/logs/m3u-proxy.log`
 
+### M3U_PROXY_ALLOW_UNAUTHENTICATED_CALLBACKS
+- **Default**: `false`
+- **Description**: Callback routes the proxy calls back into the editor (failover-resolver, webhooks, broadcast/callback, dvr/callback) reject every request when `M3U_PROXY_TOKEN` is unset, since an unset token previously meant "accept all". Set to `true` to restore that old accept-all behavior for those routes.
+- **Options**: `true`, `false`
+- **Use Case**: Only for a trusted, single-machine/local-network deployment where the proxy container isn't reachable from outside
+
+### MEDIA_SERVER_PROXY_URL_VERSION
+- **Default**: `1`
+- **Description**: Version stamped into every generated Media Server (Plex/Emby/Jellyfin/local/WebDAV) proxy URL. These URLs are signed but non-expiring, so bumping this value per-instance invalidates every previously generated URL at once, without needing per-link expiry.
+- **Use Case**: Force all existing media server proxy links to be regenerated (e.g. after a security-sensitive change)
+
 ## Authentication & Access Control
 
 ### OIDC / SSO Authentication
@@ -231,6 +242,13 @@ M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Con
 - **Description**: Enable SSL verification for WebSocket connections
 - **Options**: `true`, `false`
 - **Note**: Set to `false` to disable SSL verification
+
+## Mobile Push Notifications
+
+### PUSH_RELAY_URL
+- **Default**: `https://push-relay.sparkison.dev`
+- **Description**: Base URL of the relay used to deliver mobile push notifications to M3U TV's phone/tablet builds. Point this at your own [`m3u-push-relay`](https://github.com/m3ue/m3u-push-relay) deployment to avoid depending on the shared community instance.
+- **See Also**: [Push Notifications](../m3u-tv/push-notifications.md) for how the relay works and what it does/doesn't store
 
 ## Redis Configuration
 
@@ -369,6 +387,21 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Description**: By default, all URLs use Xtream API format for stream analysis and limit checking
 - **Options**: `true`, `false`
 - **Note**: Set to `true` to return provider URL (or proxied URL) instead for M3U playlists
+
+### PLAYLIST_DOWNLOAD_TIMEOUT
+- **Default**: `900` (seconds)
+- **Description**: Timeout for downloading the playlist file itself from the provider. Covers the whole request (connect + transfer), not just the connect phase.
+- **Use Case**: Increase for large playlists (many VOD entries) on throttled/slow provider connections
+
+### EPG_DOWNLOAD_TIMEOUT
+- **Default**: `900` (seconds)
+- **Description**: Timeout for downloading the EPG (XMLTV) file itself from the provider. Covers the whole request (connect + transfer), not just the connect phase.
+- **Use Case**: Increase for large EPG files on throttled/slow provider connections
+
+### DEFAULT_EPG_CATCHUP_DAYS
+- **Default**: `7`
+- **Description**: Fallback `tv_archive_duration` (in days) reported to clients when catchup is enabled on a playlist but no duration is known from the provider
+- **Options**: Any non-negative integer; `0` disables the fallback (reports no retention)
 
 ## Proxy URL Override
 
