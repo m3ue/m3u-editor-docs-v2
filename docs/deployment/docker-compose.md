@@ -139,6 +139,23 @@ Gluetun supports many providers including:
 
 See [Gluetun documentation](https://github.com/qdm12/gluetun) for configuration details.
 
+### Troubleshooting: Media Server (Plex/Emby/Jellyfin) VOD playback fails, but sync works
+
+If you're running a media server integration (Plex, Emby, or Jellyfin) on the **same host machine** as your VPN-routed M3U Editor container, you may see this pattern:
+
+- Syncing the media server, and loading posters/backdrops, all work fine.
+- Live channels play fine.
+- VOD (movies/episodes) from that media server fail to play, hang, or error out - even though the connection test in M3U Editor succeeds.
+
+This happens because the request from the Gluetun-networked container to your media server has to leave the container, hit your host's LAN IP, and loop back in to another service on the same host (a "hairpin" route through Docker's own bridge networking). Metadata and image requests are unaffected, but some media servers apply different network/bandwidth rules to the actual streaming endpoint based on what address the request appears to come from - and a hairpinned request often shows up as a Docker-internal bridge IP (e.g. `172.19.0.2`) rather than your real LAN IP.
+
+**For Plex specifically**, this commonly surfaces as Plex applying its remote-stream bandwidth cap (default 8000 kbps) to a high-bitrate Direct Play file, since Plex doesn't recognize the Docker bridge address as part of your local network. Check Plex's own server log (**Settings → Troubleshooting → Logs**, or the `Plex Media Server.log` file) right after a failed playback attempt - a `Bandwidth exceeded` warning followed by `Cannot make a decision` confirms this.
+
+**Fix**: add the Docker bridge subnet your VPN-routed container is using to your media server's local/trusted network list, so it stops treating that traffic as remote:
+
+- **Plex**: Settings → Network → **LAN Networks**, add the bridge subnet (e.g. `172.19.0.0/16`). Find the exact subnet with `docker network inspect <network-name>` on the host.
+- **Emby/Jellyfin**: check the equivalent "Local network addresses" / "Known proxies" setting under Networking settings.
+
 ## Fully External Deployment
 
 **Files**: 
