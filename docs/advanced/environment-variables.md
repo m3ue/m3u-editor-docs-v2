@@ -398,6 +398,12 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Description**: Timeout for downloading the EPG (XMLTV) file itself from the provider. Covers the whole request (connect + transfer), not just the connect phase.
 - **Use Case**: Increase for large EPG files on throttled/slow provider connections
 
+### DEFAULT_EPG_DAYS
+- **Default**: `7`
+- **Description**: Number of days to return for EPG endpoints. M3U Editor will never return more days than what your source does. For example, if your EPG source only has 3 days of data, only 3 days will be returned, not 7. If instead they have 14 days of date, and this value is set to 7 (default), then the data returned will be capped at 7 unless changed
+- **Options**: Any non-negative integer
+- **Use Case**: Cap or increase the days of data returned for the EPG endpoints and downloads
+
 ### DEFAULT_EPG_CATCHUP_DAYS
 - **Default**: `7`
 - **Description**: Fallback `tv_archive_duration` (in days) reported to clients when catchup is enabled on a playlist but no duration is known from the provider
