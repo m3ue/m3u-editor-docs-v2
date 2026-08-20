@@ -23,14 +23,19 @@ M3U TV is entirely optional. M3U Editor's generated M3U/Xtream/EPG output works 
 
 ## Platforms Supported
 
-| Platform | Status | Video Backend |
-|---|---|---|
-| Android TV | Supported | ExoPlayer via Media3 |
-| Android (phone/tablet) | Supported | ExoPlayer via Media3 |
-| iOS / iPadOS | Supported | Media Kit, with an AVKit fallback for unsupported media |
-| Apple TV (tvOS) | Supported | AVKit |
-| Desktop (Linux / Windows) | Supported | libmpv (in-process) |
-| Desktop (macOS) | Supported | Media Kit (AVFoundation-backed) |
+| Platform | Status | Video Backend | GPU Accelerated | HDR | External Subtitles |
+|---|---|---|---|---|---|
+| Android TV | Supported | ExoPlayer/Media3, with a native mpv fallback for media ExoPlayer can't play | ✅ | ✅ | ✅ |
+| Android (phone/tablet) | Supported | ExoPlayer/Media3, with a native mpv fallback for media ExoPlayer can't play | ✅ | ✅ | ✅ |
+| iOS / iPadOS | Supported | Native mpv (MPVKit), with an AVKit fallback for unsupported media | ✅ | ✅ | ✅ |
+| Apple TV (tvOS) | Supported | Native mpv (MPVKit), with an AVKit fallback for unsupported media | ✅ | ✅ | ✅ |
+| Desktop (macOS) | Supported | Native mpv (MPVKit) | ✅ | ✅ | ✅ |
+| Desktop (Windows) | Supported | libmpv (in-process) | ✅ | ✅ | ✅ |
+| Desktop (Linux) | Supported | libmpv (in-process) | ✅ Wayland / ❌ x11 | ✅ Wayland / ❌ x11 | ✅ |
+
+:::note What "GPU Accelerated" and "HDR" mean here
+**GPU Accelerated** means video decode and render run on the GPU rather than the CPU. **HDR** means the app can pass through wide-gamut/HDR10 metadata to the display, independent of GPU acceleration — a platform can be GPU-accelerated without HDR support.
+:::
 
 ## Features
 
@@ -51,8 +56,8 @@ M3U TV is distributed via GitHub Releases:
 
 Grab the build for your platform (APK for Android/Android TV, IPA/TestFlight for iOS/tvOS, or the desktop binaries) from the latest release. There's also a shortcut to this page from **Settings → TV App → Get the app** inside M3U Editor itself.
 
-:::note Source available, non-commercial license
-M3U TV is source-available under **CC BY-NC-SA 4.0** (attribution, non-commercial, share-alike) — same terms as M3U Editor. See the [repository](https://github.com/m3ue/m3u-tv) for the full license and to file issues or contribute.
+:::note Open source, GPL-3.0 license
+M3U TV is open source under **GPL-3.0**, with an additional permission allowing distribution through the Apple App Store, Apple TV App Store, and Google Play Store. See the [repository](https://github.com/m3ue/m3u-tv) for the full license and to file issues or contribute.
 :::
 
 ## Connecting to M3U Editor
