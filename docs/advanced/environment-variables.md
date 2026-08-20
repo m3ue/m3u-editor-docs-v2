@@ -400,7 +400,7 @@ Handles AIOStreams channel/episode resolution jobs.
 
 ### DEFAULT_EPG_DAYS
 - **Default**: `7`
-- **Description**: Number of days to return for EPG endpoints. M3U Editor will never return more days than what your source does. For example, if your EPG source only has 3 days of data, only 3 days will be returned, not 7. If instead they have 14 days of date, and this value is set to 7 (default), then the data returned will be capped at 7 unless changed
+- **Description**: Number of days to return for EPG endpoints. M3U Editor will never return more days than what your source does. For example, if your EPG source only has 3 days of data, only 3 days will be returned, not 7. If instead they have 14 days of data, and this value is set to 7 (default), then the data returned will be capped at 7 unless changed
 - **Options**: Any non-negative integer
 - **Use Case**: Cap or increase the days of data returned for the EPG endpoints and downloads
 
