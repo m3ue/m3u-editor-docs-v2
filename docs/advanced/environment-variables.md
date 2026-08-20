@@ -285,15 +285,15 @@ Handles `default`, `import`, and `file_sync` jobs.
 - **Description**: Maximum number of worker processes for the general queue
 
 #### HORIZON_QUEUE_MAX_TIME
-- **Default**: `0` (no limit)
-- **Description**: Maximum number of seconds a worker may run before restarting
+- **Default**: `3600` (1 hour)
+- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
 
 #### HORIZON_QUEUE_MAX_JOBS
-- **Default**: `0` (no limit)
+- **Default**: `250`
 - **Description**: Maximum number of jobs a worker may process before restarting
 
 #### HORIZON_QUEUE_MEMORY
-- **Default**: `512`
+- **Default**: `256`
 - **Description**: Memory limit (in MB) per worker process before it's restarted
 
 ### Schedules Direct Queue (`m3u-editor-sd-queue`)
@@ -305,15 +305,15 @@ Handles EPG imports sourced from Schedules Direct.
 - **Description**: Maximum number of worker processes for Schedules Direct EPG syncs
 
 #### HORIZON_SD_MAX_TIME
-- **Default**: `0` (no limit)
-- **Description**: Maximum number of seconds a worker may run before restarting
+- **Default**: `3600` (1 hour)
+- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
 
 #### HORIZON_SD_MAX_JOBS
-- **Default**: `0` (no limit)
+- **Default**: `250`
 - **Description**: Maximum number of jobs a worker may process before restarting
 
 #### HORIZON_SD_MEMORY
-- **Default**: `512`
+- **Default**: `256`
 - **Description**: Memory limit (in MB) per worker process before it's restarted
 
 ### DVR Queue (`dvr-queue`)
@@ -325,15 +325,15 @@ Handles `dvr`, `dvr-post`, and `dvr-meta` jobs (recordings).
 - **Description**: Maximum number of worker processes for DVR recording jobs
 
 #### HORIZON_DVR_MAX_TIME
-- **Default**: `0` (no limit)
-- **Description**: Maximum number of seconds a worker may run before restarting
+- **Default**: `7200` (2 hours)
+- **Description**: Maximum number of seconds a worker may run before restarting. Recordings can run up to the queue's 1-hour job timeout, so this is set to survive two back-to-back recordings before recycling. Recycling only happens between jobs, so this never interrupts an in-progress recording.
 
 #### HORIZON_DVR_MAX_JOBS
-- **Default**: `0` (no limit)
+- **Default**: `50`
 - **Description**: Maximum number of jobs a worker may process before restarting
 
 #### HORIZON_DVR_MEMORY
-- **Default**: `512`
+- **Default**: `256`
 - **Description**: Memory limit (in MB) per worker process before it's restarted
 
 ### AIOStreams Queue (`aiostreams-queue`)
@@ -345,15 +345,15 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Description**: Maximum number of worker processes for AIOStreams resolution jobs
 
 #### HORIZON_AIOSTREAMS_MAX_TIME
-- **Default**: `0` (no limit)
-- **Description**: Maximum number of seconds a worker may run before restarting
+- **Default**: `1800` (30 minutes)
+- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
 
 #### HORIZON_AIOSTREAMS_MAX_JOBS
-- **Default**: `0` (no limit)
+- **Default**: `300`
 - **Description**: Maximum number of jobs a worker may process before restarting
 
 #### HORIZON_AIOSTREAMS_MEMORY
-- **Default**: `512`
+- **Default**: `256`
 - **Description**: Memory limit (in MB) per worker process before it's restarted
 
 ## Playlist Configuration
