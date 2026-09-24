@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2.5
-description: Publish VOD and series content from M3U Editor into managed Emby libraries via a companion Emby plugin
+description: Publish movie groups and series categories from M3U Editor to existing or new Emby libraries with automatic managed setup.
 title: Managed Emby Library Publishing
 tags:
   - Integrations
@@ -10,89 +10,74 @@ tags:
 
 # Managed Emby Library Publishing
 
-While [Emby Integration](./emby_integration.md) *imports* content from an existing Emby library into M3U Editor, Managed Library Publishing works in the opposite direction: it **publishes** VOD/series content that M3U Editor already knows about (from a playlist group, a series category, or a custom playlist) out to Emby as a library that Emby manages and scans like any other.
+Managed publishing sends movies and series **from M3U Editor to Emby**. M3U Editor owns the source selection and library mappings; the [m3u-editor for Emby companion](https://github.com/Serph91P/m3u-editor-for-emby) writes the managed streaming files on the Emby server and reports the result. M3U Editor does not write directly to Emby's filesystem.
 
-:::info Requires a companion Emby plugin
-This feature is protocol-only on the M3U Editor side. The actual file placement and Emby library scanning is performed by a separate, community-maintained Emby plugin: [m3u-editor-for-emby](https://github.com/Serph91P/m3u-editor-for-emby), installed on your Emby server. M3U Editor exposes the catalog and accepts sync results; it does not write to Emby's filesystem directly.
+For installation, compatible versions, both sets of credentials, and Docker networking, start with the [complete Emby Integration guide](./emby_integration.md). Importing existing Emby or Jellyfin media into M3U Editor is a separate workflow; managed publishing is Emby-only.
+
+## Quick start
+
+After connecting both sides:
+
+1. In M3U Editor, open **Integrations → Servers**, edit the Emby integration, and open **Managed Libraries → Publish to Emby**.
+2. Choose movies or series, then select **Movie groups** or **Series categories**. Use **Publish all eligible items as one source** only when you want an aggregate source instead of one mapping per selected group/category.
+3. Choose an **Emby library** of the matching type, or choose **Create a new library** and enter its name.
+4. Confirm with **Publish to Emby**, then verify **Status**, **Applied revision**, and **Last success** in the mappings table and the resulting library in Emby.
+
+:::info Automatic setup
+The integration binding and managed root are negotiated automatically. Normal setup does not require a database integration ID, a manually typed output path, or a separate manual root approval in the plugin's Managed Publishing tab. Selecting a destination does not bypass the companion's authorization and path-safety checks.
+:::
+
+:::tip Only "Create a new library" is shown?
+Close the mapping panel. On the Emby integration's edit page, open the **page-header action menu → Refresh Libraries**, wait for **Libraries Refreshed**, and reload the page before reopening the panel. The dropdown search does not rediscover libraries. **Test Connection & Discover Libraries** updates only the form and needs **Save changes** afterwards. See [Refresh the saved library list](./emby_integration.md#refresh-the-saved-library-list).
 :::
 
 ## How it works
 
-```mermaid
-sequenceDiagram
-    participant Plugin as Emby plugin
-    participant M3UE as M3U Editor
-    participant Emby as Emby library
+1. You select the content and destination in M3U Editor.
+2. M3U Editor and the companion negotiate managed setup and validate the destination. A new library is created when requested; an existing destination must remain compatible.
+3. The companion reads the publishing catalog, applies a managed generation, and reports the revision and outcome back to M3U Editor.
+4. The mapping status is updated. If enabled, a successful sync triggers an Emby library refresh.
 
-    Plugin->>M3UE: register writable output paths
-    Note over M3UE: admin creates a Managed Library<br/>mapping (source + target path)
-    Plugin->>M3UE: fetch catalog
-    M3UE-->>Plugin: movies/series items + revision hash
-    Plugin->>Emby: create/link companion files
-    Plugin->>M3UE: report sync result (revision, success/failure)
-    Note over M3UE: mapping status updates<br/>(synced / failed / drifted)
-```
-
-1. The Emby plugin registers its writable output paths with M3U Editor over the Xtream API.
-2. You create one or more **Managed Library** mappings in M3U Editor, each pointing a content source at an Emby library and one of the plugin's registered output paths.
-3. The plugin periodically fetches the catalog for its mappings, creates/links the companion files Emby expects, and reports success/failure back to M3U Editor, which is reflected as each mapping's status.
-
-## Prerequisites
-
-- An Emby [Media Server Integration](./emby_integration.md) already configured in M3U Editor, enabled, and of type **Emby** (not Jellyfin, this feature is Emby-specific).
-- The [m3u-editor-for-emby](https://github.com/Serph91P/m3u-editor-for-emby) plugin installed on your Emby server.
-- The `use_integrations` permission on your M3U Editor user account.
-
-## Configuring a Managed Library
-
-1. Navigate to **Media Server Integrations** → open your Emby integration.
-2. Go to the **Managed Libraries** tab.
-3. Click **Create mapping** and configure:
-
-### Source
-
-| Field | Description |
-|---|---|
-| **Source type** | `VOD group`, `Series category`, `Custom playlist group`, or `All eligible items` |
-| **Source** | The specific group, category, or custom playlist to publish (skipped for "All eligible items") |
-| **Library type** | `Movies` or `TV shows`; determines whether VOD groups or series categories are eligible |
-| **Mapped group** | Auto-filled for most source types; for **Custom playlist group** you additionally pick the specific group/category inside that playlist to publish |
-
-### Emby Library
-
-| Field | Description |
-|---|---|
-| **Existing library** | Point at a library Emby already has, or leave blank to create a new one |
-| **Library name** | Name for the Emby library (auto-filled when an existing library is selected) |
-| **Companion output path** | Where the plugin writes companion files. Limited to paths the plugin itself has registered as writable; you can't type an arbitrary path |
-| **Create and manage this Emby library** | When enabled, M3U Editor treats the library as fully managed (created if missing, and reconciled if its config drifts) |
-| **Enabled** | Turn the mapping on/off without deleting it |
-
-### Publishing Options
-
-| Field | Description |
-|---|---|
-| **Naming** | `Title and year` or `Title only` for generated file/folder names |
-| **Cleanup** | `Replace stale managed files`, `Keep stale managed files`, or `Do not clean up files`; controls what happens to previously-published files that are no longer in the catalog |
-| **Publish local NFO** | Include `.nfo` metadata sidecar files |
-| **Publish visible versions** | Include multiple quality/version variants when available, rather than just one |
-| **Refresh Emby after successful sync** | Trigger an Emby library refresh once the plugin finishes syncing |
-
-## Managing mappings
-
-Each row in the **Managed Libraries** table has:
-
-- **Status** badge: `idle`, `pending`, `planned`, `synced`, `failed`, or `drifted` (drifted means the actual Emby library's config no longer matches what the mapping expects, e.g. an admin manually edited paths/type in Emby; this is surfaced rather than auto-corrected)
-- **Applied revision**: the content hash of the catalog that was last successfully synced
-- **Last success**: when the plugin last reported a successful sync
-- **Reconcile**: re-plans the mapping (creates the Emby library if `is_managed` and missing, or detects drift on an existing one)
-- **Preview**: shows the exact catalog plan (items, revision hash) that the plugin will act on, capped at 50 items in the UI for large libraries (the full list is still what's hashed and synced)
+The filesystem location is interpreted on the **Emby server**. In Docker, check it inside the Emby container and preserve its persistent mount. Do not grant broad filesystem access or run a second STRM writer over the same destination to work around a setup failure.
 
 ## Granting access to Playlist Auth credentials
 
-By default, only the playlist owner (`owner_auth`) can drive this protocol. To let a specific **Playlist Auth** credential's Emby plugin also read catalogs and report sync results, open that Playlist Auth and enable **Library Publishing Access → Enable Library Publishing**. This is off by default and only visible to users with the `use_integrations` permission.
+Normal Xtream authentication is not sufficient authorization for publishing. To let a **Playlist Auth** credential read publishing catalogs and report results, edit that credential and enable **Library Publishing Access → Enable Library Publishing**, then save. The setting is off by default and requires the M3U Editor `use_integrations` permission. Use those credentials in the companion's **m3u-editor Connection** settings.
 
-## Related Documentation
+The Emby API key stored in M3U Editor is a separate credential and must have the administrator authorization needed for managed library setup.
 
-- [Emby Integration](./emby_integration.md) - Importing content from Emby/Jellyfin
-- [Media Server Integrations](./overview.md) - Integrations architecture overview
+## Managing mappings
+
+Use the **Managed Libraries** table to check:
+
+- **Source**, **Emby library**, and **Type**: the intended source and destination.
+- **Enabled**: whether the mapping is active.
+- **Status**: `pending` or `planned` is not a successful publish. Check for `synced`; investigate `failed` or `drifted` rather than creating a duplicate mapping.
+- **Applied revision** and **Last success**: evidence that a catalog generation was applied.
+- **Last error**: the reported reason for a failed or drifted mapping.
+
+The row actions include:
+
+- **Preview**: inspect the catalog plan and revision. For large catalogs the UI displays at most 50 items; publishing still uses the full catalog.
+- **Reconcile**: retry/re-plan the current mapping after correcting the underlying issue.
+- **Edit**: adjust the existing mapping and its publishing options. These advanced settings are not extra fields you need to fill in for the normal quick-start workflow.
+
+The plugin's **Managed Publishing** tab provides **Overview**, **Movies**, and **Series** views, plus **Reconcile Now** and **Rollback Previous Generation** recovery controls. Rollback restores a previous plugin-owned generation for a selected mapping; it is not part of initial setup.
+
+## Publishing options
+
+When editing an existing mapping, the publishing options include:
+
+- **Naming**: title and year, or title only.
+- **Cleanup**: how to handle previously published managed files that are no longer in the catalog. Review the consequences before changing this setting.
+- **Publish local NFO**: include metadata sidecar files.
+- **Publish visible versions**: include available quality/version variants.
+- **Refresh Emby after successful sync**: request an Emby library refresh after the companion applies the generation.
+
+A successful generation and Emby's media scan are different steps. **Refresh Libraries** in M3U Editor only updates the list of available destinations; it is not an Emby content scan or a publishing retry.
+
+## Related documentation
+
+- [Emby Integration](./emby_integration.md): installation, credentials, first publish, Live TV, and troubleshooting.
+- [Media Server Integration Settings](./emby_integration_settings.md): exact refresh/discovery behavior and import actions.
+- [Media Server Integrations](./overview.md): integrations overview.
