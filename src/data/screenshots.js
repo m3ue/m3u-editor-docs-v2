@@ -3,55 +3,39 @@
 
 export default [
   {
-    "src": "/img/screenshots/01_m3u-editor_dashboard.png",
-    "alt": "01 M3u Editor Dashboard"
+    "src": "/img/screenshots/01_dashboard.png",
+    "alt": "01 Dashboard"
   },
   {
-    "src": "/img/screenshots/02_m3u-editor_playlists.png",
-    "alt": "02 M3u Editor Playlists"
+    "src": "/img/screenshots/02_series-detail.png",
+    "alt": "02 Series Detail"
   },
   {
-    "src": "/img/screenshots/03_series-view.png",
-    "alt": "03 Series View"
+    "src": "/img/screenshots/03_series-editor.png",
+    "alt": "03 Series Editor"
   },
   {
-    "src": "/img/screenshots/04_series-mgmt.png",
-    "alt": "04 Series Mgmt"
+    "src": "/img/screenshots/04_playlist-output-options.png",
+    "alt": "04 Playlist Output Options"
   },
   {
-    "src": "/img/screenshots/05_movie-detail.png",
-    "alt": "05 Movie Detail"
+    "src": "/img/screenshots/05_playlist-auth.png",
+    "alt": "05 Playlist Auth"
   },
   {
-    "src": "/img/screenshots/06_in-app-epg-preview.png",
-    "alt": "06 In App Epg Preview"
+    "src": "/img/screenshots/06_media-servers.png",
+    "alt": "06 Media Servers"
   },
   {
-    "src": "/img/screenshots/07_in-app-playlist-epg-preview.png",
-    "alt": "07 In App Playlist Epg Preview"
+    "src": "/img/screenshots/07_integrations-settings.png",
+    "alt": "07 Integrations Settings"
   },
   {
-    "src": "/img/screenshots/08_in-app-playlist-epg-playback.png",
-    "alt": "08 In App Playlist Epg Playback"
+    "src": "/img/screenshots/08_proxy-monitor.png",
+    "alt": "08 Proxy Monitor"
   },
   {
-    "src": "/img/screenshots/09_channel-editing.png",
-    "alt": "09 Channel Editing"
-  },
-  {
-    "src": "/img/screenshots/09_proxy-config.png",
-    "alt": "09 Proxy Config"
-  },
-  {
-    "src": "/img/screenshots/10_post-processing.png",
-    "alt": "10 Post Processing"
-  },
-  {
-    "src": "/img/screenshots/11_proxy-monitor.png",
-    "alt": "11 Proxy Monitor"
-  },
-  {
-    "src": "/img/screenshots/99__api.png",
+    "src": "/img/screenshots/99_api.png",
     "alt": "99 Api"
   }
 ];

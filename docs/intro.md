@@ -135,16 +135,19 @@ Get help and contribute:
 
 ## 📸 Screenshots
 
-![Series preview](/img/screenshots/03_series-view.png)
-*Rich metadata display*
+![Dashboard](/img/screenshots/01_dashboard.png)
+*Dashboard with sync activity, EPG coverage, and library stats*
 
-![Channel editing](/img/screenshots/09_channel-editing.png)
-*Channel editor with full customization options*
+![Series detail](/img/screenshots/02_series-detail.png)
+*Rich metadata display with TMDB artwork, cast, and seasons*
 
-![EPG preview](/img/screenshots/07_in-app-playlist-epg-preview.png)
-*Built-in EPG preview with program guide*
+![Series editor](/img/screenshots/03_series-editor.png)
+*Series and episode editing*
 
-![Proxy monitoring](/img/screenshots/11_proxy-monitor.png)
+![Playlist output options](/img/screenshots/04_playlist-output-options.png)
+*Per-playlist output types (HDHR, M3U, Xtream API, XMLTV) and streaming options*
+
+![Proxy monitoring](/img/screenshots/08_proxy-monitor.png)
 *Real-time proxy statistics and monitoring*
 
 ## ⚖️ License
