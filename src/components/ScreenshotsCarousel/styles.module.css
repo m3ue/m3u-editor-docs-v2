@@ -1,23 +1,45 @@
 .carousel {
   width: 100%;
-  max-width: 1100px;
   margin: 0 auto;
 }
+
+/* Screenshots are macOS window captures with their own transparent padding
+   and shadow, so they render without a box of their own */
 .screenshotImg {
+  display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-  border: 1px solid rgba(34,34,34,0.07);
-  background: #18181b;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
+  cursor: zoom-in;
+  transition: transform 0.3s ease;
 }
-.screenshotImg:hover {
-  transform: scale(1.04);
-  box-shadow: 0 12px 32px rgba(15,23,42,0.16);
+
+.caption {
+  margin: 0.25rem 0 0;
+  text-align: center;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Side slides peek in dimmed and slightly smaller than the active one */
+.carousel :global(.swiper-slide) {
+  opacity: 0.35;
+  transform: scale(0.92);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.carousel :global(.swiper-slide-active) {
+  opacity: 1;
+  transform: none;
+}
+
+.carousel :global(.swiper-slide-active) .caption {
+  opacity: 1;
+}
+
+.carousel :global(.swiper-slide-active) .screenshotImg:hover {
+  transform: scale(1.015);
 }
 
 /* Lightbox overlay */
@@ -84,22 +106,79 @@
   background: #f43f5e;
 }
 
-/* Swiper navigation and pagination custom styles for dark mode */
-:global(.swiper-button-next),
-:global(.swiper-button-prev) {
-  color: #f1f5f9;
-  background: rgba(30,41,59,0.7);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  top: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+/* Custom prev/next buttons, centered on the screenshot (above the caption and dots) */
+.carouselWrap {
+  position: relative;
 }
-:global(.swiper-pagination-bullet) {
-  background: #6366f1;
-  opacity: 0.7;
+
+.navButton {
+  position: absolute;
+  top: calc(50% - 2.5rem);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  border-radius: 9999px;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  background: color-mix(in srgb, var(--ifm-background-surface-color) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ifm-font-color-base);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-:global(.swiper-pagination-bullet-active) {
-  background: #f43f5e;
+
+.navButton > span {
+  font-size: 1.75rem;
+}
+
+.navButton:hover {
+  background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  border-color: transparent;
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.navButton:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
+}
+
+.navPrev {
+  left: 0.5rem;
+}
+
+.navNext {
+  right: 0.5rem;
+}
+
+@media (max-width: 600px) {
+  .navButton {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .navButton > span {
+    font-size: 1.4rem;
+  }
+}
+
+/* Pagination: small dots, active one stretches into a brand gradient pill */
+.carousel :global(.swiper-pagination-bullet) {
+  width: 8px;
+  height: 8px;
+  background: var(--ifm-color-emphasis-400);
   opacity: 1;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.carousel :global(.swiper-pagination-bullet-active) {
+  width: 24px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f43f5e 0%, #6366f1 100%);
 }

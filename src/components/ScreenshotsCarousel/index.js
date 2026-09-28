@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, A11y } from 'swiper/modules';
+import { Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import styles from './styles.module.css';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import MaterialIcon from '../MaterialIcon';
 
 import screenshots from '../../data/screenshots';
 
 export default function ScreenshotsCarousel() {
     const [lightbox, setLightbox] = useState({ open: false, src: '', alt: '' });
     const [visibleScreenshots, setVisibleScreenshots] = useState(screenshots || []);
+    const [swiper, setSwiper] = useState(null);
     const baseUrl = useBaseUrl('');
 
     useEffect(() => {
@@ -41,17 +42,20 @@ export default function ScreenshotsCarousel() {
     return (
         <>
             {visibleScreenshots.length > 0 ? (
+                <div className={styles.carouselWrap}>
                 <Swiper
-                    modules={[Navigation, Pagination, A11y]}
+                    onSwiper={setSwiper}
+                    modules={[Pagination, A11y]}
                     spaceBetween={16}
-                    slidesPerView={1}
-                    navigation
+                    slidesPerView={1.1}
+                    centeredSlides
+                    loop
                     pagination={{ clickable: true }}
                     breakpoints={{
-                        600: { slidesPerView: 2 },
-                        900: { slidesPerView: 3 },
+                        768: { slidesPerView: 1.35, spaceBetween: 24 },
+                        1200: { slidesPerView: 1.5, spaceBetween: 32 },
                     }}
-                    style={{ paddingBottom: 32 }}
+                    style={{ paddingBottom: 40 }}
                     className={styles.carousel}
                 >
                     {visibleScreenshots.map((img) => {
@@ -69,10 +73,18 @@ export default function ScreenshotsCarousel() {
                                     aria-label={`Expand ${img.alt}`}
                                     onKeyDown={(e) => { if (e.key === 'Enter') openLightbox(src, img.alt); }}
                                 />
+                                <p className={styles.caption}>{img.alt.replace(/^\d+\s*/, '')}</p>
                             </SwiperSlide>
                         );
                     })}
                 </Swiper>
+                <button type="button" className={`${styles.navButton} ${styles.navPrev}`} onClick={() => swiper?.slidePrev()} aria-label="Previous screenshot">
+                    <MaterialIcon name="chevron_left" />
+                </button>
+                <button type="button" className={`${styles.navButton} ${styles.navNext}`} onClick={() => swiper?.slideNext()} aria-label="Next screenshot">
+                    <MaterialIcon name="chevron_right" />
+                </button>
+                </div>
             ) : (
                 <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#cbd5e1' }}>No screenshots available.</div>
             )}

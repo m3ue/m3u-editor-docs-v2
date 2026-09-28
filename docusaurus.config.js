@@ -18,6 +18,8 @@ const MATERIAL_ICONS = [
   'bug_report',
   'calendar_today',
   'check',
+  'chevron_left',
+  'chevron_right',
   'cloud_download',
   'construction',
   'content_copy',
