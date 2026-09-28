@@ -56,7 +56,7 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://m3ue.github.io',
+  url: 'https://m3ue.sparkison.dev',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/',
@@ -128,8 +128,8 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      // Social share card (1200x630), shown when links to the site are shared
+      image: 'img/social-card.jpg',
       colorMode: {
         // defaultMode: 'dark', // Default to user's system preference
         disableSwitch: false,
