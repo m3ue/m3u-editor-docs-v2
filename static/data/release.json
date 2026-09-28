@@ -1,0 +1,55 @@
+{
+  "tag": "v0.12.59",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.12.59",
+  "publishedAt": "2026-09-25T18:16:58Z",
+  "features": [
+    {
+      "text": "Add cache time and has DVR columns to EPG resource",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Expand Playlist Alias to allow host swap",
+      "scope": null,
+      "pr": 1541
+    },
+    {
+      "text": "Publish dynamic groups through library mappings",
+      "scope": "emby",
+      "pr": 1535
+    }
+  ],
+  "fixes": [
+    {
+      "text": "SQL inject warning flagged by auditor",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "TMDB enrichment being overwritten by provider auto-fetch",
+      "scope": null,
+      "pr": 1540
+    },
+    {
+      "text": "Reconcile managed libraries after delayed inventory",
+      "scope": "emby",
+      "pr": 1537
+    },
+    {
+      "text": "Continue watching cross-providers to allow switching",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "TMDB auto-enrichment feature skipping partially fetched items",
+      "scope": null,
+      "pr": null
+    }
+  ],
+  "counts": {
+    "features": 3,
+    "fixes": 5,
+    "maintenance": 3
+  },
+  "fetchedAt": "2026-09-28T20:17:57.908Z"
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import MaterialIcon from '../MaterialIcon';
 import styles from './styles.module.css';
 
 export default function DownloadBadge() {
@@ -29,8 +30,8 @@ export default function DownloadBadge() {
             role="status"
             aria-live="polite"
         >
-            <span className={styles.emoji} aria-hidden="true">🚀</span>
-            {downloadsText} Downloads
+            <MaterialIcon name="download" size="1.15rem" className={styles.icon} />
+            <span><strong>{downloadsText}</strong> Docker pulls</span>
         </a>
     );
 }

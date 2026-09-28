@@ -8,10 +8,46 @@ import { themes as prismThemes } from 'prism-react-renderer';
 
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
+// Material Symbols used by <MaterialIcon />. The Google Fonts request is
+// subset to these names to keep the font small, so add any new icon here.
+// Browse names at https://fonts.google.com/icons
+const MATERIAL_ICONS = [
+  'arrow_forward',
+  'auto_awesome',
+  'bolt',
+  'bug_report',
+  'calendar_today',
+  'check',
+  'cloud_download',
+  'construction',
+  'content_copy',
+  'devices',
+  'dns',
+  'download',
+  'extension',
+  'favorite',
+  'hub',
+  'input',
+  'menu_book',
+  'merge',
+  'movie',
+  'new_releases',
+  'open_in_new',
+  'playlist_play',
+  'radio_button_checked',
+  'rocket_launch',
+  'router',
+  'smart_toy',
+  'star',
+  'tune',
+  'tv',
+  'tv_guide',
+];
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'M3U Editor',
-  tagline: 'A full-featured IPTV editor — EPG, Xtream API output, series & playlist management, and more.',
+  tagline: 'The self-hosted IPTV control center: import, organize, enrich, and serve your playlists, EPG, VOD, and DVR from one place.',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -31,6 +67,18 @@ const config = {
   projectName: 'm3u-editor-docs-v2', // Usually your repo name.
 
   onBrokenLinks: 'throw',
+
+  headTags: [
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+    { tagName: 'link', attributes: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' } },
+  ],
+
+  stylesheets: [
+    {
+      // icon_names must be sorted alphabetically or Google Fonts rejects the request
+      href: `https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300..500,0..1,0&icon_names=${[...MATERIAL_ICONS].sort().join(',')}&display=block`,
+    },
+  ],
 
   markdown: {
     mermaid: true,
