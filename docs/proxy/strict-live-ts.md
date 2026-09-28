@@ -103,6 +103,10 @@ Per-stream and per-playlist settings override the global setting for that specif
 | `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` | `2` | Seconds without data before circuit breaker triggers |
 | `STRICT_LIVE_TS_CIRCUIT_BREAKER_COOLDOWN` | `60` | Seconds to avoid a failed upstream before retrying |
 | `STRICT_LIVE_TS_PREBUFFER_TIMEOUT` | `10` | Maximum seconds to wait for pre-buffer to fill |
+| `STRICT_LIVE_TS_OVERLAP_TRIM` | `true` | Drop the provider's replayed rolling-buffer overlap after a silent reconnect (prevents jump-back) |
+| `STRICT_LIVE_TS_OVERLAP_SIGNATURE_SIZE` | `16384` | Bytes of already-delivered data used to locate the overlap |
+| `STRICT_LIVE_TS_OVERLAP_MAX_SEARCH_SIZE` | `8388608` | Maximum bytes held from the new connection while searching (8 MB) |
+| `STRICT_LIVE_TS_OVERLAP_MAX_WAIT` | `0.5` | Maximum seconds to hold data while searching before forwarding it unchanged |
 
 ## Compatible Clients
 
