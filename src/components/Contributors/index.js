@@ -1,48 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+// Bundled at build time (not fetched) so the CDN can never serve a stale copy
+import contributorsData from '@site/static/data/contributors.json';
 import styles from './styles.module.css';
 
 export default function Contributors() {
-    const [contributors, setContributors] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const contributors = contributorsData.contributors || [];
 
-    useEffect(() => {
-        fetch('/data/contributors.json')
-            .then((r) => {
-                if (!r.ok) throw new Error('Failed to fetch contributors data');
-                return r.json();
-            })
-            .then((data) => {
-                setContributors(data.contributors || []);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error('Error loading contributors:', err);
-                setError(err.message);
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) {
-        return (
-            <section className={styles.contributorsSection}>
-                <div className="container">
-                    <h2 className={styles.heading}>Contributors</h2>
-                    <p className={styles.loading}>Loading contributors...</p>
-                </div>
-            </section>
-        );
-    }
-
-    if (error) {
-        return (
-            <section className={styles.contributorsSection}>
-                <div className="container">
-                    <h2 className={styles.heading}>Contributors</h2>
-                    <p className={styles.error}>Unable to load contributors. Please check back later.</p>
-                </div>
-            </section>
-        );
+    if (contributors.length === 0) {
+        return null;
     }
 
     // Separate contributors by contribution count

@@ -1,25 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+// Bundled at build time (not fetched) so the CDN can never serve a stale copy
+import downloads from '@site/static/data/downloads.json';
 import MaterialIcon from '../MaterialIcon';
 import styles from './styles.module.css';
 
 export default function DownloadBadge() {
-    const [downloadsText, setDownloadsText] = useState('Loading...');
-
-    useEffect(() => {
-        fetch('/data/downloads.json')
-            .then((r) => {
-                if (!r.ok) throw new Error('Failed to fetch');
-                return r.json();
-            })
-            .then((data) => {
-                if (data && data.formatted) {
-                    setDownloadsText(data.formatted);
-                }
-            })
-            .catch(() => {
-                setDownloadsText('100,000+');
-            });
-    }, []);
+    const downloadsText = downloads.formatted || '100,000+';
 
     return (
         <a

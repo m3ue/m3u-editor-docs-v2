@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+// Bundled at build time (not fetched) so the CDN can never serve a stale copy
+import release from '@site/static/data/release.json';
 import MaterialIcon from '../MaterialIcon';
 import styles from './styles.module.css';
 
@@ -6,26 +8,12 @@ const MAX_HIGHLIGHTS = 4;
 const PR_URL = 'https://github.com/m3ue/m3u-editor/pull/';
 
 /**
- * Latest stable release highlights, read from static/data/release.json which
- * scripts/fetch-static-data.js generates at build time. Renders nothing if the
- * data is missing so the homepage never shows a broken strip.
+ * Latest stable release highlights from static/data/release.json, which
+ * scripts/fetch-static-data.js regenerates before every build. Renders nothing
+ * if the data is missing so the homepage never shows a broken strip.
  */
 export default function WhatsNew() {
-  const [release, setRelease] = useState(null);
-
-  useEffect(() => {
-    fetch('/data/release.json')
-      .then((r) => {
-        if (!r.ok) throw new Error('Failed to fetch');
-        return r.json();
-      })
-      .then((data) => {
-        if (data && data.tag) setRelease(data);
-      })
-      .catch(() => {});
-  }, []);
-
-  if (!release) {
+  if (!release || !release.tag) {
     return null;
   }
 
