@@ -1,55 +1,80 @@
 {
-  "tag": "v0.12.59",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.12.59",
-  "publishedAt": "2026-09-25T18:16:58Z",
+  "tag": "v0.13.0",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.0",
+  "publishedAt": "2026-09-28T22:00:59Z",
   "features": [
     {
-      "text": "Add cache time and has DVR columns to EPG resource",
+      "text": "Implement EPG cache enrichment plugin hook",
       "scope": null,
-      "pr": null
+      "pr": 1556
     },
     {
-      "text": "Expand Playlist Alias to allow host swap",
+      "text": "Support multiple line ups for SD EPG types",
       "scope": null,
-      "pr": 1541
+      "pr": 1555
     },
     {
-      "text": "Publish dynamic groups through library mappings",
-      "scope": "emby",
-      "pr": 1535
+      "text": "Add Unsloth Studio as local AI copilot provider",
+      "scope": null,
+      "pr": 1522
+    },
+    {
+      "text": "Expose DVR functionality via API",
+      "scope": null,
+      "pr": 1554
+    },
+    {
+      "text": "Add sort by recent activity to series sort options",
+      "scope": null,
+      "pr": 1552
+    },
+    {
+      "text": "Add cached content downloads",
+      "scope": "cache",
+      "pr": 1524
     }
   ],
   "fixes": [
     {
-      "text": "SQL inject warning flagged by auditor",
+      "text": "In-app player not working with AIOStreams",
       "scope": null,
       "pr": null
     },
     {
-      "text": "TMDB enrichment being overwritten by provider auto-fetch",
-      "scope": null,
-      "pr": 1540
-    },
-    {
-      "text": "Reconcile managed libraries after delayed inventory",
-      "scope": "emby",
-      "pr": 1537
-    },
-    {
-      "text": "Continue watching cross-providers to allow switching",
+      "text": "M3U import duplicate check",
       "scope": null,
       "pr": null
     },
     {
-      "text": "TMDB auto-enrichment feature skipping partially fetched items",
+      "text": "AED profile not respecting length",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Remove the playlist rule when a dynamic group is deleted",
+      "scope": "dynamic-groups",
+      "pr": 1551
+    },
+    {
+      "text": "Update column type for metadata strings",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "TMDB enrichment being overwritten on media-server sync",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Series episode table season grouping",
       "scope": null,
       "pr": null
     }
   ],
   "counts": {
-    "features": 3,
-    "fixes": 5,
-    "maintenance": 3
+    "features": 6,
+    "fixes": 7,
+    "maintenance": 2
   },
-  "fetchedAt": "2026-09-28T20:17:57.908Z"
+  "fetchedAt": "2026-09-28T22:01:18.552Z"
 }
