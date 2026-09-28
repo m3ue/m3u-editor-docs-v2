@@ -10,7 +10,7 @@ title: Configuration
 
 # Configuration
 
-All Copilot settings are managed through **Preferences → AI Copilot**. Changes are saved to the database and take effect immediately — no restart required.
+All Copilot settings are managed through **Settings → AI Copilot**. Changes are saved to the database and take effect immediately - no restart required.
 
 ---
 
@@ -22,7 +22,7 @@ All Copilot settings are managed through **Preferences → AI Copilot**. Changes
 | **Enable AI Copilot Management** | Enables conversation history, audit log, and rate-limit management pages. |
 | **AI Provider** | Which AI backend to use (OpenAI, Anthropic, Gemini, etc.). |
 | **Model** | Model name. Leave blank to use the provider default (see table below). |
-| **API Key** | Your provider API key. Not required for Ollama. |
+| **API Key** | Your provider API key. Not required for Ollama, optional for Unsloth Studio. |
 | **System Prompt** | Custom instructions prepended to every conversation. Useful for setting tone or restricting scope. |
 | **Global Tools** | Which built-in tools the assistant can use on any page. |
 | **Quick Actions** | Pre-defined prompts shown as clickable buttons in the chat window. |
@@ -43,6 +43,7 @@ All Copilot settings are managed through **Preferences → AI Copilot**. Changes
 | **OpenRouter** | `openrouter` | Enter your `OPENROUTER_API_KEY`. |
 | **DeepSeek** | `deepseek` | Enter your `DEEPSEEK_API_KEY`. |
 | **xAI (Grok)** | `xai` | Enter your `XAI_API_KEY`. |
+| **Unsloth Studio (Local)** | `unsloth_studio` | Self-hosted [Unsloth Studio](https://github.com/unslothai/unsloth-studio) using its OpenAI-compatible API. Base URL defaults to `http://localhost:8888/v1`. The API key is optional: use Studio's token, or leave it empty if Studio runs with `UNSLOTH_STUDIO_NO_AUTH=1`. |
 
 ### Default Models
 
@@ -55,6 +56,7 @@ If you leave the **Model** field blank, the following defaults are used:
 | Gemini | `gemini-2.0-flash` |
 | Mistral | `mistral-large-latest` |
 | Ollama | `llama3` |
+| Unsloth Studio | `default` (whichever model is currently loaded in Studio) |
 
 You can override the model at any time by entering a model name in the **Model** field (e.g. `gpt-4o-mini`, `claude-3-5-haiku-latest`).
 
@@ -64,7 +66,7 @@ You can override the model at any time by entering a model name in the **Model**
 
 API keys can be supplied in two ways:
 
-1. **Via Preferences UI** — Enter the key directly in the **API Key** field. It is stored encrypted in the database and injected at runtime.
+1. **Via Settings UI** - Enter the key directly in the **API Key** field. It is stored encrypted in the database and injected at runtime.
 2. **Via environment variables** — Set the appropriate variable in your `docker-compose.yml` (e.g. `OPENAI_API_KEY`). This is useful for self-hosted deployments where you prefer not to store secrets in the database.
 
 :::note
@@ -94,7 +96,7 @@ Leave blank to use the default behaviour.
 
 ## Environment Variables (Optional)
 
-These variables can be set in your `docker-compose.yml` instead of using the Preferences UI:
+These variables can be set in your `docker-compose.yml` instead of using the Settings UI:
 
 | Variable | Provider |
 |---|---|
@@ -107,6 +109,8 @@ These variables can be set in your `docker-compose.yml` instead of using the Pre
 | `DEEPSEEK_API_KEY` | DeepSeek |
 | `XAI_API_KEY` | xAI |
 | `OLLAMA_BASE_URL` | Ollama (default: `http://localhost:11434`) |
+| `UNSLOTH_STUDIO_URL` | Unsloth Studio (default: `http://localhost:8888/v1`) |
+| `UNSLOTH_STUDIO_API_KEY` | Unsloth Studio (optional) |
 | `AZURE_OPENAI_API_KEY` | Azure OpenAI |
 | `AZURE_OPENAI_URL` | Azure OpenAI |
 | `AZURE_OPENAI_DEPLOYMENT` | Azure OpenAI |

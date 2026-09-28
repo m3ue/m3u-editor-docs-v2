@@ -74,6 +74,7 @@ DVR (and guest content **Requests**) are no longer limited to standard playlists
 |---|---|
 | **Enable DVR** | Activates DVR scheduling for this playlist |
 | **Output Format** | Container format for recordings (`ts` recommended for compatibility) |
+| **Transcode Recordings** | Have the proxy deinterlace and transcode recordings to H.264/AAC while they record. Recommended for HDHomeRun / OTA sources so recordings play in a browser and take less disk space. Leave off for IPTV sources that are already H.264 (stream copy, no re-encoding). Default: off. |
 | **Max Concurrent Recordings** | Maximum simultaneous captures (default: `2`) |
 | **Start Early (seconds)** | Begin recording this many seconds before the scheduled start (default: `30`) |
 | **End Late (seconds)** | Continue recording this many seconds past the scheduled end (default: `60`) |
@@ -117,6 +118,12 @@ Recording rules define *what* to record. Navigate to **DVR → Recording Rules**
    - **Commercial Detection (Comskip)** — per-rule override
 6. Click **Save**
 
+While you create or edit a **Series** rule, the **Upcoming Airings** preview shows exactly what the rule would record. Airings it would skip are labelled **Skipped - Already Scheduled** or **Skipped - Already Recorded**. The preview updates as you change the series title, channel, or **Record Episodes** mode.
+
+Duplicate handling depends on **Record Episodes**: "All" records every airing, while the unique and new-only modes skip repeats. For sports and other programmes without season/episode data, repeats are detected by title. **Sports Dedup Window (Days)** controls this: a same-title airing within that many days of a recent game counts as a replay and is skipped (blank uses the playlist default of 2 days; 0 records every same-title airing).
+
+When a channel is offered by your provider in several variants (for example "HD" and "FHD" copies), the channel picker lists each title once.
+
 :::tip
 The **Matched Airings** count shown in the rules table tells you how many upcoming EPG slots match the rule. A count of `0` usually means the series title doesn't match any current EPG programme titles.
 :::
@@ -143,6 +150,64 @@ Navigate to **DVR → Recordings** to see all recordings. Each row shows:
 | **Delete** | Permanently remove the recording and its file |
 
 **Download** is also available as a header action on the recording's **View** page. Both open the file URL in a new tab and stream it straight from the configured storage disk, so it works the same whether recordings are stored locally or on a remote/S3-compatible disk.
+
+## HDHomeRun / OTA Sources
+
+Over-the-air channels from an HDHomeRun tuner are usually MPEG-2 video with AC3 audio, which browsers can't play and which take a lot of disk space.
+
+- **Recordings**: turn on **Transcode Recordings** in the playlist's DVR settings. Recordings are deinterlaced and converted to H.264/AAC (roughly 40% smaller than raw MPEG-2).
+- **Live viewing**: **Proxy → Stream Profiles → Generate Default Profiles** includes an **HDHomeRun / OTA Live** profile that deinterlaces and transcodes OTA channels for live playback. Assign it as a playlist's live streaming profile.
+
+## DVR API (Dispatcharr-Compatible)
+
+The DVR can be controlled over HTTP with endpoints that follow Dispatcharr's DVR API, so players built for Dispatcharr's DVR work with M3U Editor by changing the base URL. The endpoints appear in the in-app API docs (**Settings → API**).
+
+### Authentication
+
+Use a Sanctum personal access token, created under **Tools → Personal Access Tokens**. Any of these work:
+
+- `Authorization: Bearer <token>`
+- `X-API-Key: <token>`
+- `Authorization: ApiKey <token>`
+- `?token=<token>` (for players that can't set headers on video requests)
+
+The token needs the matching ability: `view`, `create`, `update`, or `delete`. A token sees every recording in its owner's DVR settings.
+
+### Recordings
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/recordings` | List recordings |
+| `GET` | `/recordings/{id}` | Get one recording |
+| `POST` | `/recordings` | Schedule a recording (`channel`, `start_time`, `end_time`, optional `custom_properties.program`) |
+| `DELETE` | `/recordings/{id}` | Stop if needed, then delete the recording and its files |
+| `POST` | `/recordings/{id}/stop` | Stop early, keeping what was captured |
+| `POST` | `/recordings/{id}/extend` | Extend a recording that hasn't started yet |
+| `POST` | `/recordings/{id}/update-metadata` | Edit title and description |
+| `POST` | `/recordings/{id}/refresh-artwork` | Re-run TMDB/TVMaze metadata enrichment |
+| `POST` | `/recordings/{id}/comskip` | Queue commercial detection |
+| `POST` | `/recordings/bulk-delete-upcoming` | Cancel all upcoming recordings |
+| `GET` | `/recordings/{id}/file` | Stream the finished file (range requests supported), or the live HLS playlist while recording |
+| `GET` | `/recordings/{id}/hls/index.m3u8` | Live HLS playlist |
+
+### Series Rules
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/series-rules` | List series rules |
+| `POST` | `/series-rules` | Create a rule, or update the existing rule for the same show |
+| `DELETE` | `/series-rules?title=&tvg_id=` | Delete a rule (`title` or `tvg_id` is required) |
+| `POST` | `/series-rules/preview` | Airings the rule would match in the next 7 days, without saving |
+| `POST` | `/series-rules/evaluate` | Run the scheduler now and report how many recordings were added |
+| `POST` | `/series-rules/bulk-remove` | Cancel upcoming recordings for a series title or channel |
+
+### Differences from Dispatcharr
+
+- Recording statuses are translated to Dispatcharr's (post-processing shows as `recording`, failed as `interrupted`). Cancelled and purged recordings are hidden.
+- A recording can only be scheduled on a channel whose playlist (or a Custom/Merged Playlist containing it) has DVR enabled.
+- `extend` only works before a recording starts. An in-progress recording returns `409`.
+- Weekly `recurring-rules`, regex title matching, and description matching aren't supported.
+- M3U Editor keeps one series rule per show, matched on title.
 
 ## Guest Panel
 

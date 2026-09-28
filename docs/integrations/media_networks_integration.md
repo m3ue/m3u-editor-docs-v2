@@ -92,7 +92,7 @@ services:
 ## Quick Setup
 
 ### 1. Sync Media Server
-1. Navigate to **Integrations** → **Media Servers**
+1. Navigate to **Integrations** → **Servers**
 2. Add your media server if needed
 3. Click **Sync Now**
 

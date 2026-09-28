@@ -15,7 +15,7 @@ Quick Actions are pre-defined prompts that appear as clickable buttons inside th
 
 ## Setting Up Quick Actions
 
-1. Go to **Preferences → AI Copilot**.
+1. Go to **Settings → AI Copilot**.
 2. Scroll to the **Quick Actions** section.
 3. Click **Add Quick Action**.
 4. Fill in the fields:

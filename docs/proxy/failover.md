@@ -168,7 +168,7 @@ Enable this in the playlist's **Auto-Merge** settings.
 
 The M3U Editor adds a higher-level **failover resolver** on top of the proxy's built-in URL cycling. When enabled, the proxy calls back to the editor to determine which playlist to use next, taking into account playlist stream limits and health state.
 
-Configure this under **Settings → Preferences → Proxy** in the editor.
+Configure this under **Settings → Proxy** in the editor.
 
 ### Failover Resolver
 

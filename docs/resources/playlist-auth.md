@@ -49,7 +49,7 @@ Create isolated credentials for testing:
 
 ## Creating Playlist Auth
 
-1. Navigate to **Playlist Auth** in the sidebar
+1. Navigate to **Playlist → Playlist Auths** in the sidebar
 2. Click **Create Playlist Auth**
 3. Configure settings:
    - **Name**: Descriptive identifier (internal use only)

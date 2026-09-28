@@ -14,7 +14,7 @@ tags:
 
 M3U Editor can send error-level notifications to a Discord channel, Slack workspace, and/or Telegram chat via webhooks/bot. This lets you catch sync failures, provider connection errors, and other issues without actively monitoring the app. All three channels can be enabled at once — alerts are sent to every enabled channel.
 
-**Access**: Sidebar → **Settings** → **Integrations** → **Alerts** tab
+**Access**: Sidebar → **Settings** → **Alerts**
 
 ---
 

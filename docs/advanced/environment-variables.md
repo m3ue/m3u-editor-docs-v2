@@ -356,6 +356,30 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Default**: `256`
 - **Description**: Memory limit (in MB) per worker process before it's restarted
 
+### Cached Content Queue (`cache-queue`)
+
+Handles [Cached Content Downloads](cached-content.md). Downloads run only on this queue, so a slow provider or a long download can't hold up imports and syncs.
+
+#### HORIZON_CACHE_MIN_PROCESSES
+- **Default**: `1`
+- **Description**: Minimum number of worker processes for cached content downloads
+
+#### HORIZON_CACHE_MAX_PROCESSES
+- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `4`
+- **Description**: Maximum number of downloads that can run at once across all playlists (each playlist downloads one file at a time)
+
+#### HORIZON_CACHE_MAX_TIME
+- **Default**: `3600` (1 hour)
+- **Description**: Maximum number of seconds a worker may run before restarting
+
+#### HORIZON_CACHE_MAX_JOBS
+- **Default**: `50`
+- **Description**: Maximum number of jobs a worker may process before restarting
+
+#### HORIZON_CACHE_MEMORY
+- **Default**: `256`
+- **Description**: Memory limit (in MB) per worker process before it's restarted
+
 ## Playlist Configuration
 
 ### MAX_CHANNELS
@@ -409,6 +433,10 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Description**: Fallback `tv_archive_duration` (in days) reported to clients when catchup is enabled on a playlist but no duration is known from the provider
 - **Options**: Any non-negative integer; `0` disables the fallback (reports no retention)
 
+### SYNC_RUN_STALE_MINUTES
+- **Default**: `20`
+- **Description**: Minutes a sync can go without progress before it is considered dead and cleaned up. Raise this if very large playlists are marked as failed while still processing.
+
 ## Proxy URL Override
 
 ### PROXY_URL_OVERRIDE
@@ -447,6 +475,13 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Default**: `storage/app/private/dvr` (inside the container)
 - **Description**: Root directory where completed DVR recording files are written
 - **Use Case**: Point this at a dedicated host-mounted volume so recordings survive container recreation and can be sized/backed up independently of the rest of `/config`. See [DVR Integration](../integrations/dvr_integration.md#persisting-recordings-in-docker) for a Docker Compose example.
+
+## Cached Content Storage
+
+### CACHE_STORAGE_PATH
+- **Default**: `storage/app/private/cache` (inside the container)
+- **Description**: Root directory where [cached VOD and episode downloads](cached-content.md) are written
+- **Use Case**: Mount a host volume here so cached files survive container rebuilds and updates. Without a volume, every cached file has to be downloaded again after an update.
 
 ## Network Broadcasting Configuration
 
@@ -494,6 +529,34 @@ Handles AIOStreams channel/episode resolution jobs.
 - **Default**: `30`
 - **Description**: Number of days to cache channel logos before refreshing
 - **Recommendation**: Higher values reduce bandwidth, lower values ensure logos stay current
+
+### PROXY_IMAGE_RESIZE_ENABLED
+- **Default**: `true`
+- **Description**: Allow the logo proxy to downscale images when a client asks for a smaller size with `?w=` or `?h=` query parameters. M3U TV uses this to load smaller posters and backdrops, which cuts memory use and load times.
+
+### PROXY_IMAGE_RESIZE_MAX
+- **Default**: `1920`
+- **Description**: Largest width or height (in pixels) a client can request. Larger values are clamped.
+
+### PROXY_IMAGE_RESIZE_POSTER_WIDTH / PROXY_IMAGE_RESIZE_BACKDROP_WIDTH / PROXY_IMAGE_RESIZE_PHOTO_WIDTH
+- **Defaults**: `600` / `1280` / `300`
+- **Description**: Widths used for posters, backdrops, and cast photos in Xtream API metadata responses when the logo proxy is enabled for the playlist
+
+## Feature Flags
+
+### PLAYLIST_TMDB_DYNAMIC_GROUPS
+- **Default**: `true`
+- **Description**: Enables TMDB [Dynamic Groups](../integrations/tmdb_integration.md#dynamic-groups) and genre reclassification. Set to `false` to hide these features.
+
+## AI Copilot
+
+### UNSLOTH_STUDIO_URL
+- **Default**: `http://localhost:8888/v1`
+- **Description**: Default base URL for the **Unsloth Studio (Local)** AI Copilot provider. The URL entered in **Settings → AI Copilot** takes precedence.
+
+### UNSLOTH_STUDIO_API_KEY
+- **Default**: empty
+- **Description**: Optional default API key for Unsloth Studio. Leave empty if Unsloth Studio runs with `UNSLOTH_STUDIO_NO_AUTH=1`.
 
 ## Debug Configuration
 

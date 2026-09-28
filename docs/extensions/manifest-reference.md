@@ -101,6 +101,7 @@ Declare the capabilities your plugin provides. The validator checks that your PH
 | `epg_processor` | `EpgProcessorPluginInterface` |
 | `stream_analysis` | `StreamAnalysisPluginInterface` |
 | `scheduled` | `ScheduledPluginInterface` |
+| `epg_cache_enrichment` | `EpgProcessorPluginInterface` (see [EPG cache enrichment](developing-plugins.md#epg-cache-enrichment)) |
 
 ---
 

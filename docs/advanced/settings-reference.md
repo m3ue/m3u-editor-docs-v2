@@ -12,10 +12,10 @@ title: Settings Reference
 
 Complete guide to all settings available in the M3U Editor Settings page (admin-only).
 
-**Access**: Sidebar → **Settings** (⚙️ icon)
+**Access**: Sidebar → **Administration** → **Settings**. Each group of settings is its own page, listed in the sub-navigation on the left of the Settings screen (General, Navigation, Proxy, TV App, Sync Options, Assets, Backups, SMTP, API, Cache, Integrations, AI Copilot, Alerts).
 
 
-## 🌐 General Tab
+## 🌐 General
 
 ### Layout & Display Options
 
@@ -85,7 +85,20 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 
-## 🔄 Proxy Tab
+## 🧭 Navigation
+
+Organize the main sidebar menu to suit how you use the app.
+
+- **Drag and drop** navigation groups, and the items inside them, to reorder them.
+- **Visible** toggles hide or show a group or an individual item. Hiding an item only removes it from the menu; the page itself still works.
+- **Restore Default** puts the original full menu back.
+- **Use Simplified Default** applies a trimmed-down menu that hides the more advanced features, useful if you only manage a playlist or two.
+
+Refresh the page after saving to see the new menu.
+
+
+
+## 🔄 Proxy
 
 ### URL & Connection
 
@@ -194,7 +207,7 @@ Complete guide to all settings available in the M3U Editor Settings page (admin-
 
 
 
-## 📺 TV App Tab
+## 📺 TV App
 
 ### TV Notification Tester
 
@@ -221,9 +234,13 @@ Each channel entry:
 
 
 
-## 🔁 Sync Options Tab
+## 🔁 Sync Options
 
 ### Provider Rate Limiting & Concurrency
+
+:::info Provider rate limits (HTTP 429)
+When an Xtream provider answers with "429 Too Many Requests" during a sync or metadata fetch, M3U Editor pauses requests for that account for 15 minutes instead of retrying right away, to avoid making the rate limit worse or getting the account locked. The pause covers the account's fallback URLs too, since they share the same credentials.
+:::
 
 **Enable Request Delay**
 - **Type**: Toggle
@@ -277,7 +294,7 @@ Each channel entry:
 
 
 
-## 🖼️ Assets Tab
+## 🖼️ Assets
 
 ### Logo Cache
 
@@ -307,7 +324,7 @@ Override app-wide placeholder images. Clearing any field reverts to the built-in
 
 
 
-## 💾 Backups Tab
+## 💾 Backups
 
 ### Automated Backups
 
@@ -328,9 +345,13 @@ Override app-wide placeholder images. Clearing any field reverts to the built-in
 - **Default**: Unlimited (0)
 - **Description**: Automatically delete old backups when limit exceeded. Enter 0 for no limit.
 
+**Delete Backups After (Days)**
+- **Type**: Number
+- **Description**: Automatically delete backups older than this many days. Enter 0 for no limit.
 
 
-## ✉️ SMTP Tab
+
+## ✉️ SMTP
 
 ### SMTP Settings
 
@@ -365,7 +386,7 @@ Configure SMTP to send emails from the application.
 
 
 
-## 🔑 API Tab
+## 🔑 API
 
 ### API Settings
 
@@ -381,7 +402,33 @@ Configure SMTP to send emails from the application.
 
 
 
-## 🔗 Integrations Tab
+## 📥 Cache
+
+Settings for [Cached Content Downloads](../advanced/cached-content.md), which save VOD movies and series episodes to local storage.
+
+**Enable cache**
+- **Type**: Toggle
+- **Default**: Disabled
+- **Description**: Shows the **Cache Now** actions and serves completed downloads during playback. When off, nothing new is downloaded and playback always uses the provider. Existing cached files are kept.
+
+**Cache retention mode**
+- **Options**: Automatic / Never expire / Manual
+- **Default**: Automatic
+- **Description**: "Automatic" deletes a cached file once its movie or episode is removed from the playlist. "Never expire" and "Manual" keep files until you delete them from the **Cached Downloads** page. Playlists can override this.
+
+**Share cache across playlists by default**
+- **Type**: Toggle
+- **Description**: Default for the **Share cache across playlists** option on new playlists.
+
+:::tip Docker volume
+When caching is enabled, the page shows the volume to mount so cached files survive container rebuilds (for example `./cache:/var/www/html/storage/app/private/cache`). The path can also be changed with the `CACHE_STORAGE_PATH` environment variable.
+:::
+
+
+
+## 🔗 Integrations
+
+The Integrations page has three tabs: **TMDB**, **AIOStreams**, and **MediaFlow Proxy**.
 
 ### TMDB Integration
 
@@ -399,6 +446,11 @@ Configure SMTP to send emails from the application.
 - **Type**: Toggle
 - **Default**: Disabled
 - **Description**: Automatically lookup TMDB IDs when fetching metadata for VOD and Series. May slow down imports for large playlists.
+
+**Auto-enrichment on Request**
+- **Type**: Toggle
+- **Default**: Disabled
+- **Description**: Automatically enrich a VOD title or series with TMDB data (cast, artwork, plot) the first time it is viewed in a client, instead of on sync or via a manual fetch. See [TMDB Integration](../integrations/tmdb_integration.md#automatically-on-request).
 
 **Auto-create Groups/Categories from TMDB Genres**
 - **Type**: Toggle
@@ -420,6 +472,11 @@ Configure SMTP to send emails from the application.
 - **Type**: Number (50–100)
 - **Default**: 80
 - **Description**: Minimum title similarity percentage required to accept a TMDB match. Higher values = stricter matching.
+
+**Minimum Vote Count**
+- **Type**: Number (0-10000)
+- **Default**: 25
+- **Description**: Minimum number of TMDB votes required to trust and display a rating. Ratings backed by fewer votes are hidden rather than shown as potentially misleading.
 
 #### Title Cleaning for TMDB Lookup
 
@@ -477,7 +534,7 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 
 
 
-## ✨ AI Copilot Tab
+## ✨ AI Copilot
 
 ### AI Copilot
 
@@ -494,7 +551,7 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 
 **Provider**
 - **Type**: Select
-- **Description**: The AI provider to use (e.g. Anthropic, OpenAI, Ollama).
+- **Description**: The AI provider to use (e.g. Anthropic, OpenAI, Ollama, Unsloth Studio (Local)). See [AI Copilot Configuration](../ai-copilot/configuration.md).
 
 **Model**
 - **Type**: Text input
@@ -503,7 +560,7 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 **API Key**
 - **Type**: Password (revealable)
 - **Description**: Your API key for the selected provider.
-- **Visibility**: Hidden when using Ollama
+- **Visibility**: Hidden when using Ollama. Optional for Unsloth Studio (Local).
 
 **Base URL**
 - **Type**: URL input
@@ -534,7 +591,7 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 
 
 
-## 🔔 Alerts Tab
+## 🔔 Alerts
 
 ### Discord
 

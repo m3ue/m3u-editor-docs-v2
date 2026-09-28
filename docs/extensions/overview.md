@@ -52,6 +52,6 @@ Trusting a plugin gives it the same runtime permissions as the Laravel applicati
 All plugin management lives under **Plugins** in the admin navigation. There are two sections:
 
 - **Plugins** — your installed and registered plugins. Use this to view run history, tune settings, enable/disable, trust, verify integrity, or uninstall a plugin.
-- **Plugins → Installs** — the install review queue. Staged plugins (from an upload, local directory, or GitHub release) appear here waiting for scan, approval, and trust.
+- **Plugins → Plugin Installs** - the install review queue. Staged plugins (from an upload, local directory, or GitHub release) appear here waiting for scan, approval, and trust.
 
 The **Plugins Dashboard** shows a health summary across all installed plugins — validation status, trust state, integrity status, and recent run activity.

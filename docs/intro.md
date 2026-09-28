@@ -73,6 +73,12 @@ M3U Editor is a self-hosted web application for managing M3U playlists and IPTV 
 - **Sonarr & Radarr** *(v0.12.45+)* — Request and manage TV/movie downloads with integrated download queue monitoring
 - **AIOStreams** *(v0.12.45+)* — Browse and stream debrid-sourced content (Real-Debrid, Torbox, etc.) via the Stremio addon protocol
 - **WebDAV / TorBox** — Stream media from remote WebDAV services alongside local NAS servers
+- **Dashboard & Easy Editor** *(v0.12.55+)* - A new home dashboard with sync, EPG, and library stats, plus a split-pane [Easy Editor](/docs/resources/playlists#easy-editor) and a customizable sidebar menu
+- **Cached Content Downloads** *(next release)* - Save VOD movies and episodes locally and play from the local copy ([guide](/docs/advanced/cached-content))
+- **TMDB Dynamic Groups & Enrichment** *(v0.12.54+)* - Trending, Popular, Top Genre, and streaming-service groups, genre reclassification, on-request enrichment, and actor filmographies ([guide](/docs/integrations/tmdb_integration))
+- **Bouquets** *(v0.12.55+)* & **Alias URL Replacement** *(v0.12.59+)* - Reusable group selections for Playlist Aliases, and per-alias provider host swaps ([guide](/docs/resources/playlist-alias))
+- **Provider Migration** *(v0.12.55+)* - Move your channel setup to a new provider with a review-before-apply flow ([guide](/docs/resources/playlists#migrating-to-a-new-provider))
+- **HDHomeRun/OTA DVR Support** *(v0.12.55+)* and a **Dispatcharr-compatible DVR API** *(next release)* - OTA transcoding and HTTP endpoints for players ([guide](/docs/integrations/dvr_integration#dvr-api-dispatcharr-compatible))
 
 ## 📋 Prerequisites
 
@@ -121,6 +127,7 @@ Connect M3U Editor to your media ecosystem:
 - [DVR (v0.12.45+)](/docs/integrations/dvr_integration)
 - [Sonarr & Radarr (v0.12.45+)](/docs/integrations/arrs_integration)
 - [AIOStreams (v0.12.45+)](/docs/integrations/aiostreams_integration)
+- [TMDB Integration](/docs/integrations/tmdb_integration)
 
 ### ⚡ Advanced Topics
 Deep dives into advanced features:

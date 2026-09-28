@@ -43,8 +43,14 @@ Electronic Program Guide (EPG) data provides TV listings for your channels. M3U 
 2. Click **Add EPG Source**
 3. Select **Schedules Direct**
 4. Enter your SD credentials
-5. Select lineups and channels
+5. Select one or more lineups and channels
 6. Click **Save & Import**
+
+#### Multiple Lineups
+
+A Schedules Direct EPG can use several lineups at once (for example an OTA lineup and a cable lineup). Stations that appear in more than one lineup are only included once. Lineups that aren't on your SD account yet are added during sync.
+
+If one lineup fails to load, it's skipped and the error is recorded on the EPG; the sync only fails if every lineup fails. When you delete an EPG with **Also delete lineups from SchedulesDirect account** turned on, any lineup still used by another EPG on the same SD account is kept.
 
 ## Mapping EPG to Channels
 
@@ -181,6 +187,16 @@ M3U Editor can generate EPG for your output playlists:
    - Full XMLTV (all programs)
    - Filtered (only mapped channels)
    - Time-limited (e.g., 7 days)
+
+## Dummy EPG
+
+Channels without guide data can get a generated placeholder guide. On a playlist (and on Custom and Merged Playlists), turn on **Enable dummy EPG** and set:
+
+- **Dummy program length (in minutes)**: length of each placeholder programme.
+- **Dummy EPG length (in days)**: how many days of placeholder data to generate.
+- **Channel group as category**: adds the channel's group as a `<category>` tag.
+
+[Advanced EPG Dummies (AED)](/docs/advanced/advanced-epg-dummies) profiles can override the number of days per profile.
 
 ## Troubleshooting
 

@@ -96,6 +96,15 @@ The proxy is designed to work well out of the box, but includes several advanced
 | [Authentication](./authentication.md) | Off | API token protection for management endpoints |
 | [Event System](./event-system.md) | Built-in | Webhook notifications for stream lifecycle events |
 
+## Per-Channel Headers from the Source M3U
+
+If your source M3U sets per-channel request headers with `#EXTVLCOPT` or `#KODIPROP` tags, the proxy sends them when it fetches that channel from the provider. Supported tags:
+
+- `#EXTVLCOPT:http-user-agent`, `http-referrer`, `http-origin`, `http-cookie`
+- `#KODIPROP:inputstream.adaptive.stream_headers` (a `Key1=Val1&Key2=Val2` list)
+
+When both set the same header, the `#KODIPROP` value wins.
+
 ## Quick Start
 
 The proxy ships as a Docker image. The quickest way to get started is via Docker Compose — see the [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) deployment guide.

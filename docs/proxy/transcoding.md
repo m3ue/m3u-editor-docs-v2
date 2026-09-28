@@ -84,7 +84,7 @@ Time seeking (scrubbing) is not supported for VOD content when transcoding is ac
 
 ### Global Default Profiles
 
-If you want a profile to apply across all playlists by default, set it under **Settings → Preferences → Proxy**:
+If you want a profile to apply across all playlists by default, set it under **Settings → Proxy**:
 
 - **Default Live Transcoding Profile** — used by the in-app player for live content
 - **VOD and Series Transcoding Profile** — used by the in-app player for VOD/Series

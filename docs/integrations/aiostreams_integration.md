@@ -36,12 +36,12 @@ Your AIOStreams manifest URL contains all necessary authentication embedded in t
 :::tip How this fits with M3U Proxy / MediaFlow
 AIOStreams and MediaFlow Proxy are unrelated, parallel paths — AIOStreams is never routed through MediaFlow. See the [Integrations Overview](./overview.md) for a diagram of how requests flow.
 
-**Note:** "MediaFlow Proxy" is also a setting inside AIOStreams itself (its own **Proxy** configuration page, used for how AIOStreams resolves debrid streams). That is a completely separate configuration from M3U Editor's **Preferences → MediaFlow Proxy** setting — same product name, two unrelated instances. Configuring one has no effect on the other.
+**Note:** "MediaFlow Proxy" is also a setting inside AIOStreams itself (its own **Proxy** configuration page, used for how AIOStreams resolves debrid streams). That is a completely separate configuration from M3U Editor's **Settings → Integrations → MediaFlow Proxy** setting - same product name, two unrelated instances. Configuring one has no effect on the other.
 :::
 
 ## Add the Integration
 
-1. Go to **Integrations → Media Server Integrations** and click **New Integration**.
+1. Go to **Integrations → Servers** and click **New Integration**.
 2. Select **AIOStreams** as the type.
 3. Enter a descriptive **Name** (e.g. `My AIOStreams`).
 4. Paste your **Manifest URL** — this is the full URL ending in `/manifest.json` that your AIOStreams instance provides (e.g. `https://your-aiostreams.example.com/stremio/uuid/token/manifest.json`).
@@ -72,7 +72,7 @@ You can also trigger an immediate refresh at any time using the **Sync Now** act
 
 ## Adding Content to Your Library
 
-Every AIOStreams integration automatically provisions its own dedicated Playlist. Browsing a catalog is still on-demand and doesn't touch this playlist, but from any movie or series detail page in the browser (**Media Server Integrations → your integration → Browse Catalog**) an admin can click **Add to Library** (movies) or **Add Series to Library** (series) to create a persistent entry instead.
+Every AIOStreams integration automatically provisions its own dedicated Playlist. Browsing a catalog is still on-demand and doesn't touch this playlist, but from any movie or series detail page in the browser (**Integrations → Servers → your integration → Browse Catalog**) an admin can click **Add to Library** (movies) or **Add Series to Library** (series) to create a persistent entry instead.
 
 What happens next:
 

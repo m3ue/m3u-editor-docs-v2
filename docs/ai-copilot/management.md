@@ -17,7 +17,7 @@ Management mode gives admins visibility and control over how the Copilot is bein
 
 ## Enabling Management Mode
 
-1. Go to **Preferences → AI Copilot**.
+1. Go to **Settings → AI Copilot**.
 2. Toggle **Enable AI Copilot Management** to **ON**.
 3. Click **Save**.
 
@@ -60,7 +60,7 @@ Audit logging is enabled by default and can be configured per-category if needed
 
 ## Rate Limits
 
-Rate limits prevent excessive AI usage and help control API costs. They can be configured under **Preferences → AI Copilot** or in the management pages.
+Rate limits prevent excessive AI usage and help control API costs. They can be configured under **Settings → AI Copilot** or in the management pages.
 
 | Limit | Description |
 |---|---|

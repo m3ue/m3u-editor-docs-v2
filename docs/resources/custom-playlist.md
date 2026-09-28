@@ -175,6 +175,22 @@ Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of 
 
 Custom Playlists have their own **DVR** tab with the same recording rules, quotas, and settings as a standard playlist (see [DVR Integration](../integrations/dvr_integration.md)), and support guest content **Requests** the same way — so you can schedule recordings or accept guest requests against your curated lineup directly.
 
+## Managing Custom Playlists via the API
+
+Custom Playlists can be managed programmatically with a personal access token (**Tools → Personal Access Tokens**, sent as `Authorization: Bearer <token>`). Use `GET /user/playlists` to find a custom playlist's UUID (entries have `"type": "custom_playlist"`).
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/custom-playlist/{uuid}/channels` | List the channels in the custom playlist |
+| `POST` | `/custom-playlist/{uuid}/channels` | Add channels: `{"ids": [1, 2, 3], "group": "Sports", "channel_number": 100}` (`group` and `channel_number` optional) |
+| `DELETE` | `/custom-playlist/{uuid}/channels` | Remove channels: `{"ids": [1, 2, 3]}` |
+| `PATCH` | `/custom-playlist/{uuid}/channels/{id}` | Update a channel's `group`, `channel_number`, or `sort` within this custom playlist |
+| `GET` | `/custom-playlist/{uuid}/groups` | List the custom playlist's groups |
+| `POST` | `/custom-playlist/{uuid}/groups` | Create a group: `{"name": "Sports"}` |
+| `PATCH` | `/custom-playlist/{uuid}/groups/{id}` | Rename a group (`name`) or change its position (`order_column`) |
+
+Channel IDs must belong to your account. Full request and response details are in the in-app API docs (**Settings → API**).
+
 ## Related Resources
 
 - [Adding Playlists](playlists.md) - Source playlist setup

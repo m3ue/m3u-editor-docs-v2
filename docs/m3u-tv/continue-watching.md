@@ -40,6 +40,17 @@ Progress is scoped per credential (not globally per-user), matching how M3U Edit
 
 Continue Watching also covers content played through an [AIOStreams integration](../integrations/aiostreams_integration.md). Since AIOStreams items don't have a local Channel/Episode row to join against, the editor stores a bit of denormalized metadata (title, artwork, plot) alongside the progress record so it can still be displayed without a live lookup back to AIOStreams.
 
+## Re-syncs and provider changes
+
+Continue Watching entries for movies and episodes also store the title's TMDB ID. If the underlying content IDs change (for example after flushing and re-syncing a media server library, or switching to a new provider), entries are relinked to the new content by TMDB ID instead of disappearing.
+
+To clean up in bulk, use **Relink Watch Progress** on the **Playlist Viewers** page (or **Preview Relink** to see what would change first). It scans every viewer's Continue Watching entries, relinks those that no longer resolve where possible, and removes entries whose content is gone. You can limit it to one playlist with **Scope**. The same is available from the command line:
+
+```bash
+php artisan progress:prune-orphaned --dry-run
+php artisan progress:prune-orphaned --playlist-type=playlist --playlist-id=3
+```
+
 ## Nothing to configure
 
 Continue Watching has no toggle — it's a natural side effect of M3U TV reporting playback progress to your editor instance as you watch. There's nothing to opt into beyond using M3U TV itself, and no separate service or third party is involved (compare this to [Push Notifications](./push-notifications.md), which does involve an external relay).

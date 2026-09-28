@@ -81,6 +81,7 @@ These fields control what the generated EPG entry looks like.
 | Field | Description |
 |---|---|
 | **Event Duration (minutes)** | Length of the dummy programme block. Default: `180`. |
+| **Dummy EPG Length (days)** | *(Optional)* How many days of EPG data to generate for channels using this profile. Leave blank to use the playlist's dummy EPG length. |
 | **Output Timezone** | Timezone for the `start`/`stop` attributes in the XMLTV output. Default: `UTC`. |
 | **Title Format** | Template for the `<title>` element. Supports `{title}`, `{channel}`, `{date}`, `{time}`. |
 | **Description Format** | *(Optional)* Template for the `<desc>` element. Same variables available. |

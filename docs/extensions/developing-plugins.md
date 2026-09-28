@@ -44,7 +44,7 @@ php artisan make:plugin "EPG Logger" \
 
 | Option | Description |
 |---|---|
-| `--capability=` | Capability IDs to declare (repeatable). Valid values: `channel_processor`, `epg_processor`, `stream_analysis`, `scheduled` |
+| `--capability=` | Capability IDs to declare (repeatable). Valid values: `channel_processor`, `epg_processor`, `epg_cache_enrichment`, `stream_analysis`, `scheduled` |
 | `--hook=` | Hook names to subscribe to (repeatable) |
 | `--cleanup=` | Default uninstall cleanup mode: `preserve` (default) or `purge` |
 | `--lifecycle` | Include a stub `uninstall()` method |
@@ -283,6 +283,46 @@ DB::table('plugin_epg_logger_events')->insert([...]);
 ```
 
 Declare the permissions your plugin needs in `plugin.json`. The validator will warn if your declared permissions don't match your declared capabilities.
+
+## EPG cache enrichment
+
+Plugins that declare the `epg_cache_enrichment` capability can read an EPG's cached programmes and patch selected fields in place, for example to add artwork, better descriptions, or episode numbers. Use `App\Services\EpgCacheEnrichmentService`:
+
+```php
+use App\Services\EpgCacheEnrichmentService;
+
+$service = app(EpgCacheEnrichmentService::class);
+
+// Read one page of programmes (up to 500). Each entry has an id and a content hash.
+$page = $service->snapshot($context, $epg, afterId: 0);
+// ['status' => 'ok', 'programmes' => [['id' => 1, 'hash' => '...', 'programme' => [...]], ...], 'next' => 501]
+
+// Apply up to 500 patches at once. They are applied all together or not at all.
+$result = $service->apply($context, $epg, [
+    ['id' => 1, 'hash' => $hash, 'changes' => ['desc' => 'A better description']],
+]);
+```
+
+**Fields you can change**: `title`, `subtitle`, `desc`, `category`, `episode_num`, `episode_nums`, `rating`, `icon`, `images`, `urls`, `new`, `previously_shown`, `premiere`, `production_year`. Text is limited to 10,000 characters and URLs must pass the host's URL safety rules.
+
+**Statuses**:
+
+| Status | Meaning |
+|---|---|
+| `ok` | Snapshot page returned |
+| `applied` | Patches were written |
+| `noop` | Nothing changed |
+| `stale` | A programme changed since you read it (or the cache was rebuilt). Read again and retry. |
+| `busy` | The cache is being written. Retry later. |
+| `unavailable` | The EPG has no finished cache yet |
+| `invalid_request` | A patch was malformed or changed a field that isn't allowed |
+| `denied` | The plugin is disabled, doesn't declare the capability, or isn't running for the EPG's owner or an admin |
+
+After a successful apply, the XMLTV files served to clients are regenerated so they pick up the changes.
+
+:::note Cache rebuilds
+Rebuilding an EPG cache discards enrichments. Listen for the `epg.cache.generated` hook and run your enrichment again after each rebuild. DVR programme data comes from the rebuild itself, so enriched fields only reach the DVR after the next rebuild.
+:::
 
 ## File storage
 

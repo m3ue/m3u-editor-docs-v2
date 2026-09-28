@@ -26,14 +26,14 @@ A common point of confusion is **AIOStreams + MediaFlow Proxy**, since both are 
 :::warning Same setting name, two unrelated places
 "MediaFlow Proxy" exists as a setting in **two different, unrelated systems**:
 - **AIOStreams' own** `Proxy` configuration page — governs how *AIOStreams itself* resolves debrid streams internally.
-- **M3U Editor's own** `Preferences → MediaFlow Proxy` — rewrites M3U Editor's *own generated* playlist/Xtream/EPG output.
+- **M3U Editor's own** `Settings → Integrations → MediaFlow Proxy` - rewrites M3U Editor's *own generated* playlist/Xtream/EPG output.
 
 Configuring one has zero effect on the other. If you're troubleshooting a MediaFlow issue, always check which system's setting you actually mean — M3U Editor never reads or writes AIOStreams' MediaFlow/Proxy config, and vice versa.
 :::
 
 ## AIOStreams flow
 
-AIOStreams is a *source* you add under **Integrations → Media Server Integrations**, not a destination you route other traffic through. M3U Editor always resolves AIOStreams streams itself and masks the real (debrid) URL before it ever reaches a client:
+AIOStreams is a *source* you add under **Integrations → Servers**, not a destination you route other traffic through. M3U Editor always resolves AIOStreams streams itself and masks the real (debrid) URL before it ever reaches a client:
 
 ```mermaid
 flowchart LR
@@ -46,7 +46,7 @@ Nothing here touches MediaFlow. Your self-hosted AIOStreams instance's own proxy
 
 ## M3U Proxy / MediaFlow flow
 
-M3U Proxy (the [Proxy](../proxy/overview.md) system) and MediaFlow Proxy are optional, global settings (**Preferences → MediaFlow Proxy**) that apply to M3U Editor's **own generated output** — regular playlists, merged/custom playlists, and Xtream/EPG streams. They're typically used to mask your server's IP/headers from upstream IPTV providers:
+M3U Proxy (the [Proxy](../proxy/overview.md) system) and MediaFlow Proxy are optional, global settings (**Settings → Integrations → MediaFlow Proxy**) that apply to M3U Editor's **own generated output** - regular playlists, merged/custom playlists, and Xtream/EPG streams. They're typically used to mask your server's IP/headers from upstream IPTV providers:
 
 ```mermaid
 flowchart LR

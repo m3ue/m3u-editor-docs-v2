@@ -40,7 +40,7 @@ http://your-ip:36400/stream/episode/12345
 ### 1. Enable .strm File Generation
 
 **For Series**:
-1. Go to **Settings** → **Streams** tab
+1. Go to **Settings** → **Sync Options**
 2. Enable **"Enable .strm file generation"** under "Series stream file settings"
 3. Set **Series Sync Location**: `/path/to/your/Series`
 4. Configure path structure and metadata options

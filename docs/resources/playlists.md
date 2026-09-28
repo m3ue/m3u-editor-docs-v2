@@ -84,6 +84,12 @@ After adding a playlist, you can configure various settings:
 Enabling "Prioritize by Resolution" requires analyzing each stream, which can cause rate limiting with some IPTV providers. Use with caution.
 :::
 
+## Easy Editor
+
+**Playlist → Easy Editor** is a simpler, split-pane way to organize a playlist. Pick a playlist and switch between **Live** and **VOD**: groups are listed on the left and the selected group's channels on the right. You can edit, enable or disable, and sort groups and channels in one place, and drag channels onto another group to move them.
+
+If you don't use every feature, you can also trim the sidebar down in **Settings → Navigation** (see the [Settings Reference](../advanced/settings-reference.md)).
+
 ## Sync Safeguards
 
 ### Zero-Out Sync Detection
@@ -137,12 +143,38 @@ Manage multiple channels at once:
    - Assign stream profile
    - Bulk EPG shift (tvg-shift)
 
+## Sorting VOD and Series
+
+Besides the regular sort actions, VOD and series have date and rating sorts:
+
+- **Sort by Date** (Series list header, category row and bulk actions, and the Edit Category page) has a **Sort By** option:
+  - **Release Date** (default): by the series premiere date.
+  - **Most Recent Activity**: by the most recently aired episode, so an older show with a new season this month sorts ahead of a newer show that ended months ago. Episodes dated in the future don't count, and series with no dates go to the bottom.
+- **Sort Alpha Configs** on the playlist edit page runs sorts automatically after every sync. For the **VOD groups** and **Series categories** targets, **Sort By** can be **Release Date**, **Rating** (TMDB rating, highest first; unrated items always go to the bottom), or for series **Most Recent Activity**.
+
+Rating and air-date data come from [TMDB enrichment](../integrations/tmdb_integration.md).
+
+## Migrating to a New Provider
+
+**Migrate Provider** (in the playlist's action menu) moves your channel setup from this playlist onto another playlist, for example when switching IPTV providers. It is a step-by-step flow you review before anything is changed:
+
+1. **Configure**
+   - **Replacement playlist**: the playlist whose channels should receive this lineup.
+   - **Match passes (in order)**: how channels are matched. Options are unique shared TVG-ID / Stream ID, unique normalized channel name, and unique normalized channel title.
+   - **Configuration to copy onto matched channels**: enabled state, group and order, sort order, channel number, TVG shift, name, title, and logo overrides, station ID, and more.
+   - **Preserve EPG mappings** (on by default): re-point matched channels at the replacement provider's equivalent EPG channel where one exists, otherwise copy the existing mapping.
+   - **Overwrite existing values**: keep this on for a lineup migration. When off, only empty fields on the replacement channels are filled.
+   - **Disable channels that are not in this lineup**: turns off replacement channels with no match, for a strict curated lineup. Nothing is deleted.
+   - **Update Custom Playlist membership**: points any Custom Playlist entries at the matched replacement channel.
+2. **Preview**: review every match. You can change a match, include or exclude channels, and filter the list.
+3. **Apply migration**: the migration runs in the background and you're notified when it's done.
+
 ## API: Update Playlist Source URL
 
 You can update a playlist's source URL and credentials programmatically without going through the UI. This is useful for automated credential rotation or provider migrations.
 
 ```http
-PATCH /api/playlist/{uuid}
+PATCH /playlist/{uuid}
 Authorization: Bearer {api_token}
 Content-Type: application/json
 ```
@@ -184,7 +216,7 @@ Pass `resync: true` to immediately dispatch a sync job after updating. If omitte
 ```
 
 :::note
-This endpoint requires `auth:sanctum` authentication. Generate an API token under your account settings.
+This endpoint requires `auth:sanctum` authentication. Create a token under **Tools → Personal Access Tokens**. Use `GET /user/playlists` to look up playlist UUIDs. The full list of endpoints is in the in-app API docs (**Settings → API**).
 :::
 
 ## Output URL Options
@@ -200,6 +232,21 @@ When enabled, the M3U output for this playlist will contain raw upstream provide
 By default, all stream URLs use Xtream API format for stream analysis and limit checking. Enabling this option outputs standard M3U URLs instead — useful for clients that don't support Xtream Codes URL patterns.
 
 This setting is also available on [Custom Playlists](custom-playlist.md) and [Merged Playlists](merged-playlist.md).
+
+### Enabled Output Types
+
+Each playlist can turn its outputs on or off individually under **Output → Playlist Output → Enabled output types**:
+
+- **HDHR** (HDHomeRun emulation)
+- **M3U**
+- **Xtream API**
+- **XMLTV (EPG)**
+
+A disabled output returns an "Output disabled" error instead of content. All four are on by default. The same options exist on Custom Playlists, Merged Playlists, and Playlist Aliases.
+
+### Cache
+
+When [Cached Content Downloads](../advanced/cached-content.md) are enabled, the **Cache** section lets you share this playlist's cached files with your other playlists and override the retention mode.
 
 ## Next Steps
 

@@ -16,7 +16,7 @@ Tools give the AI Copilot the ability to take real actions — not just answer q
 
 ## Global Tools
 
-Global tools are available on **every page** regardless of which resource you are viewing. You can toggle individual tools on or off under **Preferences → AI Copilot → Global Tools**.
+Global tools are available on **every page** regardless of which resource you are viewing. You can toggle individual tools on or off under **Settings → AI Copilot → Global Tools**.
 
 | Tool | Description |
 |---|---|
@@ -50,7 +50,7 @@ Resource tools are context-aware — they are scoped to the resource you are cur
 
 ## Database Tools
 
-Database tools allow the assistant to query and interact with your M3U Editor database directly. These are powerful tools intended for advanced users — enable them under **Preferences → AI Copilot → Global Tools**.
+Database tools allow the assistant to query and interact with your M3U Editor database directly. These are powerful tools intended for advanced users - enable them under **Settings → AI Copilot → Global Tools**.
 
 :::warning Use with care
 Database execute tools can modify your data. The assistant will always describe what it is about to do before executing and will ask for confirmation on destructive operations. You can always say "no" or ask it to stop.
@@ -82,13 +82,13 @@ The **Smart EPG Mapper** tool helps the AI automatically suggest or apply EPG ch
 |---|---|
 | **Smart EPG Mapper** | Analyses unmapped channels and suggests EPG channel IDs based on name similarity and available EPG sources |
 
-Enable this tool under **Preferences → AI Copilot → Global Tools** and navigate to your Channels list, then ask the AI to map EPG for unmapped channels.
+Enable this tool under **Settings → AI Copilot → Global Tools** and navigate to your Channels list, then ask the AI to map EPG for unmapped channels.
 
 ---
 
 ## AI Gateway Models
 
-The AI Copilot supports multiple model providers. Configure the active gateway under **Preferences → AI Copilot**.
+The AI Copilot supports multiple model providers. Configure the active gateway under **Settings → AI Copilot**.
 
 ### Supported Gateways
 
@@ -103,7 +103,7 @@ The AI Copilot supports multiple model providers. Configure the active gateway u
 
 MiniMax is a Chinese AI provider offering competitive models at low cost. To use MiniMax:
 
-1. Go to **Preferences → AI Copilot → AI Gateway**
+1. Go to **Settings → AI Copilot → AI Gateway**
 2. Select **MiniMax** as the provider
 3. Enter your MiniMax API key
 4. Choose a model (e.g. `MiniMax Text 01`)

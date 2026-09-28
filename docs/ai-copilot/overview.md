@@ -34,7 +34,7 @@ Tools are discrete PHP classes with typed inputs. The AI receives their descript
 
 ## Enabling the Copilot
 
-1. Go to **Preferences → AI Copilot** (admin only).
+1. Go to **Settings → AI Copilot** (admin only).
 2. Toggle **Enable AI Copilot** to **ON**.
 3. Choose an **AI Provider** and enter your **API Key** (see [Configuration](./configuration) for all options).
 4. Click **Save**.

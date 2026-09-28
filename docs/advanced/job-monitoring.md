@@ -12,7 +12,7 @@ tags:
 
 M3U Editor runs many operations in the background — playlist syncs, EPG updates, stream probing, backups, and more. The **Jobs Monitor** page gives you real-time visibility into all of these background processes without needing to access the queue manager directly.
 
-**Access**: Sidebar → **Jobs Monitor**
+**Access**: Sidebar → **Job Monitor**, or the queue indicator in the top bar
 
 :::info
 The Jobs Monitor replaces the older Horizon queue manager link in Settings. Horizon is still available at `/horizon` for advanced users, but the Jobs Monitor is the recommended way to track job progress.

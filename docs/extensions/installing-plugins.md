@@ -26,12 +26,12 @@ Every plugin goes through the same review flow regardless of where it comes from
 
 This is the recommended path for most users.
 
-1. Go to **Plugins → Installs** in the admin navigation.
+1. Go to **Plugins → Plugin Installs** in the admin navigation.
 2. Click **Upload Extension Archive**.
 3. Select your `.zip` or `.tar.gz` plugin archive.
 4. The system extracts the archive, validates the manifest, and creates an install review record.
 
-The new install review appears in the **Plugins → Installs** list with status `staged`.
+The new install review appears in the **Plugins → Plugin Installs** list with status `staged`.
 
 :::tip Private plugins don't need GitHub
 If your plugin is private, the browser upload path is all you need. There is no requirement to publish it to GitHub.
@@ -41,7 +41,7 @@ If your plugin is private, the browser upload path is all you need. There is no 
 
 ## The install review flow
 
-After staging, every install goes through the same steps in **Plugins → Installs**:
+After staging, every install goes through the same steps in **Plugins → Plugin Installs**:
 
 ### 1. Scan
 
@@ -95,7 +95,7 @@ Each plugin may expose a settings form on its edit page. Fill in the settings an
 
 To update a plugin to a new version:
 
-1. Go to **Plugins → Installs** and upload the new archive (or use the **Stage Current Files For Review** button on the plugin edit page for locally-managed plugins).
+1. Go to **Plugins → Plugin Installs** and upload the new archive (or use the **Stage Current Files For Review** button on the plugin edit page for locally-managed plugins).
 2. The system detects the matching plugin ID and treats the staged install as an **update** rather than a fresh install.
 3. Scan, approve, and trust the new version. The old files are replaced, settings are preserved, and trust is re-established with the new file hashes.
 

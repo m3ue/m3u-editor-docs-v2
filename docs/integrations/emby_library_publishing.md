@@ -43,19 +43,36 @@ sequenceDiagram
 - The [m3u-editor-for-emby](https://github.com/Serph91P/m3u-editor-for-emby) plugin installed on your Emby server.
 - The `use_integrations` permission on your M3U Editor user account.
 
+## Publishing Groups and Categories (Quick Start)
+
+The quickest way to publish content is the **Publish to Emby** action:
+
+1. Navigate to **Integrations → Servers** → open your Emby integration.
+2. Go to the **Managed Libraries** tab and click **Publish to Emby**.
+3. **What do you want to publish?** Choose **Movies** or **TV shows**.
+4. Select one or more **Movie groups** or **Series categories**. Sources that are already published aren't offered again. Matching Custom Playlist groups are included.
+5. Choose the **Destination**:
+   - **Use an existing Emby library**: its name, type, and management settings are kept. If it's a **Mixed Content** library, choose which content type this mapping publishes.
+   - **Create a managed Emby library**: enter a **Library name** and pick a **Companion output path**. M3U Editor creates and manages the library.
+6. Set the [publishing options](#publishing-options) and confirm.
+
+Each selected group or category gets its own mapping and subfolder, all published in one step. Turn on **Publish all eligible items as one source** instead if you want a single mapping for everything. If any part of the publish fails, nothing is saved.
+
 ## Configuring a Managed Library
 
-1. Navigate to **Media Server Integrations** → open your Emby integration.
+For finer control (for example a Dynamic Group source), create a single mapping:
+
+1. Navigate to **Integrations → Servers** → open your Emby integration.
 2. Go to the **Managed Libraries** tab.
-3. Click **Create mapping** and configure:
+3. Create a mapping and configure:
 
 ### Source
 
 | Field | Description |
 |---|---|
-| **Source type** | `VOD group`, `Series category`, `Custom playlist group`, or `All eligible items` |
+| **Source type** | `VOD group`, `Series category`, `Dynamic Group`, `Custom playlist group`, or `All eligible items` |
 | **Source** | The specific group, category, or custom playlist to publish (skipped for "All eligible items") |
-| **Library type** | `Movies` or `TV shows`; determines whether VOD groups or series categories are eligible |
+| **Library type** | `Movies` or `TV shows`; determines whether VOD groups or series categories are eligible. For an existing **Mixed Content** library, choose the content type this mapping publishes. |
 | **Mapped group** | Auto-filled for most source types; for **Custom playlist group** you additionally pick the specific group/category inside that playlist to publish |
 
 ### Emby Library
@@ -77,6 +94,10 @@ sequenceDiagram
 | **Publish local NFO** | Include `.nfo` metadata sidecar files |
 | **Publish visible versions** | Include multiple quality/version variants when available, rather than just one |
 | **Refresh Emby after successful sync** | Trigger an Emby library refresh once the plugin finishes syncing |
+
+### Dynamic Groups as a Source
+
+Active [Dynamic Groups](./tmdb_integration.md#dynamic-groups) (Trending, Popular, Top Genre, and so on) can be published too. VOD Dynamic Groups map to movie libraries and series Dynamic Groups to TV show libraries. The published items follow the group's current membership, so the Emby library updates as the list changes. This publishes an ordinary Emby library; it doesn't create native Emby or Jellyfin Collections.
 
 ## Managing mappings
 

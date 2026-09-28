@@ -50,7 +50,7 @@ You will need to make sure you have your url for your Emby Server. This can be i
    - **API Key/Token**: Paste your Emby token obtained above
 
 4. Click **Test Connection & Discover Libraries** to verify the connection and discover available libraries
-5. Select which libraries you want to import (Movies and/or TV Shows)
+5. Select which libraries you want to import (Movies, TV Shows, and Mixed Content libraries are all supported)
 6. Click **Create** to save the integration
 
 
