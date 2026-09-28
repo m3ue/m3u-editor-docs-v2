@@ -180,21 +180,19 @@
   perspective: 1600px;
 }
 
-.browserFrame {
-  border-radius: 0.9rem;
-  overflow: hidden;
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.04),
-    0 0 80px rgba(99, 102, 241, 0.25);
+.heroShot {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The screenshot is a macOS window capture with its own transparent
+     padding and shadow, so glow along its outline instead of a box */
+  filter: drop-shadow(0 0 40px rgba(99, 102, 241, 0.3));
   transform: rotateY(-8deg) rotateX(4deg);
   transition: transform 0.6s cubic-bezier(.2, .8, .2, 1);
   animation: heroFloat 6s ease-in-out infinite;
 }
 
-.heroVisual:hover .browserFrame {
+.heroVisual:hover .heroShot {
   transform: rotateY(0) rotateX(0);
 }
 
@@ -203,15 +201,6 @@
   50% { translate: 0 -10px; }
 }
 
-.browserBar {
-  display: flex;
-  gap: 6px;
-  padding: 0.6rem 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.browserBar span,
 .terminalDots span {
   width: 10px;
   height: 10px;
@@ -219,18 +208,9 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-.browserBar span:nth-child(1),
 .terminalDots span:nth-child(1) { background: #f87171; }
-.browserBar span:nth-child(2),
 .terminalDots span:nth-child(2) { background: #fbbf24; }
-.browserBar span:nth-child(3),
 .terminalDots span:nth-child(3) { background: #34d399; }
-
-.browserImg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
 
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
@@ -694,7 +674,7 @@
     gap: 2.5rem;
   }
 
-  .browserFrame {
+  .heroShot {
     transform: none;
   }
 
@@ -728,7 +708,7 @@
 @media (prefers-reduced-motion: reduce) {
   .gridBackground,
   .pixel,
-  .browserFrame,
+  .heroShot,
   .flowArrow > span {
     animation: none;
   }

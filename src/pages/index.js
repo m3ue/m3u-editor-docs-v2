@@ -81,12 +81,7 @@ function Hero() {
           </div>
         </div>
         <div className={styles.heroVisual}>
-          <div className={styles.browserFrame}>
-            <div className={styles.browserBar}>
-              <span /><span /><span />
-            </div>
-            <img src={dashboardSrc} alt="M3U Editor dashboard" className={styles.browserImg} />
-          </div>
+          <img src={dashboardSrc} alt="M3U Editor dashboard" className={styles.heroShot} />
         </div>
       </div>
     </header>
