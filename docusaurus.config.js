@@ -167,15 +167,15 @@ const config = {
         },
         items: [
           {
+            to: '/tv',
+            label: 'M3U TV',
+            position: 'left',
+          },
+          {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
             label: 'Documentation',
-          },
-          {
-            to: '/tv',
-            label: 'M3U TV',
-            position: 'left',
           },
           {
             to: '/compose-wizard',

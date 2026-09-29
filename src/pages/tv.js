@@ -103,7 +103,7 @@ function Hero() {
           </div>
           <h1 className={home.heroTitle}>
             Your library,<br />
-            <span className={home.heroTitleAccent}>on every screen.</span>
+            <span className={clsx(home.heroTitleAccent, styles.tvAccent)}>on every screen.</span>
           </h1>
           <p className={home.heroSubtitle}>{DESCRIPTION}</p>
           <StoreBadges className={styles.heroBadges} />
@@ -207,7 +207,8 @@ function FeatureGrid() {
         subtitle="Built alongside M3U Editor, so it understands your guide, your library, your recordings, and your watch history."
       />
       <div className={home.featureGrid}>
-        {TV_FEATURES.map((feature) => {
+        {/* Features with a docs page lead, each group keeping its data order */}
+        {[...TV_FEATURES].sort((a, b) => Number(!a.link) - Number(!b.link)).map((feature) => {
           const content = (
             <>
               <span className={home.featureIcon}>

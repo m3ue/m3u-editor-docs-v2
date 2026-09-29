@@ -689,3 +689,11 @@
 .tvLogo {
   box-shadow: 0 0 30px rgba(255, 32, 86, 0.45), 0 0 50px rgba(251, 44, 54, 0.3);
 }
+
+/* Headline accent in the M3U TV logo's reds rather than the editor's
+   pink-to-indigo, lightened at the start so it reads on the dark hero */
+.tvAccent {
+  background: linear-gradient(90deg, #fda4af 0%, #ff4d6d 50%, #fb2c36 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
