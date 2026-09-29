@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import clsx from 'clsx';
 import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
@@ -61,7 +61,25 @@ function StoreBadges({ className }) {
   );
 }
 
+// Pointer position over the device stack as -1..1 CSS variables, which each
+// device layer turns into its own depth and drift for a parallax effect
+function useParallax() {
+  const ref = useRef(null);
+  const onPointerMove = (event) => {
+    if (event.pointerType !== 'mouse' || !ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    ref.current.style.setProperty('--px', (((event.clientX - rect.left) / rect.width) * 2 - 1).toFixed(3));
+    ref.current.style.setProperty('--py', (((event.clientY - rect.top) / rect.height) * 2 - 1).toFixed(3));
+  };
+  const onPointerLeave = () => {
+    ref.current?.style.setProperty('--px', '0');
+    ref.current?.style.setProperty('--py', '0');
+  };
+  return { ref, onPointerMove, onPointerLeave };
+}
+
 function Hero() {
+  const parallax = useParallax();
   return (
     <header className={home.hero}>
       <div className={home.gridBackground} />
@@ -102,15 +120,17 @@ function Hero() {
             </a>
           </div>
         </div>
-        <div className={styles.deviceStack}>
-          <div className={styles.heroTv}>
-            <img src={useBaseUrl('/img/tv/tv1.webp')} alt="M3U TV home screen on a TV" />
-          </div>
-          <div className={styles.heroTablet}>
-            <img src={useBaseUrl('/img/tv/tablet3.webp')} alt="M3U TV movie details on a tablet" />
-          </div>
-          <div className={styles.heroPhone}>
-            <img src={useBaseUrl('/img/tv/mobile5.webp')} alt="M3U TV series details on a phone" />
+        <div className={styles.deviceStack} {...parallax}>
+          <div className={styles.deviceScene}>
+            <div className={styles.heroTv}>
+              <img src={useBaseUrl('/img/tv/tv1.webp')} alt="M3U TV home screen on a TV" />
+            </div>
+            <div className={styles.heroTablet}>
+              <img src={useBaseUrl('/img/tv/tablet3.webp')} alt="M3U TV movie details on a tablet" />
+            </div>
+            <div className={styles.heroPhone}>
+              <img src={useBaseUrl('/img/tv/mobile5.webp')} alt="M3U TV series details on a phone" />
+            </div>
           </div>
         </div>
       </div>

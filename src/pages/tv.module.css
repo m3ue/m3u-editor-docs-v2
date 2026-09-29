@@ -75,10 +75,14 @@
   width: auto;
 }
 
-/* TV in the back, tablet and phone overlapping its lower corners */
+/* TV in the back, tablet and phone overlapping its lower corners. Flat at
+   rest; on hover the scene tilts and each device lifts to its own depth and
+   drifts with the pointer (--px/--py, -1..1, set in tv.js) by a different
+   amount and speed, so the layers separate instead of moving as one image. */
 .deviceStack {
-  position: relative;
-  padding: 0 0 12% 6%;
+  --px: 0;
+  --py: 0;
+  perspective: 1400px;
   animation: stackFloat 6s ease-in-out infinite;
 }
 
@@ -87,11 +91,27 @@
   50% { translate: 0 -10px; }
 }
 
+.deviceScene {
+  position: relative;
+  padding: 0 0 12% 6%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(.2, .8, .2, 1);
+}
+
+.deviceStack:hover .deviceScene {
+  transform:
+    rotateY(calc(-9deg + var(--px) * 7deg))
+    rotateX(calc(6deg - var(--py) * 6deg));
+}
+
 .heroTv,
 .heroTablet,
 .heroPhone {
   background: #07070b;
   border: 1px solid rgba(255, 255, 255, 0.14);
+  transition:
+    transform 0.7s cubic-bezier(.2, .8, .2, 1),
+    box-shadow 0.7s ease;
 }
 
 .heroTv img,
@@ -121,6 +141,7 @@
   padding: 1%;
   border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  transition-duration: 0.85s, 0.85s;
 }
 
 .heroTablet img {
@@ -135,10 +156,27 @@
   padding: 0.8%;
   border-radius: 18px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  transition-duration: 1s, 1s;
 }
 
 .heroPhone img {
   border-radius: 14px;
+}
+
+/* Back layer sinks and drifts against the pointer; front layers rise and
+   drift with it, the nearest one the most */
+.deviceStack:hover .heroTv {
+  transform: translate3d(calc(var(--px) * -8px), calc(var(--py) * -6px), -50px);
+}
+
+.deviceStack:hover .heroTablet {
+  transform: translate3d(calc(-14px + var(--px) * 14px), calc(-6px + var(--py) * 10px), 70px) rotateZ(-2deg);
+  box-shadow: 0 40px 70px rgba(0, 0, 0, 0.6), 0 0 40px rgba(244, 63, 94, 0.25);
+}
+
+.deviceStack:hover .heroPhone {
+  transform: translate3d(calc(12px + var(--px) * 24px), calc(-10px + var(--py) * 16px), 130px) rotateZ(3deg);
+  box-shadow: 0 50px 80px rgba(0, 0, 0, 0.65), 0 0 40px rgba(99, 102, 241, 0.35);
 }
 
 /* ------------------------------------------------------------------ */
@@ -636,5 +674,12 @@
   .deviceStack,
   .galleryPanel {
     animation: none;
+  }
+
+  .deviceStack:hover .deviceScene,
+  .deviceStack:hover .heroTv,
+  .deviceStack:hover .heroTablet,
+  .deviceStack:hover .heroPhone {
+    transform: none;
   }
 }
