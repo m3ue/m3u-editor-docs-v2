@@ -84,7 +84,7 @@ function useParallax() {
 function Hero() {
   const parallax = useParallax();
   return (
-    <header className={home.hero}>
+    <header className={home.hero} data-navbar-over-hero>
       <div className={home.gridBackground} />
       <div className={home.floatingPixels}>
         {PIXELS.map((style, i) => (

@@ -62,7 +62,7 @@
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
   color: #1e293b !important;
   padding: 0.4rem 2.5rem 0.4rem 2.5rem !important;
-  border-radius: 8px !important;
+  border-radius: 9999px !important;
   font-size: 0.9rem !important;
   width: 200px !important;
   transition: all 0.2s ease !important;
@@ -84,17 +84,13 @@
   color: #64748b !important;
 }
 
-[data-theme='light'] .navbar__search .search-icon {
-  color: #64748b !important;
-}
-
 /* Dark mode search input */
 [data-theme='dark'] .navbar__search-input {
   background-color: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #e2e8f0 !important;
   padding: 0.4rem 2.5rem 0.4rem 2.5rem !important;
-  border-radius: 8px !important;
+  border-radius: 9999px !important;
   font-size: 0.9rem !important;
   width: 200px !important;
   transition: all 0.2s ease !important;
@@ -113,10 +109,6 @@
 }
 
 [data-theme='dark'] .navbar__search-input::placeholder {
-  color: #94a3b8 !important;
-}
-
-[data-theme='dark'] .navbar__search .search-icon {
   color: #94a3b8 !important;
 }
 
@@ -205,4 +197,315 @@
   justify-content: center;
   gap: 0.2rem;
   z-index: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* Navbar                                                              */
+/* ------------------------------------------------------------------ */
+
+/* Frosted glass. The blur lives on ::before because backdrop-filter on the
+   navbar itself would trap the fixed-position mobile sidebar inside it */
+.navbar {
+  background: transparent;
+  box-shadow: none;
+}
+
+.navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--ifm-navbar-background-color) 82%, transparent);
+  backdrop-filter: saturate(160%) blur(14px);
+  -webkit-backdrop-filter: saturate(160%) blur(14px);
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  transition: opacity 0.3s ease;
+}
+
+/* Brand gradient hairline, shown once the page has scrolled */
+.navbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+html.navbar-scrolled .navbar::after {
+  opacity: 1;
+}
+
+/* Over a page hero (see data-navbar-over-hero) and not yet scrolled: fully
+   transparent with light text, since the hero is dark in both themes */
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show)::before {
+  opacity: 0;
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) {
+  --ifm-navbar-link-color: rgba(255, 255, 255, 0.88);
+  --ifm-navbar-link-hover-color: #fff;
+  color: #fff;
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__title,
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__toggle,
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__items--right button.clean-btn {
+  color: #fff;
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__search-input {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Wordmark next to the logo */
+.navbar__title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
+/* Active section: gradient underline instead of a colour change; hovering
+   any link previews a fainter one */
+.navbar__item.navbar__link {
+  position: relative;
+  font-weight: 500;
+}
+
+.navbar__item.navbar__link:not(.navbar-icon-link):not(.navbar-cta)::after {
+  content: '';
+  position: absolute;
+  left: var(--ifm-navbar-item-padding-horizontal);
+  right: var(--ifm-navbar-item-padding-horizontal);
+  bottom: 0.15rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.navbar__item.navbar__link:not(.navbar-icon-link):not(.navbar-cta):hover::after {
+  opacity: 0.45;
+  transform: scaleX(1);
+}
+
+.navbar__item.navbar__link--active {
+  color: var(--ifm-navbar-link-hover-color);
+  font-weight: 600;
+}
+
+.navbar__item.navbar__link.navbar__link--active:not(.navbar-icon-link):not(.navbar-cta)::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Discord, GitHub and Support as icon buttons (desktop items only; the
+   mobile menu renders them as .menu__link text links) */
+.navbar__item.navbar-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0 0.1rem;
+  padding: 0;
+  border-radius: 0.7rem;
+  font-size: 0;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.navbar__item.navbar-icon-link svg {
+  display: none;
+}
+
+.navbar__item.navbar-icon-link::before {
+  font-family: 'Material Symbols Rounded';
+  font-size: 1.3rem;
+  font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.navbar__item.navbar-icon-link--discord::before {
+  content: 'forum';
+}
+
+.navbar__item.navbar-icon-link--support::before {
+  content: 'favorite';
+}
+
+.navbar__item.navbar-icon-link--github::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.338 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.475 2 2 6.475 2 12a9.994 9.994 0 0 0 6.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.338 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 0 1 2.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0 0 22 12c0-5.525-4.475-10-10-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.navbar__item.navbar-icon-link:hover {
+  color: var(--ifm-navbar-link-color);
+  background: var(--ifm-color-emphasis-200);
+}
+
+.navbar__item.navbar-icon-link:active {
+  transform: scale(0.9);
+}
+
+.navbar__item.navbar-icon-link--support:hover {
+  color: #f43f5e;
+}
+
+.navbar__item.navbar-icon-link--support:hover::before {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar__item.navbar-icon-link:hover,
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar__items--right button.clean-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar__item.navbar-icon-link--support:hover {
+  color: #fb7185;
+}
+
+/* Theme toggle to match the icon buttons. Size its 2rem wrapper rather than
+   the button (which fills it), or the button overflows and sits lower */
+.navbar__items--right div:has(> button.clean-btn) {
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0 0.1rem;
+}
+
+.navbar__items--right button.clean-btn {
+  border-radius: 0.7rem;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.navbar__items--right button.clean-btn:hover {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.navbar__items--right button.clean-btn:active {
+  transform: scale(0.9);
+}
+
+/* Get Started, always last on the right */
+.navbar__item.navbar-cta {
+  order: 100;
+  margin-left: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+  background: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  box-shadow: 0 4px 14px rgba(179, 80, 159, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.navbar__item.navbar-cta:hover {
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(179, 80, 159, 0.45);
+}
+
+/* Infima hides navbar items below 996px (they move to the mobile menu);
+   keep that for the icon buttons, whose display rule above would override it */
+@media (max-width: 996px) {
+  .navbar__item.navbar-icon-link {
+    display: none;
+  }
+}
+
+.navbar__item {
+  white-space: nowrap;
+}
+
+/* Small laptops: drop the wordmark and narrow search so the links fit */
+@media (min-width: 997px) and (max-width: 1200px) {
+  .navbar__title {
+    display: none;
+  }
+
+  .navbar__search-input,
+  [data-theme='light'] .navbar__search-input,
+  [data-theme='dark'] .navbar__search-input {
+    width: 150px !important;
+  }
+}
+
+/* Phones: logo only, the search box needs the room */
+@media (max-width: 600px) {
+  .navbar__title {
+    display: none;
+  }
+}
+
+/* Search: the magnifier and the shortcut hints share one colour set per
+   state, so they always match the placeholder. Infima draws the magnifier
+   as a black background image, so it is replaced with a masked icon that
+   takes --search-fg */
+.navbar__search {
+  --search-fg: #64748b;
+  --search-kbd-bg: #fff;
+  --search-kbd-border: rgba(15, 23, 42, 0.15);
+  position: relative;
+  /* Own stacking context, so the icon's z-index only lifts it above the
+     input and never above the mobile menu */
+  isolation: isolate;
+}
+
+[data-theme='dark'] .navbar__search {
+  --search-fg: #94a3b8;
+  --search-kbd-bg: rgba(255, 255, 255, 0.08);
+  --search-kbd-border: rgba(255, 255, 255, 0.2);
+}
+
+html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-sidebar--show) .navbar__search {
+  --search-fg: rgba(255, 255, 255, 0.75);
+  --search-kbd-bg: rgba(255, 255, 255, 0.12);
+  --search-kbd-border: rgba(255, 255, 255, 0.28);
+}
+
+.navbar__search-input {
+  background-image: none !important;
+}
+
+.navbar__search::before {
+  content: '';
+  position: absolute;
+  left: 0.9rem;
+  top: 50%;
+  z-index: 1;
+  width: 1.05rem;
+  height: 1.05rem;
+  transform: translateY(-50%);
+  background: var(--search-fg);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9.5 3a6.5 6.5 0 0 1 5.18 10.43l5.45 5.44-1.42 1.42-5.44-5.45A6.5 6.5 0 1 1 9.5 3zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9.5 3a6.5 6.5 0 0 1 5.18 10.43l5.45 5.44-1.42 1.42-5.44-5.45A6.5 6.5 0 1 1 9.5 3zm0 2a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z'/%3E%3C/svg%3E") center / contain no-repeat;
+  pointer-events: none;
+}
+
+.navbar__search kbd {
+  color: var(--search-fg) !important;
+  background-color: var(--search-kbd-bg) !important;
+  border-color: var(--search-kbd-border) !important;
+  box-shadow: inset 0 -1px 0 var(--search-kbd-border) !important;
+  font-size: 0.75rem;
+  line-height: 1.2;
 }

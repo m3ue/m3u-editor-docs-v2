@@ -112,6 +112,9 @@ const config = {
     },
   ],
 
+  // Adds html.navbar-scrolled once the page is scrolled (glass navbar)
+  clientModules: ['./src/clientModules/navbarScroll.js'],
+
   markdown: {
     mermaid: true,
   },
@@ -168,7 +171,7 @@ const config = {
         respectPrefersColorScheme: true,
       },
       navbar: {
-        title: '',
+        title: 'M3U Suite',
         logo: {
           alt: 'M3U Editor Logo',
           src: 'img/logo.svg',
@@ -190,21 +193,38 @@ const config = {
             label: 'Compose Wizard',
             position: 'left',
           },
+          // Icon buttons on desktop (styled in custom.css), plain text
+          // links in the mobile menu
           {
             href: 'https://discord.gg/rS3abJ5dz7',
             label: 'Discord',
             position: 'right',
+            className: 'navbar-icon-link navbar-icon-link--discord',
+            'aria-label': 'Discord',
+            title: 'Discord',
           },
           {
             href: 'https://github.com/m3ue/m3u-editor',
             label: 'GitHub',
             position: 'right',
+            className: 'navbar-icon-link navbar-icon-link--github',
+            'aria-label': 'GitHub',
+            title: 'GitHub',
           },
           {
             href: 'https://ko-fi.com/sparkison',
             label: 'Support',
             position: 'right',
-          }
+            className: 'navbar-icon-link navbar-icon-link--support',
+            'aria-label': 'Support the project on Ko-fi',
+            title: 'Support the project',
+          },
+          {
+            to: '/docs/installation',
+            label: 'Get Started',
+            position: 'right',
+            className: 'navbar-cta',
+          },
         ],
       },
       footer: {

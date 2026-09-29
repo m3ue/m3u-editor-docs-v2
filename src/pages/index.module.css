@@ -23,7 +23,10 @@
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 5rem 0 5.5rem;
+  /* Slides up under the navbar, which is transparent over [data-navbar-over-hero]
+     (see custom.css), so the glows run to the top of the page */
+  margin-top: calc(-1 * var(--ifm-navbar-height));
+  padding: calc(5rem + var(--ifm-navbar-height)) 0 5.5rem;
   color: #fff;
   background:
     radial-gradient(ellipse 60% 70% at 10% 10%, rgba(244, 63, 94, 0.45), transparent 60%),
@@ -665,7 +668,7 @@
 
 @media (max-width: 996px) {
   .hero {
-    padding: 3.5rem 0 4rem;
+    padding: calc(3.5rem + var(--ifm-navbar-height)) 0 4rem;
   }
 
   .heroInner,

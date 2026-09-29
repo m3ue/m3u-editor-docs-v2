@@ -40,7 +40,7 @@ function Hero() {
   const dashboardSrc = useBaseUrl('/img/screenshots/01_dashboard.png');
 
   return (
-    <header className={styles.hero}>
+    <header className={styles.hero} data-navbar-over-hero>
       <div className={styles.gridBackground} />
       <div className={styles.floatingPixels}>
         {PIXELS.map((style, i) => (
