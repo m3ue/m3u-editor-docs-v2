@@ -5,7 +5,7 @@
  * Writes results to static/data/ so they are served as static assets.
  *
  * Data fetched:
- *  - Docker Hub pulls (via shields.io) → static/data/downloads.json
+ *  - Docker Hub pulls (shields.io as fallback) → static/data/downloads.json
  *  - GitHub contributors across all repos  → static/data/contributors.json
  *  - Latest stable m3u-editor release notes → static/data/release.json
  *  - Latest stable m3u-tv release downloads → static/data/tv-release.json
@@ -49,13 +49,44 @@ function fetchJson(url, headers = {}) {
 }
 
 /**
- * Fetch Docker Hub pull count and write to static/data/downloads.json
+ * Format a pull count the way shields.io does: 673630 -> "673k", 1234567 -> "1.2M".
+ */
+function formatCount(count) {
+    if (count >= 1e6) return `${(count / 1e6).toFixed(1).replace(/\.0$/, '')}M`;
+    if (count >= 1e3) return `${Math.floor(count / 1e3)}k`;
+    return String(count);
+}
+
+/**
+ * Fetch the Docker Hub pull count and write it to static/data/downloads.json.
+ * Reads Docker Hub directly, falling back to shields.io. shields.io answers
+ * HTTP 200 with a message such as "rate limited by upstream service" in place
+ * of the number when Docker Hub throttles it, so any value that is not a count
+ * is rejected. On failure the file is left as is, keeping the last good value.
  */
 async function fetchDownloads() {
-    const data = await fetchJson(
-        'https://img.shields.io/docker/pulls/sparkison/m3u-editor.json'
-    );
-    const formatted = data.value || '0';
+    let formatted = null;
+
+    try {
+        const hub = await fetchJson('https://hub.docker.com/v2/repositories/sparkison/m3u-editor/');
+        if (Number.isFinite(hub.pull_count) && hub.pull_count > 0) {
+            formatted = formatCount(hub.pull_count);
+        }
+    } catch (e) {
+        console.warn(`  ⚠ Docker Hub pull count unavailable (${e.message}), trying shields.io`);
+    }
+
+    if (!formatted) {
+        const shields = await fetchJson('https://img.shields.io/docker/pulls/sparkison/m3u-editor.json');
+        if (/^\d+(\.\d+)?[kMB]?$/.test(shields.value || '')) {
+            formatted = shields.value;
+        }
+    }
+
+    if (!formatted) {
+        throw new Error('No valid Docker pull count, keeping the previous downloads.json');
+    }
+
     const result = { formatted: `${formatted}+`, fetchedAt: new Date().toISOString() };
     fs.writeFileSync(
         path.join(DATA_DIR, 'downloads.json'),
