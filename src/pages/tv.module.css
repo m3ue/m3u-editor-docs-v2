@@ -683,3 +683,9 @@
     transform: none;
   }
 }
+
+/* The M3U TV mark is an all-red gradient, so glow red instead of the
+   editor logo's pink and indigo */
+.tvLogo {
+  box-shadow: 0 0 30px rgba(255, 32, 86, 0.45), 0 0 50px rgba(251, 44, 54, 0.3);
+}

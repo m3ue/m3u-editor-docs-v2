@@ -25,6 +25,8 @@ import styles from './tv.module.css';
 
 const REPO_URL = 'https://github.com/m3ue/m3u-tv';
 const RELEASES_URL = `${REPO_URL}/releases/latest`;
+const SHARE_TITLE = 'M3U TV: your IPTV library on every screen';
+const SHARE_IMAGE_ALT = 'M3U TV running on a TV, tablet, and phone';
 const DESCRIPTION = 'M3U TV is a free, native player for your M3U Editor server: live TV, a full guide, movies, series, and DVR on your TV, phone, tablet, and desktop.';
 
 // Deterministic "random" pixel positions so server and client renders match
@@ -91,7 +93,7 @@ function Hero() {
       <div className={clsx('container', home.heroInner, styles.heroInner)}>
         <div>
           <div className={home.heroBrand}>
-            <img src={useBaseUrl('/img/logo.svg')} alt="" className={home.logo} />
+            <img src={useBaseUrl('/img/tv-logo.svg')} alt="" className={clsx(home.logo, styles.tvLogo)} />
             {tvRelease?.tag && (
               <a className={styles.versionPill} href={tvRelease.url} target="_blank" rel="noopener noreferrer">
                 <MaterialIcon name="new_releases" filled />
@@ -397,9 +399,21 @@ export default function TvPage() {
   const socialCard = useBaseUrl('/img/tv-social-card.jpg', { absolute: true });
   return (
     <Layout title="M3U TV" description={DESCRIPTION}>
+      {/* Layout already sets description, og:description, og:url and the
+          canonical link; these give shares their own title and card */}
       <Head>
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="M3U Editor" />
+        <meta property="og:title" content={SHARE_TITLE} />
         <meta property="og:image" content={socialCard} />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={SHARE_IMAGE_ALT} />
+        <meta name="twitter:title" content={SHARE_TITLE} />
+        <meta name="twitter:description" content={DESCRIPTION} />
         <meta name="twitter:image" content={socialCard} />
+        <meta name="twitter:image:alt" content={SHARE_IMAGE_ALT} />
       </Head>
       <Hero />
       <main>
