@@ -21,6 +21,8 @@ const MATERIAL_ICONS = [
   'chevron_left',
   'chevron_right',
   'cloud_download',
+  'code',
+  'commit',
   'connected_tv',
   'construction',
   'content_copy',
@@ -30,8 +32,10 @@ const MATERIAL_ICONS = [
   'download',
   'extension',
   'favorite',
+  'folder',
   'folder_zip',
   'grid_view',
+  'groups',
   'hdr_on',
   'history',
   'hub',
@@ -66,6 +70,7 @@ const MATERIAL_ICONS = [
   'tune',
   'tv',
   'tv_guide',
+  'volunteer_activism',
 ];
 
 /** @type {import('@docusaurus/types').Config} */
