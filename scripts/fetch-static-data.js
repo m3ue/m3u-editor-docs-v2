@@ -8,6 +8,7 @@
  *  - Docker Hub pulls (via shields.io) → static/data/downloads.json
  *  - GitHub contributors across all repos  → static/data/contributors.json
  *  - Latest stable m3u-editor release notes → static/data/release.json
+ *  - Latest stable m3u-tv release downloads → static/data/tv-release.json
  */
 
 const https = require('https');
@@ -158,11 +159,52 @@ async function fetchLatestRelease() {
     console.log(`  ✓ Release cached: ${result.tag} (${features.length} features, ${fixes.length} fixes)`);
 }
 
+/**
+ * Fetch the latest stable m3u-tv release and write its version plus direct
+ * download links to static/data/tv-release.json for the /tv page. Assets are
+ * named m3u-tv-v<version>-<platform>.<ext>, so they are keyed by the part
+ * after the version (e.g. "android.apk", "windows-setup.exe").
+ */
+async function fetchLatestTvRelease() {
+    const release = await fetchJson(
+        'https://api.github.com/repos/m3ue/m3u-tv/releases/latest',
+        { Accept: 'application/vnd.github.v3+json' }
+    );
+    const prefix = `m3u-tv-${release.tag_name}-`;
+    const assets = {};
+    (release.assets || [])
+        .filter((asset) => asset.name.startsWith(prefix) && !asset.name.endsWith('.sha256'))
+        .forEach((asset) => {
+            assets[asset.name.slice(prefix.length)] = {
+                url: asset.browser_download_url,
+                size: asset.size,
+            };
+        });
+
+    const result = {
+        tag: release.tag_name,
+        url: release.html_url,
+        publishedAt: release.published_at,
+        assets,
+        fetchedAt: new Date().toISOString(),
+    };
+    fs.writeFileSync(
+        path.join(DATA_DIR, 'tv-release.json'),
+        JSON.stringify(result, null, 2)
+    );
+    console.log(`  ✓ TV release cached: ${result.tag} (${Object.keys(assets).length} downloads)`);
+}
+
 (async () => {
     console.log('Fetching static data...');
     fs.mkdirSync(DATA_DIR, { recursive: true });
 
-    const results = await Promise.allSettled([fetchDownloads(), fetchContributors(), fetchLatestRelease()]);
+    const results = await Promise.allSettled([
+        fetchDownloads(),
+        fetchContributors(),
+        fetchLatestRelease(),
+        fetchLatestTvRelease(),
+    ]);
 
     results.forEach((r) => {
         if (r.status === 'rejected') {

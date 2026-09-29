@@ -50,11 +50,17 @@ M3U TV is entirely optional. M3U Editor's generated M3U/Xtream/EPG output works 
 
 ## Download
 
-M3U TV is distributed via GitHub Releases:
+The easiest way to install M3U TV is from your platform's app store:
+
+- **[App Store (TestFlight beta)](https://testflight.apple.com/join/hqJYVsJr)**: iPhone, iPad, Apple TV, and Mac
+- **[Google Play](https://play.google.com/store/apps/details?id=dev.sparkison.tv)**: Android phones, tablets, and Android TV
+- **[Microsoft Store](https://apps.microsoft.com/detail/9P2PBHQ4XZ1L)**: Windows 10 and 11
+
+Every build is also attached to each GitHub release, including sideloadable APK/IPA files, a macOS DMG, a Windows installer and portable ZIP, and a Linux ZIP:
 
 **[github.com/m3ue/m3u-tv/releases](https://github.com/m3ue/m3u-tv/releases)**
 
-Grab the build for your platform (APK for Android/Android TV, IPA/TestFlight for iOS/tvOS, or the desktop binaries) from the latest release. There's also a shortcut to this page from **Settings → TV App → Get the app** inside M3U Editor itself.
+The **[M3U TV page](/tv#download)** has direct download links for the latest release, plus screenshots on every device. There's also a shortcut to this page from **Settings → TV App → Get the app** inside M3U Editor itself.
 
 :::note Open source, GPL-3.0 license
 M3U TV is open source under **GPL-3.0**, with an additional permission allowing distribution through the Apple App Store, Apple TV App Store, and Google Play Store. See the [repository](https://github.com/m3ue/m3u-tv) for the full license and to file issues or contribute.

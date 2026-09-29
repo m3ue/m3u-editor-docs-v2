@@ -98,6 +98,7 @@ export const ecosystem = [
     description: 'A native player for TV, mobile, and desktop, built for M3U Editor.',
     link: 'https://github.com/m3ue/m3u-tv',
     docs: '/docs/m3u-tv/overview',
+    page: '/tv',
   },
 ];
 

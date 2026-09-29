@@ -1,0 +1,36 @@
+{
+  "tag": "v1.2.0",
+  "url": "https://github.com/m3ue/m3u-tv/releases/tag/v1.2.0",
+  "publishedAt": "2026-09-25T21:44:20Z",
+  "assets": {
+    "android.apk": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-android.apk",
+      "size": 159401562
+    },
+    "ios.ipa": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-ios.ipa",
+      "size": 27905456
+    },
+    "linux.zip": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-linux.zip",
+      "size": 14623537
+    },
+    "macos.dmg": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-macos.dmg",
+      "size": 74513466
+    },
+    "tvos.ipa": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-tvos.ipa",
+      "size": 28136426
+    },
+    "windows-setup.exe": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-windows-setup.exe",
+      "size": 47324069
+    },
+    "windows.zip": {
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.0/m3u-tv-v1.2.0-windows.zip",
+      "size": 65123391
+    }
+  },
+  "fetchedAt": "2026-09-29T18:01:52.329Z"
+}

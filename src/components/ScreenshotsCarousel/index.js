@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import clsx from 'clsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
@@ -8,9 +9,25 @@ import styles from './styles.module.css';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import MaterialIcon from '../MaterialIcon';
 
-import screenshots from '../../data/screenshots';
+import defaultScreenshots from '../../data/screenshots';
 
-export default function ScreenshotsCarousel() {
+const DEFAULT_BREAKPOINTS = {
+    768: { slidesPerView: 1.35, spaceBetween: 24 },
+    1200: { slidesPerView: 1.5, spaceBetween: 32 },
+};
+
+/**
+ * Centered screenshot carousel with a lightbox. Defaults to the editor
+ * screenshots; pass `screenshots` plus `slidesPerView`/`breakpoints` for other
+ * sets. `frame` draws device chrome around each image: 'none' (the image
+ * already has its own, like the macOS window captures), 'tv', 'tablet' or 'phone'.
+ */
+export default function ScreenshotsCarousel({
+    screenshots = defaultScreenshots,
+    slidesPerView = 1.1,
+    breakpoints = DEFAULT_BREAKPOINTS,
+    frame = 'none',
+}) {
     const [lightbox, setLightbox] = useState({ open: false, src: '', alt: '' });
     const [visibleScreenshots, setVisibleScreenshots] = useState(screenshots || []);
     const [swiper, setSwiper] = useState(null);
@@ -47,14 +64,11 @@ export default function ScreenshotsCarousel() {
                     onSwiper={setSwiper}
                     modules={[Pagination, A11y]}
                     spaceBetween={16}
-                    slidesPerView={1.1}
+                    slidesPerView={slidesPerView}
                     centeredSlides
                     loop
                     pagination={{ clickable: true }}
-                    breakpoints={{
-                        768: { slidesPerView: 1.35, spaceBetween: 24 },
-                        1200: { slidesPerView: 1.5, spaceBetween: 32 },
-                    }}
+                    breakpoints={breakpoints}
                     style={{ paddingBottom: 40 }}
                     className={styles.carousel}
                 >
@@ -62,17 +76,20 @@ export default function ScreenshotsCarousel() {
                         const src = `${baseUrl.replace(/\/$/, '')}${img.src}`;
                         return (
                             <SwiperSlide key={src}>
-                                <img
-                                    src={src}
-                                    alt={img.alt}
-                                    className={styles.screenshotImg}
-                                    onError={() => handleImageError(img.src)}
-                                    onClick={() => openLightbox(src, img.alt)}
-                                    tabIndex={0}
-                                    role="button"
-                                    aria-label={`Expand ${img.alt}`}
-                                    onKeyDown={(e) => { if (e.key === 'Enter') openLightbox(src, img.alt); }}
-                                />
+                                <div className={clsx(styles.frame, styles[`frame_${frame}`])}>
+                                    <img
+                                        src={src}
+                                        alt={img.alt}
+                                        loading="lazy"
+                                        className={styles.screenshotImg}
+                                        onError={() => handleImageError(img.src)}
+                                        onClick={() => openLightbox(src, img.alt)}
+                                        tabIndex={0}
+                                        role="button"
+                                        aria-label={`Expand ${img.alt}`}
+                                        onKeyDown={(e) => { if (e.key === 'Enter') openLightbox(src, img.alt); }}
+                                    />
+                                </div>
                                 <p className={styles.caption}>{img.alt.replace(/^\d+\s*/, '')}</p>
                             </SwiperSlide>
                         );

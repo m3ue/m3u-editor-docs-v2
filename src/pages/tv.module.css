@@ -1,0 +1,640 @@
+/**
+ * Styles for the /tv page. Shared hero, section, card and band styles come
+ * from index.module.css; this file only covers what is unique to M3U TV.
+ */
+
+.platformStrip,
+.tabs,
+.playback,
+.steps,
+.downloadSection {
+  --brand-gradient: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  --card-bg: var(--ifm-background-surface-color);
+  --card-border: var(--ifm-color-emphasis-200);
+  --muted: var(--ifm-color-emphasis-700);
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero                                                                */
+/* ------------------------------------------------------------------ */
+
+.heroInner {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+}
+
+.versionPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease;
+}
+
+.versionPill:hover {
+  color: #fff;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.versionPill > span {
+  font-size: 1.1rem;
+  color: #fb7185;
+}
+
+.storeBadges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.heroBadges {
+  margin-bottom: 1.25rem;
+}
+
+.storeBadge {
+  display: inline-flex;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.storeBadge:hover {
+  transform: translateY(-2px);
+  filter: drop-shadow(0 6px 16px rgba(99, 102, 241, 0.45));
+}
+
+.storeBadge img {
+  display: block;
+  height: 44px;
+  width: auto;
+}
+
+/* TV in the back, tablet and phone overlapping its lower corners */
+.deviceStack {
+  position: relative;
+  padding: 0 0 12% 6%;
+  animation: stackFloat 6s ease-in-out infinite;
+}
+
+@keyframes stackFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
+.heroTv,
+.heroTablet,
+.heroPhone {
+  background: #07070b;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.heroTv img,
+.heroTablet img,
+.heroPhone img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.heroTv {
+  position: relative;
+  padding: 0.6%;
+  border-radius: 10px;
+  box-shadow: 0 0 60px rgba(99, 102, 241, 0.35), 0 30px 60px rgba(0, 0, 0, 0.45);
+}
+
+.heroTv img {
+  border-radius: 5px;
+}
+
+.heroTablet {
+  position: absolute;
+  left: 0;
+  bottom: -2%;
+  width: 23%;
+  padding: 1%;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.heroTablet img {
+  border-radius: 6px;
+}
+
+.heroPhone {
+  position: absolute;
+  right: 5%;
+  bottom: -3%;
+  width: 17%;
+  padding: 0.8%;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+}
+
+.heroPhone img {
+  border-radius: 14px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Platform strip (overlaps the hero, like the homepage What's new)    */
+/* ------------------------------------------------------------------ */
+
+.platformStrip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: -2.5rem;
+  padding: 1.1rem 1.75rem;
+  border-radius: 1.25rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+}
+
+.platformLabel {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e11d48;
+}
+
+[data-theme='dark'] .platformLabel {
+  color: #fb7185;
+}
+
+.platformList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem 1.25rem;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.platformList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.platformList li > span {
+  font-size: 1.3rem;
+  color: var(--ifm-color-primary);
+}
+
+/* ------------------------------------------------------------------ */
+/* Device gallery tabs                                                 */
+/* ------------------------------------------------------------------ */
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: -1rem auto 2.25rem;
+  padding: 0.35rem;
+  border-radius: 9999px;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--card-border);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--ifm-font-color-base);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tab > span {
+  font-size: 1.2rem;
+}
+
+.tab:hover {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--brand-gradient);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(179, 80, 159, 0.35);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.galleryPanel {
+  animation: panelIn 0.35s ease;
+}
+
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------ */
+/* Playback                                                            */
+/* ------------------------------------------------------------------ */
+
+.playback {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: center;
+}
+
+.playbackIntro {
+  font-size: 1.1rem;
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+}
+
+.playbackPoints {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1.5rem;
+}
+
+.playbackPoint {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.playbackPoint > span {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  font-size: 1.35rem;
+  background: var(--brand-gradient);
+  color: #fff;
+}
+
+.playbackPoint strong {
+  display: block;
+  margin-bottom: 0.1rem;
+}
+
+.playbackPoint div span {
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.engineCard {
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  color: #e2e8f0;
+  background:
+    radial-gradient(ellipse 70% 60% at 100% 0%, rgba(99, 102, 241, 0.35), transparent 70%),
+    radial-gradient(ellipse 60% 60% at 0% 100%, rgba(244, 63, 94, 0.25), transparent 70%),
+    #0b1020;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+.engineHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.engineHeader > span {
+  font-size: 1.5rem;
+  color: #fb7185;
+}
+
+.engineList {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.engineList li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.engineList li:last-child {
+  border-bottom: none;
+}
+
+.engineList strong {
+  color: #fff;
+}
+
+.engineList span {
+  font-size: 0.92rem;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.engineLink,
+.stepLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+.engineLink {
+  color: #a5b4fc;
+}
+
+.engineLink:hover {
+  color: #c7d2fe;
+}
+
+.engineLink > span,
+.stepLink > span {
+  font-size: 1.1rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Connect steps                                                       */
+/* ------------------------------------------------------------------ */
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: none;
+}
+
+.step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem 1.5rem 1.5rem;
+  border-radius: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.stepNumber {
+  position: absolute;
+  top: -0.9rem;
+  right: 0.75rem;
+  font-size: 6rem;
+  font-weight: 800;
+  line-height: 1;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.stepIcon {
+  font-size: 2rem !important;
+  margin-bottom: 0.75rem;
+  color: var(--ifm-color-primary);
+}
+
+.step h3 {
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+
+.step p {
+  flex: 1;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Downloads                                                           */
+/* ------------------------------------------------------------------ */
+
+.downloadSection {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.storeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.storeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border-radius: 1.25rem;
+  color: rgba(226, 232, 240, 0.85);
+  font-size: 0.92rem;
+  text-align: center;
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 0%, rgba(99, 102, 241, 0.3), transparent 70%),
+    #0b1020;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.storeCard:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(99, 102, 241, 0.3);
+}
+
+.storeCard img {
+  height: 52px;
+  width: auto;
+}
+
+.directTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
+
+.directGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.9rem;
+}
+
+.directCard {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  color: inherit;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.directCard:hover {
+  color: inherit;
+  text-decoration: none;
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15);
+}
+
+.directIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--ifm-color-primary);
+}
+
+.directIcon > span {
+  font-size: 1.35rem;
+}
+
+.directText {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.directText span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.directArrow {
+  font-size: 1.3rem !important;
+  color: var(--ifm-color-emphasis-500);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.directCard:hover .directArrow {
+  color: var(--ifm-color-primary);
+  transform: translateY(2px);
+}
+
+.downloadNote {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.25rem;
+  border-radius: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  background: var(--ifm-color-emphasis-100);
+}
+
+.downloadNote > span:first-child {
+  font-size: 1.3rem;
+  color: var(--ifm-color-primary);
+}
+
+.lastSection {
+  padding-bottom: 5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive + motion                                                 */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 996px) {
+  .heroInner,
+  .playback {
+    grid-template-columns: 1fr;
+  }
+
+  .platformStrip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .platformList {
+    justify-content: flex-start;
+  }
+
+  .steps,
+  .storeGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .tab {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .tab > span {
+    display: none;
+  }
+
+  .playbackPoints {
+    grid-template-columns: 1fr;
+  }
+
+  .heroPhone {
+    border-radius: 12px;
+  }
+
+  .heroPhone img {
+    border-radius: 9px;
+  }
+
+  .lastSection {
+    padding-bottom: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deviceStack,
+  .galleryPanel {
+    animation: none;
+  }
+}
