@@ -100,6 +100,9 @@ async function fetchDownloads() {
  */
 async function fetchContributors() {
     const allContributors = new Map();
+    // Each repo's own list too, keyed by short name (e.g. "m3u-tv"), for
+    // pages that only credit one project
+    const byRepo = {};
 
     for (const repo of REPOS) {
         console.log(`  → Fetching contributors for ${repo}...`);
@@ -108,10 +111,19 @@ async function fetchContributors() {
             { Accept: 'application/vnd.github.v3+json' }
         );
 
+        const repoName = repo.split('/')[1];
+        byRepo[repoName] = [];
+
         data.forEach((contributor) => {
             if (contributor.login.endsWith('[bot]') || contributor.login === 'Copilot') {
                 return;
             }
+            byRepo[repoName].push({
+                login: contributor.login,
+                avatar_url: contributor.avatar_url,
+                html_url: contributor.html_url,
+                contributions: contributor.contributions,
+            });
             if (allContributors.has(contributor.login)) {
                 allContributors.get(contributor.login).contributions += contributor.contributions;
             } else {
@@ -128,7 +140,7 @@ async function fetchContributors() {
     const sorted = Array.from(allContributors.values())
         .sort((a, b) => b.contributions - a.contributions);
 
-    const result = { contributors: sorted, fetchedAt: new Date().toISOString() };
+    const result = { contributors: sorted, repos: byRepo, fetchedAt: new Date().toISOString() };
     fs.writeFileSync(
         path.join(DATA_DIR, 'contributors.json'),
         JSON.stringify(result, null, 2)

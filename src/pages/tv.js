@@ -5,6 +5,7 @@ import Link from '@docusaurus/Link';
 import useBrokenLinks from '@docusaurus/useBrokenLinks';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Layout from '@theme/Layout';
+import Contributors from '../components/Contributors';
 import GitHubMark from '../components/GitHubMark';
 import MaterialIcon from '../components/MaterialIcon';
 import ScreenshotsCarousel from '../components/ScreenshotsCarousel';
@@ -376,7 +377,7 @@ function Downloads() {
 
 function OpenSourceBand() {
   return (
-    <section className={clsx('container', home.section, styles.lastSection)}>
+    <section className={clsx('container', home.section)}>
       <div className={home.supportBand}>
         <div>
           <h2>Free and open source</h2>
@@ -425,6 +426,12 @@ export default function TvPage() {
         <ConnectSteps />
         <Downloads />
         <OpenSourceBand />
+        {/* Everyone gets a card: the TV app has only a handful of contributors */}
+        <Contributors
+          repo="m3u-tv"
+          featuredMin={1}
+          subtitle="Thank you to everyone who has helped build M3U TV."
+        />
       </main>
     </Layout>
   );

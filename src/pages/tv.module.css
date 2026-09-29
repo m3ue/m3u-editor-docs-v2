@@ -613,9 +613,6 @@
   color: var(--ifm-color-primary);
 }
 
-.lastSection {
-  padding-bottom: 5rem;
-}
 
 /* ------------------------------------------------------------------ */
 /* Responsive + motion                                                 */
@@ -663,10 +660,6 @@
 
   .heroPhone img {
     border-radius: 9px;
-  }
-
-  .lastSection {
-    padding-bottom: 3.5rem;
   }
 }
 
