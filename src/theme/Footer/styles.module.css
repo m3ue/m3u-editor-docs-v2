@@ -1,0 +1,288 @@
+/* Always dark, with the same brand glows and grid as the homepage hero so
+   every page ends the way the homepage begins */
+.footer {
+  --brand-gradient: linear-gradient(135deg, #f43f5e 0%, #b3509f 50%, #6366f1 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0 1.75rem;
+  color: #e2e8f0;
+  background:
+    radial-gradient(ellipse 45% 70% at 0% 0%, rgba(244, 63, 94, 0.22), transparent 65%),
+    radial-gradient(ellipse 45% 70% at 100% 100%, rgba(99, 102, 241, 0.25), transparent 65%),
+    #0b1020;
+}
+
+/* Gradient hairline along the top edge */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--brand-gradient);
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at 20% 30%, #000 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 20% 30%, #000 20%, transparent 70%);
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr);
+  gap: 3rem;
+  padding-bottom: 2.5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Brand column                                                        */
+/* ------------------------------------------------------------------ */
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.brandLink:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 24px rgba(244, 63, 94, 0.35), 0 0 40px rgba(99, 102, 241, 0.25);
+}
+
+.tagline {
+  margin: 1rem 0 1.25rem;
+  max-width: 22rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.75);
+}
+
+.social {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.socialButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.socialButton > span {
+  font-size: 1.3rem;
+}
+
+.socialButton svg {
+  width: 20px;
+  height: 20px;
+}
+
+.socialButton:hover {
+  color: #fff;
+  background: var(--brand-gradient);
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.chip > span {
+  font-size: 1rem;
+  color: #fb7185;
+}
+
+.chip:hover {
+  color: #fff;
+  text-decoration: none;
+  border-color: rgba(251, 113, 133, 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Link columns                                                        */
+/* ------------------------------------------------------------------ */
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 2rem;
+}
+
+.columnTitle {
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #fb7185 0%, #d8a0f5 50%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list li + li {
+  margin-top: 0.55rem;
+}
+
+.link {
+  display: inline-block;
+  font-size: 0.95rem;
+  color: rgba(226, 232, 240, 0.8);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.link:hover {
+  color: #fff;
+  text-decoration: none;
+  transform: translateX(3px);
+}
+
+/* Inline with the label so it stays next to the last word when it wraps */
+.linkIcon {
+  margin-left: 0.25rem;
+  vertical-align: -0.1em;
+  font-size: 0.95rem !important;
+  opacity: 0.45;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.link:hover .linkIcon {
+  opacity: 1;
+  color: #fb7185;
+  transform: translate(1px, -1px);
+}
+
+/* ------------------------------------------------------------------ */
+/* Bottom bar                                                          */
+/* ------------------------------------------------------------------ */
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.copyright {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.toTop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  color: #cbd5e1;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.toTop > span {
+  font-size: 1.05rem;
+  transition: transform 0.2s ease;
+}
+
+.toTop:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.toTop:hover > span {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 996px) {
+  .top {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .footer {
+    padding-top: 3rem;
+  }
+
+  .columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* An odd last column gets the full row instead of half of it */
+  .column:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .bottom {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

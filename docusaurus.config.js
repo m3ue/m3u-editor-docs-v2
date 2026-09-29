@@ -13,6 +13,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 // Browse names at https://fonts.google.com/icons
 const MATERIAL_ICONS = [
   'arrow_forward',
+  'arrow_upward',
   'auto_awesome',
   'bolt',
   'bug_report',
@@ -34,6 +35,7 @@ const MATERIAL_ICONS = [
   'favorite',
   'folder',
   'folder_zip',
+  'forum',
   'grid_view',
   'groups',
   'hdr_on',
@@ -47,6 +49,7 @@ const MATERIAL_ICONS = [
   'merge',
   'movie',
   'new_releases',
+  'north_east',
   'notifications',
   'open_in_new',
   'phone_iphone',

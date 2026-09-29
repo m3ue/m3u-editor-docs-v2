@@ -206,31 +206,3 @@
   gap: 0.2rem;
   z-index: 1;
 }
-
-/* Custom footer styling to match site theme */
-.footer {
-  background: rgba(15, 23, 42, 0.98);
-  border-top: 2px solid var(--ifm-color-primary);
-  color: #e2e8f0;
-}
-
-.footer__title {
-  color: var(--ifm-color-primary);
-  font-weight: 600;
-}
-
-.footer__link-item {
-  color: #cbd5e1;
-  transition: color 0.2s ease;
-}
-
-.footer__link-item:hover {
-  color: var(--ifm-color-primary-light);
-}
-
-.footer__copyright {
-  color: #94a3b8;
-  border-top: 1px solid rgba(71, 85, 105, 0.3);
-  padding-top: 1rem;
-  margin-top: 1rem;
-}
