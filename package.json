@@ -16,6 +16,7 @@
     "generate-screenshots": "node ./scripts/generate-screenshots.js",
     "watch-screenshots": "node ./scripts/generate-screenshots.js --watch",
     "fetch-static-data": "node ./scripts/fetch-static-data.js",
+    "sync-tv-screenshots": "./scripts/sync-tv-screenshots.sh",
     "prestart": "npm run fetch-static-data && npm run generate-screenshots",
     "prebuild": "npm run fetch-static-data && npm run generate-screenshots",
     "update-release": "node update-release.js"
