@@ -1,22 +1,26 @@
 // Content for the /tv (M3U TV) feature page. Icons are Material Symbols
 // names; add any new ones to MATERIAL_ICONS in docusaurus.config.js.
+//
+// Images are require()d rather than linked by path so the build publishes
+// them under content-hashed names: replacing a screenshot changes its URL,
+// so the CDN can never keep serving the old one.
 
 export const STORE_LINKS = [
   {
     name: 'App Store (TestFlight beta)',
-    badge: '/img/badges/app-store-badge.png',
+    badge: require('@site/static/img/badges/app-store-badge.png').default,
     href: 'https://testflight.apple.com/join/hqJYVsJr',
     note: 'iPhone, iPad, Apple TV & Mac',
   },
   {
     name: 'Google Play',
-    badge: '/img/badges/play-store-badge.png',
+    badge: require('@site/static/img/badges/play-store-badge.png').default,
     href: 'https://play.google.com/store/apps/details?id=dev.sparkison.tv&referrer=utm_source%3Ddocs%26utm_campaign%3Dtv_page',
     note: 'Android phones, tablets & Android TV',
   },
   {
     name: 'Microsoft Store',
-    badge: '/img/badges/microsoft-badge.png',
+    badge: require('@site/static/img/badges/microsoft-badge.png').default,
     href: 'https://apps.microsoft.com/detail/9P2PBHQ4XZ1L?referrer=appbadge&cid=docs',
     note: 'Windows 10 & 11',
   },
@@ -33,11 +37,11 @@ export const DEVICE_GALLERIES = [
     slidesPerView: 1.1,
     breakpoints: { 768: { slidesPerView: 1.35, spaceBetween: 24 }, 1200: { slidesPerView: 1.5, spaceBetween: 32 } },
     items: [
-      { src: '/img/tv/tv1.webp', alt: 'Home with Continue Watching' },
-      { src: '/img/tv/tv2.webp', alt: 'Live TV guide' },
-      { src: '/img/tv/tv3.webp', alt: 'Movie library' },
-      { src: '/img/tv/tv4.webp', alt: 'Movie details and cast' },
-      { src: '/img/tv/tv5.webp', alt: 'Series details' },
+      { src: require('@site/static/img/tv/tv1.webp').default, alt: 'Home with Continue Watching' },
+      { src: require('@site/static/img/tv/tv2.webp').default, alt: 'Live TV guide' },
+      { src: require('@site/static/img/tv/tv3.webp').default, alt: 'Movie library' },
+      { src: require('@site/static/img/tv/tv4.webp').default, alt: 'Movie details and cast' },
+      { src: require('@site/static/img/tv/tv5.webp').default, alt: 'Series details' },
     ],
   },
   {
@@ -48,11 +52,11 @@ export const DEVICE_GALLERIES = [
     slidesPerView: 1.1,
     breakpoints: { 768: { slidesPerView: 1.35, spaceBetween: 24 }, 1200: { slidesPerView: 1.5, spaceBetween: 32 } },
     items: [
-      { src: '/img/tv/desktop1.webp', alt: 'Home with Continue Watching' },
-      { src: '/img/tv/desktop2.webp', alt: 'Live TV guide' },
-      { src: '/img/tv/desktop3.webp', alt: 'Movie details and cast' },
-      { src: '/img/tv/desktop4.webp', alt: 'Series library' },
-      { src: '/img/tv/desktop5.webp', alt: 'Series details' },
+      { src: require('@site/static/img/tv/desktop1.webp').default, alt: 'Home with Continue Watching' },
+      { src: require('@site/static/img/tv/desktop2.webp').default, alt: 'Live TV guide' },
+      { src: require('@site/static/img/tv/desktop3.webp').default, alt: 'Movie details and cast' },
+      { src: require('@site/static/img/tv/desktop4.webp').default, alt: 'Series library' },
+      { src: require('@site/static/img/tv/desktop5.webp').default, alt: 'Series details' },
     ],
   },
   {
@@ -63,11 +67,11 @@ export const DEVICE_GALLERIES = [
     slidesPerView: 1.4,
     breakpoints: { 600: { slidesPerView: 2.2, spaceBetween: 24 }, 1200: { slidesPerView: 3, spaceBetween: 32 } },
     items: [
-      { src: '/img/tv/tablet1.webp', alt: 'Home' },
-      { src: '/img/tv/tablet2.webp', alt: 'Live TV channels' },
-      { src: '/img/tv/tablet3.webp', alt: 'Movie details' },
-      { src: '/img/tv/tablet4.webp', alt: 'Series details' },
-      { src: '/img/tv/tablet5.webp', alt: 'Movie library' },
+      { src: require('@site/static/img/tv/tablet1.webp').default, alt: 'Home' },
+      { src: require('@site/static/img/tv/tablet2.webp').default, alt: 'Live TV channels' },
+      { src: require('@site/static/img/tv/tablet3.webp').default, alt: 'Movie details' },
+      { src: require('@site/static/img/tv/tablet4.webp').default, alt: 'Series details' },
+      { src: require('@site/static/img/tv/tablet5.webp').default, alt: 'Movie library' },
     ],
   },
   {
@@ -78,11 +82,11 @@ export const DEVICE_GALLERIES = [
     slidesPerView: 1.8,
     breakpoints: { 600: { slidesPerView: 2.6, spaceBetween: 24 }, 996: { slidesPerView: 3.6, spaceBetween: 32 } },
     items: [
-      { src: '/img/tv/mobile1.webp', alt: 'Home' },
-      { src: '/img/tv/mobile2.webp', alt: 'Live TV list' },
-      { src: '/img/tv/mobile3.webp', alt: 'Movie library' },
-      { src: '/img/tv/mobile4.webp', alt: 'Movie details' },
-      { src: '/img/tv/mobile5.webp', alt: 'Series details' },
+      { src: require('@site/static/img/tv/mobile1.webp').default, alt: 'Home' },
+      { src: require('@site/static/img/tv/mobile2.webp').default, alt: 'Live TV list' },
+      { src: require('@site/static/img/tv/mobile3.webp').default, alt: 'Movie library' },
+      { src: require('@site/static/img/tv/mobile4.webp').default, alt: 'Movie details' },
+      { src: require('@site/static/img/tv/mobile5.webp').default, alt: 'Series details' },
     ],
   },
 ];

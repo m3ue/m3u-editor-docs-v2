@@ -37,7 +37,8 @@ function SectionHeader({ eyebrow, title, subtitle }) {
 
 function Hero() {
   const { siteConfig } = useDocusaurusContext();
-  const dashboardSrc = useBaseUrl('/img/screenshots/01_dashboard.png');
+  // Imported so the build fingerprints it (see src/data/screenshots.js)
+  const dashboardSrc = require('@site/static/img/screenshots/01_dashboard.png').default;
 
   return (
     <header className={styles.hero} data-navbar-over-hero>

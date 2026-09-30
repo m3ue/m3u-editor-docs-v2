@@ -52,12 +52,11 @@ function SectionHeader({ eyebrow, title, subtitle }) {
 }
 
 function StoreBadges({ className }) {
-  const baseUrl = useBaseUrl('/');
   return (
     <div className={clsx(styles.storeBadges, className)}>
       {STORE_LINKS.map((store) => (
         <a key={store.name} href={store.href} target="_blank" rel="noopener noreferrer" className={styles.storeBadge}>
-          <img src={`${baseUrl}${store.badge.replace(/^\//, '')}`} alt={store.name} />
+          <img src={store.badge} alt={store.name} />
         </a>
       ))}
     </div>
@@ -126,13 +125,13 @@ function Hero() {
         <div className={styles.deviceStack} {...parallax}>
           <div className={styles.deviceScene}>
             <div className={styles.heroTv}>
-              <img src={useBaseUrl('/img/tv/tv1.webp')} alt="M3U TV home screen on a TV" />
+              <img src={require('@site/static/img/tv/tv1.webp').default} alt="M3U TV home screen on a TV" />
             </div>
             <div className={styles.heroTablet}>
-              <img src={useBaseUrl('/img/tv/tablet3.webp')} alt="M3U TV movie details on a tablet" />
+              <img src={require('@site/static/img/tv/tablet3.webp').default} alt="M3U TV movie details on a tablet" />
             </div>
             <div className={styles.heroPhone}>
-              <img src={useBaseUrl('/img/tv/mobile5.webp')} alt="M3U TV series details on a phone" />
+              <img src={require('@site/static/img/tv/mobile5.webp').default} alt="M3U TV series details on a phone" />
             </div>
           </div>
         </div>
@@ -306,7 +305,6 @@ function ConnectSteps() {
 }
 
 function Downloads() {
-  const baseUrl = useBaseUrl('/');
   // Register the custom id so links to /tv#download pass the broken anchor check
   useBrokenLinks().collectAnchor('download');
   const releasedOn = tvRelease?.publishedAt
@@ -328,7 +326,7 @@ function Downloads() {
       <div className={styles.storeGrid}>
         {STORE_LINKS.map((store) => (
           <a key={store.name} href={store.href} target="_blank" rel="noopener noreferrer" className={styles.storeCard}>
-            <img src={`${baseUrl}${store.badge.replace(/^\//, '')}`} alt={store.name} />
+            <img src={store.badge} alt={store.name} />
             <span>{store.note}</span>
           </a>
         ))}

@@ -3,39 +3,39 @@
 
 export default [
   {
-    "src": "/img/screenshots/01_dashboard.png",
-    "alt": "01 Dashboard"
+    src: require("@site/static/img/screenshots/01_dashboard.png").default,
+    alt: "01 Dashboard",
   },
   {
-    "src": "/img/screenshots/02_series-detail.png",
-    "alt": "02 Series Detail"
+    src: require("@site/static/img/screenshots/02_series-detail.png").default,
+    alt: "02 Series Detail",
   },
   {
-    "src": "/img/screenshots/03_series-editor.png",
-    "alt": "03 Series Editor"
+    src: require("@site/static/img/screenshots/03_series-editor.png").default,
+    alt: "03 Series Editor",
   },
   {
-    "src": "/img/screenshots/04_playlist-output-options.png",
-    "alt": "04 Playlist Output Options"
+    src: require("@site/static/img/screenshots/04_playlist-output-options.png").default,
+    alt: "04 Playlist Output Options",
   },
   {
-    "src": "/img/screenshots/05_playlist-auth.png",
-    "alt": "05 Playlist Auth"
+    src: require("@site/static/img/screenshots/05_playlist-auth.png").default,
+    alt: "05 Playlist Auth",
   },
   {
-    "src": "/img/screenshots/06_media-servers.png",
-    "alt": "06 Media Servers"
+    src: require("@site/static/img/screenshots/06_media-servers.png").default,
+    alt: "06 Media Servers",
   },
   {
-    "src": "/img/screenshots/07_integrations-settings.png",
-    "alt": "07 Integrations Settings"
+    src: require("@site/static/img/screenshots/07_integrations-settings.png").default,
+    alt: "07 Integrations Settings",
   },
   {
-    "src": "/img/screenshots/08_proxy-monitor.png",
-    "alt": "08 Proxy Monitor"
+    src: require("@site/static/img/screenshots/08_proxy-monitor.png").default,
+    alt: "08 Proxy Monitor",
   },
   {
-    "src": "/img/screenshots/99_api.png",
-    "alt": "99 Api"
-  }
+    src: require("@site/static/img/screenshots/99_api.png").default,
+    alt: "99 Api",
+  },
 ];

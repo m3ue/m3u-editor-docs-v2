@@ -6,7 +6,6 @@ import { Pagination, A11y } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import styles from './styles.module.css';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 import MaterialIcon from '../MaterialIcon';
 
 import defaultScreenshots from '../../data/screenshots';
@@ -31,7 +30,6 @@ export default function ScreenshotsCarousel({
     const [lightbox, setLightbox] = useState({ open: false, src: '', alt: '' });
     const [visibleScreenshots, setVisibleScreenshots] = useState(screenshots || []);
     const [swiper, setSwiper] = useState(null);
-    const baseUrl = useBaseUrl('');
 
     useEffect(() => {
         setVisibleScreenshots(screenshots || []);
@@ -73,7 +71,8 @@ export default function ScreenshotsCarousel({
                     className={styles.carousel}
                 >
                     {visibleScreenshots.map((img) => {
-                        const src = `${baseUrl.replace(/\/$/, '')}${img.src}`;
+                        // Already a final, content-hashed URL from require()
+                        const { src } = img;
                         return (
                             <SwiperSlide key={src}>
                                 <div className={clsx(styles.frame, styles[`frame_${frame}`])}>
