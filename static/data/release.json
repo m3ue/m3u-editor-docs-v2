@@ -1,80 +1,70 @@
 {
-  "tag": "v0.13.0",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.0",
-  "publishedAt": "2026-09-28T22:00:59Z",
+  "tag": "v0.13.1",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.1",
+  "publishedAt": "2026-10-01T20:14:47Z",
   "features": [
     {
-      "text": "Implement EPG cache enrichment plugin hook",
-      "scope": null,
-      "pr": 1556
+      "text": "Serve artwork at named size profiles; move media server and SD art from Redis cache to disk",
+      "scope": "images",
+      "pr": 1566
     },
     {
-      "text": "Support multiple line ups for SD EPG types",
+      "text": "Add logs endpoint for sending diag data to editor from TV app",
       "scope": null,
-      "pr": 1555
+      "pr": null
     },
     {
-      "text": "Add Unsloth Studio as local AI copilot provider",
-      "scope": null,
-      "pr": 1522
+      "text": "Upgrade filament-copilot to 1.8 and laravel/ai to 0.11, add tool approvals and reply feedback",
+      "scope": "copilot",
+      "pr": 1565
     },
     {
-      "text": "Expose DVR functionality via API",
+      "text": "Add optional \"Sort by channel number\" playlist output ordering",
       "scope": null,
-      "pr": 1554
+      "pr": 1561
     },
     {
-      "text": "Add sort by recent activity to series sort options",
-      "scope": null,
-      "pr": 1552
+      "text": "Persist US certifications, series networks and movie studios (TMDB + media servers)",
+      "scope": "tmdb",
+      "pr": 1557
     },
     {
-      "text": "Add cached content downloads",
-      "scope": "cache",
-      "pr": 1524
+      "text": "Order members by TMDB rank + extend TMDB page cap to 10",
+      "scope": "dynamic-groups",
+      "pr": 1534
+    },
+    {
+      "text": "Add named resource types for API docs",
+      "scope": null,
+      "pr": 1558
     }
   ],
   "fixes": [
     {
-      "text": "In-app player not working with AIOStreams",
+      "text": "Timing issue in test case",
       "scope": null,
       "pr": null
     },
     {
-      "text": "M3U import duplicate check",
-      "scope": null,
+      "text": "Episode list not loading with recent API update",
+      "scope": "aiostreams",
       "pr": null
     },
     {
-      "text": "AED profile not respecting length",
-      "scope": null,
-      "pr": null
+      "text": "Scope EPG channel lookups by epg_id to fix wrong channel, missing stream_url (#1462)",
+      "scope": "dvr",
+      "pr": 1564
     },
     {
-      "text": "Remove the playlist rule when a dynamic group is deleted",
-      "scope": "dynamic-groups",
-      "pr": 1551
-    },
-    {
-      "text": "Update column type for metadata strings",
+      "text": "Surface Emby publish failures",
       "scope": null,
-      "pr": null
-    },
-    {
-      "text": "TMDB enrichment being overwritten on media-server sync",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Series episode table season grouping",
-      "scope": null,
-      "pr": null
+      "pr": 1544
     }
   ],
   "counts": {
-    "features": 6,
-    "fixes": 7,
-    "maintenance": 2
+    "features": 7,
+    "fixes": 4,
+    "maintenance": 14
   },
-  "fetchedAt": "2026-09-30T14:07:43.747Z"
+  "fetchedAt": "2026-10-01T20:15:29.304Z"
 }
