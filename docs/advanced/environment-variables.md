@@ -531,16 +531,20 @@ Handles [Cached Content Downloads](cached-content.md). Downloads run only on thi
 - **Recommendation**: Higher values reduce bandwidth, lower values ensure logos stay current
 
 ### PROXY_IMAGE_RESIZE_ENABLED
-- **Default**: `true`
-- **Description**: Allow the logo proxy to downscale images when a client asks for a smaller size with `?w=` or `?h=` query parameters. M3U TV uses this to load smaller posters and backdrops, which cuts memory use and load times.
+- **Default**: not set (uses **Settings > Assets > Optimize Cached Artwork**, enabled by default)
+- **Description**: Cache artwork from the logo proxy, media server integrations and Schedules Direct as a downscaled copy sized for its role (poster, backdrop, title logo, cast photo). M3U TV and other clients get right-sized images without passing any size parameters, which cuts memory use and load times. Set to `false` to cache and serve originals.
+
+### PROXY_IMAGE_RESIZE_POSTER_WIDTH / PROXY_IMAGE_RESIZE_BACKDROP_WIDTH / PROXY_IMAGE_RESIZE_TITLE_LOGO_WIDTH / PROXY_IMAGE_RESIZE_PHOTO_WIDTH
+- **Defaults**: not set (uses the Settings > Assets values: `600` / `1280` / `800` / `300`)
+- **Description**: Maximum width (in pixels) artwork is stored at for posters, backdrops, title logos (clearlogo) and cast photos. When set, overrides the matching field in **Settings > Assets** and locks it.
+
+### PROXY_IMAGE_RESIZE_QUALITY
+- **Default**: not set (uses Settings > Assets, encoder default `70`)
+- **Description**: Encoder quality (1 to 100) for downscaled artwork. The source format is always kept.
 
 ### PROXY_IMAGE_RESIZE_MAX
 - **Default**: `1920`
-- **Description**: Largest width or height (in pixels) a client can request. Larger values are clamped.
-
-### PROXY_IMAGE_RESIZE_POSTER_WIDTH / PROXY_IMAGE_RESIZE_BACKDROP_WIDTH / PROXY_IMAGE_RESIZE_PHOTO_WIDTH
-- **Defaults**: `600` / `1280` / `300`
-- **Description**: Widths used for posters, backdrops, and cast photos in Xtream API metadata responses when the logo proxy is enabled for the playlist
+- **Description**: Upper limit (in pixels) for every configured width. Larger values are clamped.
 
 ## Feature Flags
 

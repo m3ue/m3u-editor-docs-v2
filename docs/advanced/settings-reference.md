@@ -306,6 +306,37 @@ When an Xtream provider answers with "429 Too Many Requests" during a sync or me
 - **Type**: Toggle
 - **Description**: When enabled, `/logo-repository` endpoints are publicly accessible for apps like UHF.
 
+### Image Optimization
+
+Artwork served through the logo proxy, media server integrations (Emby, Jellyfin, Plex) and Schedules Direct is cached as a downscaled copy sized for where it is shown. Clients download a right-sized image instead of the full-resolution source, with no extra request parameters needed. Emby, Jellyfin and Plex are asked to send the image at the right size, so the editor only resizes artwork from other sources. Images already within the size are stored as-is.
+
+**Optimize Cached Artwork**
+- **Type**: Toggle
+- **Default**: Enabled
+- **Description**: When disabled, artwork is cached and served at its original size.
+- **Environment override**: `PROXY_IMAGE_RESIZE_ENABLED`
+
+**Poster / Backdrop / Title Logo / Cast Photo**
+- **Type**: Number (px max width)
+- **Defaults**: `600` / `1280` / `800` / `300`
+- **Description**: Maximum width artwork is stored at for each role. Images are never upscaled and keep their aspect ratio.
+  - **Poster**: VOD and series covers, season covers and episode images. Media server `Primary` images use this size.
+  - **Backdrop**: background art on detail screens. Media server `Backdrop` images and landscape Schedules Direct programme art use this size.
+  - **Title Logo**: transparent title logos (clearlogo) on detail screens.
+  - **Cast Photo**: cast and crew headshots.
+- **Note**: Changing a size creates new cached copies the next time each image is requested. Old copies expire with the logo cache, or can be removed with **Clear All Logo Cache**.
+- **Environment override**: `PROXY_IMAGE_RESIZE_POSTER_WIDTH`, `PROXY_IMAGE_RESIZE_BACKDROP_WIDTH`, `PROXY_IMAGE_RESIZE_TITLE_LOGO_WIDTH`, `PROXY_IMAGE_RESIZE_PHOTO_WIDTH`
+
+**Image Quality**
+- **Type**: Number (1 to 100)
+- **Default**: empty (encoder default of `70`)
+- **Description**: Encoder quality for artwork the editor downscales. Applies to newly cached copies. The source format (JPEG, PNG, WebP) is always kept.
+- **Environment override**: `PROXY_IMAGE_RESIZE_QUALITY`
+
+:::tip
+Media server artwork is refreshed from the server once a day, so changed artwork shows up within 24 hours. Schedules Direct images never change, so they stay cached and are still served after the daily image download limit is reached.
+:::
+
 ### Placeholder Images
 
 Override app-wide placeholder images. Clearing any field reverts to the built-in default.
