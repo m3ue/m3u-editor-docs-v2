@@ -436,6 +436,53 @@ cat /path/to/media/Series/Show/S01E01.strm
 2. Or manually sync Series/VOD
 3. Trigger media server library scan
 
+### Slow Startup or Seeking in Emby (IPv6 / DNS)
+
+**Symptoms**:
+- `.strm` VOD items take ~25 seconds to start playing in Emby (likely also applies to Jellyfin)
+- Seeking/scrubbing is slow, restarts playback, or fails entirely
+- Emby logs show errors like `Network is unreachable (m3u.example.com:443)` and `TranscodeReasons=DirectPlayError`
+- Playback falls back to HLS remux/transcode, which restarts ffmpeg on every seek
+
+**Cause**:
+
+The Emby container resolves your M3U Editor public hostname (e.g. `m3u.example.com`) through public DNS. Depending on your DNS setup (for example, a hostname proxied through Cloudflare), it can receive IPv6 (`AAAA`) records. If the Docker host or LAN has no IPv6 route, Emby's direct-play request fails, and Emby falls back to remuxing/transcoding the stream.
+
+**Fix**: make the Emby container reach M3U Editor over your LAN (e.g. via your reverse proxy's LAN IP). Use one of these options:
+
+1. **Docker Compose `extra_hosts`** (recommended):
+   ```yaml
+   services:
+     emby:
+       # ...
+       extra_hosts:
+         - "m3u.example.com:192.168.1.10"
+   ```
+2. **`docker run --add-host`**:
+   ```bash
+   docker run ... --add-host m3u.example.com:192.168.1.10 ...
+   ```
+3. **LAN DNS resolver**: point the Emby container at a local DNS server that resolves `m3u.example.com` to its LAN IP (e.g. `dns:` in Docker Compose or `--dns` in `docker run`)
+4. **LAN base URL**: generate the `.strm` files with a LAN URL (e.g. `http://192.168.1.10:36400`) instead of the public hostname, then re-sync
+
+Restart the Emby container after applying the change.
+
+**Verify**:
+1. Start a `.strm` item and open the Emby dashboard: playback should show **Direct Play**
+2. Seek forward and back. Seeks should be near-instant
+
+```bash
+# Confirm the hosts entry was added inside the container (extra_hosts / --add-host)
+docker exec -it emby cat /etc/hosts
+# Should include: 192.168.1.10  m3u.example.com
+```
+
+In one test setup, this cut startup time from ~25s to ~3.5s, with seeks taking ~0.7s.
+
+:::note
+M3U Editor's proxy supports HTTP `Range` requests, so seeking works once Emby can direct play. Note that 4K HEVC content played in the Emby **web browser** client will still be transcoded because of browser codec limits. Use the native Emby apps (TV, mobile, desktop) for direct play of 4K HEVC.
+:::
+
 
 
 ## 💡 Best Practices
