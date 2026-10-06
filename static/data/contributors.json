@@ -4,19 +4,19 @@
       "login": "sparkison",
       "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
       "html_url": "https://github.com/sparkison",
-      "contributions": 10060
+      "contributions": 10086
     },
     {
       "login": "Grimothy",
       "avatar_url": "https://avatars.githubusercontent.com/u/13306288?v=4",
       "html_url": "https://github.com/Grimothy",
-      "contributions": 437
+      "contributions": 444
     },
     {
       "login": "Serph91P",
       "avatar_url": "https://avatars.githubusercontent.com/u/8904984?v=4",
       "html_url": "https://github.com/Serph91P",
-      "contributions": 404
+      "contributions": 405
     },
     {
       "login": "Warbs816",
@@ -223,19 +223,19 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 8659
+        "contributions": 8683
       },
       {
         "login": "Grimothy",
         "avatar_url": "https://avatars.githubusercontent.com/u/13306288?v=4",
         "html_url": "https://github.com/Grimothy",
-        "contributions": 380
+        "contributions": 386
       },
       {
         "login": "Serph91P",
         "avatar_url": "https://avatars.githubusercontent.com/u/8904984?v=4",
         "html_url": "https://github.com/Serph91P",
-        "contributions": 295
+        "contributions": 296
       },
       {
         "login": "Warbs816",
@@ -417,7 +417,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 473
+        "contributions": 474
       },
       {
         "login": "hektyc",
@@ -450,6 +450,12 @@
         "contributions": 3
       },
       {
+        "login": "Grimothy",
+        "avatar_url": "https://avatars.githubusercontent.com/u/13306288?v=4",
+        "html_url": "https://github.com/Grimothy",
+        "contributions": 2
+      },
+      {
         "login": "c0mputerguru",
         "avatar_url": "https://avatars.githubusercontent.com/u/23019447?v=4",
         "html_url": "https://github.com/c0mputerguru",
@@ -460,12 +466,6 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/24372620?v=4",
         "html_url": "https://github.com/martenumberto",
         "contributions": 2
-      },
-      {
-        "login": "Grimothy",
-        "avatar_url": "https://avatars.githubusercontent.com/u/13306288?v=4",
-        "html_url": "https://github.com/Grimothy",
-        "contributions": 1
       },
       {
         "login": "Phunky",
@@ -479,7 +479,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 216
+        "contributions": 217
       },
       {
         "login": "Grimothy",
@@ -527,5 +527,5 @@
       }
     ]
   },
-  "fetchedAt": "2026-10-01T21:47:20.250Z"
+  "fetchedAt": "2026-10-06T23:03:25.030Z"
 }
