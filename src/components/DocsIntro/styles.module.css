@@ -1,0 +1,414 @@
+/* Docs landing page blocks. Colours come from the docs tokens in
+   custom.css, so both themes follow automatically. Layout responds to the
+   width of the docs column (container queries), not the viewport, since
+   the sidebar and table of contents take a varying share of it. */
+
+/* Container queries match an ancestor, never the element itself, so the
+   grids that change columns sit inside these wrappers */
+.suite,
+.helpContainer {
+  container-type: inline-size;
+}
+
+/* ---- Flow: sources, editor, players ---- */
+
+.flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.05fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 1rem;
+}
+
+.flowColumn {
+  height: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--docs-hairline-strong);
+  border-radius: 0.75rem;
+  background-color: var(--docs-panel);
+}
+
+.flowLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.55rem;
+  color: var(--docs-link-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.flowLabel > span {
+  font-size: 1rem;
+}
+
+.flowList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flowList li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0.2rem 0;
+  color: var(--docs-link-strong);
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.flowList li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 50%;
+  background: var(--docs-brand-gradient);
+}
+
+.flowArrow {
+  display: grid;
+  place-items: center;
+  color: var(--docs-link-muted);
+  font-size: 1.25rem;
+}
+
+.flowHub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 1.25rem 1rem;
+  border-radius: 0.9rem;
+  background-color: var(--docs-panel);
+  text-align: center;
+  box-shadow:
+    -0.5rem 0 1.5rem -0.75rem color-mix(in srgb, #f43f5e 45%, transparent),
+    0.5rem 0 1.5rem -0.75rem color-mix(in srgb, #6366f1 45%, transparent);
+}
+
+/* Always-on gradient ring, the same masked technique as the cards */
+.flowHub::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--docs-brand-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+}
+
+.flowLogo {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.flowHub strong {
+  color: var(--docs-link-strong);
+  font-size: 1.05rem;
+}
+
+.flowHub > span {
+  color: var(--docs-link-muted);
+  font-size: 0.8rem;
+}
+
+.flowHub > .flowChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.flowChip > span {
+  font-size: 0.9rem;
+}
+
+/* ---- The three projects ---- */
+
+.projects {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  padding: 1.1rem 1.15rem;
+  border: 1px solid var(--docs-hairline-strong);
+  border-radius: 0.75rem;
+  background-color: var(--docs-panel);
+}
+
+.projectIcon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-bottom: 0.65rem;
+  border-radius: 0.6rem;
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  font-size: 1.25rem;
+}
+
+.projectIcon > span {
+  font-size: inherit;
+}
+
+.project h3 {
+  margin: 0 0 0.25rem;
+  color: var(--docs-link-strong);
+  font-size: 1rem;
+}
+
+.project p {
+  flex: 1;
+  margin: 0 0 0.75rem;
+  color: var(--docs-link-muted);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.projectLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+}
+
+.projectLinks a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--docs-link-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.projectLinks a:hover {
+  color: var(--docs-active-text);
+  text-decoration: none;
+}
+
+.projectLinks a > span,
+.projectLinks a > svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  font-size: 0.95rem;
+}
+
+/* ---- Start steps ---- */
+
+.steps {
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0;
+  padding-bottom: 1.4rem;
+}
+
+/* The line joining one number to the next */
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 2.6rem;
+  bottom: 0.35rem;
+  left: calc(1.125rem - 1px);
+  width: 2px;
+  border-radius: 2px;
+  background-color: var(--docs-hairline-strong);
+}
+
+.stepNumber {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--docs-brand-gradient);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.stepTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.3rem;
+  color: var(--docs-link-strong);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+
+.stepTitle > span {
+  font-size: 1.05rem;
+  opacity: 0;
+  translate: -0.25rem 0;
+  transition: opacity 0.2s ease, translate 0.2s ease;
+}
+
+.stepTitle:hover {
+  color: var(--docs-active-text);
+  text-decoration: none;
+}
+
+.stepTitle:hover > span {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.stepText {
+  margin: 0.15rem 0 0;
+  color: var(--docs-link-muted);
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+/* ---- Docs sections (DocCardList) ---- */
+
+.sections {
+  margin-top: 1.25rem;
+}
+
+/* ---- Help links ---- */
+
+.help {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.5rem;
+}
+
+.helpLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--docs-hairline-strong);
+  border-radius: 0.75rem;
+  background-color: var(--docs-panel);
+  color: inherit;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.helpLink:hover {
+  border-color: color-mix(in srgb, #6366f1 45%, transparent);
+  background-color: var(--docs-active-tint);
+  color: inherit;
+  text-decoration: none;
+}
+
+.helpIcon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.55rem;
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  font-size: 1.15rem;
+}
+
+.helpIcon > span {
+  font-size: inherit;
+}
+
+.helpLink strong {
+  display: block;
+  color: var(--docs-link-strong);
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.helpLink strong + span {
+  display: block;
+  color: var(--docs-link-muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+/* ---- Narrow columns ---- */
+
+@container (max-width: 760px) {
+  .help {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (max-width: 680px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .flowArrow {
+    rotate: 90deg;
+  }
+
+  .projects {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  /* Icon beside the text instead of above it, to keep the stack short */
+  .project {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    column-gap: 0.9rem;
+  }
+
+  .projectIcon {
+    grid-row: span 3;
+    margin-bottom: 0;
+  }
+
+  .project p {
+    margin-bottom: 0.6rem;
+  }
+}
+
+@container (min-width: 421px) and (max-width: 680px) {
+  .flowList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1rem;
+  }
+}
+
+@container (max-width: 420px) {
+  .help {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepTitle > span,
+  .helpLink {
+    transition: none;
+  }
+}

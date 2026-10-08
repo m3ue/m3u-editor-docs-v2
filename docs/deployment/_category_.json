@@ -1,6 +1,10 @@
 {
   "label": "Deployment",
   "position": 5,
+  "description": "Docker Compose, Caddy or Nginx, M3U Proxy setup, and hosting.",
+  "customProps": {
+    "icon": "rocket_launch"
+  },
   "link": {
     "type": "generated-index",
     "description": "Production deployment guides for M3U Editor."

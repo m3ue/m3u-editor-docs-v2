@@ -1,6 +1,10 @@
 {
   "label": "Advanced",
   "position": 8,
+  "description": "Settings reference, caching, probing, auto-merge, SSO, and more.",
+  "customProps": {
+    "icon": "tune"
+  },
   "link": {
     "type": "generated-index",
     "description": "Advanced topics and features for M3U Editor."
