@@ -1,115 +1,45 @@
 {
-  "tag": "v0.13.2",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.2",
-  "publishedAt": "2026-10-06T23:03:15Z",
+  "tag": "v0.13.3",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.3",
+  "publishedAt": "2026-10-08T19:24:00Z",
   "features": [
     {
-      "text": "Add stat widgets to cached content table",
-      "scope": null,
-      "pr": null
+      "text": "Tabbed alias edit page, bouquet order + auto-include patterns, stop re-adding removed groups",
+      "scope": "aliases",
+      "pr": 1601
     },
     {
-      "text": "Opt-in removal of dynamic-group movies from Radarr",
+      "text": "Fall back to the provider when Radarr/Sonarr can't deliver",
       "scope": "cache",
-      "pr": 1593
+      "pr": 1598
     },
     {
-      "text": "Add bouquets to Alias live group sort",
+      "text": "Add Disabled and Custom Password options for the playlist default login",
       "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Add Arr webhook register/test actions",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Send Cache Now and dynamic group caching to Radarr/Sonarr",
-      "scope": "cache",
-      "pr": 1585
-    },
-    {
-      "text": "Auto-cache dynamic group members with per-rule retention",
-      "scope": "dynamic-groups",
-      "pr": 1574
-    },
-    {
-      "text": "Record failed probes and add sampled series probing",
-      "scope": null,
-      "pr": 1577
-    },
-    {
-      "text": "Add TV app client id support",
-      "scope": null,
-      "pr": 1572
-    },
-    {
-      "text": "Cache-now bulk action on Movies and Series items tables",
-      "scope": "dynamic-groups",
-      "pr": 1563
-    },
-    {
-      "text": "Prefer media server sources over provider streams",
-      "scope": null,
-      "pr": 1567
+      "pr": 1596
     }
   ],
   "fixes": [
     {
-      "text": "Failing test cases for cache content",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Playlist Alias source change not correctly clearing bouquets on save",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Report the actual Emby managed setup failure instead of a blanket install prompt",
-      "scope": null,
-      "pr": 1594
-    },
-    {
-      "text": "I18n merge conflict tool reshuffling lang keys",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Route Cache Now to Radarr/Sonarr when the playlist is narrowly loaded",
+      "text": "Update cache column to be more informative",
       "scope": "cache",
-      "pr": 1589
+      "pr": null
     },
     {
-      "text": "Check out the resolved m3u-proxy commit",
-      "scope": "build",
-      "pr": 1587
-    },
-    {
-      "text": "Alias duplicate action missing bouquets",
+      "text": "Share EPG matcher settings between mapping, review and Copilot  The chunk job and the candidate review job each read the six matcher settings by hand instead of using matcherOptionsFromSettings(). The copies disagreed on an empty custom quality indicator list: mapping used the built-in defaults (as the form's helper text says), while the review and Copilot preview stripped nothing. The shared helper now maps an empty list to the defaults and all three use it; mapping results are unchanged.",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Show the webhook URL on Radarr/Sonarr integrations",
-      "scope": "arr",
-      "pr": 1586
-    },
-    {
-      "text": "Stop TV streams that were swapped to another item",
+      "text": "Stop EPG auto matching channels with different numbers or words",
       "scope": null,
-      "pr": 1573
-    },
-    {
-      "text": "Stop catchup seeks from re-running stream creation per Range request",
-      "scope": null,
-      "pr": 1571
+      "pr": null
     }
   ],
   "counts": {
-    "features": 10,
-    "fixes": 10,
-    "maintenance": 9
+    "features": 3,
+    "fixes": 3,
+    "maintenance": 7
   },
-  "fetchedAt": "2026-10-06T23:03:24.333Z"
+  "fetchedAt": "2026-10-08T20:45:27.039Z"
 }
