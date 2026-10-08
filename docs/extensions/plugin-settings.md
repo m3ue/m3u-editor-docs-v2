@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-description: How plugin settings work in M3U Editor — field types, sections, how defaults are applied, and how settings reach plugin code.
+description: How plugin settings work in M3U Editor - field types, sections, how defaults are applied, and how settings reach plugin code.
 tags:
   - Plugins
 title: Plugin Settings
@@ -14,7 +14,7 @@ Plugins can declare a **settings schema** in their manifest. M3U Editor renders 
 
 Settings are declared in `plugin.json` under the `settings` key. Each setting has a `type`, a `key`, a `label`, and optionally a `default` value, `required` flag, and helper text.
 
-When a plugin runs — whether triggered by a hook, a schedule, or a manual action — the current saved settings are passed in as `$context->settings`, a plain associative array.
+When a plugin runs, whether triggered by a hook, a schedule, or a manual action, the current saved settings are passed in as `$context->settings`, a plain associative array.
 
 ```php
 public function runAction(string $action, array $payload, PluginExecutionContext $context): PluginActionResult
@@ -38,7 +38,7 @@ public function runAction(string $action, array $payload, PluginExecutionContext
 | `select` | Drop-down with a static list of options. Options are declared as a `{ "value_key": "Display Label" }` map. Supports `options_provider` for dynamic options. |
 | `model_select` | Drop-down populated from an Eloquent model (e.g. select a Playlist). Supports `scope: "owned"` to limit choices to the current user's records, `label_attribute` to control which model attribute is displayed, and `multiple: true` to allow multiple selections. |
 | `table_select` | Drop-down populated from a plugin-owned table. Specify `table` (the UI table ID or physical table name), `value_column` (stored value, default `id`), `label_column` (display label, default `name`), and optionally `enabled_only: true` to filter to enabled rows. Supports `multiple: true`. |
-| `section` | Groups nested fields under a labelled, optionally collapsible panel. Uses `fields` instead of a value — see [Grouping Settings into Sections](#grouping-settings-into-sections). |
+| `section` | Groups nested fields under a labelled, optionally collapsible panel. Uses `fields` instead of a value. See [Grouping Settings into Sections](#grouping-settings-into-sections). |
 
 ## Example settings block in `plugin.json`
 

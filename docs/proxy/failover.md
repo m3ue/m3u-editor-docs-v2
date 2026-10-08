@@ -1,221 +1,84 @@
 ---
 sidebar_position: 4
-title: Failover
-description: Automatic backup URL switching for uninterrupted IPTV streaming
+title: Failover and Retries
+description: Keep streams playing when a source fails, with backup channels, retries, smart failover across providers, and fail conditions.
 tags:
   - Proxy
   - Failover
   - Reliability
 ---
 
-# Failover
+# Failover and Retries
 
-The proxy supports automatic failover to backup stream URLs. When a primary stream fails — due to a network error, timeout, or provider outage — the proxy switches to the next URL in the failover list with less than 200ms interruption. Clients experience a brief buffer, not a stream restart.
+When a stream stops working, M3U Proxy first tries it again, then switches to a backup. Viewers usually see a short pause rather than an error.
 
-## How It Works
+Failover only works for streams going through the [proxy](overview#turn-it-on).
 
-Each stream can be created with a list of `failover_urls`. The proxy tracks the current active URL and cycles through the list when errors occur:
+## Give channels backups
 
-1. Primary URL fails
-2. Proxy updates the active URL to the next failover URL
-3. Signals all connected clients via an async event
-4. Each client closes the old connection and opens a new one
-5. Streaming continues — the client's player sees a brief buffer
+A channel's backups are other channels carrying the same thing, often from another provider. There are three ways to set them up:
 
-The whole process typically takes 50–200ms.
+- **By hand:** edit a channel and add **Failover Channels**, in the order to try them.
+- **In bulk:** select the backup channels and choose **Add as failover** from the bulk actions, then pick the main channel.
+- **Automatically:** [Auto-Merge Channels](/docs/advanced/auto-merge-channels) links duplicates across your playlists as failovers after each sync.
 
-### Failover Flow
+## What happens when a stream fails
 
-```
-0ms    Clients streaming from Source 1
-100ms  Connection timeout detected
-101ms  Active URL updated → Source 2
-       Failover event fired
-       Old FFmpeg process stopped (if transcoding)
-105ms  Client 1 reconnects to Source 2
-107ms  Client 2 reconnects to Source 2
-110ms  Client 3 reconnects to Source 2
-150ms  All clients streaming from Source 2
-```
+1. **Retry.** The proxy reconnects to the same source, up to 3 times, a second apart. This rides out brief hiccups without switching sources.
+2. **Fail over.** If retries don't help, the proxy moves on to the next backup and keeps going down the list.
+3. **Give up.** When every backup has failed, the stream ends.
 
-### URL Ordering
+A live stream counts as failed when its connection errors, or when no data arrives for 15 seconds. A movie or episode that stalls mid-play reconnects from where it stopped instead, so the viewer doesn't lose their place.
 
-Failover URLs are tried in order. Once the list is exhausted the stream fails — the proxy does **not** cycle back to the primary URL. Up to 3 failover attempts are made per streaming session (hardcoded), so if more than 3 backup URLs are configured only the first 3 will ever be tried per session.
+[Silence Detection](silence-detection) can also trigger failover when a channel's audio goes quiet, and [Strict Live TS](strict-live-ts) adds a faster stall detector for live TV.
 
-```
-Primary fails → Backup 1 → Backup 2 → Backup 3 → stream fails
-```
+To fail over by hand, use **Trigger Failover** on a stream in the [Stream Monitor](stream-monitor).
 
-:::tip
-When the **Advanced Failover** resolver is enabled (see below), this static limit does not apply — the editor decides what URL to return next based on live capacity and health data.
-:::
+## Smart failover
 
-## Creating a Stream with Failover URLs
+By default, the proxy is given the list of backups and tries them in order. With **smart failover**, it asks M3U Editor for the best backup each time, and the editor skips any that can't take another stream right now:
 
-```bash
-curl -X POST "http://localhost:8085/streams" \
-  -H "Content-Type: application/json" \
-  -H "X-API-Token: your-token" \
-  -d '{
-    "url": "http://primary.tv/live/stream.ts",
-    "failover_urls": [
-      "http://backup1.tv/live/stream.ts",
-      "http://backup2.tv/live/stream.ts",
-      "http://backup3.tv/live/stream.ts"
-    ]
-  }'
-```
+- playlists at their connection limit
+- playlists marked as failing (below)
 
-## Manual Failover
+This is most useful when backups are spread across several providers or accounts. Set it up in **Settings → Proxy → Failover & Recovery**:
 
-You can trigger an immediate failover without waiting for an error:
+| Setting | What it does |
+|---|---|
+| **Resolver URL** | The address the proxy uses to reach M3U Editor, like `http://m3u-editor:36400`. **Test resolver connection** checks it. |
+| **Enable advanced failover logic** | Turns smart failover on. Needs the Resolver URL. |
 
-```bash
-curl -X POST "http://localhost:8085/streams/{stream_id}/failover" \
-  -H "X-API-Token: your-token"
-```
+### Fail conditions
 
-This is useful for testing, or for manual intervention when you know a provider is degraded.
+With smart failover on, **Enable playlist fail conditions** lets M3U Editor take a whole playlist out of rotation when its provider returns certain errors. Every channel from that playlist is skipped until it's tried again.
 
-## Per-Client Isolation
+| Setting | Default | What it does |
+|---|---|---|
+| **HTTP status codes** | None | The responses that mark a playlist as failing, for example `403`, `404`, `502`, `503`. |
+| **Invalid timeout (minutes)** | 5 | How long the playlist stays out of rotation. |
+| **Clear failed playlists** | | Put every failing playlist back into rotation now. |
 
-Failover is **per-client** for continuous streams. If one viewer's connection drops, only that viewer experiences the failover sequence. Other clients continue streaming uninterrupted from their own provider connections.
+## Connection limits
 
-For HLS and transcoded streams, failover is shared — all clients on a stream switch together when the shared upstream fails.
+A provider's connection limit is a common reason streams fail to start. Two settings help:
 
-## Performance Characteristics
+- **Stop oldest stream when limit reached** (**Settings → Proxy**) frees a connection for the new stream by stopping the playlist's oldest one, so channel changes on a one-connection account work. It can also be turned on for a single Playlist Auth.
+- [Provider Profiles](/docs/advanced/playlist-pooled_providers) pool several accounts from one provider, so each new stream goes to an account with a free connection.
 
-| Metric | Typical Value |
-|--------|--------------|
-| Failover detection | < 1 second (usually 100–500ms) |
-| Reconnection time | 100–200ms (network dependent) |
-| Total interruption per client | 200ms–1s |
-| Client buffer impact | 1–2 seconds of buffering |
-| Success rate (with 2+ failover URLs) | 95%+ |
+## Tuning
 
-## HLS Failover
+The proxy's [environment variables](configuration#retries-and-failover) control the details. The defaults suit most providers.
 
-For HLS streams, failover is transparent to the player:
+| Variable | Default | What it does |
+|---|---|---|
+| `STREAM_RETRY_ATTEMPTS` | `3` | Retries before failing over. |
+| `STREAM_RETRY_DELAY` | `1.0` | Seconds between retries. |
+| `STREAM_RETRY_EXPONENTIAL_BACKOFF` | `false` | Wait 1.5 times longer before each retry. |
+| `STREAM_TOTAL_TIMEOUT` | `30.0` | Seconds to spend retrying in total. `0` means no limit. |
+| `LIVE_CHUNK_TIMEOUT_SECONDS` | `15.0` | Seconds without data before a live stream counts as stalled. |
+| `VOD_CHUNK_TIMEOUT_SECONDS` | `5.0` | Seconds without data before a movie or episode reconnects. |
+| `MAX_FAILOVER_ATTEMPTS` | `0` | How many backups to try. `0` tries them all. |
 
-- The next playlist refresh automatically uses the new URL
-- Segment errors trigger automatic failover
-- The player never receives an error response — it just gets segments from a new source
+For a provider that drops often but comes back quickly, raise the retries and turn on backoff. If you have good backups and want to switch to them sooner, lower the retries to 1 or 2.
 
-## Transcoded Stream Failover
-
-When transcoding is active, failover stops the old FFmpeg process and starts a new one with the failover URL:
-
-1. Error detected
-2. Active URL updated
-3. Old FFmpeg process stopped
-4. Clients detached from the old process
-5. New FFmpeg process started with the new URL
-6. Clients reconnected
-
-This adds a slightly longer interruption (500ms–2s) compared to direct stream failover.
-
-## Monitoring Failover Events
-
-The event system fires a `FAILOVER_TRIGGERED` event each time a failover occurs. Register a webhook to receive notifications:
-
-```bash
-curl -X POST "http://localhost:8085/webhooks" \
-  -H "Content-Type: application/json" \
-  -H "X-API-Token: your-token" \
-  -d '{
-    "url": "https://your-server.com/alerts",
-    "events": ["failover_triggered", "stream_failed"]
-  }'
-```
-
-See [Event System](./event-system.md) for the full webhook payload format.
-
-## Interaction with Retry
-
-Retries happen **before** failover. The proxy retries the current URL up to `STREAM_RETRY_ATTEMPTS` times before switching to the next failover URL. See [Retry Configuration](./retry.md) for how to tune this behaviour.
-
-## Interaction with Sticky Sessions
-
-When [Sticky Sessions](./sticky-sessions.md) are enabled, the proxy locks to a specific backend after a redirect. If that backend fails:
-
-1. Retry the locked backend up to `STREAM_RETRY_ATTEMPTS` times
-2. Revert sticky session to the original URL
-3. If the original URL also fails, trigger failover to the next failover URL
-4. The sticky session locks to the new provider's backend
-
-## Timeshift Fallback
-
-When timeshift (time-based seeking/catch-up) is enabled on a channel, M3U Editor will normally use the primary source's timeshift URL. If the primary source does **not** support timeshift but a failover source does, enable **Timeshift fallback** to automatically route timeshift requests to the first failover source that supports it.
-
-Configure this per-channel in the channel edit form under the **Failover** section:
-- **Enable timeshift fallback**: when the primary has no timeshift URL, use a failover source's timeshift URL instead
-
-This is useful when you have a primary provider that lacks catch-up support but your backup provider does.
-
----
-
-## TMDB ID Failover Merge
-
-When merging channels across playlists, M3U Editor normally matches channels by Xtream stream ID. If a channel cannot be matched by stream ID, the **TMDB ID failover merge** option allows matching by TMDB ID as a secondary strategy.
-
-This is useful for VOD and series content where the same movie/show exists across providers under different stream IDs but the same TMDB metadata.
-
-Enable this in the playlist's **Auto-Merge** settings.
-
----
-
-## Advanced Failover (M3U Editor)
-
-The M3U Editor adds a higher-level **failover resolver** on top of the proxy's built-in URL cycling. When enabled, the proxy calls back to the editor to determine which playlist to use next, taking into account playlist stream limits and health state.
-
-Configure this under **Settings → Proxy** in the editor.
-
-### Failover Resolver
-
-| Setting | Description |
-|---------|-------------|
-| **Enable advanced failover logic** | Proxy calls the editor to resolve the next failover source based on playlist capacity |
-| **Resolver URL** | The URL the proxy uses to reach the editor (e.g. `http://m3u-editor:36400`). Must be reachable from the proxy container |
-
-When enabled, the proxy sends a request to the editor's resolver endpoint during failover, and the editor returns the best available backup source — respecting stream limits, marked-invalid playlists, and provider health.
-
-### Fail Conditions
-
-| Setting | Description |
-|---------|-------------|
-| **Enable playlist fail conditions** | Mark playlists as temporarily unavailable when specific HTTP errors are returned by the provider |
-| **HTTP status codes** | Codes that trigger an invalid state (e.g. `403`, `404`, `502`, `503`) |
-| **Invalid timeout (minutes)** | How long a playlist stays invalid before being retried. Default: 5 minutes |
-| **Clear failed playlists** | Immediately un-marks all playlists currently flagged as invalid |
-
-This is particularly useful when providers return `403` or `503` errors under load — the editor will temporarily route traffic away from that source without requiring a manual fix.
-
-### Stream Limit Handling
-
-| Setting | Description |
-|---------|-------------|
-| **Stop oldest stream when limit reached** | When a playlist's stream limit is hit, automatically stops the oldest active stream to free capacity for the new request. Enables instant channel switching on single-connection providers |
-
----
-
-## Before vs After Failover
-
-### Without failover
-```
-Client → Source 1 → [ERROR]
-                        ↓
-                  Stream stops
-                        ↓
-             Client must manually reload
-Downtime: 5–30 seconds
-```
-
-### With failover
-```
-Client → Source 1 → [ERROR]
-                        ↓
-                  Auto failover
-                        ↓
-Client → Source 2 → Continues
-Interruption: ~200ms
-```
+The proxy logs each retry and failover at `INFO`. Set `LOG_LEVEL=INFO` on the proxy to see them.

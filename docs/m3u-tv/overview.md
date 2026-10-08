@@ -1,92 +1,71 @@
 ---
 sidebar_position: 1
-title: Overview
-description: What M3U TV is, the platforms it supports, and how it connects to your M3U Editor instance
+title: M3U TV
+description: The free M3U TV app for TV, mobile, and desktop - platforms, downloads, and how to connect it to M3U Editor.
 tags:
   - M3U TV
   - Getting Started
 ---
 
+import { Steps, Step } from '@site/src/components/Steps';
+
 # M3U TV
 
-**M3U TV** is a free, cross-platform front-end player built to sit on top of M3U Editor. It's a native app — Live TV, Movies (VOD), Series, EPG, Search, Favorites, and Continue Watching — that talks to your M3U Editor instance (or any Xtream-compatible provider) over the standard Xtream API.
+M3U TV is a free, open-source player app made for M3U Editor. It has live TV with a guide, movies, series, search, favorites, and Continue Watching that follows you between devices. It runs on TVs, phones, tablets, and computers.
 
-It's a separate, independently-versioned open-source project from M3U Editor itself, built with [Flutter](https://flutter.dev/) so a single codebase covers TV, mobile, and desktop.
+M3U Editor works with any player, so M3U TV is optional. What it adds is tighter integration: [pairing a TV without typing a password](device-pairing), [push notifications](push-notifications), [Continue Watching](continue-watching) across devices, DVR and request access, and [AIOStreams](/docs/integrations/aiostreams_integration).
 
-:::danger Enhanced Xtream API output must be enabled
-M3U TV **cannot connect at all** unless **Enhanced output enabled** is turned on under **Settings → General** in M3U Editor. It's on by default, but if it's been turned off, every M3U TV feature — playback, EPG, Continue Watching, Device Pairing, Push Notifications — stops working, since they all depend on this extended Xtream API output. If the app can't connect, check this setting first.
-:::
+## Get it
 
-:::tip Not required
-M3U TV is entirely optional. M3U Editor's generated M3U/Xtream/EPG output works with any compatible player — Kodi, TiviMate, VLC, IPTV Smarters, etc. M3U TV exists for people who want a first-party client with tighter integration (device pairing, push notifications, cross-client Continue Watching) without giving up an open ecosystem.
-:::
+| Platform | Where |
+|---|---|
+| iPhone, iPad, Apple TV, Mac | [TestFlight beta](https://testflight.apple.com/join/hqJYVsJr) |
+| Android phones, tablets, Android TV | [Google Play](https://play.google.com/store/apps/details?id=dev.sparkison.tv) |
+| Windows 10 and 11 | [Microsoft Store](https://apps.microsoft.com/detail/9P2PBHQ4XZ1L) |
+| Linux, and sideloading | [GitHub releases](https://github.com/m3ue/m3u-tv/releases): APK, IPA, macOS DMG, Windows installer and ZIP, Linux ZIP |
 
-## Platforms Supported
+The [M3U TV page](/tv#download) has direct download links and screenshots. In M3U Editor, **Settings → TV App → Get the app** links there too.
 
-| Platform | Status | Video Backend | GPU Accelerated | HDR | External Subtitles |
-|---|---|---|---|---|---|
-| Android TV | Supported | ExoPlayer/Media3, with a native mpv fallback for media ExoPlayer can't play | ✅ | ✅ | ✅ |
-| Android (phone/tablet) | Supported | ExoPlayer/Media3, with a native mpv fallback for media ExoPlayer can't play | ✅ | ✅ | ✅ |
-| iOS / iPadOS | Supported | Native mpv (MPVKit), with an AVKit fallback for unsupported media | ✅ | ✅ | ✅ |
-| Apple TV (tvOS) | Supported | Native mpv (MPVKit), with an AVKit fallback for unsupported media | ✅ | ✅ | ✅ |
-| Desktop (macOS) | Supported | Native mpv (MPVKit) | ✅ | ✅ | ✅ |
-| Desktop (Windows) | Supported | libmpv (in-process) | ✅ | ✅ | ✅ |
-| Desktop (Linux) | Supported | libmpv (in-process) | ✅ Wayland / ❌ x11 | ✅ Wayland / ❌ x11 | ✅ |
+## Connect it
 
-:::note What "GPU Accelerated" and "HDR" mean here
-**GPU Accelerated** means video decode and render run on the GPU rather than the CPU. **HDR** means the app can pass through wide-gamut/HDR10 metadata to the display, independent of GPU acceleration — a platform can be GPU-accelerated without HDR support.
-:::
+<Steps>
+<Step title="Check enhanced output is on">
 
-## Features
+M3U TV needs **Enhanced output enabled**, under **Settings → General** in M3U Editor. It's on by default. If it's off, the app can't connect at all.
 
-- **Live TV** with category filtering and a D-pad friendly programme guide, including catchup replay (see [Guide & Playback](./guide-and-playback.md))
-- **Movies (VOD)** and **TV Series**, with season/episode navigation
-- **Search** across live channels, movies, and series
-- **Favorites** for quick access to the content you watch most
-- **Continue Watching** — resume playback where you left off, synced across every device signed in with the same credentials (see [Continue Watching](./continue-watching.md))
-- **Device Pairing** — connect a TV without typing a password on the remote (see [Device Pairing](./device-pairing.md))
-- **Push Notifications** on mobile — get notified about sync results, recordings, and alerts even when the app is closed (see [Push Notifications](./push-notifications.md))
-- **Localization** — English, German, Spanish, French, and Simplified Chinese
-- **Display matching**: optional refresh-rate matching and deinterlacing (see [Display Settings](./guide-and-playback.md#display-settings))
-- **Logs & Diagnostics**: view this session's logs on the device and upload them to your editor for troubleshooting (see [Logs & Diagnostics](./logs-diagnostics.md))
+</Step>
+<Step title="Sign in">
 
-## Download
+On a TV, choose **Pair with code** and enter the code it shows in M3U Editor from your phone or computer. See [Device Pairing](device-pairing).
 
-The easiest way to install M3U TV is from your platform's app store:
+On other devices you can also sign in with your server's address and a username and password: your playlist's [default login](/docs/resources/playlist-auth#default-login) or a [Playlist Auth](/docs/resources/playlist-auth).
 
-- **[App Store (TestFlight beta)](https://testflight.apple.com/join/hqJYVsJr)**: iPhone, iPad, Apple TV, and Mac
-- **[Google Play](https://play.google.com/store/apps/details?id=dev.sparkison.tv)**: Android phones, tablets, and Android TV
-- **[Microsoft Store](https://apps.microsoft.com/detail/9P2PBHQ4XZ1L)**: Windows 10 and 11
+</Step>
+<Step title="Choose what each login can use">
 
-Every build is also attached to each GitHub release, including sideloadable APK/IPA files, a macOS DMG, a Windows installer and portable ZIP, and a Linux ZIP:
+M3U TV respects the same limits as any other player. A Playlist Auth's settings decide whether its user can use [proxied playback and transcoding](/docs/resources/playlist-auth#what-a-login-can-use), the DVR, content requests, and AIOStreams.
 
-**[github.com/m3ue/m3u-tv/releases](https://github.com/m3ue/m3u-tv/releases)**
+</Step>
+</Steps>
 
-The **[M3U TV page](/tv#download)** has direct download links for the latest release, plus screenshots on every device. There's also a shortcut to this page from **Settings → TV App → Get the app** inside M3U Editor itself.
+## Platforms
 
-:::note Open source, GPL-3.0 license
-M3U TV is open source under **GPL-3.0**, with an additional permission allowing distribution through the Apple App Store, Apple TV App Store, and Google Play Store. See the [repository](https://github.com/m3ue/m3u-tv) for the full license and to file issues or contribute.
-:::
+| Platform | Video player | HDR |
+|---|---|---|
+| Android TV, Android phones and tablets | ExoPlayer, with mpv for media ExoPlayer can't play | Yes |
+| Apple TV, iPhone, iPad | mpv, with Apple's player for media mpv can't play | Yes |
+| Mac | mpv | Yes |
+| Windows | mpv | Yes |
+| Linux | mpv | On Wayland |
 
-## Connecting to M3U Editor
+Video is decoded on the GPU on every platform, except Linux under X11. All platforms support external subtitles. The app is available in English, German, Spanish, French, and Simplified Chinese.
 
-M3U TV speaks the same Xtream API that M3U Editor already exposes for every other player, so there's nothing special to configure on the editor side. Two ways to connect:
+## Learn more
 
-1. **Device Pairing (recommended for TVs)** — from the app, choose "Pair with code," enter the short code shown on screen into M3U Editor from your phone or computer, and pick which credential to hand the TV. No typing a password with a remote. Full details: [Device Pairing](./device-pairing.md).
-2. **Manual entry** — enter your M3U Editor server URL plus a Playlist or Playlist Auth's username/password directly in **Settings**, the same as you would in any Xtream-compatible client.
+- [Guide and Playback](guide-and-playback): the guide, catch-up, remote buttons, and display settings
+- [Device Pairing](device-pairing): signing in a TV without typing a password
+- [Push Notifications](push-notifications): alerts on your phone, and what the relay does
+- [Continue Watching](continue-watching): resuming across devices
+- [Logs and Diagnostics](logs-diagnostics): sending logs from a device when something's wrong
 
-```mermaid
-flowchart LR
-    TV["M3U TV<br/>(any platform)"] --> Editor["M3U Editor<br/>(your self-hosted instance)<br/>Xtream API — username/password"]
-    Editor --> Source["Upstream source(s)<br/>IPTV provider, media servers, AIOStreams, etc."]
-```
-
-Once connected, M3U TV is just another Xtream client from the editor's point of view — it has no special privileges and is subject to the same Playlist/PlaylistAuth restrictions as any other player.
-
-## Further Reading
-
-- [Device Pairing](./device-pairing.md) — how the remote-friendly pairing flow works, and why it's safe
-- [Push Notifications](./push-notifications.md) — the mobile push relay, and what it does (and doesn't) store
-- [Continue Watching](./continue-watching.md) — how playback position is centralized on the editor across every client
-- [Guide & Playback](./guide-and-playback.md): the programme guide, catchup, remote buttons, and display settings
-- [Logs & Diagnostics](./logs-diagnostics.md): collecting logs to troubleshoot a device
+M3U TV is open source under GPL-3.0, with an exception that allows app store distribution. Report issues and contribute on [GitHub](https://github.com/m3ue/m3u-tv).

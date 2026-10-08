@@ -1,138 +1,44 @@
 ---
-sidebar_position: 3
-description: Combine multiple playlists into a unified collection
+sidebar_position: 4
+description: Serve several playlists as one, choosing whether each source adds its live channels, movies, series, or all three.
 tags:
   - Resources
   - Playlists
-  - Advanced
 title: Merged Playlists
 ---
 
 # Merged Playlists
 
-Merged Playlists automatically combine multiple source playlists into a single, unified playlist. This is ideal for aggregating content from multiple providers, creating comprehensive channel lineups, or maintaining automatic synchronization across sources.
+A Merged Playlist serves several playlists as one. Your players get a single login and URL with everything from the sources you pick, for example your main provider plus a movies-only provider.
 
-## What is a Merged Playlist?
+It always reflects its sources: whatever is enabled in a source playlist appears in the Merged Playlist, and updates as the source syncs. To hand-pick content instead, use a [Custom Playlist](custom-playlist).
 
-A Merged Playlist combines entire playlists automatically:
-- All channels from multiple sources in one playlist
-- Automatic deduplication of channels
-- Priority-based source selection
-- Automatic updates when source playlists sync
-- Intelligent channel and series merging
+:::note Duplicates aren't combined
+A channel that two sources both carry appears twice. To link duplicates as failovers of each other, use [Auto-Merge Channels](/docs/advanced/auto-merge-channels) on the source playlists.
+:::
 
-Unlike custom playlists where you manually select content, merged playlists automatically include all content from the selected sources.
+## Create one
 
-## Use Cases
+1. Go to **Playlist → Merged Playlists** and choose **New merged playlist**. Give it a name and save.
+2. Open it and, on the **Playlists** tab, attach the source playlists.
 
-### Multi-Provider Aggregation
-Combine channels from multiple IPTV providers:
-- Primary provider for most channels
-- Secondary provider for backup/failover
-- Specialty providers for niche content
-- Free sources to supplement paid services
+## Choose what each source adds
 
-### Failover and Redundancy
-Create reliable playlists with automatic failover:
-- Multiple sources for the same channels
-- Priority-based selection
-- Automatic switching on stream failure
-- Improved uptime and reliability
+Each source has its own **Include Live Channels**, **Include VOD**, and **Include Series** switches. All three are on by default. Set them when you attach a playlist, or later with the **Content Types** action on its row.
 
-### Content Consolidation
-Unify your content sources:
-- One playlist for all your IPTV services
-- Single EPG combining all sources
-- Simplified client configuration
-- Centralized management
+For example, attach a movies-only provider with only **Include VOD** on, while your main provider keeps all three.
 
-### Testing and Comparison
-Compare providers side-by-side:
-- Test stream quality from different sources
-- Compare EPG accuracy
-- Evaluate reliability
-- Make informed decisions about providers
+The **Playlists** tab counts what each source contributes. A content type you've turned off shows `0` and "Excluded from merge".
 
-## Creating a Merged Playlist
+## Settings
 
-1. Navigate to **Merged Playlists** in the sidebar
-2. Click **Create Merged Playlist**
-3. Configure basic settings:
-   - **Name**: Descriptive name
-   - **Enabled**: Activate the playlist
-4. Click **Save**
-5. Add source playlists (next step)
+| Tab | What's in it |
+|---|---|
+| **General** | Name, user agent, short URLs, and the unique identifier used in its URLs |
+| **Auth** | [Playlist Auths](playlist-auth) and the [default login](playlist-auth#default-login) |
+| **Output** | Output types, numbering, placeholder guides, the proxy, connection limits, and transcoding. See [Playlists](playlists#output). |
+| **DVR**, **Requests**, **AIOStreams** | The [DVR](/docs/integrations/dvr_integration), [content requests](/docs/integrations/arrs_integration), and [AIOStreams](/docs/integrations/aiostreams_integration), for the merged lineup as a whole |
 
-## Adding Source Playlists
+For guide data, map an EPG to each source playlist as usual. The Merged Playlist's guide includes them all.
 
-After creating the merged playlist:
-
-1. Open your Merged Playlist
-2. Go to the **Playlists** tab
-3. Click **Add Playlists**
-4. Select the playlists to merge
-5. Configure priority for each source
-6. Click **Save**
-
-### Playlist Priority
-
-Each source playlist in a merge can have a priority setting:
-- Higher priority = preferred source for duplicates
-- Used for automatic channel selection
-- Configures failover order
-- Default: 0
-
-**Example**:
-- Provider A (Premium): Priority 100
-- Provider B (Backup): Priority 50
-- Free Provider: Priority 10
-
-### Per-Source Content Types
-
-Each attached source playlist has its own **Live**, **VOD**, and **Series** toggles, so you can pull only certain content types from a given source instead of everything it offers. All three default to enabled, so existing attachments keep pulling everything they already do.
-
-Set these when attaching a playlist (the attach dialog includes the toggles), or afterwards via the **Content Types** action (pencil icon) on the **Playlists** tab row for that source.
-
-**Example**: attach a movie-only provider with **Live** and **Series** disabled so it only contributes VOD, while your main provider keeps all three enabled for live channels, VOD, and series.
-
-The **Playlists** tab table shows a live count per content type for each source: a type shows `0` with an "Excluded from merge" note when disabled for that source, so you can see at a glance what's actually feeding the merge.
-
-## Merged EPG Detail View
-
-The **Merged EPG** resource gives you a detailed view of how EPG data is being mapped across merged sources.
-
-### Accessing the Detail View
-
-1. Navigate to **Merged Playlists** → open a merged playlist
-2. Go to the **EPG** tab
-3. Click on any EPG entry to open the **detail slide-over**
-
-The detail view shows:
-- Matched EPG channel details (ID, name, logo)
-- Source EPG provider
-- Current programme (if live EPG data is available)
-- Quality/mapping indicators
-- Raw EPG metadata for debugging
-
-This is useful for diagnosing missing or incorrect EPG data — you can see exactly which source the EPG entry came from and whether the channel ID matched correctly.
-
-## Provider URL Output
-
-By default, Merged Playlists use the editor's Xtream-formatted URLs in M3U output. You can change this per-playlist:
-
-### Disable Xtream-Formatted URLs
-
-Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of Xtream API format. Useful for clients that don't support Xtream Codes URL patterns.
-
-## DVR and Guest Requests
-
-Merged Playlists are a first-class playlist type: they have their own **DVR** tab with the same recording rules, quotas, and settings as a standard playlist (see [DVR Integration](../integrations/dvr_integration.md)), and support guest content **Requests** the same way. This means you can schedule recordings or accept guest requests against the merged channel lineup directly, without needing DVR enabled on each individual source playlist.
-
-## Related Resources
-
-- [Adding Playlists](playlists.md) - Setting up source playlists
-- [Custom Playlist](custom-playlist.md) - Manual curation
-- [Playlist Alias](playlist-alias.md) - Alternative configurations
-- [Playlist Auth](playlist-auth.md) - Authentication
-- [Auto-Merge Channels](../advanced/auto-merge-channels.md) - Advanced channel merging
-- [DVR Integration](../integrations/dvr_integration.md) - Scheduling recordings
+To limit what a Merged Playlist exposes to someone, create an [Alias](playlist-alias) of it. Its channel filter tracks groups per source, so one provider's "Sports" group doesn't bring in another's.

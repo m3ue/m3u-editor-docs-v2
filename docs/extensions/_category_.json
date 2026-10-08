@@ -1,12 +1,12 @@
 {
   "label": "Plugins",
-  "position": 9,
+  "position": 12,
   "description": "Install, configure, and build plugins that extend M3U Editor.",
   "customProps": {
     "icon": "extension"
   },
   "link": {
     "type": "generated-index",
-    "description": "Extend M3U Editor with plugins — automate EPG repairs, channel sync, stream analysis, and more. Covers installation, the trust lifecycle, settings, and plugin development."
+    "description": "Extend M3U Editor with plugins that automate guide repairs, channel cleanup, stream checks, and more. Covers installing, trusting, settings, and building your own."
   }
 }

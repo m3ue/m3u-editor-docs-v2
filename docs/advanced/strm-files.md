@@ -1,535 +1,89 @@
 ---
-sidebar_position: 3
-description: Complete guide to .strm file generation for media server integration
+sidebar_position: 11
+description: Write .strm files for your movies and series, so Plex, Jellyfin, and Emby can add your provider's VOD to their libraries.
 tags:
   - Series
   - VOD
-  - Integration
   - Plex
   - Jellyfin
   - Emby
-title: .strm Files Guide
+title: .strm Files
 ---
 
-# .strm Files for Media Server Integration
+import { Steps, Step } from '@site/src/components/Steps';
 
-Learn how to use M3U Editor's .strm file generation to integrate your IPTV content with Plex, Jellyfin, Emby, and other media servers.
+# .strm Files
 
+A `.strm` file is a small text file holding a stream's address. Media servers like Plex, Jellyfin, and Emby treat a folder of them like a folder of video files: they scan them into a library, fetch artwork, and track what you've watched. M3U Editor can write one for every movie and episode in your playlists, organized and named the way media servers expect.
 
-## 🎯 What are .strm Files?
+## Set it up
 
-**.strm files** are simple text files containing a stream URL. Media servers like Plex, Jellyfin, and Emby can read these files and play the streams as if they were local media files.
+<Steps>
+<Step title="Give M3U Editor a folder to write to">
 
-**Example .strm file content**:
-```
-http://your-ip:36400/stream/episode/12345
-```
+Mount a folder that both M3U Editor and your media server can see. In the `m3u-editor` service:
 
-### Benefits
-
-✅ **Organize IPTV content** like local media  
-✅ **Use media server features** (watched status, collections, etc.)  
-✅ **Better metadata** via TMDB integration  
-✅ **Automatic library updates** when content changes  
-✅ **Compatible** with existing media server workflows  
-
-
-
-## 🚀 Quick Start
-
-### 1. Enable .strm File Generation
-
-**For Series**:
-1. Go to **Settings** → **Sync Options**
-2. Enable **"Enable .strm file generation"** under "Series stream file settings"
-3. Set **Series Sync Location**: `/path/to/your/Series`
-4. Configure path structure and metadata options
-5. Click **Save Settings**
-
-**For VOD**:
-1. Same location, but under "VOD stream file settings"
-2. Set **VOD Sync Location**: `/path/to/your/Movies`
-
-### 2. Configure a Series/VOD
-
-1. Go to your Series or VOD channel
-2. Click **Edit**
-3. Enable the series/VOD
-4. Click **Sync .strm Files** (if available)
-
-### 3. Add to Media Server
-
-1. In Plex/Jellyfin/Emby, add new library
-2. Point to your sync location (`/path/to/your/Series`)
-3. Set library type (TV Shows or Movies)
-4. Scan library
-
-
-
-## ⚙️ Configuration Options
-
-### Path Structure
-
-Control how folders are organized:
-
-#### For Series
-
-**Category Folder**
-- Example: `/Series/Sports/`
-- Groups by category/genre
-
-**Series Folder**
-- Example: `/Series/Sports/NBA Games/`
-- Individual folder per series
-
-**Season Folder**
-- Example: `/Series/Sports/NBA Games/Season 01/`
-- Separate folder per season
-
-**Common Patterns**:
-```
-Series only:
-/Series/NBA Games/episode.strm
-
-Series + Season:
-/Series/NBA Games/Season 01/S01E01.strm
-
-Category + Series + Season:
-/Series/Sports/NBA Games/Season 01/S01E01.strm
-```
-
-#### For VOD
-
-**Category Folder**
-- Example: `/Movies/Action/`
-- Groups by category/genre
-
-**Title Folder**
-- Example: `/Movies/Action/Movie Title/`
-- Individual folder per movie
-
-**Common Patterns**:
-```
-No folders:
-/Movies/Movie Title (2024).strm
-
-Category only:
-/Movies/Action/Movie Title (2024).strm
-
-Category + Title:
-/Movies/Action/Movie Title/Movie Title (2024).strm
-```
-
-
-
-## 📝 Filename Metadata
-
-Customize what appears in the filename for better media server recognition:
-
-### Year
-- **Format**: `Title (2024)`
-- **Source**: Release date from provider or TMDB
-- **Recommended**: ✅ Yes - helps media server matching
-
-### TMDB ID
-- **Format**: `Title [tmdb-12345]` or `Title {tmdb-12345}`
-- **Source**: TMDB integration (must be configured)
-- **Recommended**: ✅ Yes - ensures correct metadata matching
-
-### Resolution (Series only)
-- **Format**: `S01E01 - 1080p`
-- **Source**: Detected from stream
-- **Recommended**: ⚠️ Optional - not all streams have resolution info
-
-### Examples
-
-**Series with Year + TMDB ID**:
-```
-/Series/NBA Games/Season 01/S01E01 - Game 1 (2024) [tmdb-123456].strm
-```
-
-**VOD with Year + TMDB ID (curly brackets)**:
-```
-/Movies/Action/The Matrix (1999) {tmdb-603}.strm
-```
-
-
-
-## 🔧 Advanced Settings
-
-### TMDB ID Format
-
-**Square Brackets** (Default)
-- Format: `[tmdb-12345]`
-- Better for Plex
-
-**Curly Brackets**
-- Format: `{tmdb-12345}`
-- Better for Jellyfin
-
-### Replace Character
-
-Replace special characters in filenames with:
-- **Space** (default)
-- **Underscore** `_`
-- **Dash** `-`
-- **Nothing** (remove)
-
-### Name Filtering
-
-Remove unwanted text from folder/file names:
-
-**Examples**:
-- `DE • ` - Remove "DE • " prefix
-- `EN |` - Remove "EN |" prefix  
-- `[4K]` - Remove "[4K]" tag
-- `★` - Remove star emoji
-
-**Use Case**: Cleaning up provider-added prefixes/suffixes
-
-
-
-## 🎬 Media Server Setup
-
-### Plex Configuration
-
-#### Add Library
-
-1. **Settings** → **Libraries** → **Add Library**
-2. Select library type:
-   - **TV Shows** for Series
-   - **Movies** for VOD
-3. **Add folders**: Point to your sync location
-4. **Advanced** → **Scanner**: 
-   - Use **Plex Series Scanner** for TV
-   - Use **Plex Movie Scanner** for Movies
-5. **Advanced** → **Agent**:
-   - Select **TheTVDB** or **TMDB** for TV
-   - Select **The Movie Database** for Movies
-
-#### Recommended Settings
-
-- **✅** Enable "Update my library automatically"
-- **✅** Enable "Scan my library periodically"
-- **⚠️** Disable "Empty trash automatically" (until stable)
-
-#### Troubleshooting
-
-**Content not appearing?**
-1. Force scan library
-2. Check file permissions
-3. Verify .strm file contents (should be URL)
-4. Check Plex logs for errors
-
-**Wrong metadata?**
-1. Use TMDB IDs in filenames
-2. Fix series/episode naming format
-3. Manually match in Plex
-
-### Jellyfin Configuration
-
-#### Add Library
-
-1. **Dashboard** → **Libraries** → **Add Library**
-2. Select content type:
-   - **Shows** for Series
-   - **Movies** for VOD
-3. **Add** folder: Your sync location
-4. **Metadata downloaders**:
-   - Enable **TheMovieDb**
-   - Enable **TheTVDB** (for Series)
-5. **Save**
-
-#### Recommended Settings
-
-- Metadata language: Your preference
-- Country: Your country
-- **✅** Save metadata into media folder
-- **✅** Enable "Monitor library"
-
-### Emby Configuration
-
-#### Add Library
-
-1. **Settings** → **Library** → **Add Library**
-2. Select type: **TV Shows** or **Movies**
-3. **Add** folder path
-4. Configure metadata providers (TMDB, TheTVDB)
-5. **Save**
-
-
-
-## 📂 Sync Location Requirements
-
-### Path Requirements
-
-**Must be**:
-- ✅ Absolute path (e.g., `/media/Series`)
-- ✅ Writable by m3u-editor container
-- ✅ Accessible by media server
-
-**Should not be**:
-- ❌ Relative path (e.g., `~/Series`)
-- ❌ URL or remote path
-- ❌ Temporary directory
-
-### Docker Volume Mapping
-
-Mount the sync location in both containers:
-
-**docker-compose.yml**:
 ```yaml
-services:
-  m3u-editor:
-    volumes:
-      - ./data:/var/www/config
-      - /path/to/media/Series:/media/Series  # <-- Add this
-      - /path/to/media/Movies:/media/Movies  # <-- Add this
-  
-  jellyfin:  # or plex/emby
-    volumes:
-      - /path/to/media/Series:/media/Series  # <-- Same path
-      - /path/to/media/Movies:/media/Movies  # <-- Same path
+volumes:
+  - /mnt/media/iptv:/media/iptv
 ```
 
-### Permissions
+Mount the same host folder into your media server's container too.
 
-```bash
-# Ensure m3u-editor can write
-chown -R 1000:1000 /path/to/media/Series
+</Step>
+<Step title="Create a stream file setting">
 
-# Or make world-writable (less secure)
-chmod -R 777 /path/to/media/Series
-```
+Go to **Playlist → Stream File Settings** and choose **New stream file setting**. Pick the **Type** (**Series** or **VOD**), and set the **Sync Location** to a folder inside the mount, like `/media/iptv/Movies`. Create one for each type you want. The options are [below](#settings).
 
+</Step>
+<Step title="Choose where it applies">
 
+Set it as the default in **Settings → Sync Options** (**Default Series Stream File Setting** and **Default VOD Stream File Setting**). You can also pick a different setting for a series category, a VOD group, or a single series or movie. The most specific one wins.
 
-## 🔄 Syncing Process
+</Step>
+<Step title="Write the files">
 
-### Automatic Sync
+Files are only written for **enabled** items. For series, episodes come from **Fetch Provider Metadata**, so turn on **Fetch metadata** too. Then either:
 
-**When enabled on Playlist**:
-- Automatically creates/updates .strm files after playlist sync
-- Removes .strm files for deleted episodes/VOD
+- turn on **Sync stream files** under the playlist's **VOD Processing** and **Series Processing**, to write files after every sync, or
+- select items and use **Sync VOD .strm files** or **Sync Series .strm files** from the bulk actions.
 
-**When enabled on Series/VOD**:
-- Syncs on save
-- Syncs when fetching metadata
+</Step>
+<Step title="Add the folder to your media server">
 
-### Manual Sync
+Add the folder as a **Movies** or **TV Shows** library, depending on the type. Use the path as your media server sees it.
 
-**Per Series**:
-1. Edit Series
-2. Click **Sync .strm Files** button
-3. Wait for completion notification
+</Step>
+</Steps>
 
-**Per Playlist**:
-1. Edit Playlist
-2. Enable "Auto sync .strm files" in VOD/Series settings
-3. Click **Sync Now**
+## Settings
 
-### Bulk Sync
+| Setting | What it does |
+|---|---|
+| **Enable .strm file generation** | Turn this setting's files on or off. |
+| **URL Type** | **M3U Editor** (the default) puts M3U Editor's address in each file, so playback follows your proxy, failover, and caching settings. **Original Source URL** puts the provider's address in directly, skipping M3U Editor, but exposes it to anyone who can read the files. |
+| **Path structure (folders)** | The folders to create: category, series, and season for series; group and title for movies. **Path Preview** shows the result. |
+| **Title folder metadata**, **Filename metadata** | Add the year, TMDB ID, group, or category to folder and file names, which helps media servers match the right title. |
+| **TMDB ID format**, **Apply TMDB ID to** | Write the ID as `[tmdb-123]` or `{tmdb-123}`, on episodes, the series folder, or both. |
+| **Enable Trash Guide naming** | Add edition, quality, video, audio, and HDR details to file names, the way Sonarr and Radarr name files. Quality details need [probed](stream-probing) streams. |
+| **Use Plex/Jellyfin/Emby multi-version markers** | Put every version of a movie (1080p, 4K, Director's Cut) in one folder, so the media server offers a version switch. |
+| **Clean special characters**, **Replace with** | Replace characters media servers dislike. |
+| **Enable name filtering**, **Patterns to remove** | Strip text like `EN - ` or `4K` from names. |
+| **Generate NFO files** | Write `.nfo` files with plot, cast, ratings, and artwork, for Kodi, Jellyfin, and Plex. |
+| **Refresh media server library after sync** | Ask a [media server integration](/docs/integrations/emby_integration_settings) to scan its library once files are written. |
 
-```bash
-# Sync all Series
-docker exec -it m3u-editor php artisan app:sync-series-strm-files
+The folder names `Movies`, `Series`, and `strm` used in some paths can be changed with the `XTREAM_MOVIE_FOLDER`, `XTREAM_SERIES_FOLDER`, and `XTREAM_STRM_FOLDER` [environment variables](environment-variables#storage).
 
-# Sync all VOD
-docker exec -it m3u-editor php artisan app:sync-vod-strm-files
-```
+To run something else when files are written, like a script, use a [post process](admin-tools#post-processing) on **VOD Stream Files Synced** or **Series Stream Files Synced**.
 
+## Troubleshooting
 
+| Problem | What to check |
+|---|---|
+| No files are written | The setting is enabled and assigned, the items are enabled, and the **Sync Location** is inside a mounted folder M3U Editor can write to. |
+| Series have no episode files | **Fetch Provider Metadata** has run for them. |
+| The media server shows no items | The library type matches (Movies or TV Shows), and the path is the one the media server sees. |
+| Titles are matched wrong | Add the year and TMDB ID to names, and use [TMDB](/docs/integrations/tmdb_integration) metadata. |
+| Playback stops working after a change | If you changed a playlist's [default login](/docs/resources/playlist-auth#default-login), files are rewritten on the next sync. |
 
-## 🎨 Filename Examples
-
-### Series Examples
-
-**Minimal** (Series name only):
-```
-/Series/NBA 2024/S01E01 - Lakers vs Celtics.strm
-```
-
-**With Year**:
-```
-/Series/NBA 2024/S01E01 - Lakers vs Celtics (2024).strm
-```
-
-**With TMDB ID**:
-```
-/Series/NBA 2024/S01E01 - Lakers vs Celtics [tmdb-123456].strm
-```
-
-**Full Metadata**:
-```
-/Series/Sports/NBA 2024/Season 01/S01E01 - Lakers vs Celtics (2024) [tmdb-123456].strm
-```
-
-### VOD Examples
-
-**Minimal**:
-```
-/Movies/The Matrix.strm
-```
-
-**With Year**:
-```
-/Movies/The Matrix (1999).strm
-```
-
-**With TMDB ID**:
-```
-/Movies/The Matrix (1999) [tmdb-603].strm
-```
-
-**In Folders**:
-```
-/Movies/Sci-Fi/The Matrix/The Matrix (1999) [tmdb-603].strm
-```
-
-
-
-## 🔍 Troubleshooting
-
-### Files Not Created
-
-**Check**:
-1. **.strm generation enabled** in Settings?
-2. **Sync location exists** and is writable?
-3. **Volume mounted** in docker-compose?
-4. Check logs: `/var/www/config/logs/laravel.log`
-
-```bash
-# Test write permission
-docker exec -it m3u-editor touch /media/Series/test.txt
-docker exec -it m3u-editor rm /media/Series/test.txt
-```
-
-### Files Created but Empty
-
-**Verify**:
-```bash
-# Check file contents
-cat /path/to/media/Series/Show/S01E01.strm
-# Should contain: http://your-ip:36400/stream/episode/12345
-```
-
-### Media Server Not Detecting
-
-**Plex/Jellyfin/Emby**:
-1. Verify library path matches sync location exactly
-2. Force library scan
-3. Check file permissions (readable by media server)
-4. Ensure .strm extension is recognized
-
-### Wrong Metadata
-
-**Solutions**:
-1. Enable TMDB integration in Settings → Integrations
-2. Include TMDB ID in filename
-3. Use correct naming format for media server
-4. Manually fix match in media server
-
-### Files Not Updating
-
-**When content changes**:
-1. Re-sync the playlist
-2. Or manually sync Series/VOD
-3. Trigger media server library scan
-
-
-
-## 💡 Best Practices
-
-### For Best Results
-
-✅ **Use TMDB Integration**
-- Get free API key
-- Enable TMDB ID in filenames
-- Ensures perfect metadata matching
-
-✅ **Include Year in Filename**
-- Helps distinguish remakes/reboots
-- Improves media server matching
-
-✅ **Use Consistent Path Structure**
-- Decide on folder structure early
-- Stick with it across all content
-
-✅ **Test with One Series First**
-- Verify paths work
-- Check media server detection
-- Then enable for all content
-
-### Recommended Settings
-
-**For Plex**:
-- Path: Category → Series → Season
-- Filename: Year + TMDB ID (square brackets)
-- Format: `Show Name (2024) [tmdb-12345]`
-
-**For Jellyfin**:
-- Path: Series → Season
-- Filename: Year + TMDB ID (curly brackets)
-- Format: `Show Name (2024) {tmdb-12345}`
-
-**For Emby**:
-- Similar to Plex settings
-- Square brackets work well
-
-
-
-## 🔗 Stream URLs
-
-### URL Format
-
-**.strm files contain**:
-```
-http://your-ip:36400/stream/episode/12345
-```
-
-### URL Features
-
-- **Authentication**: Uses playlist credentials
-- **Failover**: Automatic failover support
-- **Proxy**: Goes through m3u-proxy if enabled
-- **Transcoding**: Uses profile if configured on playlist
-
-### Direct URLs vs Proxied
-
-**Direct** (no proxy):
-```
-http://your-ip:36400/stream/episode/12345?proxy=false
-```
-
-**Proxied** (default when proxy enabled):
-```
-http://your-ip:36400/stream/episode/12345?proxy=true
-```
-
-
-
-## 📊 Monitoring
-
-### Check Sync Status
-
-1. View notifications for sync results
-2. Check series/VOD edit page for last sync time
-3. Review logs for errors
-
-### Verify File Count
-
-```bash
-# Count .strm files
-find /path/to/media/Series -name "*.strm" | wc -l
-
-# List recent files
-find /path/to/media/Series -name "*.strm" -mtime -1
-```
-
-
-
-## 🆘 Getting Help
-
-- 💬 [Discord](https://discord.gg/rS3abJ5dz7)
-- 🐛 [GitHub Issues](https://github.com/m3ue/m3u-editor/issues)
-
+Writing stream files needs the **Use Stream File Sync** permission, which admins have.

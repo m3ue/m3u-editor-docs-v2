@@ -1,6 +1,6 @@
 ---
-sidebar_position: 11
-description: Environment variable reference for M3U Editor
+sidebar_position: 2
+description: Every environment variable M3U Editor reads, grouped by what it controls, with defaults.
 tags:
   - Advanced
   - Configuration
@@ -10,694 +10,167 @@ title: Environment Variables
 
 # Environment Variables
 
-M3U Editor uses environment variables for configuration. These are typically set in the `.env` file in the root directory of your installation.
-
-## Application Settings
-
-### APP_KEY
-- **Default**: Empty (automatically generated during installation)
-- **Description**: Application encryption key. Generated automatically during installation with `php artisan key:generate`
-- **Important**: Never share this key publicly
-
-### APP_DEBUG
-- **Default**: `false`
-- **Description**: Enable debug mode for development
-- **Options**: `true`, `false`
-- **Warning**: Never set to `true` in production environments
-
-### APP_URL
-- **Default**: `http://localhost`
-- **Description**: The base URL where your application is accessible
-- **Example**: `https://m3u.example.com`
-
-### APP_PORT
-- **Default**: `36400`
-- **Description**: Port number for the application (Docker environments)
-
-### XTREAM_PORT
-- **Default**: `36401`
-- **Description**: Port number for the Xtream API only endpoint (separate Nginx instance)
-- **Note**: Only used when `XTREAM_ONLY_ENABLED=true`
-
-### XTREAM_ONLY_ENABLED
-- **Default**: `false`
-- **Description**: Enable a separate Nginx instance that only serves the Xtream API endpoint
-- **Options**: `true`, `false`
-- **Use Case**: Provides isolated Xtream API access on a different port, proxying requests to the main application
-
-### TZ
-- **Default**: `UTC`
-- **Description**: Default timezone for the application
-- **Example**: `America/New_York`, `Europe/London`
-
-## Database Configuration
-
-### DB_CONNECTION
-- **Default**: `sqlite`
-- **Description**: Database driver to use
-- **Options**: `sqlite`, `pgsql`, `mysql`
-
-### SQLite (Default)
-SQLite requires no additional configuration and stores data in a local file.
-
-### PostgreSQL Configuration
-
-Enable PostgreSQL by uncommenting and setting these variables:
-
-```env
-ENABLE_POSTGRES=true
-DB_CONNECTION=pgsql
-PG_DATABASE=your_database_name
-PG_USER=your_username
-PG_PASSWORD=your_password
-PG_PORT=5432
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=your_database_name
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
-```
-
-#### PG_DATABASE
-- **Description**: PostgreSQL database name
-
-#### PG_USER
-- **Description**: PostgreSQL username
-
-#### PG_PASSWORD
-- **Description**: PostgreSQL password
-
-#### PG_PORT
-- **Default**: `5432`
-- **Description**: Port for the embedded PostgreSQL container
-
-#### DB_HOST
-- **Default**: `127.0.0.1`
-- **Description**: PostgreSQL server host
-
-#### DB_PORT
-- **Default**: `5432`
-- **Description**: PostgreSQL server port
-
-#### DB_DATABASE
-- **Default**: Same as `PG_DATABASE`
-- **Description**: Database name for the Laravel application. If not set, defaults to `PG_DATABASE`.
-
-#### DB_USERNAME
-- **Default**: Same as `PG_USER`
-- **Description**: Database username for the Laravel application. If not set, defaults to `PG_USER`.
-
-#### DB_PASSWORD
-- **Default**: Same as `PG_PASSWORD`
-- **Description**: Database password for the Laravel application. If not set, defaults to `PG_PASSWORD`.
-
-## M3U Proxy Configuration
-
-### M3U_PROXY_INTEGRATION_ENABLED
-- **Default**: `true`
-- **Description**: Set to `false` to completely disable all proxy-related UI, settings, and screens in the editor. When disabled, proxy tabs in the navigation, proxy settings sections in the playlist edit forms, and the stream monitor are all hidden.
-- **Options**: `true`, `false`
-- **Use Case**: Deployments that don't use the proxy at all and want a cleaner, simpler UI
-
-### M3U_PROXY_ENABLED
-- **Default**: Commented out (uses embedded proxy)
-- **Description**: Controls proxy mode
-  - `true`: Use embedded proxy (runs in the same container)
-  - `false` or `null`: Use external proxy service (separate container)
-- **Note**: For most users, leaving this commented (default) is recommended
-
-### M3U_PROXY_HOST
-- **Default**: `127.0.0.1`
-- **Description**: Host for embedded proxy
-- **Note**: Only applies when `M3U_PROXY_ENABLED=true`
-
-### M3U_PROXY_PORT
-- **Default**: `8085`
-- **Description**: Internal port for embedded proxy
-- **Note**: Only applies when `M3U_PROXY_ENABLED=true`
-### M3U_PROXY_TOKEN
-- **Default**: Auto-generated
-- **Description**: API authentication token for m3u-proxy service
-- **Note**: Must match `API_TOKEN` on external proxy if using external m3u-proxy container
-
-### M3U_PROXY_LOG_LEVEL
-- **Default**: `null` (disabled)
-- **Description**: Enable logging for m3u-proxy
-- **Options**: `DEBUG`, `INFO`, `WARN`, `ERROR`
-- **Note**: Logs written to `/var/www/html/storage/logs/m3u-proxy.log`
-
-### M3U_PROXY_ALLOW_UNAUTHENTICATED_CALLBACKS
-- **Default**: `false`
-- **Description**: Callback routes the proxy calls back into the editor (failover-resolver, webhooks, broadcast/callback, dvr/callback) reject every request when `M3U_PROXY_TOKEN` is unset, since an unset token previously meant "accept all". Set to `true` to restore that old accept-all behavior for those routes.
-- **Options**: `true`, `false`
-- **Use Case**: Only for a trusted, single-machine/local-network deployment where the proxy container isn't reachable from outside
-
-### MEDIA_SERVER_PROXY_URL_VERSION
-- **Default**: `1`
-- **Description**: Version stamped into every generated Media Server (Plex/Emby/Jellyfin/local/WebDAV) proxy URL. These URLs are signed but non-expiring, so bumping this value per-instance invalidates every previously generated URL at once, without needing per-link expiry.
-- **Use Case**: Force all existing media server proxy links to be regenerated (e.g. after a security-sensitive change)
-
-## Authentication & Access Control
-
-### OIDC / SSO Authentication
-
-M3U Editor supports Single Sign-On via OpenID Connect. See the [SSO / OpenID Connect](/docs/advanced/sso-oidc) guide for full setup instructions.
-
-#### OIDC_ENABLED
-- **Default**: `false`
-- **Description**: Enable OpenID Connect / SSO authentication
-- **Options**: `true`, `false`
-
-#### OIDC_ISSUER_URL
-- **Description**: Base URL of your OIDC identity provider (issuer)
-- **Example**: `https://auth.example.com/realms/myrealm`
-
-#### OIDC_CLIENT_ID
-- **Description**: OAuth 2.0 client ID registered with your identity provider
-
-#### OIDC_CLIENT_SECRET
-- **Description**: OAuth 2.0 client secret
-
-#### OIDC_SCOPES
-- **Default**: `openid,profile,email`
-- **Description**: Comma-separated list of scopes to request from the identity provider
-
-#### OIDC_AUTO_REDIRECT
-- **Default**: `false`
-- **Description**: Skip the login form and redirect directly to the identity provider
-- **Options**: `true`, `false`
-- **Note**: The standard login form can still be accessed by appending `?local` to the login URL
-
-#### OIDC_AUTO_CREATE_USERS
-- **Default**: `true`
-- **Description**: Automatically create a local account on first OIDC login if no matching account is found
-- **Options**: `true`, `false`
-
-#### OIDC_BUTTON_LABEL
-- **Default**: `Login with SSO`
-- **Description**: Text displayed on the SSO login button
-
-#### OIDC_HIDE_LOGIN_FORM
-- **Default**: `false`
-- **Description**: Hide the standard username/password login form when OIDC is enabled
-- **Options**: `true`, `false`
-
-### AUTO_LOGIN
-- **Default**: `false`
-- **Description**: Enable auto-login functionality for development/testing
-- **Options**: `true`, `false`
-- **Warning**: Only use in secure, private environments
-
-### LOGIN_PATH
-- **Default**: `login`
-- **Description**: The path used to login to the application
-- **Example**: Change to `admin` for URL `/admin`
-
-### REDIRECT_GUEST_TO_LOGIN
-- **Default**: `true`
-- **Description**: Redirect unauthenticated users to the login page
-- **Options**: `true`, `false`
-
-## User & Group IDs (Docker)
-
-### PUID
-- **Default**: `1000`
-- **Description**: User ID to run the application under
-- **Note**: Not currently implemented, reserved for future use
-
-### PGID
-- **Default**: `1000`
-- **Description**: Group ID to run the application under
-- **Note**: Not currently implemented, reserved for future use
-
-## WebSocket Configuration
-
-### REVERB_PORT
-- **Default**: `36800`
-- **Description**: Port used for WebSocket server
-- **Note**: No longer needs to be exposed externally (uses reverse proxy internally as of v0.8.0)
-
-### REVERB_VERIFY
-- **Default**: `true`
-- **Description**: Enable SSL verification for WebSocket connections
-- **Options**: `true`, `false`
-- **Note**: Set to `false` to disable SSL verification
-
-## Mobile Push Notifications
-
-### PUSH_RELAY_URL
-- **Default**: `https://push-relay.sparkison.dev`
-- **Description**: Base URL of the relay used to deliver mobile push notifications to M3U TV's phone/tablet builds. Point this at your own [`m3u-push-relay`](https://github.com/m3ue/m3u-push-relay) deployment to avoid depending on the shared community instance.
-- **See Also**: [Push Notifications](../m3u-tv/push-notifications.md) for how the relay works and what it does/doesn't store
-
-## Redis Configuration
-
-### REDIS_HOST
-- **Default**: `localhost`
-- **Description**: Redis server hostname
-- **Note**: Use container name for external Redis instance
-
-### REDIS_SERVER_PORT
-- **Default**: `36790`
-- **Description**: Redis server port
-- **Note**: Default uses embedded container instance
-
-### REDIS_ENABLED
-- **Default**: `true`
-- **Description**: Enable/disable embedded Redis instance
-- **Options**: `true`, `false`
-- **Note**: Set to `false` when using external Redis server
-
-## Queue Worker (Horizon) Configuration
-
-M3U Editor uses [Laravel Horizon](https://laravel.com/docs/horizon) to manage background job queues. Each queue's worker pool can be tuned via environment variables. If a variable is not set, the documented default is used.
-
-:::caution
-Leave a variable **unset** to use the default rather than setting it to an empty value — an empty/non-numeric value is cast to `0`, which stops that queue's workers from processing any jobs.
-:::
-
-### General Queue (`m3u-editor-queue`)
-
-Handles `default`, `import`, and `file_sync` jobs.
-
-#### HORIZON_QUEUE_MAX_PROCESSES
-- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `12`
-- **Description**: Maximum number of worker processes for the general queue
-
-#### HORIZON_QUEUE_MAX_TIME
-- **Default**: `3600` (1 hour)
-- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
-
-#### HORIZON_QUEUE_MAX_JOBS
-- **Default**: `250`
-- **Description**: Maximum number of jobs a worker may process before restarting
-
-#### HORIZON_QUEUE_MEMORY
-- **Default**: `256`
-- **Description**: Memory limit (in MB) per worker process before it's restarted
-
-### Schedules Direct Queue (`m3u-editor-sd-queue`)
-
-Handles EPG imports sourced from Schedules Direct.
-
-#### HORIZON_SD_MAX_PROCESSES
-- **Default**: `1`
-- **Description**: Maximum number of worker processes for Schedules Direct EPG syncs
-
-#### HORIZON_SD_MAX_TIME
-- **Default**: `3600` (1 hour)
-- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
-
-#### HORIZON_SD_MAX_JOBS
-- **Default**: `250`
-- **Description**: Maximum number of jobs a worker may process before restarting
-
-#### HORIZON_SD_MEMORY
-- **Default**: `256`
-- **Description**: Memory limit (in MB) per worker process before it's restarted
-
-### DVR Queue (`dvr-queue`)
-
-Handles `dvr`, `dvr-post`, and `dvr-meta` jobs (recordings).
-
-#### HORIZON_DVR_MAX_PROCESSES
-- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `4`
-- **Description**: Maximum number of worker processes for DVR recording jobs
-
-#### HORIZON_DVR_MAX_TIME
-- **Default**: `7200` (2 hours)
-- **Description**: Maximum number of seconds a worker may run before restarting. Recordings can run up to the queue's 1-hour job timeout, so this is set to survive two back-to-back recordings before recycling. Recycling only happens between jobs, so this never interrupts an in-progress recording.
-
-#### HORIZON_DVR_MAX_JOBS
-- **Default**: `50`
-- **Description**: Maximum number of jobs a worker may process before restarting
-
-#### HORIZON_DVR_MEMORY
-- **Default**: `256`
-- **Description**: Memory limit (in MB) per worker process before it's restarted
-
-### AIOStreams Queue (`aiostreams-queue`)
-
-Handles AIOStreams channel/episode resolution jobs.
-
-#### HORIZON_AIOSTREAMS_MAX_PROCESSES
-- **Default**: `2`
-- **Description**: Maximum number of worker processes for AIOStreams resolution jobs
-
-#### HORIZON_AIOSTREAMS_MAX_TIME
-- **Default**: `1800` (30 minutes)
-- **Description**: Maximum number of seconds a worker may run before restarting. Recycling only happens between jobs, so this never interrupts an in-progress job even if it runs longer than this value.
-
-#### HORIZON_AIOSTREAMS_MAX_JOBS
-- **Default**: `300`
-- **Description**: Maximum number of jobs a worker may process before restarting
-
-#### HORIZON_AIOSTREAMS_MEMORY
-- **Default**: `256`
-- **Description**: Memory limit (in MB) per worker process before it's restarted
-
-### Cached Content Queue (`cache-queue`)
-
-Handles [Cached Content Downloads](cached-content.md). Downloads run only on this queue, so a slow provider or a long download can't hold up imports and syncs.
-
-#### HORIZON_CACHE_MIN_PROCESSES
-- **Default**: `1`
-- **Description**: Minimum number of worker processes for cached content downloads
-
-#### HORIZON_CACHE_MAX_PROCESSES
-- **Default**: `1` if `DB_CONNECTION=sqlite`, otherwise `4`
-- **Description**: Maximum number of downloads that can run at once across all playlists (each playlist downloads one file at a time)
-
-#### HORIZON_CACHE_MAX_TIME
-- **Default**: `3600` (1 hour)
-- **Description**: Maximum number of seconds a worker may run before restarting
-
-#### HORIZON_CACHE_MAX_JOBS
-- **Default**: `50`
-- **Description**: Maximum number of jobs a worker may process before restarting
-
-#### HORIZON_CACHE_MEMORY
-- **Default**: `256`
-- **Description**: Memory limit (in MB) per worker process before it's restarted
-
-## Playlist Configuration
-
-### MAX_CHANNELS
-- **Default**: `50000`
-- **Description**: Maximum number of channels to import for M3U playlists
-- **Note**: Does not apply to Xtream API playlists (no limit)
-
-### DISABLE_SYNC_LOGS
-- **Default**: `false`
-- **Description**: Disable creation of sync logs for playlists
-- **Options**: `true`, `false`
-- **Use Case**: Can improve performance with large playlists using SQLite database
-
-### INVALIDATE_IMPORT
-- **Default**: `false`
-- **Description**: Enable automatic invalidation of playlist sync based on threshold
-- **Options**: `true`, `false`
-- **See Also**: `INVALIDATE_IMPORT_THRESHOLD`
-
-### INVALIDATE_IMPORT_THRESHOLD
-- **Default**: `100`
-- **Description**: If the current sync result has fewer items than the current count minus this value, the sync is cancelled automatically.
-- **Note**: Only applies when `INVALIDATE_IMPORT=true`. When set, it locks **Channel removal threshold** in **Settings → Sync Options**
-- **Example**: If you have 1000 channels and threshold is 100, sync will fail if new import has fewer than 900 channels
-
-### INVALIDATE_IMPORT_SERIES_THRESHOLD
-- **Default**: unset (uses **Series removal threshold** in Sync Options, default `100`)
-- **Description**: Cancel the sync if it would remove more than this many series. When set, it locks the matching field in Sync Options.
-
-### INVALIDATE_IMPORT_GROUP_THRESHOLD
-- **Default**: unset (uses **Group/category removal threshold** in Sync Options, default `50`)
-- **Description**: Cancel the sync if it would remove more than this many groups or categories. When set, it locks the matching field in Sync Options.
-
-### DISABLE_M3U_XTREAM_FORMAT
-- **Default**: `false`
-- **Description**: By default, all URLs use Xtream API format for stream analysis and limit checking
-- **Options**: `true`, `false`
-- **Note**: Set to `true` to return provider URL (or proxied URL) instead for M3U playlists
-
-### PLAYLIST_DOWNLOAD_TIMEOUT
-- **Default**: `900` (seconds)
-- **Description**: Timeout for downloading the playlist file itself from the provider. Covers the whole request (connect + transfer), not just the connect phase.
-- **Use Case**: Increase for large playlists (many VOD entries) on throttled/slow provider connections
-
-### EPG_DOWNLOAD_TIMEOUT
-- **Default**: `900` (seconds)
-- **Description**: Timeout for downloading the EPG (XMLTV) file itself from the provider. Covers the whole request (connect + transfer), not just the connect phase.
-- **Use Case**: Increase for large EPG files on throttled/slow provider connections
-
-### DEFAULT_EPG_DAYS
-- **Default**: `7`
-- **Description**: Number of days to return for EPG endpoints. M3U Editor will never return more days than what your source does. For example, if your EPG source only has 3 days of data, only 3 days will be returned, not 7. If instead they have 14 days of data, and this value is set to 7 (default), then the data returned will be capped at 7 unless changed
-- **Options**: Any non-negative integer
-- **Use Case**: Cap or increase the days of data returned for the EPG endpoints and downloads
-
-### DEFAULT_EPG_CATCHUP_DAYS
-- **Default**: `7`
-- **Description**: Fallback `tv_archive_duration` (in days) reported to clients when catchup is enabled on a playlist but no duration is known from the provider
-- **Options**: Any non-negative integer; `0` disables the fallback (reports no retention)
-
-### SYNC_RUN_STALE_MINUTES
-- **Default**: `20`
-- **Description**: Minutes a sync can go without progress before it is considered dead and cleaned up. Raise this if very large playlists are marked as failed while still processing.
-
-### FAILED_RETRY_COOLDOWN_MINUTES
-- **Default**: unset (uses **Settings → Sync Options → Failed sync retry cooldown**, which defaults to `15`)
-- **Description**: Minutes a failed playlist or EPG sync waits before it is retried automatically. When set, it overrides the value saved in Sync Options.
-- **Note**: Playlists only retry when **Auto resync on failure** is enabled on the playlist. Invalidated syncs are never retried early; they wait for the next scheduled sync. See [Failed Sync Retries](../resources/playlists.md#failed-sync-retries).
-
-## Proxy URL Override
-
-### PROXY_URL_OVERRIDE
-- **Default**: `null`
-- **Description**: Override URL for proxied streams
-- **Format**: Fully qualified domain name including `http://` or `https://`
-- **Note**: If null or not set, will use `APP_URL`
-- **Use Case**: Use when proxy service is accessed via different domain than main application
-
-## HLS Storage Configuration
-
-These set where HLS segments are written and how often old ones are cleaned up. The defaults below are the editor container's, which also apply to the embedded proxy. A standalone [M3U Proxy](../proxy/configuration.md#hls) container has its own defaults.
-
-### HLS_TEMP_DIR
-- **Default**: `/var/www/html/storage/app/hls-segments`
-- **Description**: Directory for storing HLS segments
-- **Note**: Ensure sufficient disk space for concurrent streams. Mounting the host's `/dev/shm` here keeps segments in memory.
-
-### HLS_GC_ENABLED
-- **Default**: `true`
-- **Description**: Enable garbage collection for old HLS segments
-- **Options**: `true`, `false`
-- **Note**: Recommended to keep enabled to prevent disk space issues
-
-### HLS_GC_INTERVAL
-- **Default**: `600` (10 minutes)
-- **Description**: How often to run garbage collection (in seconds)
-- **Range**: Any positive integer
-
-### HLS_GC_AGE_THRESHOLD
-- **Default**: `7200` (2 hours)
-- **Description**: Delete HLS segments older than this value (in seconds)
-- **Recommendation**: Adjust based on your stream buffering needs
-
-## DVR Storage Configuration
-
-### DVR_STORAGE_PATH
-- **Default**: `storage/app/private/dvr` (inside the container)
-- **Description**: Root directory where completed DVR recording files are written
-- **Use Case**: Point this at a dedicated host-mounted volume so recordings survive container recreation and can be sized/backed up independently of the rest of `/config`. See [DVR Integration](../integrations/dvr_integration.md#persisting-recordings-in-docker) for a Docker Compose example.
-
-## Cached Content Storage
-
-### CACHE_STORAGE_PATH
-- **Default**: `storage/app/private/cache` (inside the container)
-- **Description**: Root directory where [cached VOD and episode downloads](cached-content.md) are written
-- **Use Case**: Mount a host volume here so cached files survive container rebuilds and updates. Without a volume, every cached file has to be downloaded again after an update.
-
-## Network Broadcasting Configuration
-
-### NETWORK_BROADCAST_ENABLED
-- **Default**: `false`
-- **Description**: Enable network broadcasting feature for pseudo-TV channels
-- **Options**: `true`, `false`
-- **Note**: Available in **v0.12.45+**. When enabled, networks with `broadcast_enabled=true` will stream live HLS content
-- **Use Case**: Create virtual TV channels that continuously broadcast content from integrated media servers
-- **See Also**: [Media Networks Integration](../integrations/media_networks_integration.md) for complete setup guide
-
-## Web Server Configuration
-
-### NGINX_ENABLED
-- **Default**: `true`
-- **Description**: Enable/disable embedded Nginx web server
-- **Options**: `true`, `false`
-- **Note**: Set to `false` when using external web server (e.g., Apache, Caddy)
-
-### FPMPORT
-- **Default**: `9000`
-- **Description**: PHP-FPM port for external web server integration
-- **Use Case**: Required when `NGINX_ENABLED=false` and using external web server
-
-## Xtream & STRM Configuration
-
-### XTREAM_SERIES_FOLDER
-- **Default**: `Series`
-- **Description**: Folder name for series content in STRM file generation
-- **Note**: Customize to match your media server organization
-
-### XTREAM_MOVIE_FOLDER
-- **Default**: `Movies`
-- **Description**: Folder name for movie content in STRM file generation
-- **Note**: Customize to match your media server organization
-
-### XTREAM_STRM_FOLDER
-- **Default**: `strm`
-- **Description**: Output folder for generated STRM files
-- **Note**: Files are created relative to data directory
-
-## Logo & Cache Configuration
-
-### LOGO_CACHE_EXPIRY_DAYS
-- **Default**: `30`
-- **Description**: Number of days to cache channel logos before refreshing
-- **Recommendation**: Higher values reduce bandwidth, lower values ensure logos stay current
-
-### PROXY_IMAGE_RESIZE_ENABLED
-- **Default**: not set (uses **Settings > Assets > Optimize Cached Artwork**, enabled by default)
-- **Description**: Cache artwork from the logo proxy, media server integrations and Schedules Direct as a downscaled copy sized for its role (poster, backdrop, title logo, cast photo). M3U TV and other clients get right-sized images without passing any size parameters, which cuts memory use and load times. Set to `false` to cache and serve originals.
-
-### PROXY_IMAGE_RESIZE_POSTER_WIDTH / PROXY_IMAGE_RESIZE_BACKDROP_WIDTH / PROXY_IMAGE_RESIZE_TITLE_LOGO_WIDTH / PROXY_IMAGE_RESIZE_PHOTO_WIDTH
-- **Defaults**: not set (uses the Settings > Assets values: `600` / `1280` / `800` / `300`)
-- **Description**: Maximum width (in pixels) artwork is stored at for posters, backdrops, title logos (clearlogo) and cast photos. When set, overrides the matching field in **Settings > Assets** and locks it.
-
-### PROXY_IMAGE_RESIZE_QUALITY
-- **Default**: not set (uses Settings > Assets, encoder default `70`)
-- **Description**: Encoder quality (1 to 100) for downscaled artwork. The source format is always kept.
-
-### PROXY_IMAGE_RESIZE_MAX
-- **Default**: `1920`
-- **Description**: Upper limit (in pixels) for every configured width. Larger values are clamped.
-
-## Feature Flags
-
-### PLAYLIST_TMDB_DYNAMIC_GROUPS
-- **Default**: `true`
-- **Description**: Enables TMDB [Dynamic Groups](../integrations/tmdb_integration.md#dynamic-groups) and genre reclassification. Set to `false` to hide these features.
-
-## AI Copilot
-
-### UNSLOTH_STUDIO_URL
-- **Default**: `http://localhost:8888/v1`
-- **Description**: Default base URL for the **Unsloth Studio (Local)** AI Copilot provider. The URL entered in **Settings → AI Copilot** takes precedence.
-
-### UNSLOTH_STUDIO_API_KEY
-- **Default**: empty
-- **Description**: Optional default API key for Unsloth Studio. Leave empty if Unsloth Studio runs with `UNSLOTH_STUDIO_NO_AUTH=1`.
-
-## Debug Configuration
-
-### LOG_ANONYMIZE
-- **Default**: `true`
-- **Description**: Automatically redact sensitive data from application logs — including stream URLs, usernames, IP addresses, and UUIDs. Enabled by default to make sharing logs with support safer.
-- **Options**: `true`, `false`
-- **Note**: Set to `false` only in secure, private environments when you need full URL/IP visibility in logs for debugging
-
-### SHARED_STREAMING_DEBUG
-- **Default**: `false`
-- **Description**: Enable debug logging for shared streaming/pooling features
-- **Options**: `true`, `false`
-- **Use Case**: Troubleshooting stream sharing and connection pooling issues
-
-## Docker Compose Usage
-
-Environment variables can be set in your `docker-compose.yml` file:
-
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:latest
-    container_name: m3u-editor
-    environment:
-      - APP_URL=https://m3u.example.com
-      - APP_PORT=36400
-      - TZ=America/New_York
-      - ENABLE_POSTGRES=true
-      - PG_DATABASE=m3ue
-      - PG_USER=m3ue
-      - PG_PASSWORD=secure_password
-      - M3U_PROXY_ENABLED=true
-    volumes:
-      - ./data:/config
-    ports:
-      - "36400:36400"
-    restart: unless-stopped
-```
-
-Or via CLI:
-
-```bash
-docker run -d \
-  --name m3u-editor \
-  -e APP_URL=https://m3u.example.com \
-  -e APP_PORT=36400 \
-  -e TZ=America/New_York \
-  -p 36400:36400 \
-  -v ./data:/config \
-  sparkison/m3u-editor:latest
-```
-
-## Best Practices
-
-1. **Never commit `.env` files** to version control
-2. **Use `.env.example`** as a template for new installations
-3. **Regenerate APP_KEY** for each installation
-4. **Keep sensitive values secure** (passwords, API keys, tokens)
-5. **Use strong passwords** for database connections
-6. **Set APP_DEBUG=false** in production
-7. **Use environment-specific values** for different deployments
-8. **Configure timezone** to match your location for accurate logging
-9. **Enable PostgreSQL** for better performance with large playlists
-10. **Monitor HLS storage** if using proxy features extensively
-
-## Updating Environment Variables
-
-After modifying environment variables in `.env` file:
-
-```bash
-# Clear configuration cache
-php artisan config:clear
-
-# Clear application cache
-php artisan cache:clear
-
-# Restart queue workers if running
-php artisan queue:restart
-```
-
-For Docker installations, restart the container:
-
-```bash
-docker-compose restart
-```
-
-Or for specific containers:
-
-```bash
-docker restart m3u-editor
-```
-
-## Troubleshooting
-
-### Changes Not Taking Effect
-
-If environment variable changes aren't being applied:
-1. Clear configuration cache: `php artisan config:clear`
-2. Restart the application/container
-3. Verify `.env` file syntax (no quotes around values usually)
-4. Check for typos in variable names
-
-### Database Connection Issues
-
-If you're having database problems:
-1. Verify `DB_CONNECTION` matches your database type
-2. Check `DB_HOST`, `DB_PORT`, `DB_DATABASE` are correct
-3. Ensure `ENABLE_POSTGRES=true` if using embedded PostgreSQL
-4. Test database credentials independently
-
-### WebSocket/Real-time Updates Not Working
-
-If notifications aren't appearing:
-1. Check `REVERB_PORT` is accessible
-2. Verify `REVERB_VERIFY` matches your SSL setup
-3. Check browser console for WebSocket errors
-4. Ensure ports are properly mapped in Docker
-
-### Proxy Not Working
-
-If stream proxying isn't functioning:
-1. Verify `M3U_PROXY_ENABLED` is set correctly
-2. Check `M3U_PROXY_HOST` and `M3U_PROXY_PORT` are correct
-3. Ensure `M3U_PROXY_TOKEN` matches between services
-4. Review proxy logs with `M3U_PROXY_LOG_LEVEL=DEBUG`
+Environment variables configure what M3U Editor needs before it starts. Set them in the `m3u-editor` service's `environment:` section, or in the `.env` file next to your compose file, then run `docker compose up -d` to apply them.
+
+Most people only need the few covered in [Editor Configuration](/docs/configuration). Everything else has a sensible default. Settings you can change in the app are in the [Settings Reference](settings-reference); when a variable below also exists as a setting, the variable wins and the setting is locked.
+
+M3U Proxy has its own variables, in the [proxy's Configuration Reference](/docs/proxy/configuration).
+
+## Application
+
+| Variable | Default | What it does |
+|---|---|---|
+| `APP_URL` | `http://localhost` | The address players use to reach the editor, without the port. Used in every link it builds. |
+| `APP_PORT` | `36400` | The port the editor listens on. Added to `http://` links. |
+| `TZ` | `UTC` | The timezone. **Application Timezone** in **Settings → General** overrides it. |
+| `XTREAM_ONLY_ENABLED`, `XTREAM_PORT` | `false`, `36401` | Also serve only the Xtream API on a second port. |
+| `APP_KEY` | Generated | The encryption key. Set it yourself only when moving an install. |
+| `APP_DEBUG` | `false` | Detailed error pages. Don't use it on a server others can reach. |
+| `LOG_DIR` | `/var/www/config/logs` | Where log files are written. |
+| `LOG_ANONYMIZE` | `true` | Hide credentials and addresses in the logs. |
+
+## Database
+
+| Variable | Default | What it does |
+|---|---|---|
+| `DB_CONNECTION` | `sqlite` | `sqlite` or `pgsql`. The shipped compose files use `pgsql`. |
+| `ENABLE_POSTGRES` | `false` | Run PostgreSQL inside the editor container. |
+| `PG_DATABASE`, `PG_USER`, `PG_PASSWORD`, `PG_PORT` | `m3ue`, `m3ue`, none, `5432` | The embedded PostgreSQL's database and login. |
+| `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | `127.0.0.1`, `5432`, `m3ue` | Where the app connects. For embedded PostgreSQL, match the `PG_*` values. |
+| `SQLITE_MIGRATE` | `false` | Move an existing SQLite database into PostgreSQL on the next start. See [SQLite to PostgreSQL](sqlite-to-postgres). |
+| `TRGM_THRESHOLD` | `0.35` | Similarity threshold for [wider EPG matching](/docs/resources/epg-setup#improve-the-matches) on PostgreSQL. |
+
+See [Editor Configuration](/docs/configuration#database) for each setup, and [SQLite to PostgreSQL](sqlite-to-postgres) to move an existing install.
+
+## Redis
+
+| Variable | Default | What it does |
+|---|---|---|
+| `REDIS_ENABLED` | `true` | Run Redis inside the editor container. Set `false` to use a separate Redis. |
+| `REDIS_HOST` | `localhost` | The Redis server. |
+| `REDIS_SERVER_PORT` | `36790` | The Redis port. The separate Redis container in the compose files uses `6379`. |
+| `REDIS_PASSWORD` | `M3U_PROXY_TOKEN`, or generated | The Redis password. |
+
+## M3U Proxy
+
+| Variable | Default | What it does |
+|---|---|---|
+| `M3U_PROXY_ENABLED` | `true` | `true` runs the proxy inside the editor container. `false` uses a separate proxy container. |
+| `M3U_PROXY_HOST`, `M3U_PROXY_PORT` | `127.0.0.1`, `8085` | Where the separate proxy is, like `m3u-proxy` and `38085`. |
+| `M3U_PROXY_TOKEN` | Generated for the embedded proxy | The shared token. Must match `API_TOKEN` on a separate proxy. |
+| `M3U_PROXY_INTEGRATION_ENABLED` | `true` | Set `false` to hide every proxy feature, for installs that don't use it. |
+| `M3U_PROXY_FAILOVER_RESOLVER_URL` | None | The **Resolver URL** for [smart failover](/docs/proxy/failover#smart-failover). Locks the setting. |
+| `M3U_PROXY_LOG_LEVEL` | `ERROR` | Log level for the embedded proxy. |
+| `M3U_PROXY_ALLOW_UNAUTHENTICATED_CALLBACKS` | `false` | Accept calls from the proxy with no token. Only for a trusted local setup with no token set. |
+| `PROXY_URL_OVERRIDE`, `PROXY_URL_OVERRIDE_INCLUDE_LOGOS` | None | The proxy's **Override URL**, and whether logos use it. Lock the settings. |
+| `MEDIA_SERVER_PROXY_URL_VERSION` | `1` | Raise it to make every media server stream link generated before stop working. |
+| `ALLOW_PRIVATE_WEBHOOK_URLS` | `false` | Let post-process webhooks call private addresses, like a media server on your LAN. |
+
+The embedded proxy also reads these, which a separate proxy container sets for itself:
+
+| Variable | Default | What it does |
+|---|---|---|
+| `HLS_TEMP_DIR` | `/var/www/html/storage/app/hls-segments` | Where transcoded HLS output is written. Mount `/dev/shm` or a `tmpfs` here to keep it in memory. |
+| `HLS_BROADCAST_DIR` | Same as `HLS_TEMP_DIR` | Where [Network](/docs/integrations/media_networks_integration) broadcasts are written. |
+| `HLS_GC_ENABLED`, `HLS_GC_INTERVAL`, `HLS_GC_AGE_THRESHOLD` | `true`, `600`, `7200` | Cleanup of leftover HLS files: how often, in seconds, and at what age. |
+| `BROADCAST_GC_ENABLED` | `true` | Clean up leftover broadcast folders. |
+
+## Storage
+
+| Variable | Default | What it does |
+|---|---|---|
+| `DVR_STORAGE_PATH` | Inside the container | Where [DVR](/docs/integrations/dvr_integration) recordings are saved. Mount a volume here. |
+| `CACHE_STORAGE_PATH` | Inside the container | Where [cached downloads](cached-content) are saved. Mount a volume here. |
+| `XTREAM_MOVIE_FOLDER`, `XTREAM_SERIES_FOLDER`, `XTREAM_STRM_FOLDER` | `Movies`, `Series`, `strm` | Folder names used for [`.strm` files](strm-files). |
+
+## Playlists and syncs
+
+| Variable | Default | What it does |
+|---|---|---|
+| `INVALIDATE_IMPORT` | None | Turn [sync invalidation](/docs/resources/playlists#protect-against-bad-syncs) on or off. Locks the setting. |
+| `INVALIDATE_IMPORT_THRESHOLD`, `INVALIDATE_IMPORT_SERIES_THRESHOLD`, `INVALIDATE_IMPORT_GROUP_THRESHOLD` | None | The invalidation thresholds. Lock the settings. |
+| `FAILED_RETRY_COOLDOWN_MINUTES` | None (setting default 15) | Minutes before a failed playlist or EPG sync is retried. Locks the setting. |
+| `AUTO_RETRY_503_ENABLED` | `true` | Retry a sync that failed because the provider's server returned an error (500, 502, 503, or 504). |
+| `AUTO_RETRY_503_MAX`, `AUTO_RETRY_503_COOLDOWN_MINUTES` | `3`, `10` | How many times, and the cooldown before the count resets. |
+| `AUTO_RETRY_503_DELAY_MIN_SECONDS`, `AUTO_RETRY_503_DELAY_MAX_SECONDS` | `300`, `900` | The wait before each retry is picked between these. |
+| `PLAYLIST_DOWNLOAD_TIMEOUT`, `EPG_DOWNLOAD_TIMEOUT` | `900` | Seconds allowed to download a playlist or guide. Raise for very large files on slow connections. |
+| `NGINX_READ_TIMEOUT` | `900` | Seconds the web server waits for large playlist and guide responses. |
+| `MAX_CHANNELS` | `50000` | The most channels a playlist can import. |
+| `DISABLE_SYNC_LOGS` | `false` | Turn off sync logs everywhere, for speed. |
+| `DISABLE_M3U_XTREAM_FORMAT` | `false` | Put provider URLs directly in M3U output for every playlist. Locks the playlist setting. |
+| `DEFAULT_EPG_DAYS` | `7` | Days of guide data to output. |
+| `DEFAULT_EPG_CATCHUP_DAYS` | `7` | Catch-up days reported when a channel has catch-up but no duration. `0` reports none. |
+| `STUCK_PROCESSING_MINUTES` | `240` | After this long, a playlist or EPG stuck in "processing" is reset so it can sync again. |
+| `SYNC_RUN_STALE_MINUTES` | `20` | After this long without progress, a sync run is marked as failed. |
+| `ALLOWED_PLAYLIST_DOMAINS` | None | Only allow playlist URLs from these domains, comma-separated, with wildcards. Locks the setting. |
+| `TVGID_REGEX` | `/[^a-zA-Z0-9_\-\.]/` | Characters removed from generated `tvg-id` values. |
+
+## Images
+
+| Variable | Default | What it does |
+|---|---|---|
+| `LOGO_CACHE_EXPIRY_DAYS` | `30` | How long cached logos are kept. |
+| `PROXY_IMAGE_RESIZE_ENABLED` | None (setting default on) | Turn **Optimize cached artwork** on or off. Locks the setting. |
+| `PROXY_IMAGE_RESIZE_POSTER_WIDTH`, `_BACKDROP_WIDTH`, `_TITLE_LOGO_WIDTH`, `_PHOTO_WIDTH` | None (600, 1280, 800, 300) | Maximum widths for each kind of image. Lock the settings. |
+| `PROXY_IMAGE_RESIZE_QUALITY` | None (70) | Compression quality, 1 to 100. Locks the setting. |
+| `PROXY_IMAGE_RESIZE_MAX` | `1920` | The largest width any image can be set to. |
+
+## Sign-in
+
+| Variable | Default | What it does |
+|---|---|---|
+| `LOGIN_PATH` | `login` | The path of the sign-in page. |
+| `REDIRECT_GUEST_TO_LOGIN` | `true` | Send signed-out visitors to the sign-in page. |
+| `AUTO_LOGIN`, `AUTO_LOGIN_EMAIL` | `false`, `admin@test.com` | Sign in automatically as this user, with no password. Only for a private, single-user setup. |
+| `OIDC_*` | | Single sign-on. See [Single Sign-On](sso-oidc). |
+
+## Other features
+
+| Variable | Default | What it does |
+|---|---|---|
+| `DVR_ENABLED` | `true` | Turn the [DVR](/docs/integrations/dvr_integration) off everywhere with `false`. |
+| `DVR_INITIAL_LOOKAHEAD_DAYS` | `14` | Days of guide data recording rules are matched against. |
+| `DVR_COMSKIP_PATH`, `DVR_COMSKIP_INI` | Built in | The Comskip program and its settings file. |
+| `DVR_COMSKIP_TIMEOUT_SECONDS` | `0` | Longest Comskip may run. `0` means no limit. |
+| `DVR_MAX_ATTEMPTS_PER_AIRING` | `3` | Attempts to record one airing. |
+| `PLAYLIST_TMDB_DYNAMIC_GROUPS` | `true` | Turn off TMDB [Dynamic Groups](/docs/integrations/tmdb_integration#dynamic-groups) and genre sorting. |
+| `NETWORK_BROADCAST_ENABLED` | `false` | Show broadcast status on Network playlists. Broadcasting itself is turned on per [Network](/docs/integrations/media_networks_integration). |
+| `PUSH_RELAY_URL` | The shared relay | Your own [push relay](/docs/m3u-tv/push-notifications). |
+| `PUSH_RELAY_STALE_DAYS` | `60` | Days before a phone that stopped checking in is removed. |
+| `SHOW_WAN_DETAILS` | None | Show or hide the WAN address in the menu. Locks the setting. |
+| `COPILOT_PROVIDER`, `COPILOT_MODEL`, and provider keys | | The [AI Copilot](/docs/ai-copilot/configuration#provider-and-model). |
+| `BACKUP_ARCHIVE_PASSWORD` | None | Encrypt backup files with this password. |
+| `PLUGIN_*` | | [Plugins](/docs/extensions/overview), such as `PLUGIN_INSTALL_MODE` and `PLUGIN_GITHUB_TOKEN`. |
+
+## Live updates
+
+The web interface gets live updates (progress bars and notifications) over websockets.
+
+| Variable | Default | What it does |
+|---|---|---|
+| `REVERB_PORT` | `36800` | The websocket server's port inside the container. The web server forwards `/app` to it, so it doesn't need publishing. |
+| `REVERB_VERIFY` | `true` | Verify TLS certificates when sending updates. Set `false` only for a self-signed certificate. |
+
+**Test WebSocket** in **Settings → General** checks they're working.
+
+## Web server
+
+| Variable | Default | What it does |
+|---|---|---|
+| `NGINX_ENABLED` | `true` | Set `false` to serve the app from your own web server, as in the [fully external](/docs/deployment/docker-compose#fully-external) setups. |
+| `FPMPORT` | `9000` | The PHP-FPM port your web server connects to. |
+
+## Background workers
+
+Jobs like syncs, probing, and recordings run on background workers. Each queue's workers can be tuned with `HORIZON_<QUEUE>_MAX_PROCESSES`, `_MAX_JOBS`, `_MAX_TIME`, and `_MEMORY`. Leave them unset to use the defaults.
+
+| Queue | Prefix | Handles | Default workers |
+|---|---|---|---|
+| General | `HORIZON_QUEUE_` | Syncs, imports, and most jobs | 12 (1 on SQLite) |
+| Schedules Direct | `HORIZON_SD_` | Schedules Direct imports | 1 |
+| DVR | `HORIZON_DVR_` | Recording and post-processing | 4 (1 on SQLite) |
+| AIOStreams | `HORIZON_AIOSTREAMS_` | Finding AIOStreams streams | 2 |
+| Cache | `HORIZON_CACHE_` | [Cached downloads](cached-content) | 4 (1 on SQLite) |
+| Plugins | `HORIZON_PLUGIN_` | [Plugin](/docs/extensions/overview) runs | 1 |
+
+For example, `HORIZON_CACHE_MAX_PROCESSES=2` limits how many files download at once.

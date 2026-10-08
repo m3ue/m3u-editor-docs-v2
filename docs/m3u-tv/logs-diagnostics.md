@@ -1,13 +1,13 @@
 ---
 sidebar_position: 6
-title: Logs & Diagnostics
+title: Logs and Diagnostics
 description: View M3U TV's device details and session logs, and upload them to M3U Editor for troubleshooting
 tags:
   - M3U TV
   - Troubleshooting
 ---
 
-# Logs & Diagnostics
+# Logs and Diagnostics
 
 *(M3U TV v1.2.1+ with M3U Editor v0.13.1+)* When something isn't working on a TV, it's hard to see what went wrong. **Logs & Diagnostics** shows the app's device details and this session's logs on screen, and can send them to your M3U Editor so you (or whoever helps you) can read them on a computer.
 

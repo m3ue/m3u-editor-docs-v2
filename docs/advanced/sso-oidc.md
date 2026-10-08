@@ -1,15 +1,15 @@
 ---
-sidebar_position: 7
+sidebar_position: 14
 description: Configure Single Sign-On (SSO) via OpenID Connect for M3U Editor
 tags:
   - Advanced
   - Authentication
   - SSO
   - OIDC
-title: SSO / OpenID Connect
+title: Single Sign-On
 ---
 
-# SSO / OpenID Connect
+# Single Sign-On (OIDC)
 
 M3U Editor supports Single Sign-On (SSO) via the OpenID Connect (OIDC) protocol. This allows users to authenticate using an external identity provider such as Keycloak, Authentik, Authelia, or any other standards-compliant OIDC provider.
 
@@ -33,13 +33,11 @@ On subsequent logins the account is updated with the latest profile data from th
 
 - A configured OIDC client/application on your identity provider.
 - The **redirect URI** must be set to: `https://your-m3u-editor-url/auth/oidc/callback`
-- Your provider must expose an OIDC discovery endpoint (`.well-known/openid-configuration`) — all major providers support this.
+- Your provider must expose an OIDC discovery endpoint (`.well-known/openid-configuration`). All major providers do.
 
 ## Configuration
 
-All OIDC settings are controlled via environment variables. Add them to the `environment` section of your `docker-compose.yml`:
-
-### Required Variables
+OIDC is set with environment variables on the `m3u-editor` service:
 
 ```yaml
 services:
@@ -51,32 +49,14 @@ services:
       - OIDC_CLIENT_SECRET=your-client-secret
 ```
 
-### Optional Variables
-
-```yaml
-services:
-  m3u-editor:
-    environment:
-      # Scopes to request (default: openid,profile,email)
-      - OIDC_SCOPES=openid,profile,email
-      # Automatically redirect to the IdP instead of showing the login form
-      - OIDC_AUTO_REDIRECT=false
-      # Automatically create a new local account if no match is found
-      - OIDC_AUTO_CREATE_USERS=true
-      # Label for the SSO button on the login page
-      - OIDC_BUTTON_LABEL=Login with SSO
-      # Hide the standard username/password login form entirely
-      - OIDC_HIDE_LOGIN_FORM=false
-```
-
-### Variable Reference
+### All variables
 
 | Variable | Default | Description |
 |---|---|---|
 | `OIDC_ENABLED` | `false` | Enable or disable OIDC authentication |
-| `OIDC_ISSUER_URL` | — | Base URL of your OIDC provider (issuer) |
-| `OIDC_CLIENT_ID` | — | OAuth 2.0 client ID registered with your provider |
-| `OIDC_CLIENT_SECRET` | — | OAuth 2.0 client secret |
+| `OIDC_ISSUER_URL` | None | Base URL of your OIDC provider (issuer) |
+| `OIDC_CLIENT_ID` | None | OAuth 2.0 client ID registered with your provider |
+| `OIDC_CLIENT_SECRET` | None | OAuth 2.0 client secret |
 | `OIDC_SCOPES` | `openid,profile,email` | Scopes requested from the identity provider |
 | `OIDC_AUTO_REDIRECT` | `false` | Skip the login form and go straight to the IdP |
 | `OIDC_AUTO_CREATE_USERS` | `true` | Create a local account on first OIDC login |
@@ -121,7 +101,7 @@ This is useful for admin recovery if the identity provider is unavailable.
 Some users put a forward-auth proxy (Authelia, Authentik, oauth2-proxy, etc.) **in front of** M3U Editor at the reverse-proxy layer to protect the entire site with SSO. This is independent of the built-in OIDC above, which only protects the admin panel login.
 
 :::warning
-If you protect everything at the domain root with forward auth, **Xtream API, m3u export, EPG, and HDHR clients will break.** They don't carry browser sessions or SSO cookies — they authenticate using credentials embedded in the URL or query string, or via Bearer tokens.
+If you protect everything at the domain root with forward auth, **Xtream API, m3u export, EPG, and HDHR clients will break.** They don't carry browser sessions or SSO cookies; they authenticate using credentials embedded in the URL or query string, or via Bearer tokens.
 :::
 
 ### Recommended: Allowlist admin paths only
@@ -129,6 +109,9 @@ If you protect everything at the domain root with forward auth, **Xtream API, m3
 The only browser-session UI in M3U Editor is the Filament admin panel. Everything else is designed to be publicly reachable, with its own credential check (path/query string for Xtream and m3u, Sanctum or JWT Bearer tokens for the API).
 
 Configure your forward-auth proxy to **require SSO only on these paths**, and let everything else through:
+
+<details>
+<summary>Paths that need SSO</summary>
 
 | Path pattern | Notes |
 |---|---|
@@ -138,11 +121,13 @@ Configure your forward-auth proxy to **require SSO only on these paths**, and le
 | `/profile`, `/notifications` | User profile and notifications |
 | `/playlists*`, `/custom-playlists*`, `/merged-playlists*`, `/playlist-aliases*`, `/playlist-viewers*`, `/playlist-auths*` | Playlist resources |
 | `/channels*`, `/groups*`, `/series*`, `/categories*`, `/vods*`, `/vod-groups*` | Content resources |
-| `/epgs*`, `/merged-epgs*`, `/epg-channels*`, `/epg-maps*` | EPG resources (note: this overlaps with the public `/epgs/<uuid>/epg.xml` — see below) |
+| `/epgs*`, `/merged-epgs*`, `/epg-channels*`, `/epg-maps*` | EPG resources (note: this overlaps with the public `/epgs/<uuid>/epg.xml`; see below) |
 | `/networks*`, `/media-server-integrations*` | Integrations |
 | `/users*`, `/personal-access-tokens*`, `/assets*`, `/post-processes*`, `/plugins*`, `/plugin-install-reviews*` | Admin/tools |
 | `/preferences`, `/log-viewer`, `/release-logs`, `/backups`, `/m3u-proxy-stream-monitor`, `/plugins-dashboard`, `/create-plugin`, `/stream-file-settings*`, `/channel-scrubbers*`, `/stream-profiles*` | Admin pages |
 | `/admin/*` | Internal admin endpoints |
+
+</details>
 
 This approach is forward-compatible: when M3U Editor adds new public routes in future releases, your SSO config keeps working without updates.
 
@@ -153,6 +138,9 @@ There's an awkward overlap: the **public** EPG file route `/epgs/<uuid>/epg.xml`
 ### Alternative: Block-by-default with exclusions
 
 If your proxy can only run in "protect everything, exclude these paths" mode, here's the full list of public routes that need to bypass SSO.
+
+<details>
+<summary>Public paths that must bypass SSO</summary>
 
 #### Xtream API endpoints
 
@@ -166,13 +154,13 @@ If your proxy can only run in "protect everything, exclude these paths" mode, he
 - `/movie/<user>/<pass>/<id>.<ext>`
 - `/series/<user>/<pass>/<id>.<ext>`
 - `/timeshift/<user>/<pass>/<duration>/<date>/<id>.<ext>`
-- `/<user>/<pass>/<id>.<ext>` ⚠️ root-level fallback for legacy clients — matches **any** 3-segment URL with an extension
+- `/<user>/<pass>/<id>.<ext>` (root-level fallback for legacy clients; it matches **any** 3-segment URL with an extension)
 
 #### M3U / EPG / HDHR exports
 
 - `/<uuid>/playlist.m3u`
 - `/<uuid>/epg.xml`, `/<uuid>/epg.xml.gz`
-- `/<uuid>/hdhr` and any path under it (HDHomeRun emulator — both query-auth and path-auth variants)
+- `/<uuid>/hdhr` and any path under it (HDHomeRun emulator, both query-auth and path-auth variants)
 - `/epgs/<uuid>/epg.xml`
 
 #### Network endpoints
@@ -200,7 +188,7 @@ If your proxy can only run in "protect everything, exclude these paths" mode, he
 
 #### API and Bearer-token endpoints
 
-These use Sanctum or JWT Bearer tokens, not browser sessions — they need to be reachable for clients that present a token:
+These use Sanctum or JWT Bearer tokens, not browser sessions, so they need to be reachable for clients that present a token:
 
 - `/api/*` (in-app watch-progress, m3u-proxy webhooks, EPG API, JWT login)
 - `/user/*`, `/channel/*`, `/group/*`, `/playlist/<uuid>/stats`, `/playlist/<uuid>/merge-channels`, `/proxy/status`, `/proxy/streams/active` (Sanctum-protected, **at the root, not under `/api/`**)
@@ -214,6 +202,8 @@ These use Sanctum or JWT Bearer tokens, not browser sessions — they need to be
 - `/auth/oidc/redirect`, `/auth/oidc/callback` (the SSO endpoints themselves)
 - `/playlist/<uuid>/sync`, `/epg/<uuid>/sync` (rate-limited refresh triggers)
 - `/app`, `/apps` (Reverb websocket, if proxied through the same hostname)
+
+</details>
 
 :::danger Watch out for the Xtream fallback route
 `/<user>/<pass>/<id>.<ext>` matches **any** 3-segment URL ending in an extension. It's hard to express as a clean bypass rule, and is one of the main reasons the **allowlist-admin** approach above is preferred.
@@ -244,5 +234,5 @@ The identity provider did not return an email claim. Ensure the `email` scope is
 After modifying environment variables in `docker-compose.yml`, recreate the container to apply them:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```

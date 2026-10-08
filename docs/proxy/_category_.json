@@ -1,12 +1,12 @@
 {
   "label": "M3U Proxy",
-  "position": 6,
-  "description": "Stream sharing, failover, transcoding, and hardware acceleration.",
+  "position": 7,
+  "description": "Shared connections, failover, transcoding, and hardware acceleration.",
   "customProps": {
     "icon": "router"
   },
   "link": {
     "type": "generated-index",
-    "description": "Complete documentation for the M3U Proxy — streaming architecture, configuration, advanced features, and API reference."
+    "description": "How M3U Proxy streams to your players, and how to set up transcoding, failover, and monitoring."
   }
 }

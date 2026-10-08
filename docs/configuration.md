@@ -180,15 +180,15 @@ FPMPORT=9000
 </TabItem>
 </Tabs>
 
-[Caddy vs Nginx](/docs/deployment/caddy-vs-nginx) covers both setups, including HTTPS.
+[Reverse Proxy and HTTPS](/docs/deployment/caddy-vs-nginx) covers both, including how to serve the app at your own domain.
 
 ## Storage paths
 
 Where the editor writes large files can be changed too, which is useful for putting them on a separate disk:
 
-- HLS segments for live streaming: [`HLS_TEMP_DIR`](/docs/advanced/environment-variables#hls_temp_dir). Mounting the host's `/dev/shm` keeps them in memory.
-- [DVR](/docs/integrations/dvr_integration) recordings: [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#dvr_storage_path)
-- [Cached content downloads](/docs/advanced/cached-content): [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#cache_storage_path)
+- HLS segments for live streaming: [`HLS_TEMP_DIR`](/docs/advanced/environment-variables#m3u-proxy). Mounting the host's `/dev/shm` keeps them in memory.
+- [DVR](/docs/integrations/dvr_integration) recordings: [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#storage)
+- [Cached content downloads](/docs/advanced/cached-content): [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#storage)
 
 ## Next steps
 

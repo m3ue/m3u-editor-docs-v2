@@ -1,755 +1,148 @@
 ---
-sidebar_position: 4
-description: Complete Settings page reference for M3U Editor
+sidebar_position: 1
+description: Every page under Settings in M3U Editor, and what each setting does.
 tags:
   - Settings
   - Configuration
-  - Admin
+  - Reference
 title: Settings Reference
 ---
 
 # Settings Reference
 
-Complete guide to all settings available in the M3U Editor Settings page (admin-only).
+Most of M3U Editor is configured in the app, under **Settings** (in the **Administration** section of the sidebar). This page goes through each settings page in order. Things that must be set before the app starts are [environment variables](environment-variables) instead.
 
-**Access**: Sidebar → **Administration** → **Settings**. Each group of settings is its own page, listed in the sub-navigation on the left of the Settings screen (General, Navigation, Proxy, TV App, Sync Options, Assets, Backups, SMTP, API, Cache, Integrations, AI Copilot, Alerts).
+When an environment variable is set for a setting, the field is locked and shows **Already set by environment variable!**
 
+## General
 
-## 🌐 General
+| Setting | What it does |
+|---|---|
+| **Show breadcrumbs**, **Navigation position**, **Max width of the page content** | Layout of the interface. The sidebar can sit on the left or along the top. |
+| **Show queue indicator** | Show background job activity in the top bar. |
+| **Output WAN address in menu** | Show your server's public IP address in the menu. |
+| **Suppress success notifications** | Hide success and information pop-ups from background tasks. Errors and warnings always show. |
+| **Application Timezone** | The timezone for every date and time in the app, and for schedules. Overrides `TZ`. |
+| **Date Format** | How dates are shown, from presets or a custom format. |
+| **Allowed domains** | Only allow playlist URLs from these domains (wildcards allowed). Empty allows any. |
+| **Enhanced output enabled** | Extra Xtream API fields that [M3U TV](/docs/m3u-tv/overview) needs. On by default; leave it on. |
+| **HTTP Port**, **HTTPS Port** | The ports your Xtream API tells players to use, when they differ from `APP_PORT` and 443, for example behind a reverse proxy. |
+| **Xtream API panel message** | A message players can show from the Xtream API. |
 
-### Layout & Display Options
+**Test WebSocket** at the top of the page checks that live updates reach your browser. If no pop-up appears, see [Reverse Proxy and HTTPS](/docs/deployment/caddy-vs-nginx#what-the-reverse-proxy-needs).
 
-#### Show Breadcrumbs
-- **Type**: Toggle
-- **Default**: Enabled
-- **Description**: Show breadcrumb navigation under page titles
+## Navigation
 
-#### Show Queue Indicator
-- **Type**: Toggle
-- **Description**: Show the live queue status indicator in the top navigation bar
+Reorder the sidebar's groups and items by dragging, and hide what you don't use. **Use Simplified Default** switches to a shorter layout, and **Restore Default** brings back the full one. Changes apply to every user; refresh the page to see them.
 
-#### Output WAN Address in Menu
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Display server's public IP address in the menu (useful for remote access)
+## Proxy
 
-#### Suppress Success Notifications
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: When enabled, hides success toast notifications from background tasks (e.g. sync completed, probe finished). Error and warning notifications are always shown regardless.
+Settings for [M3U Proxy](/docs/proxy/overview). The buttons at the top are **Test connection**, **API key**, and **API docs**.
 
-#### Navigation Position
-- **Options**: Left / Top
-- **Default**: Left
-- **Description**: Position of the main navigation sidebar
+| Section | Setting | What it does |
+|---|---|---|
+| **URL & Connection** | **Override URL** | A different address for proxied stream links than `APP_URL`. Also `PROXY_URL_OVERRIDE`. See [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration#settings-that-affect-the-connection). |
+| | **Resolve proxy public URL dynamically at request time** | Give each player stream links on the address it used, for LAN plus VPN or Tailscale access. |
+| | **Stop oldest stream when limit reached** | At a playlist's connection limit, stop its oldest stream to start the new one. |
+| | **Include logos in proxy URL override** | Use the override address for logos too. Turn off to keep HTTPS logo links for Plex while streams use a local address. |
+| **Failover & Recovery** | **Resolver URL**, **Enable advanced failover logic**, **playlist fail conditions** | [Smart failover](/docs/proxy/failover#smart-failover). |
+| | **Enable silence detection** and its settings | [Silence Detection](/docs/proxy/silence-detection). |
+| **In-App Player Transcoding** | **Default Live Transcoding Profile**, **VOD and Series Transcoding Profile** | [Transcoding](/docs/proxy/transcoding#use-a-profile) for the player built into M3U Editor. |
+| | **Max Concurrent Players** | How many in-app players can be open at once. |
 
-#### Max Width of Page Content
-- **Options**: Medium / Large / XL / 2XL / Full
-- **Default**: XL
-- **Description**: Maximum content width for better readability on large screens
+## TV App
 
-#### Application Timezone
-- **Type**: Text input
-- **Placeholder**: `UTC`
-- **Description**: Override the application timezone. Leave empty to use the server default (UTC). Takes effect for all date/time output throughout the app. See [PHP timezone list](https://www.php.net/manual/en/timezones.php) for accepted values.
-- **Note**: Can be locked by the `APP_TIMEZONE` environment variable
+Settings for [M3U TV](/docs/m3u-tv/overview): **Get the app**, [push notifications](/docs/m3u-tv/push-notifications) (**Enable push relay**, **Send Notification**, **Notification Channels**), and [device pairing](/docs/m3u-tv/device-pairing) (**Enable device pairing**, **Pair a Device**).
 
-#### Date Format
-- **Type**: Select (presets) + optional custom string
-- **Default**: `Y-m-d H:i:s`
-- **Options**: Default, Short, Long, Human Readable, 12-Hour AM/PM, Custom…
-- **Description**: Format applied to dates throughout the application (e.g. next sync, last synced). Choose "Custom…" to enter any [PHP date format string](https://www.php.net/manual/en/datetime.format.php).
+## Sync Options
 
-### Allowed Playlist Domains
+| Section | Setting | Default | What it does |
+|---|---|---|---|
+| **Provider Rate Limiting & Concurrency** | **Max concurrent requests** | 2 | How many requests run at once against providers, including stream probing and channel scrubbing. |
+| | **Enable request delay**, **Request delay** | Off, 500 ms | Wait between provider requests, for providers that block fast clients. |
+| **Sync Invalidation & Retries** | **Enable sync invalidation** and thresholds | Off; 100 channels, 100 series, 50 groups | Cancel a sync that would remove too much. See [Protect against bad syncs](/docs/resources/playlists#protect-against-bad-syncs). |
+| | **Failed sync retry cooldown** | 15 minutes | How long a failed playlist or EPG sync waits before it's retried. |
+| **Series stream file settings**, **VOD stream file settings** | **Default Series Stream File Setting**, **Default VOD Stream File Setting** | None | The default [`.strm` file](strm-files) settings. Empty turns off `.strm` files. |
 
-**Allowed Domains**
-- **Type**: Tag input
-- **Placeholder**: `*.example.com*`
-- **Description**: Restrict playlist URLs to specific domains. Supports wildcards (e.g. `*.example.com*`). Leave empty to allow all domains. Press `[tab]` or `[return]` to add each entry.
-- **Note**: Can be locked by the `ALLOWED_PLAYLIST_DOMAINS` environment variable
+**Reset Queue** at the top restarts the background workers and removes every pending job, including running syncs. Use it only when syncs are stuck.
 
-### Xtream API Panel Settings
+## Assets
 
-**HTTP Port**
-- **Type**: Number
-- **Description**: Returned as `server_info.http_port` in `player_api.php` responses. Leave empty to use `APP_PORT` (default).
+| Section | Setting | What it does |
+|---|---|---|
+| **Logo Cache** | **Keep cache permanently** | Never expire cached logos. |
+| | **Enable Logo Repository endpoint** | Serve your logos publicly at `/logo-repository`, for apps like UHF. |
+| **Image Optimization** | **Optimize cached artwork** | Cache logos, posters, and artwork at a size that suits where they're shown, so players download less. On by default. |
+| | **Poster**, **Backdrop**, **Title logo**, **Cast photo** | Maximum width of each kind of image (600, 1280, 800, and 300 pixels by default). |
+| | **Image quality** | Compression quality, 1 to 100 (default 70). |
+| **Placeholder Images** | **Logo placeholder**, **Episode preview placeholder**, **VOD/Series poster placeholder** | Your own images for items with no artwork. |
 
-**HTTPS Port**
-- **Type**: Number
-- **Placeholder**: `443`
-- **Description**: Returned as `server_info.https_port` in `player_api.php` responses. Leave empty to use 443 (default).
+**Clear Expired Logo Cache** and **Clear All Logo Cache** are at the top. **Manage Assets** opens **Tools → Assets**, where you can upload images to use as logos.
 
-**Xtream API Panel Message**
-- **Type**: Textarea
-- **Description**: Returned as `user_info.message` in `player_api.php` responses.
+## Backups
 
+| Setting | What it does |
+|---|---|
+| **Enable Automatic Database Backups** | Back up the database on a schedule. |
+| **Backup Schedule** | When to back up, as a cron schedule. |
+| **Max Backups**, **Delete Backups After (Days)** | How many to keep, and for how long. `0` means no limit. |
 
+Backups are listed, downloaded, uploaded, and restored under **Tools → Backup & Restore**. See [Users, Backups, and Tools](admin-tools#backups).
 
-## 🧭 Navigation
+## SMTP
 
-Organize the main sidebar menu to suit how you use the app.
+Settings for sending email, such as password resets: **SMTP Host**, **SMTP Port**, **SMTP Username**, **SMTP Password**, **SMTP Encryption**, and **SMTP From Address**. **Send Test Email** at the top checks them.
 
-- **Drag and drop** navigation groups, and the items inside them, to reorder them.
-- **Visible** toggles hide or show a group or an individual item. Hiding an item only removes it from the menu; the page itself still works.
-- **Restore Default** puts the original full menu back.
-- **Use Simplified Default** applies a trimmed-down menu that hides the more advanced features, useful if you only manage a playlist or two.
+## API
 
-Refresh the page after saving to see the new menu.
+**Allow access to API docs** shows the API documentation at `/docs/api` (the **API Docs** button). The API works either way. **Manage API Tokens** opens **Tools → API Tokens**, where you create tokens for scripts.
 
+## Cache
 
+| Setting | Default | What it does |
+|---|---|---|
+| **Enable cache** | Off | Show the **Cache Now** actions, and play downloaded copies. See [Cached Content](cached-content). |
+| **Cache retention mode** | Automatic | When cached files are deleted. Playlists can override it. |
+| **Share cache across playlists by default** | Off | The default for new playlists. |
 
-## 🔄 Proxy
+## Integrations
 
-### URL & Connection
+### TMDB
 
-**Override URL**
-- **Type**: URL input
-- **Placeholder**: `http://192.168.0.123:36400`
-- **Description**: Override the base URL used for proxied stream links. Useful for local network access or when you want LAN addresses for streaming but use a domain for the frontend. Leave empty to use the configured app URL.
-- **Note**: Can be locked by the `PROXY_URL_OVERRIDE` environment variable
-
-**Resolve Proxy Public URL Dynamically**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Automatically resolve the public-facing proxy URL using the incoming request host/scheme instead of `APP_URL` or the Override URL. Useful for multi-host access (VPN, Tailscale, etc.)
-
-**Stop Oldest Stream When Limit Reached**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: When a playlist reaches its connection limit, automatically stop the oldest active stream to make room for the new request. Useful for single-connection providers where instant channel switching is desired.
-- **Warning**: May cause issues with multiple clients — the newest request always wins
-
-**Include Logos in Proxy URL Override**
-- **Type**: Toggle
-- **Description**: When using a URL override, also apply it to logo/image URLs. Useful when Plex requires HTTPS for logos but your stream override points to a local HTTP address.
-- **Visibility**: Only shown when an Override URL is configured
-- **Note**: Can be locked by the `PROXY_URL_OVERRIDE_INCLUDE_LOGOS` environment variable
-
-### Failover & Recovery
-
-**Resolver URL**
-- **Type**: URL input
-- **Description**: The LAN address of the editor that the proxy can reach. Used for advanced failover logic, webhook registration for pooled providers, and Network Broadcasting features.
-- **Note**: Can be locked by the `M3U_RESOLVER_URL` environment variable
-
-**Enable Advanced Failover Logic**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: When enabled, the proxy calls the editor to determine which failover URL to use based on available capacity. When disabled, the proxy loops through failover URLs without capacity checks.
-- **Requires**: Resolver URL
-
-#### Playlist Fail Conditions
-*(visible when advanced failover is enabled)*
-
-**Enable Playlist Fail Conditions**
-- **Type**: Toggle
-- **Description**: When playlists return specific HTTP status codes, temporarily mark them as invalid during failover resolution. This enables account-level failover by skipping all channels from a failing playlist/account.
-
-**HTTP Status Codes**
-- **Type**: Tag input
-- **Placeholder**: `403, 404, 502, 503`
-- **Description**: HTTP response codes that should mark a playlist as temporarily unavailable.
-
-**Invalid Timeout (minutes)**
-- **Type**: Number
-- **Default**: 5
-- **Description**: How long (in minutes) a playlist remains marked as invalid before being retried.
-
-**Clear Failed Playlists**
-- **Action Button**: Clears all playlists currently marked as invalid so they are immediately eligible for failover again.
-- **Confirmation**: Required
-
-### Silence Detection
-
-**Enable Silence Detection**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Automatically trigger failover when a live stream's audio goes silent. Requires advanced failover to be set up. See [Silence Detection docs](https://m3ue.sparkison.dev/docs/proxy/silence-detection).
-
-#### Silence Detection Settings
-*(visible when silence detection is enabled)*
-
-**Silence Threshold (dB)**
-- **Default**: `-50 dB`
-- **Description**: Audio level below which audio is considered silent. Raise to `-40 dB` for stricter detection.
-
-**Silence Duration (seconds)**
-- **Default**: `3`
-- **Description**: Minimum continuous silence within a check window to count as a silent check.
-
-**Check Interval (seconds)**
-- **Default**: `10`
-- **Description**: How often to run silence analysis. Each window buffers stream data and analyses it with FFmpeg.
-
-**Consecutive Silent Checks Before Failover**
-- **Default**: `3`
-- **Description**: Number of consecutive silent checks required before triggering failover. Prevents failover on brief silent moments.
-
-**Monitoring Grace Period (seconds)**
-- **Default**: `15`
-- **Description**: Delay after stream start before silence monitoring begins. Allows for initial buffering and audio decoder startup.
-
-### In-App Player Transcoding
-
-**Default Live Transcoding Profile**
-- **Type**: Select (Stream Profiles)
-- **Description**: Profile used for Live channels in the built-in player. A per-channel stream profile (if set) takes priority. Leave empty to disable transcoding.
-- **Manage Profiles**: Link to Stream Profiles page
-
-**VOD and Series Transcoding Profile**
-- **Type**: Select (Stream Profiles)
-- **Description**: Profile used for VOD and Series in the built-in player. A per-channel stream profile (if set) takes priority. Leave empty to disable transcoding.
-
-**Max Concurrent Players**
-- **Type**: Number
-- **Default**: Unlimited (0 or empty)
-- **Description**: Maximum number of in-app players that can be open simultaneously. Set to 0 or leave empty for unlimited.
-
-
-
-## 📺 TV App
-
-### Send Notification
-
-Use the **Send Notification** header action to dispatch a test TV notification to any playlist target and verify the TV app notification system is connected.
-
-**Send Notification** modal fields:
-- **Playlist type**: Playlist / Custom Playlist / Merged Playlist / Alias
-- **Target**: Select the specific playlist to notify
-- **Level**: Info / Success / Warning / Danger
-- **Title**: Notification title
-- **Message**: Optional body text
-- **Channel**: Notification channel (category tag)
-- **Admin only**: When enabled, only admin-scope TV sessions receive the notification
-
-### Notification Channels
-
-**Default Notification Channels**
-- **Type**: Repeater
-- **Description**: Define the notification channels available in the TV app. Users can subscribe to specific channels so they only receive relevant notifications. Channels not listed here are still usable — they appear automatically once a notification arrives on that channel.
-
-Each channel entry:
-- **Channel slug**: Lowercase letters, numbers, and underscores only (e.g. `dvr_recording_completed`)
-- **Display label**: Optional — shown in the TV app instead of the raw slug
-
-
-
-## 🔁 Sync Options
-
-### Provider Rate Limiting & Concurrency
-
-:::info Provider rate limits (HTTP 429)
-When an Xtream provider answers with "429 Too Many Requests" during a sync or metadata fetch, M3U Editor pauses requests for that account for 15 minutes instead of retrying right away, to avoid making the rate limit worse or getting the account locked. The pause covers the account's fallback URLs too, since they share the same credentials.
-:::
-
-**Enable Request Delay**
-- **Type**: Toggle
-- **Description**: When enabled, adds a delay between requests to the provider during playlist and EPG syncs and other stream processing tasks.
-
-**Max Concurrent Requests**
-- **Type**: Number
-- **Default**: `2`
-- **Description**: Maximum number of simultaneous requests allowed. Also controls parallelism for batch operations such as stream probing and channel scrubbing. Lower values (1–2) are safer but slower.
-
-**Request Delay**
-- **Type**: Number (ms)
-- **Default**: `500 ms`
-- **Range**: 100–10,000 ms
-- **Description**: Minimum delay between provider requests, in milliseconds. Recommended: 500–2,000 ms.
-- **Visibility**: Only shown when request delay is enabled
-
-### Sync Invalidation & Retries
-
-**Enable Sync Invalidation**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Prevent a sync from proceeding if it would remove more entries than the configured thresholds. Useful for protecting against provider outages or temporary data issues.
-- **Environment override**: `INVALIDATE_IMPORT`
-
-**Failed Sync Retry Cooldown** *(v0.13.1+)*
-- **Type**: Number (minutes)
-- **Default**: `15`
-- **Description**: Minutes to wait before automatically retrying a failed playlist or EPG sync. Playlists only retry when **Auto resync on failure** is on for that playlist, up to its **Max retry attempts**. Invalidated syncs always wait for the next scheduled sync. See [Failed Sync Retries](../resources/playlists.md#failed-sync-retries).
-- **Environment override**: `FAILED_RETRY_COOLDOWN_MINUTES`
-
-**Channel Removal Threshold**
-- **Type**: Number
-- **Placeholder**: `100`
-- **Description**: Cancel the sync if it would remove more than this many channels.
-
-**Series Removal Threshold**
-- **Type**: Number
-- **Placeholder**: `100`
-- **Description**: Cancel the sync if it would remove more than this many series.
-
-**Group/Category Removal Threshold**
-- **Type**: Number
-- **Placeholder**: `50`
-- **Description**: Cancel the sync if it would remove more than this many groups or categories.
-
-### Default Stream File Settings
-
-**Default Series Stream File Setting**
-- **Type**: Select
-- **Description**: The global default Stream File Setting used for series `.strm` file generation. Settings can be overridden at the Category level or per-Series. Leave empty to disable `.strm` generation for series. Priority: Series > Category > Global.
-- **Manage**: Link to Stream File Settings page
-
-**Default VOD Stream File Setting**
-- **Type**: Select
-- **Description**: The global default Stream File Setting used for VOD `.strm` file generation. Settings can be overridden at the Group level or per-VOD channel. Leave empty to disable `.strm` generation for VOD. Priority: VOD > Group > Global.
-- **Manage**: Link to Stream File Settings page
-
-
-
-## 🖼️ Assets
-
-### Logo Cache
-
-**Keep Cache Permanently (disable expiry cleanup)**
-- **Type**: Toggle
-- **Description**: When enabled, the scheduled expired-cache cleanup skips deletion. You can still refresh or clear the cache manually via the Actions menu.
-
-**Enable Logo Repository Endpoint**
-- **Type**: Toggle
-- **Description**: When enabled, `/logo-repository` endpoints are publicly accessible for apps like UHF.
-
-### Image Optimization
-
-Artwork served through the logo proxy, media server integrations (Emby, Jellyfin, Plex) and Schedules Direct is cached as a downscaled copy sized for where it is shown. Clients download a right-sized image instead of the full-resolution source, with no extra request parameters needed. Emby, Jellyfin and Plex are asked to send the image at the right size, so the editor only resizes artwork from other sources. Images already within the size are stored as-is.
-
-**Optimize Cached Artwork**
-- **Type**: Toggle
-- **Default**: Enabled
-- **Description**: When disabled, artwork is cached and served at its original size.
-- **Environment override**: `PROXY_IMAGE_RESIZE_ENABLED`
-
-**Poster / Backdrop / Title Logo / Cast Photo**
-- **Type**: Number (px max width)
-- **Defaults**: `600` / `1280` / `800` / `300`
-- **Description**: Maximum width artwork is stored at for each role. Images are never upscaled and keep their aspect ratio.
-  - **Poster**: VOD and series covers, season covers and episode images. Media server `Primary` images use this size.
-  - **Backdrop**: background art on detail screens. Media server `Backdrop` images and landscape Schedules Direct programme art use this size.
-  - **Title Logo**: transparent title logos (clearlogo) on detail screens.
-  - **Cast Photo**: cast and crew headshots.
-- **Note**: Changing a size creates new cached copies the next time each image is requested. Old copies expire with the logo cache, or can be removed with **Clear All Logo Cache**.
-- **Environment override**: `PROXY_IMAGE_RESIZE_POSTER_WIDTH`, `PROXY_IMAGE_RESIZE_BACKDROP_WIDTH`, `PROXY_IMAGE_RESIZE_TITLE_LOGO_WIDTH`, `PROXY_IMAGE_RESIZE_PHOTO_WIDTH`
-
-**Image Quality**
-- **Type**: Number (1 to 100)
-- **Default**: empty (encoder default of `70`)
-- **Description**: Encoder quality for artwork the editor downscales. Applies to newly cached copies. The source format (JPEG, PNG, WebP) is always kept.
-- **Environment override**: `PROXY_IMAGE_RESIZE_QUALITY`
-
-:::tip
-Media server artwork is refreshed from the server once a day, so changed artwork shows up within 24 hours. Schedules Direct images never change, so they stay cached and are still served after the daily image download limit is reached.
-:::
-
-### Placeholder Images
-
-Override app-wide placeholder images. Clearing any field reverts to the built-in default.
-
-**Logo Placeholder**
-- **Recommended size**: 300×300 px
-- **Description**: Shown when a channel logo is missing.
-
-**Episode Preview Placeholder**
-- **Recommended size**: 600×400 px
-- **Description**: Shown when an episode preview image is missing.
-
-**VOD/Series Poster Placeholder**
-- **Recommended size**: 600×900 px
-- **Description**: Shown when a VOD or Series poster/cover image is missing.
-
-
-
-## 💾 Backups
-
-### Automated Backups
-
-**Enable Automatic Database Backups**
-- **Type**: Toggle
-- **Description**: Schedule automatic database backups
-
-**Backup Schedule**
-- **Type**: CRON expression
-- **Examples**:
-  - `0 3 * * *` — Daily at 3 AM
-  - `0 */6 * * *` — Every 6 hours
-  - `0 0 * * 0` — Weekly on Sunday
-- **Helper**: Shows next scheduled run time
-
-**Max Backups**
-- **Type**: Number
-- **Default**: Unlimited (0)
-- **Description**: Automatically delete old backups when limit exceeded. Enter 0 for no limit.
-
-**Delete Backups After (Days)**
-- **Type**: Number
-- **Description**: Automatically delete backups older than this many days. Enter 0 for no limit.
-
-
-
-## ✉️ SMTP
-
-### SMTP Settings
-
-Configure SMTP to send emails from the application.
-
-**SMTP Host**
-- **Type**: Text
-- **Description**: SMTP server address. Required to send emails.
-
-**SMTP Port**
-- **Type**: Number
-- **Common values**: 587 (TLS), 465 (SSL)
-- **Description**: Required to send emails.
-
-**SMTP Username**
-- **Type**: Text
-- **Description**: Required if your provider requires authentication.
-
-**SMTP Password**
-- **Type**: Password (revealable)
-- **Description**: Required if your provider requires authentication.
-
-**SMTP Encryption**
-- **Options**: TLS / SSL / None
-
-**SMTP From Address**
-- **Type**: Email
-- **Description**: The "From" email address for outgoing emails. Defaults to `no-reply@m3u-editor.dev`.
-
-**Send Test Email**
-- **Action Button**: Enter a recipient address to send a test email using the current form settings.
-
-
-
-## 🔑 API
-
-### API Settings
-
-**Allow Access to API Docs**
-- **Type**: Toggle
-- **Description**: When enabled, the interactive API documentation is accessible at `/docs/api`. When disabled, the endpoint returns 403. The API itself responds regardless of this setting — you do not need to enable docs to use the API.
-
-**Manage API Tokens**
-- **Action Button**: Opens `/personal-access-tokens` to create and manage Sanctum API tokens.
-
-**API Docs**
-- **Action Button**: Opens `/docs/api` in a new tab (requires the toggle above to be enabled).
-
-
-
-## 📥 Cache
-
-Settings for [Cached Content Downloads](../advanced/cached-content.md), which save VOD movies and series episodes to local storage.
-
-**Enable cache**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Shows the **Cache Now** actions and serves completed downloads during playback. When off, nothing new is downloaded and playback always uses the provider. Existing cached files are kept.
-
-**Cache retention mode**
-- **Options**: Automatic / Never expire / Manual
-- **Default**: Automatic
-- **Description**: "Automatic" deletes a cached file once its movie or episode is removed from the playlist. "Never expire" and "Manual" keep files until you delete them from the **Cached Downloads** page. Playlists can override this.
-
-**Share cache across playlists by default**
-- **Type**: Toggle
-- **Description**: Default for the **Share cache across playlists** option on new playlists.
-
-**Manage Cached Items** (header action) opens the **Cached Downloads** page.
-
-:::info Cache through Radarr or Sonarr
-*(v0.13.2+)* Turn on **Use for caching** on a Radarr or Sonarr integration to send new titles there instead of downloading them from the provider, for playlists that prefer media server sources. See [Caching Through Radarr or Sonarr](../advanced/cached-content.md#caching-through-radarr-or-sonarr).
-:::
-
-:::tip Docker volume
-When caching is enabled, the page shows the volume to mount so cached files survive container rebuilds (for example `./cache:/var/www/html/storage/app/private/cache`). The path can also be changed with the `CACHE_STORAGE_PATH` environment variable.
-:::
-
-
-
-## 🔗 Integrations
-
-The Integrations page has three tabs: **TMDB**, **AIOStreams**, and **MediaFlow Proxy**.
-
-### TMDB Integration
-
-**TMDB API Key**
-- **Type**: Password (revealable)
-- **Get Key**: [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
-- **Description**: v3 API key for The Movie Database
-
-**Search Language**
-- **Type**: Select
-- **Default**: English (US)
-- **Description**: Preferred language for TMDB search results.
-
-**Auto-lookup on Metadata Fetch**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Automatically lookup TMDB IDs when fetching metadata for VOD and Series. May slow down imports for large playlists.
-
-**Auto-enrichment on Request**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Automatically enrich a VOD title or series with TMDB data (cast, artwork, plot) the first time it is viewed in a client, instead of on sync or via a manual fetch. See [TMDB Integration](../integrations/tmdb_integration.md#automatically-on-request).
-
-**Auto-create Groups/Categories from TMDB Genres**
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: When enabled, TMDB metadata fetching will automatically create new groups (VOD) and categories (Series) based on TMDB genres. When disabled, only existing groups/categories are used.
-
-**Auto-lookup Scope**
-*(visible when auto-lookup is enabled)*
-- **Type**: Toggle buttons — Only Enabled / All New / Both
-- **Default**: Only Enabled
-- **Description**: Controls which entries are automatically looked up after each sync. "Only enabled" respects per-channel TMDB lookup settings. "All new" fetches TMDB data for every newly imported entry. "Both" does both.
-
-**Rate Limit (requests/second)**
-- **Type**: Number (1–50)
-- **Default**: 40
-- **Description**: Max TMDB API requests per second. TMDB allows ~40 req/s for free accounts.
-
-**Match Confidence Threshold (%)**
-- **Type**: Number (50–100)
-- **Default**: 80
-- **Description**: Minimum title similarity percentage required to accept a TMDB match. Higher values = stricter matching.
-
-**Minimum Vote Count**
-- **Type**: Number (0-10000)
-- **Default**: 25
-- **Description**: Minimum number of TMDB votes required to trust and display a rating. Ratings backed by fewer votes are hidden rather than shown as potentially misleading.
-
-#### Title Cleaning for TMDB Lookup
-
-Strip provider prefixes from titles before matching with TMDB to improve accuracy (e.g. removing `EN - `, `4K-EN - `, `NF - `).
-
-**Strip Provider Prefixes from VOD Titles**
-- **Type**: Toggle
-- **Description**: Remove prefix patterns from VOD titles before searching TMDB.
-
-**VOD Title Prefix Patterns**
-- **Type**: Tag input
-- **Placeholder**: `EN - `
-- **Description**: Strings to strip from VOD titles before TMDB lookup.
-
-**Strip Provider Prefixes from Series Titles**
-- **Type**: Toggle
-- **Description**: Remove prefix patterns from Series titles before searching TMDB.
-
-**Series Title Prefix Patterns**
-- **Type**: Tag input
-- **Placeholder**: `EN - `
-- **Description**: Strings to strip from Series titles before TMDB lookup.
+| Setting | What it does |
+|---|---|
+| **TMDB API Key** | Your TMDB key. **Test Connection** checks it, and **Get API Key** links to TMDB. |
+| **Search Language** | The language of titles and descriptions. |
+| **Auto-lookup on metadata fetch**, **Auto-lookup scope** | Look up TMDB details during each sync, for enabled items, new items, or both. |
+| **Auto-enrichment on request** | Look up an item the first time someone opens it, instead of during sync. |
+| **Auto-create groups/categories from TMDB genres** | File items under their TMDB genre. |
+| **Rate Limit (requests/second)** | Stay under TMDB's limits on large libraries. |
+| **Match Confidence Threshold (%)**, **Minimum Vote Count** | How strict matching is, and how many votes a rating needs before it's shown. |
+| **Title Cleaning for TMDB Lookup** | Text to strip from VOD and series titles before searching, like `EN - `. |
+
+See [TMDB Integration](/docs/integrations/tmdb_integration).
+
+### AIOStreams
+
+**Rate Limit (requests/minute)** (default 20) and **Max Failover Candidates** (default 3), for every [AIOStreams](/docs/integrations/aiostreams_integration) integration.
 
 ### MediaFlow Proxy
 
-Connect MediaFlow Proxy to route playlists, EPG, and Xtream API through it. Once configured, proxied URLs are auto-generated on each playlist's detail page.
+[MediaFlow Proxy](https://github.com/mhdzumair/mediaflow-proxy) is a separate proxy you can use instead of M3U Proxy, for example on ElfHosted.
 
-This applies only to regular playlist/Xtream/EPG output — it is unrelated to AIOStreams, which manages its own resolution and proxying. See the [Integrations Overview](../integrations/overview.md) for how the two flows differ.
+| Setting | What it does |
+|---|---|
+| **Proxy URL**, **Proxy Port (Alternative)** | Your MediaFlow Proxy's address. **Test connection** checks it. |
+| **API Password** | The `API_PASSWORD` set on MediaFlow Proxy. |
+| **Proxy User Agent for Media Streams**, **Use Proxy User Agent for Playlists (M3U8/MPD)** | The user agent MediaFlow sends to providers. |
+| **Automatically Rewrite Stream URLs** | Route stream links in your playlists and Xtream API through MediaFlow, for playlists not already using M3U Proxy. |
 
-**Proxy URL**
-- **Type**: URL input
-- **Placeholder**: `http://your-mediaflow-host:8888`
-- **Description**: Base URL of your MediaFlow Proxy instance.
+Once set up, each playlist's page has a **MediaFlow Proxy** tab with its MediaFlow M3U and EPG links.
 
-**Proxy Port (Alternative)**
-- **Type**: Number
-- **Description**: Alternative port if not specified in the URL (rarely used).
+## AI Copilot
 
-**API Password**
-- **Type**: Password (revealable)
-- **Description**: The `API_PASSWORD` configured on your MediaFlow Proxy instance.
+The [AI Copilot](/docs/ai-copilot/overview): **Enable AI Copilot**, **Enable AI Copilot Management**, the provider, model, API key, and base URL, the **System Prompt**, **Enabled Tools**, and **Quick Actions**. See [Configuration](/docs/ai-copilot/configuration).
 
-**Use Proxy User Agent for Playlists (M3U8/MPD)**
-- **Type**: Toggle
-- **Description**: When enabled, the configured user agent is also used when fetching playlist files. Otherwise the default user agent is used for playlists.
+## Alerts
 
-**Proxy User Agent for Media Streams**
-- **Type**: Text input
-- **Placeholder**: `VLC/3.0.21 LibVLC/3.0.21`
-- **Description**: Custom user agent sent with media stream requests through MediaFlow Proxy.
-
-**Automatically Rewrite Stream URLs**
-- **Type**: Toggle
-- **Description**: When enabled, individual stream URLs in generated playlists and Xtream API responses are rewritten to route through MediaFlow Proxy. Applies only when M3U Proxy is not already in use for a given playlist or stream.
-
-
-
-## ✨ AI Copilot
-
-### AI Copilot
-
-**Enable AI Copilot**
-- **Type**: Toggle
-- **Description**: When enabled and configured, the AI Copilot assistant (✨) appears in the top navigation bar. Save and refresh the page after changing this setting for it to take effect.
-
-**Enable AI Copilot Management**
-- **Type**: Toggle
-- **Description**: Enables audit log, custom rate limits, conversation history, and other management features.
-- **Visibility**: Only shown when AI Copilot is enabled
-
-### AI Provider
-
-**Provider**
-- **Type**: Select
-- **Description**: The AI provider to use (e.g. Anthropic, OpenAI, Ollama, Unsloth Studio (Local)). See [AI Copilot Configuration](../ai-copilot/configuration.md).
-
-**Model**
-- **Type**: Text input
-- **Description**: The model to use. Leave blank to use the provider default.
-
-**API Key**
-- **Type**: Password (revealable)
-- **Description**: Your API key for the selected provider.
-- **Visibility**: Hidden when using Ollama. Optional for Unsloth Studio (Local).
-
-**Base URL**
-- **Type**: URL input
-- **Description**: Override the default API base URL. Useful for self-hosted models or proxy endpoints. Leave blank to use the provider default.
-- **Visibility**: Only shown for providers that support a custom URL
-
-### System Prompt
-
-**System Prompt**
-- **Type**: Textarea
-- **Description**: The system prompt sent to the AI on every conversation to configure its behaviour. Leave empty to use the built-in default.
-
-### Global Tools
-
-**Enabled Tools**
-- **Type**: Checkbox list
-- **Description**: Select which additional tools the AI assistant can use across all pages. Core tools (navigation, memory) are always available. Available tools include:
-  - Search Documentation
-  - EPG Mapper: Mapping State / Channel Matcher / Apply Mappings
-  - Database: Get Schema / Execute Query
-  - DVR: Overview / Schedule
-
-### Quick Actions
-
-**Quick Actions**
-- **Type**: Repeater
-- **Description**: Pre-defined prompts displayed as buttons in the Copilot chat window. Each entry has a **Label** (button text) and a **Prompt** (pre-filled message sent to the AI).
-
-
-
-## 🔔 Alerts
-
-### Discord
-
-**Enable Discord Alerts**
-- **Type**: Toggle
-- **Description**: When enabled, error-level log entries are forwarded to your Discord channel.
-
-**Discord Webhook URL**
-- **Type**: URL input
-- **Placeholder**: `https://discord.com/api/webhooks/...`
-- **Description**: Create an Incoming Webhook in your Discord server settings and paste the URL here.
-- **Test**: Use the **Send test alert** header action to verify the connection.
-
-### Slack
-
-**Enable Slack Alerts**
-- **Type**: Toggle
-- **Description**: When enabled, error-level log entries are forwarded to your Slack channel.
-
-**Slack Webhook URL**
-- **Type**: URL input
-- **Placeholder**: `https://hooks.slack.com/services/...`
-- **Description**: Create a Slack App with an Incoming Webhook and paste the URL here. A setup guide (including a copy-paste app manifest) is shown in the Settings page when Slack alerts are enabled.
-- **Test**: Use the **Send test alert** header action to verify the connection.
-
-### Telegram
-
-**Enable Telegram Alerts**
-- **Type**: Toggle
-- **Description**: When enabled, error-level log entries are forwarded to your Telegram chat.
-
-**Telegram Bot Token**
-- **Type**: Password input (revealable)
-- **Placeholder**: `123456789:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`
-- **Description**: The bot token you received from [@BotFather](https://t.me/BotFather). A step-by-step setup guide is shown in the Settings page when Telegram alerts are enabled. Encrypted before being queued for delivery.
-
-**Telegram Chat ID**
-- **Type**: Text input
-- **Placeholder**: `e.g. 123456789 or -100123456789`
-- **Description**: The ID of the chat, group, or channel to send alerts to (group IDs are negative numbers).
-- **Test**: Use the **Send test alert** header action to verify the connection.
-
-### Additional Notifications
-*(visible when Discord, Slack, or Telegram alerts are enabled)*
-
-**Notify on Queued Job Failures**
-- **Type**: Toggle
-- **Description**: Sends an alert whenever a queued job (import, sync, probe, etc.) fails permanently after all retry attempts.
-
-**Notify on Playlist Import Failures**
-- **Type**: Toggle
-- **Description**: Sends an alert when a playlist sync fails entirely, e.g. all provider URLs were unreachable.
-
-**Notify on Invalidated Playlist Syncs** *(v0.13.1+)*
-- **Type**: Toggle
-- **Default**: Disabled
-- **Description**: Sends an alert when a playlist sync is canceled because it would have removed more channels, groups, or series than the invalidation thresholds allow.
-
-
-
-## 🔧 Actions Menu
-
-The **Actions** dropdown (top right of the Settings page) provides the following utility operations:
-
-### Test WebSocket
-- **Function**: Send a test notification via WebSocket to verify real-time notifications are working
-- **Expected**: A pop-up notification appears shortly after sending
-
-### Clear Expired Logo Cache
-- **Function**: Remove logo cache entries older than 30 days
-- **Confirmation**: Required
-- **Note**: If permanent cache is enabled, nothing will be removed
-
-### Clear All Logo Cache
-- **Function**: Remove all cached logo images regardless of age
-- **Confirmation**: Required
-- **Note**: Logos will be fetched again on the next request wherever logo proxy is enabled. If permanent cache is enabled, this still clears the cache.
-
-### Reset Queue
-- **Function**: Restart Horizon and flush all pending jobs
-- **Confirmation**: Required
-- **Warning**: Stops all active syncs and removes pending jobs
-
-**When to use Reset Queue**:
-- Queue appears stuck
-- Jobs not processing
-- After troubleshooting queue issues
-
-
-
-## 💡 Tips & Best Practices
-
-### TMDB Integration
-- Get a free API key at [themoviedb.org](https://www.themoviedb.org/settings/api)
-- Disable auto-lookup for large playlists (>1,000 items) to avoid slow imports
-- Use Title Cleaning patterns to strip provider prefixes (e.g. `EN - `, `4K-`) before matching
-
-### Stream File Settings (.strm)
-- Stream File Settings are managed in **Playlists → Stream File Settings**
-- Set a global default here in Sync Options; override at the Category/Group or per-channel level
-- Use absolute paths in your Stream File Settings (e.g. `/media/Series`, not `~/Series`)
-- Ensure paths are accessible by your media server (Plex/Jellyfin/Emby)
-
-### Backup Schedule
-- Daily backups: `0 3 * * *`
-- Keep 7 backups for one week of history (`Max Backups = 7`)
-- Run the backup CRON during off-peak hours
-
-### SMTP / Email
-- Use app-specific passwords for Gmail
-- Test your configuration with the **Send Test Email** button before relying on it
-- Port 587 with TLS is the most common modern configuration
-
-### AI Copilot
-- Save settings and refresh the page after enabling/disabling the Copilot
-- Enable only the tools you actually need to keep the assistant focused
-- Use Quick Actions for your most common queries
+Send errors and other events to Discord, Slack, or Telegram. See [Alerts](alerts).

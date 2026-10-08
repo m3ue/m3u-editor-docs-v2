@@ -1,12 +1,12 @@
 {
   "label": "AI Copilot",
-  "position": 7,
-  "description": "The in-app assistant: providers, tools, and quick actions.",
+  "position": 10,
+  "description": "The in-app assistant: setup, providers, and the tools it can use.",
   "customProps": {
     "icon": "smart_toy"
   },
   "link": {
     "type": "generated-index",
-    "description": "AI-powered in-app assistant for M3U Editor — search records, manage data, and navigate the app using natural language."
+    "description": "The AI Copilot is a chat assistant inside M3U Editor that can look things up, make changes, and answer questions for you."
   }
 }

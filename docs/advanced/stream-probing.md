@@ -1,282 +1,59 @@
 ---
 sidebar_position: 8
-description: Probe live channels with ffprobe for fast channel switching in Emby
+description: Record each stream's resolution, codecs, and audio with ffprobe, for faster channel switching and smarter transcoding, merging, and file naming.
 tags:
   - Advanced
   - Channels
-  - Emby
-  - Performance
   - Stream Probing
-title: Stream Probing (Fast Channel Switching)
+title: Stream Probing
 ---
 
-# Stream Probing (Fast Channel Switching)
+# Stream Probing
 
-Probe live channels with ffprobe to collect stream metadata and enable near-instant channel switching in Emby via the [emby-xtream](https://github.com/firestaerter3/emby-xtream) plugin.
+Probing opens a stream for a moment with ffprobe and records what's in it: resolution, video and audio codecs, frame rate, HDR, bitrate, and audio channels. M3U Editor then knows each stream's details without opening it again, which it uses for:
 
-## Overview
+- **Faster channel switching** in players that read stream details from the Xtream API, like Emby with the [emby-xtream](https://github.com/firestaerter3/emby-xtream) plugin (v1.4.69.0 or later)
+- **[Rule-based transcoding](/docs/proxy/transcoding#adaptive-profiles)**, which picks a profile from a channel's codec and resolution
+- **[Choosing merge masters](auto-merge-channels#choosing-the-master)** by codec or resolution
+- **Quality details in [`.strm` file names](strm-files)** and NFO files
+- the stream details shown on each channel
 
-Stream probing provides:
+## Probe after every sync
 
-- **Fast channel switching** in Emby (~1s instead of 5–10s)
-- **Automatic metadata collection** (codec, resolution, bitrate, framerate)
-- **Per-channel control** to include or exclude channels from probing
-- **Automatic probing after sync** to keep metadata up to date
+Edit the playlist and open **Processing → Stream Probing**. Live channels, and movies and episodes, have their own settings:
 
-## How It Works
-
-1. **ffprobe** connects to each channel's stream URL and reads the first few seconds
-2. Stream metadata (video codec, audio codec, resolution, bitrate, etc.) is extracted and stored
-3. When Emby requests channel data via the Xtream API (`get_live_streams`), the stored metadata is included in the response as `stream_stats`
-4. The **emby-xtream** plugin uses this metadata to pre-configure the player, eliminating the buffering/detection delay on channel switch
-
-### Supported Codecs
-
-| Type | Supported Codecs |
-|------|-----------------|
-| **Video** | H.264 (AVC), H.265 (HEVC), MPEG-2 |
-| **Audio** | AAC, AC3 (Dolby Digital), EAC3 (Dolby Digital Plus), MP2 |
-
-## Setup Guide
-
-### Step 1: Enable Probing on Your Playlist
-
-1. Go to **Playlists** → select your playlist → **Edit**
-2. Switch to the **Processing** tab
-3. Enable **Probe Streams After Sync**
-
-This will automatically run ffprobe on all eligible channels after each playlist sync.
-
-:::tip
-If you don't want to wait for a sync, you can manually trigger probing from the Channels table (see Step 3).
-:::
-
-### Auto-Probe Scope Settings
-
-When **Probe Streams After Sync** is enabled, two additional toggles control which channels are probed automatically:
-
-#### Live streams
-
-| Toggle | Default | Description |
+| Setting | Default | What it does |
 |---|---|---|
-| **Only probe Live streams that have not been probed before** | **On** | Skips channels that already have stored `stream_stats`. Keeps automatic probing incremental and fast for large playlists. |
-| **Include disabled Live streams** | Off | Also probes disabled channels during auto-probe. Ignored channels with per-channel probe opt-out set are always skipped. |
+| **Probe Live streams after sync**, **Probe VOD & series streams after sync** | Off | Probe after each sync. |
+| **Only probe ... that have not been probed before** | On | Only probe new items, so each sync stays quick. Turn off for a while to re-probe everything, for example after a provider changes codecs. |
+| **Include disabled ... streams** | Off | Probe disabled items too. |
+| **Retry failed probes after (days)** | 7 | *(v0.13.2+)* Skip movies and episodes whose probe failed, until this many days have passed. `0` retries every sync. |
+| **Pause probing when failures exceed (%)** | 80 | *(v0.13.2+)* Stop a run once most probes are failing, which usually means the provider is down. `0` never pauses. |
+| **Series episodes to probe** | All Episodes | *(v0.13.2+)* Probe every episode, or just the first of each season or series and copy its details to the rest. Much faster for big series catalogs. |
+| **Parallel processing** | Off | Probe several streams at once. Faster, but uses more provider connections. |
+| **Probe timeout (seconds)** | 15 | How long to wait for each stream. |
 
-#### VOD & Series streams
+New channels are included in probing unless you turn off **Enable stream probing by default** in **Processing → Auto-Enable Settings**.
 
-When **Probe VOD & series streams after sync** is also enabled:
+## Probe on demand
 
-| Toggle | Default | Description |
-|---|---|---|
-| **Only probe VOD and series streams that have not been probed before** | **On** | Skips VOD/series items that already have stored `stream_stats`. |
-| **Include disabled VOD/series streams** | Off | Also probes disabled VOD/series during auto-probe. |
-| **Retry failed probes after (days)** *(v0.13.2+)* | `7` | Shown when "only probe unprobed" is on. A VOD stream or episode whose probe failed is skipped until this many days have passed. `0` retries failures on every sync. |
-| **Pause probing when failures exceed (%)** *(v0.13.2+)* | `80` | Stops an automatic VOD and series probe run once at least 20 streams have been probed and more than this share failed, which usually means the provider is down. `0` never pauses. |
-| **Series episodes to probe** *(v0.13.2+)* | All Episodes | See [Sampled series probing](#sampled-series-probing). |
+Select channels (or movies, or series) and use **Probe Streams** from the bulk actions. It probes what you selected, even items excluded from automatic probing.
 
-#### Failed probes
+To keep items out of automatic probing, select them and use **Disable Probing**. The **Stream probed** and **Probe failed** filters find what still needs probing, or what failed. Hover a channel's probe icon to see when it was last probed.
 
-*(v0.13.2+)* A failed VOD or episode probe is now recorded, so these items show up under the **Probe failed** filter. Before, a dead stream was probed again on every sync, waiting the full probe timeout each time. Now it waits for **Retry failed probes after (days)**. An item that still has stats from an earlier successful probe keeps them when a later probe fails. To retry failures right away, filter by **Probe failed** and run the **Probe Streams** bulk action.
+## Go easy on your provider
 
-When a run pauses because too many probes failed, you get a **VOD stream probing paused** notification. Streams that weren't probed are tried again on the next sync. Retries of known failures don't count toward the threshold.
+Every probe opens a connection, like a viewer would.
 
-Live channel probes don't record failures yet.
+- **Settings → Sync Options** controls how many requests run at once (**Max concurrent requests**) and adds a pause between them (**Request delay**). Probing follows both.
+- With [Provider Profiles](playlist-pooled_providers), probing waits for a free connection on your primary account before each probe, for up to 2 minutes.
+- A failed movie or episode probe is remembered and retried later, rather than every sync.
 
-#### Sampled series probing
+## Troubleshooting
 
-*(v0.13.2+)* Episodes of a season usually share the same codec, resolution, HDR format, and audio tracks. **Series episodes to probe** lets you probe one episode and reuse its stream info for the rest, which makes probing large series catalogs much faster:
-
-| Option | Probes |
+| Problem | What to check |
 |---|---|
-| **All Episodes** (default) | Every episode |
-| **First episode of each season** | One episode per season |
-| **First episode of each series** | One episode per series |
-
-The sampled episode is the first regular episode. Specials (season 0) are only used when there's nothing else, and never as the source for a whole series. Episodes that reuse stream info get their own icon in the probe status column, and Trash Guides naming, NFO files, and Emby technical metadata use the copied stats as usual. New episodes added to an already-probed season pick up its stats right away, without a probe. Switching back to **All Episodes** probes those episodes individually.
-
-:::info Incremental by default
-The "only probe unprobed" defaults mean automatic probing is incremental: only new channels picked up during a sync get probed. This is the recommended behaviour for large playlists. If you want to re-probe everything (e.g. after a provider changes codecs), disable the toggle temporarily, trigger a sync or manual probe, then re-enable it.
-:::
-
-### Step 2: Configure Per-Channel Probing
-
-By default, all new channels have probing enabled. You can control this at two levels:
-
-#### Default for New Channels
-
-In your playlist settings under **Processing** → **Default options for new Live channels**:
-- **Enable stream probing by default**: controls whether newly imported channels will be included in automatic probing
-
-#### Per-Channel Toggle
-
-In the **Live Channels** → **Channels** table:
-- The **Probe Enabled** toggle column lets you enable/disable probing for individual channels
-- Disabled channels will be skipped during automatic probing after sync
-
-#### Bulk Enable / Disable Probing
-
-You can also toggle probing for multiple channels at once using bulk actions:
-
-1. Select the channels you want to change (use the checkboxes)
-2. Click **Actions** → **Bulk channel actions**
-3. Choose **Enable probing** or **Disable probing**
-
-This updates the `probe_enabled` flag on all selected channels in one go — useful when you want to exclude a large number of channels from automatic probing, or re-enable them after a temporary pause.
-
-:::info
-When you manually select channels and use the **Probe Streams** bulk action, the per-channel toggle is intentionally ignored. Your explicit selection overrides it.
-:::
-
-### Step 3: Run Probing Manually
-
-To probe channels without waiting for a sync:
-
-1. Go to **Live Channels** → **Channels**
-2. Select the channels you want to probe (use checkboxes)
-3. Click **Actions** → **Bulk channel actions** → **Probe Streams**
-4. Confirm to start probing
-
-The probing runs in the background. You'll receive a notification when it completes.
-
-### Step 4: Verify Probing Status
-
-The Channels table includes visual indicators:
-
-- **Probed** column: shows a green checkmark if the channel has been probed, or a gray X if not. Hover over the icon to see when it was last probed.
-- **Filters**: use the **Stream probed** / **Stream not probed** toggle filters to quickly find channels that still need probing
-
-### Step 5: Configure Emby with emby-xtream
-
-The emby-xtream plugin reads the `stream_stats` data automatically from the Xtream API. No additional configuration is needed in the plugin. It will use the metadata when available and fall back to auto-detection when it is not.
-
-**Requirements:**
-- emby-xtream plugin v1.4.69.0 or later
-- Xtream API enabled on your playlist in M3U Editor
-
-**In Emby:**
-1. Install the **emby-xtream** plugin
-2. Configure it to point to your M3U Editor Xtream API endpoint
-3. Use the credentials from your playlist's Xtream API settings
-4. Sync channels. The plugin will automatically use probed stream metadata.
-
-## How Probing Data Flows
-
-```
-┌─────────────┐     ffprobe      ┌──────────────┐
-│   Channel   │ ───────────────► │ stream_stats │
-│  Stream URL │                  │   (JSON)     │
-└─────────────┘                  └──────┬───────┘
-                                        │
-                                        ▼
-                               ┌──────────────────┐
-                               │  Xtream API      │
-                               │ get_live_streams │
-                               │  → stream_stats  │
-                               └────────┬─────────┘
-                                        │
-                                        ▼
-                               ┌──────────────────┐
-                               │  emby-xtream     │
-                               │  plugin in Emby  │
-                               │  → fast switch   │
-                               └──────────────────┘
-```
-
-## Metadata Returned
-
-When a channel is probed, the following metadata is available via the Xtream API:
-
-| Field | Description | Example |
-|-------|-------------|---------|
-| `resolution` | Video resolution | `1920x1080` |
-| `video_codec` | Video codec name | `h264`, `hevc` |
-| `video_profile` | Encoding profile | `High`, `Main` |
-| `video_level` | Codec level | `41` |
-| `video_bit_depth` | Bit depth | `8`, `10` |
-| `source_fps` | Frame rate | `25`, `50` |
-| `ffmpeg_output_bitrate` | Bitrate in kbps | `5000` |
-| `audio_codec` | Audio codec name | `aac`, `ac3` |
-| `audio_channels` | Channel layout | `stereo`, `5.1` |
-| `sample_rate` | Audio sample rate | `48000` |
-| `audio_bitrate` | Audio bitrate in kbps | `128` |
-
-## Parallel Probing
-
-By default, probing runs sequentially to avoid hammering your provider. If your provider allows multiple concurrent connections and you want faster probing, enable **parallel processing** in the playlist's probing settings.
-
-When parallel probing is on, multiple ffprobe processes run simultaneously. The exact concurrency is controlled by the queue worker configuration. Use this setting carefully — overly aggressive parallel probing can trigger rate limits or connection bans.
-
-## Rate Limiting & Connection-Aware Probing
-
-When probing large playlists, sending rapid ffprobe connections can trigger provider bans or exhaust your allowed connection slots. M3U Editor integrates the global **Provider Request Delay** settings directly into the probing process to prevent this.
-
-### Request Delay Between Probes
-
-If **Provider Request Delay** is enabled in **Settings → Sync**, M3U Editor will automatically pause between each channel probe by the configured delay amount. This is the same delay that applies to normal playlist syncs, so you only need to enable it once.
-
-| Setting | Location | Effect on Probing |
-|---|---|---|
-| **Enable request delay** | Settings → Sync → Provider Request Delay | Inserts a pause between each individual channel probe |
-| **Request delay (ms)** | Settings → Sync → Provider Request Delay | Duration of the pause in milliseconds (default: 500 ms) |
-
-The delay is only inserted *between* channels — there is no artificial wait before the very first probe starts.
-
-### Connection-Aware Probing
-
-If your playlist uses **Playlist Profiles** and has a primary profile configured, the probing job will check your provider's active connection count before probing each channel. This prevents the prober from being kicked off the provider for exceeding the allowed concurrent stream limit.
-
-**How it works:**
-
-1. Before probing each channel, M3U Editor reads the connection info from the primary profile.
-2. If the provider reports no free slots (i.e. `active connections ≥ max streams`), the job pauses and waits.
-3. Provider connection info is refreshed every **5 seconds** while waiting.
-4. Once a slot becomes free, probing of the next channel begins immediately.
-5. If no slot opens within **120 seconds**, probing proceeds anyway to avoid the job being stuck indefinitely.
-
-```
-Channel → check slot free? ──yes──► ffprobe ──► next channel
-                   │
-                   no
-                   │
-             wait 500 ms → refresh provider info (every 5 s) → re-check
-```
-
-**Requirements:**
-- Playlist has **Playlist Profiles** enabled
-- A profile is configured as the **Primary Profile**
-- The profile has valid provider info (fetched during at least one sync)
-
-:::tip
-Connection-aware probing works entirely automatically — no extra configuration is needed beyond having a primary profile set up. If no primary profile is found, or if the provider has never been queried, the connection check is skipped and probing runs at full speed.
-:::
-
-:::info
-The request delay and connection check are complementary. You can use either or both:
-- **Request delay only**: slows down probing to avoid rate limits even when slots are available
-- **Connection-aware only**: pauses only when slots are actually exhausted
-- **Both together**: the delay is applied after each successful slot acquisition, giving the gentlest possible probing behaviour
-:::
-
-## Tips & Troubleshooting
-
-### Probing Takes Too Long
-
-Each channel probe has a 15-second timeout. If you have many channels, probing runs in chunks to avoid overloading your system. For a playlist with 500+ channels, expect the full probe to take several minutes.
-
-### Some Channels Fail to Probe
-
-This is normal. Channels may be offline, geo-blocked, or use a protocol that ffprobe can't analyze. Failed channels will simply have no `stream_stats` and Emby will fall back to auto-detection for those channels.
-
-### Keeping Data Fresh
-
-Stream metadata rarely changes, but if a provider switches codecs or resolutions:
-- Enable **Probe Streams After Sync** on your playlist to automatically re-probe after each sync
-- Or manually re-probe specific channels using the bulk action
-
-### Channel Switching Still Slow in Emby
-
-If channel switching is still slow after probing:
-1. Check the **Probed** column and ensure channels show a green checkmark
-2. Verify your playlist has the **Xtream API** enabled
-3. In Emby, ensure the emby-xtream plugin is configured to use the Xtream API endpoint (not a plain M3U URL)
-4. Try restarting Emby after the initial probe to pick up the new metadata
+| Probing takes a long time | Each probe can take up to the timeout. For big catalogs, use **Only probe ... not probed before**, sample series episodes, or turn on **Parallel processing** if your provider allows it. |
+| Some streams fail | Offline, geo-blocked, or unusual streams can't be probed. Players and features fall back to working without their details. |
+| A run stopped with "VOD stream probing paused" | Too many probes failed, usually because the provider was down. The rest are tried on the next sync. |
+| Emby still switches channels slowly | The channels show as probed, the Emby plugin uses the Xtream API (not an M3U URL), and Emby has re-synced its channels since probing. |

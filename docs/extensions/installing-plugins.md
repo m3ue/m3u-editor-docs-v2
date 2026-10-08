@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: How to install, activate, and manage plugins in M3U Editor — covering the UI workflow and all install sources.
+description: How to install, activate, and manage plugins in M3U Editor, from the UI or the command line.
 tags:
   - Plugins
   - Installation
@@ -15,7 +15,7 @@ Every plugin goes through the same review flow regardless of where it comes from
 
 | Source | Best for |
 |---|---|
-| **Browser upload** | Most users — upload a `.zip` or `.tar.gz` directly from the admin UI. Works in all Docker setups. |
+| **Browser upload** | Most users. Upload a `.zip` or `.tar.gz` directly from the admin UI. Works in all Docker setups. |
 | **Local directory** | Plugin developers staging a plugin folder already on the server. |
 | **Local archive** | Staging a `.zip` or `.tar.gz` already on the server filesystem. |
 | **GitHub release asset** | Installing plugins distributed as GitHub release assets, verified by checksum. |
@@ -26,12 +26,12 @@ Every plugin goes through the same review flow regardless of where it comes from
 
 This is the recommended path for most users.
 
-1. Go to **Plugins → Plugin Installs** in the admin navigation.
+1. Go to **Plugins → Installs** in the admin navigation.
 2. Click **Upload Extension Archive**.
 3. Select your `.zip` or `.tar.gz` plugin archive.
 4. The system extracts the archive, validates the manifest, and creates an install review record.
 
-The new install review appears in the **Plugins → Plugin Installs** list with status `staged`.
+The new install review appears in the **Plugins → Installs** list with status `staged`.
 
 :::tip Private plugins don't need GitHub
 If your plugin is private, the browser upload path is all you need. There is no requirement to publish it to GitHub.
@@ -41,7 +41,7 @@ If your plugin is private, the browser upload path is all you need. There is no 
 
 ## The install review flow
 
-After staging, every install goes through the same steps in **Plugins → Plugin Installs**:
+After staging, every install goes through the same steps in **Plugins → Installs**:
 
 ### 1. Scan
 
@@ -89,13 +89,13 @@ Click **Verify Integrity** to re-hash all plugin files and compare against the s
 
 ### Plugin settings
 
-Each plugin may expose a settings form on its edit page. Fill in the settings and save — they take effect on the next plugin run. Settings are preserved across updates and reinstalls.
+Each plugin may expose a settings form on its edit page. Fill in the settings and save; they take effect on the next plugin run. Settings are preserved across updates and reinstalls.
 
 ### Update a plugin
 
 To update a plugin to a new version:
 
-1. Go to **Plugins → Plugin Installs** and upload the new archive (or use the **Stage Current Files For Review** button on the plugin edit page for locally-managed plugins).
+1. Go to **Plugins → Installs** and upload the new archive (or use the **Stage Current Files For Review** button on the plugin edit page for locally-managed plugins).
 2. The system detects the matching plugin ID and treats the staged install as an **update** rather than a fresh install.
 3. Scan, approve, and trust the new version. The old files are replaced, settings are preserved, and trust is re-established with the new file hashes.
 
@@ -124,7 +124,7 @@ If the plugin has an active run in progress, you must wait for it to finish (or 
 
 ## Bundled plugins
 
-Some plugins ship as **bundled** plugins inside the application installation. These are trusted by default and do not go through the install review flow — they are discovered and registered automatically on startup.
+Some plugins ship as **bundled** plugins inside the application installation. These are trusted by default and do not go through the install review flow; they are discovered and registered automatically on startup.
 
 ---
 
@@ -132,9 +132,9 @@ Some plugins ship as **bundled** plugins inside the application installation. Th
 
 The `plugins/` directory is symlinked to the persistent config volume, so **custom plugins survive image rebuilds and container restarts** automatically.
 
-- **Plugin files** — persisted via the config volume symlink.
-- **Plugin settings and run history** — stored in the database, persisted via your database volume.
-- **Staged upload archives** — stored in `storage/app/plugin-staging/`, persisted via the storage volume.
+- **Plugin files**: persisted via the config volume symlink.
+- **Plugin settings and run history**: stored in the database, persisted via your database volume.
+- **Staged upload archives**: stored in `storage/app/plugin-staging/`, persisted via the storage volume.
 
 If you are self-hosting outside of the standard Docker Compose setup and managing volumes manually, ensure that the path the `plugins/` symlink resolves to is on a persistent volume.
 

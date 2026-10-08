@@ -1,5 +1,5 @@
 ---
-sidebar_position: 0.5
+sidebar_position: 1
 description: Enrich VOD and series with TMDB metadata, build Dynamic Groups, reclassify by genre, and browse actor filmographies
 tags:
   - TMDB
@@ -23,12 +23,12 @@ M3U Editor uses [The Movie Database (TMDB)](https://www.themoviedb.org/) to fill
 
 ## Setup
 
-1. Get a free API key at [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api) (v3 auth).
+1. Get a free API key at [themoviedb.org/settings/api](https://www.themoviedb.org/settings/api) (v3 auth). **Get API Key** on the settings page links there.
 2. Go to **Settings → Integrations → TMDB**.
 3. Paste the key into **TMDB API Key** and click **Test Connection**.
-4. Adjust the options below and save.
+4. Choose a **Search Language**, adjust the options below, and save.
 
-See the [Settings Reference](../advanced/settings-reference.md#tmdb-integration) for every field.
+**Rate Limit (requests/second)** keeps lookups under TMDB's limits on big libraries. See the [Settings Reference](/docs/advanced/settings-reference#tmdb) for every field.
 
 ## Getting Metadata
 
@@ -55,7 +55,8 @@ TMDB-enriched metadata is no longer overwritten by the provider's own metadata f
 
 - **Match Confidence Threshold**: minimum title similarity (50 to 100%) to accept a match.
 - **Minimum Vote Count**: ratings with fewer TMDB votes than this are hidden instead of shown as potentially misleading (default 25).
-- **Title cleaning**: strip provider prefixes such as `EN - ` or `4K-` from titles before searching.
+- **Title cleaning**: strip provider prefixes such as `EN - ` or `4K-` from titles before searching, with separate pattern lists for VOD and series.
+- **Auto-create groups/categories from TMDB genres**: file new items under their TMDB genre.
 
 ## Related Content ("More Like This")
 
@@ -83,14 +84,14 @@ Members are listed in TMDB's own order *(v0.13.1+)*, so a **Trending** group sho
 ### Available sources
 
 | Source | Movies | Series | Extra options |
-|---|:-:|:-:|---|
-| Trending | ✓ | ✓ | Time Window: Today or This Week |
-| Popular | ✓ | ✓ | |
-| In Theatres | ✓ | | |
-| Coming Soon | ✓ | | |
-| Top Genre | ✓ | ✓ | Genre |
-| By TV Network | | ✓ | TV Network |
-| By Streaming Service | ✓ | ✓ | Streaming Service, Region |
+|---|---|---|---|
+| Trending | Yes | Yes | Time Window: Today or This Week |
+| Popular | Yes | Yes | |
+| In Theatres | Yes | | |
+| Coming Soon | Yes | | |
+| Top Genre | Yes | Yes | Genre |
+| By TV Network | | Yes | TV Network |
+| By Streaming Service | Yes | Yes | Streaming Service, Region |
 
 Only titles that exist in your playlist are included.
 
@@ -114,7 +115,7 @@ The **Dynamic Groups** list pages show each group's playlist and item count, and
 Dynamic Groups can also be published to Emby as libraries. See [Emby Library Publishing](emby_library_publishing.md).
 
 :::note
-Dynamic Groups require a configured TMDB API key. They can be turned off entirely with the [`PLAYLIST_TMDB_DYNAMIC_GROUPS`](../advanced/environment-variables.md#playlist_tmdb_dynamic_groups) environment variable.
+Dynamic Groups require a configured TMDB API key. They can be turned off entirely with the [`PLAYLIST_TMDB_DYNAMIC_GROUPS`](../advanced/environment-variables.md#other-features) environment variable.
 :::
 
 ## Ratings, Networks and Studios
@@ -150,7 +151,7 @@ If TMDB isn't configured or its genre list can't be loaded, reclassify does noth
 
 ## Sorting by TMDB Data
 
-TMDB ratings and air dates also power extra sort options. See [Sorting](../resources/playlists.md#sorting-vod-and-series).
+TMDB ratings and air dates also power extra sort options: **Rating** for VOD and series, and **Most Recent Activity** (the latest aired episode) for series. Use them in a playlist's **Sort Alpha Configs** (see [Processing](/docs/resources/playlists#processing)) or with **Sort by Date** on the Series list.
 
 ## AIOStreams
 

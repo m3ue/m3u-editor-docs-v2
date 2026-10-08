@@ -1,174 +1,56 @@
 ---
 sidebar_position: 3
-description: Reference for all built-in AI Copilot tools available in M3U Editor
+description: Every tool the AI Copilot can use - records, the guide and DVR, EPG mapping, network content, the database, docs search, and memory - and which ones ask for approval.
 tags:
   - AI Copilot
   - Tools
-  - Reference
 title: Tools
 ---
 
 # Tools
 
-Tools give the AI Copilot the ability to take real actions — not just answer questions. Each tool is a discrete capability that the assistant can invoke autonomously during a conversation based on what you ask.
+Tools are how the Copilot acts. When you ask for something, it decides which tools to use, runs them, and tells you what it found or did. Ask "What tools do you have?" in the chat to see what it can use right now.
 
----
+## Always available
 
-## Global Tools
-
-Global tools are available on **every page** regardless of which resource you are viewing. You can toggle individual tools on or off under **Settings → AI Copilot → Global Tools**.
-
-| Tool | Description |
+| Tool | Lets the Copilot |
 |---|---|
-| **Get Available Tools** | Lists all tools currently available to the assistant in the current context. Useful for asking the AI what it can do. |
-| **Run Tool** | Allows the AI to execute another tool by name. Enables multi-step tool chaining. |
-| **List Resources** | Lists all registered admin resources (channels, playlists, EPG sources, etc.). |
-| **List Pages** | Lists all registered admin pages the assistant can navigate to. |
-| **List Widgets** | Lists all registered dashboard widgets. |
-| **Remember** | Stores a piece of information in the assistant's memory for your user account, persisted across sessions. |
-| **Recall Memories** | Retrieves all stored memories for your user account. |
-| **Search Documentation** | Searches the M3U Editor documentation site and returns relevant excerpts. |
+| **Records** | List, search, view, create, edit, and delete records like channels, playlists, EPGs, and groups. It can only do what your account is allowed to. |
+| **Navigation** | Open pages in M3U Editor for you. |
+| **Memory** | Remember notes you give it ("Remember that my main playlist is called Home"), across conversations. Ask "What do you remember?" to see them. |
 
----
+## Optional tools
 
-## Resource Tools
+Turn these on under **Enabled Tools** in **Settings → AI Copilot**:
 
-When you are on a resource page (e.g. the Channels list), the assistant automatically gains access to tools for that resource:
-
-| Tool | Description |
+| Tool | Lets the Copilot |
 |---|---|
-| **List Records** | Returns a paginated list of records for the resource. |
-| **Search Records** | Searches records by name or other searchable fields. |
-| **View Record** | Returns the full details of a single record by ID. |
-| **Create Record** | Creates a new record using data you describe in the chat. |
-| **Edit Record** | Updates an existing record. |
-| **Delete Record** | Deletes a record after confirmation. |
+| **Search Documentation** | Answer questions from these docs. |
+| **EPG Mapper: Mapping State** | Show how many channels in each playlist and group have guide data. Turning it on also adds a **Map EPG Channels** quick action. |
+| **EPG Mapper: Channel Matcher** | Find guide channels for unmapped channels, cleaning up prefixes like `US:` and labels like `HD` first. It uses the same settings as your [EPG maps](/docs/resources/epg-setup#improve-the-matches). |
+| **EPG Mapper: Apply Mappings** | Apply the matches you've agreed to. |
+| **DVR: Overview** | Report what's recording, what's coming up, your rules, recent failures, and disk use. |
+| **DVR: Schedule** | Look up what's on (now, tonight, this week, or around a show) and schedule [recordings](/docs/integrations/dvr_integration). |
+| **Content: VOD Search** | Find movies by genre, year, rating, or keyword. |
+| **Content: Network Bulk Add** | Add movies it found to a [Network](/docs/integrations/media_networks_integration). |
+| **Content: Pin to Timeslot** | Schedule something on a Network at a set time, like "every Friday at 8pm". |
+| **Database: Get Schema** | See the database's tables and columns. |
+| **Database: Execute Query** | Read, update, or delete database records directly. |
 
-Resource tools are context-aware — they are scoped to the resource you are currently viewing and respect your user permissions.
-
----
-
-## Database Tools
-
-Database tools allow the assistant to query and interact with your M3U Editor database directly. These are powerful tools intended for advanced users - enable them under **Settings → AI Copilot → Global Tools**.
-
-:::warning Use with care
-Database execute tools can modify your data. Any query that isn't a plain `SELECT` waits for your approval before it runs (see [Tool Approvals](#tool-approvals)).
+:::warning Database tools
+**Database: Execute Query** can change anything in your database. Turn it on only if you're comfortable reviewing the queries it proposes.
 :::
 
-| Tool | Description |
-|---|---|
-| **DB Query** | Runs a read-only SQL query against the database and returns results. Use this to look up data, count records, or investigate issues. |
-| **DB Execute** | Runs a write SQL statement (INSERT, UPDATE, DELETE). Use this to make targeted data corrections that would otherwise require going through the UI. |
+## Approvals
 
-**Example prompts:**
-```
-How many channels are currently enabled across all playlists?
-```
-```
-What are the 10 most recently synced playlists?
-```
-```
-Set the enabled flag to false for all channels in the group "Adult"
-```
+*(v0.13.1+)* Tools that make bulk changes stop and show **Approve** and **Reject** buttons in the chat. Nothing runs, and you can't type, until you choose:
 
----
+- database queries other than `SELECT`
+- applying EPG mappings
+- adding content to a Network, or pinning it to a time
 
-## Tool Approvals
+Creating, editing, and deleting single records doesn't ask, but always follows your account's permissions.
 
-*(v0.13.1+)* Tools that change data in bulk pause and show **Approve** and **Reject** buttons in the chat before they run. The chat input is disabled until you choose. These tools ask for approval:
+## Rating replies
 
-| Tool | Why it asks |
-|---|---|
-| Database query (anything other than `SELECT`) | The query changes records in your database |
-| Smart EPG Mapper, when applying mappings | It applies EPG mappings to your channels |
-| Network content bulk add | It adds content to a network playlist |
-| Network content pin | It changes when content airs in a network schedule |
-
-Creating, editing, and deleting individual records through the resource tools doesn't use approvals. Those still follow your account's permissions.
-
-## Rating Replies
-
-*(v0.13.1+)* Each assistant reply has thumbs up and thumbs down buttons. The rating is saved with that message.
-
----
-
-## Smart EPG Mapper
-
-The **Smart EPG Mapper** tool helps the AI automatically suggest or apply EPG channel ID mappings for channels that are missing EPG data.
-
-| Tool | Description |
-|---|---|
-| **Smart EPG Mapper** | Analyses unmapped channels and suggests EPG channel IDs based on name similarity and available EPG sources |
-
-Enable this tool under **Settings → AI Copilot → Global Tools** and navigate to your Channels list, then ask the AI to map EPG for unmapped channels.
-
----
-
-## AI Gateway Models
-
-The AI Copilot supports multiple model providers. Configure the active gateway under **Settings → AI Copilot**.
-
-### Supported Gateways
-
-| Provider | Models available |
-|---|---|
-| **OpenAI** | GPT-4o, GPT-4o mini, and others |
-| **Anthropic** | Claude Sonnet, Claude Haiku |
-| **MiniMax** | MiniMax Text 01, Abab 6.5 |
-| **Ollama** | Any locally running model |
-
-### MiniMax
-
-MiniMax is a Chinese AI provider offering competitive models at low cost. To use MiniMax:
-
-1. Go to **Settings → AI Copilot → AI Gateway**
-2. Select **MiniMax** as the provider
-3. Enter your MiniMax API key
-4. Choose a model (e.g. `MiniMax Text 01`)
-
-MiniMax is a good option if you want an alternative to OpenAI/Anthropic for cost or privacy reasons.
-
----
-
-## Memory
-
-The **Remember** and **Recall Memories** tools give the assistant a persistent memory scoped to your user account.
-
-**What you can store:**
-- Your preferred playlist name or server details
-- Reminders or notes about your setup
-- Context that helps the assistant give better answers over time
-
-**Examples:**
-```
-Remember that my main playlist is called "Home IPTV"
-Remember that I prefer UK English spellings
-```
-
-```
-What do you remember about me?
-```
-
-Memory entries persist across browser sessions and are only visible to your user account.
-
----
-
-## Documentation Search
-
-The **Search Documentation** tool lets the assistant look up information from the M3U Editor docs in real time. Ask questions like:
-
-- `How do I set up provider profiles?`
-- `What environment variables are available for the proxy?`
-- `Explain how stream probing works`
-
-The assistant will search the docs, retrieve the most relevant sections, and summarise the answer for you — without you leaving the app.
-
----
-
-## Tips
-
-- **Ask the AI what it can do** — type `What tools do you have available?` and it will list everything in the current context.
-- **Tools respect permissions** — the AI cannot create or delete records if your account does not have permission to do so.
-- **Bulk changes need your approval** - write queries, applying EPG mappings, and network content changes wait for **Approve** before they run. You can always reject or ask it to stop.
-- **Autonomous mode** — the Copilot can be configured to operate as an automated agent for data management tasks. See [Configuration](./configuration.md) for details.
+*(v0.13.1+)* Each reply has thumbs up and thumbs down buttons. The rating is saved with the message, and shows in the conversation history when [management](configuration#history-and-limits) is on.

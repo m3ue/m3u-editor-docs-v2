@@ -1,6 +1,6 @@
 ---
-sidebar_position: 7
-description: Set up Electronic Program Guide (EPG) data
+sidebar_position: 2
+description: Add guide data from XMLTV or Schedules Direct, combine guides, map them to your channels, and fill gaps with placeholder guides.
 tags:
   - Getting Started
   - EPG
@@ -8,228 +8,140 @@ tags:
 title: EPGs
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { Steps, Step } from '@site/src/components/Steps';
+
 # EPGs
 
-Electronic Program Guide (EPG) data provides TV listings for your channels. M3U Editor supports multiple EPG sources.
+An EPG (electronic program guide) is the TV listings your players show: what's on now, and what's on next. In M3U Editor, guide data comes from an **EPG** source, and an **EPG map** links its listings to your channels. Your players then get the guide with the playlist, through the Xtream API or the playlist's XMLTV URL.
 
-## Supported EPG Sources
+:::tip Your provider's guide may already be set up
+For Xtream playlists, **Import EPG** (on by default) adds the provider's guide and maps it to your channels for you. Check **EPG → EPGs** before adding one by hand.
+:::
 
-- **XMLTV Files** - Local or remote XML files
-- **XMLTV URLs** - Direct links to EPG data
-- **Schedules Direct** - Full integration with SD service
+## Add guide data
 
-## Adding EPG Data
+Go to **EPG → EPGs**, choose **New EPG**, and pick the **EPG type**:
 
-### Via XMLTV URL
+<Tabs groupId="epg-type" queryString>
+<TabItem value="xmltv" label="File, URL or Path" default>
 
-1. Navigate to **EPG** in the sidebar
-2. Click **Add EPG Source**
-3. Select **XMLTV URL**
-4. Enter the EPG URL
-5. (Optional) Set refresh interval
-6. Click **Save & Import**
+For an XMLTV guide, enter its **URL or Local file path**, or upload a **File**. Compressed files (`.xml.gz`) work too.
 
-### Via File Upload
+- **User agent** and **Disable SSL verification** help with sources that block the default client.
+- **Provider Playlist** ties the guide to a playlist from the same provider, so the guide's URL follows that playlist's [DNS failover](xtream-dns-failover).
 
-1. Navigate to **EPG** in the sidebar
-2. Click **Add EPG Source**
-3. Select **Upload File**
-4. Choose your XMLTV file
-5. Click **Save & Import**
+</TabItem>
+<TabItem value="sd" label="SchedulesDirect">
 
-### Via Schedules Direct
+[Schedules Direct](https://www.schedulesdirect.org/) is a paid listings service with detailed North American and international guide data.
 
-1. Navigate to **EPG** in the sidebar
-2. Click **Add EPG Source**
-3. Select **Schedules Direct**
-4. Enter your SD credentials
-5. Select one or more lineups and channels
-6. Click **Save & Import**
+1. Enter your Schedules Direct **Username** and **Password**, then choose **Test Connection**.
+2. Choose your **Country** and **Postal Code**, then pick one or more **Lineups** (for example your antenna lineup and your cable lineup).
+3. Set **Days to Import**, from 1 to 14 (default 3).
+4. **Import Metadata** adds program images. It can make imports much slower.
 
-#### Multiple Lineups
+Lineups not yet on your Schedules Direct account are added on the next sync. Stations in more than one lineup are only included once, and if one lineup fails to load, the others still import.
 
-A Schedules Direct EPG can use several lineups at once (for example an OTA lineup and a cable lineup). Stations that appear in more than one lineup are only included once. Lineups that aren't on your SD account yet are added during sync.
+**Manage SD Lineups** removes lineups from your account to free up slots. When you delete a Schedules Direct EPG, **Also delete lineups from SchedulesDirect account** keeps any lineup another EPG still uses.
 
-If one lineup fails to load, it's skipped and the error is recorded on the EPG; the sync only fails if every lineup fails. When you delete an EPG with **Also delete lineups from SchedulesDirect account** turned on, any lineup still used by another EPG on the same SD account is kept.
+</TabItem>
+</Tabs>
 
-## Mapping EPG to Channels
+Each EPG syncs on its own schedule under **Scheduling**. **Auto resync on failure** retries a failed sync, or one that finds no channels, after 1 minute, then 2, then 3, up to **Max retry attempts**.
 
-EPG-to-channel matching is managed through the **EPG Maps** resource (sidebar → **EPG** → **EPG Maps**), which runs a fuzzy-matching job across a playlist (or a subset of it) against an EPG source and reports results per channel.
+### Combine guides
 
-### Creating an EPG Map
+A **Merged EPG** (**EPG → Merged EPGs**) combines several EPGs into one, for example a regional guide plus a sports guide. Drag the sources into order; when two sources have the same channel, the first one wins. Map the merged EPG to your channels like any other.
 
-1. Navigate to **EPG Maps** and click **New EPG Map**
-2. Select the **EPG** to map from — both standard and **Merged EPGs** are selectable, grouped in the dropdown
-3. Select the **Playlist** to map to
-4. Optionally scope the mapping to specific **Groups** instead of the entire playlist (leave empty to include all groups)
-5. Toggle **Overwrite** to replace existing mappings, and **Recurring** to re-run the mapping automatically every time the EPG syncs
-6. (Optional) Configure prefix/regex stripping and the advanced matching settings below
-7. Save — the map runs as a background job and the table shows live progress
+## Map guide data to channels
 
-### Matching Settings
+An EPG map matches a guide's channels to a playlist's channels by ID and name, so you don't have to pair them one by one.
 
-| Setting | Description |
+<Steps>
+<Step title="Create the map">
+
+Go to **EPG → EPG Maps** and choose **New EPG Map**. Pick the **EPG** (or Merged EPG) and the **Playlist**. To map only part of the playlist, pick some **Groups**.
+
+</Step>
+<Step title="Choose how it runs">
+
+**Recurring** runs the map again every time the EPG syncs, which keeps new channels mapped. **Overwrite** replaces mappings channels already have; leave it off to only fill in unmapped channels.
+
+</Step>
+<Step title="Save and review">
+
+The map runs in the background, and the list shows its progress and how many channels it matched. Channels it wasn't sure about wait for you in **Review Candidates** (below).
+
+</Step>
+</Steps>
+
+### Improve the matches
+
+Provider channel names are often messy, like `US: ESPN HD`. The map's settings clean them up before matching:
+
+| Setting | What it does |
 |---|---|
-| **Use regex for filtering** | Clean channel names using a regex pattern instead of a plain prefix list before matching |
-| **Channel prefixes / regex patterns to remove** | Strings stripped from channel names before matching (e.g. `US: `, `UK: `, quality tags, bracketed text). Includes a regex tester when regex mode is enabled |
+| **Channel prefixes** (or regex patterns) **to remove** | Strip text such as `US: ` or `[UK]` from names before matching. Turn on **Use regex for filtering** to use patterns. |
+| **Skip channels without EPG ID** | Only map channels that have a `tvg-id`, instead of also matching by name. |
+| **Prioritize name/display name matching** | Prefer an exact name match over an ID match, for guides that reuse one ID for several versions of a channel. |
+| **Set preferred icon to EPG** | Use the guide's channel logo for matched channels. |
+| **Remove quality indicators** | Ignore HD, FHD, 4K, and similar labels while matching. Add your own list, or leave it empty for the built-in one. |
+| **Minimum Similarity (%)** | How close a name must be to count as a match (default `70`). Higher is stricter. |
+| **Maximum Fuzzy Distance**, **Exact Match Distance** | How many character differences are allowed (defaults `25` and `8`). Lower is stricter. |
 
-**Advanced Settings** (collapsed by default):
+*(v0.13.3+)* Fuzzy matches are also checked for conflicts before they're applied. Numbers must agree, so `TSN+ 42` won't match `TSN+ 12`. Words that differ must look like a typo, so `NHL GP 16` won't match `NFL GP 16`. Typos, plurals, and extra words still match.
 
-| Setting | Description |
-|---|---|
-| **Skip channels without EPG ID** | Skip channels missing `epg_channel_id`/`tvg-id` instead of attempting a name-based match |
-| **Prioritize name/display name matching** | Prefer exact name matches over `channel_id` matches — useful when an EPG reuses one `channel_id` across multiple quality variants |
-| **Set preferred icon to EPG** | Use the matched EPG channel's icon as the channel's preferred logo source |
-| **Remove quality indicators** | Strip quality tags (HD, FHD, UHD, 4K, 720p, 1080p, etc.) during fuzzy matching, with a custom list override |
-| **Minimum Similarity (%)** | Minimum similarity score required for a match (default `70`) |
-| **Maximum Fuzzy Distance** | Maximum Levenshtein distance allowed for a fuzzy match (default `25`) |
-| **Exact Match Distance** | Maximum distance still treated as an exact match (default `8`) |
-| **Widen matching with pg_trgm similarity (Postgres only)** | Postgres-only, disabled by default. See [Postgres Trigram Matching](#postgres-trigram-matching-advanced) below |
+**Preferred Locale** on the EPG itself (under **Mapping**) picks which language to prefer when a guide has entries like `CHANNEL.en` and `CHANNEL.fr`.
 
-If **Remove quality indicators** is on and the custom list is left empty, the built-in list is used. *(v0.13.3+)* This now applies the same way to mapping runs, candidate review, and the AI Copilot's EPG mapper; before, review and Copilot stripped nothing in that case.
+<details>
+<summary>Wider matching on PostgreSQL (pg_trgm)</summary>
 
-### How Automatic Matches Are Checked
+On PostgreSQL, **Widen matching with pg_trgm similarity** (under the map's **Advanced Settings**) also catches typos and transliterations like `Soprtsnet` and `Sportsnet`. It's off by default because it makes mapping noticeably slower on large guides, and it only affects maps you turn it on for.
 
-*(v0.13.3+)* A fuzzy match is only applied automatically if one of the guide channel's names doesn't conflict with the channel's name:
-
-- **Numbers must agree.** `TSN+ 42` no longer matches `TSN+ 12`, and `MLS 18` no longer matches `TSN+ 18`.
-- **Different words must look like a typo.** If each name has a word the other lacks, at least one pair must be a likely typo (about one edit per four letters). So `NHL GP 16` no longer matches `NFL GP 16`.
-
-Extra words (`Radio: Dallas Cowboys` and `Dallas Cowboys`), typos, plurals (`Mysteries` and `Mystery`), and quality or HB/LB bitrate labels still match, and exact matches aren't affected. Channels rejected by these checks are still offered as review candidates, so you can map them by hand.
-
-Mapping runs are also faster in v0.13.3, especially on large EPGs. To measure mapping speed on your own data, run `php artisan epg:benchmark-mapping --map=<id>`. It runs against an existing EPG map inside a transaction that is always rolled back, so it changes nothing. Run it with `--help` for the other options.
-
-### Postgres Trigram Matching (Advanced)
-
-On Postgres, EPG matching can optionally widen its candidate search using the `pg_trgm` extension's trigram similarity operator (`%`). This catches typos and transliteration differences (e.g. `Soprtsnet` vs `Sportsnet`) that literal substring (`LIKE`) matching misses.
-
-This is a per-**EPG Map** toggle in **Advanced Settings** → **Postgres Trigram Matching**, and is **disabled by default** — widening every search term with a trigram scan measurably slows down mapping runs on large EPGs/playlists, so it's opt-in per map rather than automatic or global.
-
-**Implications of enabling it:**
-
-- ⚠️ **Slower mapping jobs.** Every search term run against that map's EPG candidate pool gets an extra trigram condition, on top of the existing exact/`LIKE`/JSON matching. Expect noticeably longer mapping runs, especially on EPGs with many channels or when mapping a large playlist. Only the maps you enable it on are affected — other EPG Maps keep their existing speed.
-- ✅ **Better recall for typo/transliteration mismatches** that would otherwise surface as unmatched candidates.
-- It only takes effect on a Postgres connection with `pg_trgm` actually installed. On other database drivers, or on Postgres without the extension, the toggle is greyed out and disabled in the form.
-
-**If you're using the embedded Postgres image**, the extension and its supporting GIN indexes are already provisioned automatically — the toggle is enabled and ready to use.
-
-**If you're running your own external Postgres instance**, the toggle stays disabled until you provision `pg_trgm` yourself. Run the bundled setup command from the app container (or anywhere with `artisan` access and network access to your database):
+The embedded PostgreSQL in the editor container is already set up for it. For your own PostgreSQL server, the toggle stays greyed out until you install the extension and indexes by running this in the editor container:
 
 ```bash
 php artisan app:configure-pg-trgm
 ```
 
-By default it connects using the app's own configured `pgsql` connection. To target a different database (e.g. connecting as a superuser just for setup, separate from the app's regular role), pass overrides explicitly:
+It uses the app's own database connection. To run it as a different user, such as a superuser just for setup, pass `--host`, `--port`, `--database`, `--username`, and `--password`. `--threshold` sets the similarity threshold (default `0.35`, or `TRGM_THRESHOLD`). Reload the map's form afterwards; no restart is needed.
 
-```bash
-php artisan app:configure-pg-trgm \
-  --host=your-db-host \
-  --port=5432 \
-  --database=your_database_name \
-  --username=postgres \
-  --threshold=0.35
-```
+To measure mapping speed on your own data, `php artisan epg:benchmark-mapping --map=<id>` runs an existing map and rolls back every change.
 
-| Option | Description |
+</details>
+
+### Review candidates
+
+Channels that didn't clear the bar for an automatic match are kept as **candidates** instead of being skipped. Choose **Review Candidates** on a map to see each one with its best match, a confidence score, and the alternatives. **Apply** the suggestion, **Change** it, or **Skip** the channel, one at a time or in bulk with **Apply top candidate** and **Mark as skipped**.
+
+### Map one channel
+
+To fix a single channel, edit it and choose its **EPG Channel**, or select channels and use **Map EPG to selected** from the bulk actions. To keep map runs from changing a channel, select it and use **Disable EPG mapping** from the bulk actions.
+
+If [AI Copilot](/docs/ai-copilot/overview) is set up, you can also ask it to map unmapped channels. It uses the same matching settings. See [Tools](/docs/ai-copilot/tools#optional-tools).
+
+## Placeholder guides
+
+Channels with no guide data can still get one, so they don't show as empty in your player. On the playlist's **Output** tab, under **EPG Output**, turn on **Enable dummy EPG**:
+
+| Setting | What it does |
 |---|---|
-| `--host`, `--port`, `--database`, `--username`, `--password` | Override the connection to use. Defaults to the app's configured `pgsql` connection if omitted; you'll be prompted for a password if `--username` is given without one |
-| `--threshold` | `pg_trgm.similarity_threshold` to set. Defaults to `TRGM_THRESHOLD` or `0.35` |
+| **Dummy program length (in minutes)** | How long each placeholder program is (default 120). |
+| **Dummy EPG length (in days)** | How many days to generate (default 5). |
+| **Channel group as category** | Adds the channel's group as the program category. |
+| **Dummy EPG Title Source** | Which field to use as the program title, tried in order. The channel title is used if it's empty. |
 
-The command:
+For guides built from the event names in channel titles (common for sports and PPV channels), use [Advanced EPG Dummies](/docs/advanced/advanced-epg-dummies).
 
-1. Installs the `pg_trgm` and `fuzzystrmatch` extensions
-2. Sets `pg_trgm.similarity_threshold` at the database level (needs superuser or `GRANT SET ON PARAMETER` — if your role can't set it, the command warns and continues; matching still works using Postgres's built-in default of `0.3` instead)
-3. Builds the GIN trigram indexes on `epg_channels` (`channel_id`, `name`, `display_name`) using `CREATE INDEX CONCURRENTLY`, so it's safe to run against a database with EPG imports already in progress
-4. Refreshes table statistics with `ANALYZE`
+## Check the guide
 
-If `epg_channels` doesn't exist yet (a fresh install before its first `php artisan migrate`), the command installs the extensions and warns you to re-run it after migrating to build the indexes.
+Open a playlist or an EPG to see its guide below the details, as a TV-style grid. Large guides are prepared in the background after each sync (**Generate Cache** runs it by hand). See [EPG Cache](/docs/advanced/epg-optimization).
 
-Once it completes, reload the EPG Map form — the toggle becomes enabled immediately, no restart needed.
+If channels show no guide in your player:
 
-### Reviewing Candidates
-
-Channels that don't clear the auto-match bar are recorded as **candidates** rather than silently skipped. Click **Review Candidates** on an EPG Map row to open a per-channel review table showing:
-
-- The top-matched EPG channel, its confidence score, and the reason for the match (exact, fuzzy, etc.)
-- Any alternative candidates found
-- Whether the match was automatic or needs a human decision
-
-From there you can **Apply** the top suggestion, **Change** it to pick from alternatives (or search the EPG source manually), **Skip** a channel, or use the bulk **Apply top candidate** / **Mark as skipped** actions across many rows at once. Tabs filter by status: Pending, Applied, Skipped, and Stale (candidates invalidated by a later re-run).
-
-### Automatic / AI Copilot Mapping
-
-If [AI Copilot](../ai-copilot/overview.md) is enabled, the **Smart EPG Mapper** tool can suggest and apply EPG mappings for unmapped live channels directly from a chat request (e.g. "map EPG for unmapped channels in this playlist"). It shares the same similarity settings saved on your EPG Maps, so results stay consistent with any manual runs. See [Copilot Tools](../ai-copilot/tools.md#smart-epg-mapper).
-
-### Manual Mapping (Single Channel)
-
-For one-off corrections without running a full map:
-
-1. Go to your playlist's **Channels**
-2. Click on a channel
-3. Scroll to **EPG Mapping**
-4. Search for the correct EPG channel
-5. Click **Map**
-
-## EPG Preview
-
-View the program guide:
-
-1. Navigate to **EPG Preview**
-2. Select your playlist
-3. Browse the TV guide
-4. Click on any program to see details
-5. (Optional) Click play to test the stream
-
-## EPG Cache Overview
-
-For large EPG files, M3U Editor includes caching:
-
-- **Automatic Caching** - Generated after EPG import
-- **Date-Chunked Storage** - Efficient data retrieval
-- **Fast API Access** - Instant program guide loading
-
-The cache is automatically updated when EPG data is refreshed.
-
-## EPG Output
-
-M3U Editor can generate EPG for your output playlists:
-
-1. Go to your playlist settings
-2. Enable **Include EPG in Output**
-3. Choose EPG format:
-   - Full XMLTV (all programs)
-   - Filtered (only mapped channels)
-   - Time-limited (e.g., 7 days)
-
-## Dummy EPG
-
-Channels without guide data can get a generated placeholder guide. On a playlist (and on Custom and Merged Playlists), turn on **Enable dummy EPG** and set:
-
-- **Dummy program length (in minutes)**: length of each placeholder programme.
-- **Dummy EPG length (in days)**: how many days of placeholder data to generate.
-- **Channel group as category**: adds the channel's group as a `<category>` tag.
-
-[Advanced EPG Dummies (AED)](/docs/advanced/advanced-epg-dummies) profiles can override the number of days per profile.
-
-## Troubleshooting
-
-### EPG Not Showing
-
-1. Verify EPG import completed successfully
-2. Check channel mappings
-3. Ensure time zones are correct
-4. Refresh EPG cache
-
-### Slow EPG Loading
-
-For very large EPG files:
-1. Enable EPG caching (automatic)
-2. Use time-limited outputs
-3. Filter to only needed channels
-
-## Next Steps
-
-- [EPG Cache Overview](/docs/advanced/epg-optimization) - EPG caching and optimization overview
-- [Advanced EPG Dummies (AED)](/docs/advanced/advanced-epg-dummies) - Smart dummy EPG from stream titles
-- [Auto-Merge Channels](/docs/advanced/auto-merge-channels) - Automatic channel management
-- [Docker Compose Deployments](/docs/deployment/docker-compose) - Deploy to production
+1. Check the EPG synced, and has channels, in **EPG → EPGs**.
+2. Check the channel is mapped: filter **Live Channels → Channels** by **EPG is not mapped**.
+3. If times are off by whole hours, set the channel's **EPG Shift**.
+4. M3U and HDHomeRun clients need the playlist's XMLTV URL as well. See [Client Configuration](/docs/client_configuration#pick-an-output).

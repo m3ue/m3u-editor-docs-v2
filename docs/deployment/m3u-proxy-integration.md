@@ -1,295 +1,111 @@
 ---
-sidebar_position: 3
-description: Complete M3U Proxy integration and configuration guide
+sidebar_position: 2
+description: How M3U Editor and M3U Proxy connect, how to check the connection, and how to move from the embedded proxy to its own container.
 tags:
   - Deployment
   - M3U Proxy
   - Streaming
-title: M3U Proxy Integration
+title: M3U Proxy Setup
 ---
 
-# M3U Proxy Integration
+import { Steps, Step } from '@site/src/components/Steps';
 
-The M3U Proxy handles stream restreaming, transcoding, and hardware acceleration for M3U Editor.
+# M3U Proxy Setup
 
-## Why Use External M3U Proxy?
+[M3U Proxy](/docs/proxy/overview) is the streaming half of M3U Editor. When a player asks for a proxied channel, the editor hands the stream to the proxy, which fetches it from your provider, shares that one connection with every viewer of the channel, fails over when it drops, and transcodes when asked.
 
-Running m3u-proxy as a separate container provides:
+This page covers connecting the two. What the proxy does, and how to tune it, is in the [M3U Proxy](/docs/proxy/overview) section.
 
-- ✅ **Hardware acceleration** support for transcoding
-- ✅ **Better performance** with independent scaling
-- ✅ **Redis-based pooling** for efficient stream management
-- ✅ **Independent updates** and configuration
-- ✅ **Resource isolation** from main application
+:::note The proxy is opt-in per playlist
+Installing the proxy doesn't send anything through it yet. Turn on **Enable Stream Proxy** in a playlist's **Output** tab, under **Streaming Output**, or add `?proxy=true` to one playlist URL. See [Proxy per URL](/docs/client_configuration#pick-an-output).
+:::
 
-## Quick Start
+## Embedded or separate
 
-### Download Configuration
+| | Embedded | Separate container |
+|---|---|---|
+| Runs | Inside the editor container | In its own `m3u-proxy` container |
+| Used by | The all-in-one setup | The modular, VPN, and fully external setups |
+| Hardware acceleration | Not supported | Supported |
+| Turned on with | `M3U_PROXY_ENABLED=true` (the default) | `M3U_PROXY_ENABLED=false`, plus where to find it |
 
-```bash
-# Download docker-compose and example env
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/.env.proxy.example
+The separate container is recommended. It can use your GPU, and it keeps streaming work out of the editor's container.
 
-# Setup environment
-cp .env.proxy.example .env
-```
+## How they connect
 
-### Generate Secure Tokens
+Players never talk to the proxy directly. Proxied stream URLs point at the editor, as `http://your-server:36400/m3u-proxy/...`, and the editor's web server forwards them to the proxy. So only the editor's port needs to be reachable, and the proxy can stay on the Docker network.
 
-```bash
-# Generate M3U Proxy token
-echo "M3U_PROXY_TOKEN=$(openssl rand -hex 32)" >> .env
+The editor and proxy authenticate each other with a shared token. With the separate container, these settings must line up:
 
-# Generate database password
-echo "PG_PASSWORD=$(openssl rand -base64 32)" >> .env
+| On the editor | On the proxy | Notes |
+|---|---|---|
+| `M3U_PROXY_ENABLED=false` | | Use the separate container instead of the embedded one |
+| `M3U_PROXY_HOST=m3u-proxy` | | The proxy's container name |
+| `M3U_PROXY_PORT=38085` | `PORT=38085` | The same port on both |
+| `M3U_PROXY_TOKEN` | `API_TOKEN` | The same token on both. Generate it with `openssl rand -hex 32`. |
 
-# Set your application URL
-echo "APP_URL=http://localhost" >> .env
-```
+The proxy also connects to Redis to share streams between viewers (`REDIS_ENABLED`, `REDIS_HOST`, `REDIS_SERVER_PORT`, `REDIS_PASSWORD`, and `REDIS_DB=6`).
 
-### Deploy
+The shipped compose files fill all of this in from your `.env`, so you only set `M3U_PROXY_TOKEN` once.
 
-```bash
-# Start all services
-docker-compose -f docker-compose.proxy.yml up -d
+## Check the connection
 
-# Wait for services to start (about 30 seconds)
-docker-compose -f docker-compose.proxy.yml ps
+In the editor, open **Settings → Proxy** and choose **Test connection** at the top of the page. A working connection shows:
 
-# Verify m3u-proxy is healthy
-docker exec -it m3u-editor php artisan m3u-proxy:status
-```
+- the proxy's version, and whether it's running embedded or as a separate container
+- whether hardware acceleration was detected, and which device
+- the FFmpeg, Streamlink, and yt-dlp versions it has
+- whether Redis stream sharing is on
 
-## Configuration
+From the command line, `docker exec m3u-editor php artisan m3u-proxy:status` runs the same check, and `docker compose logs -f m3u-proxy` shows the proxy's own log.
 
-### M3U Editor Environment
+## Settings that affect the connection
 
-```bash
-# Disable embedded proxy
-M3U_PROXY_ENABLED=false
+Most of **Settings → Proxy** tunes streaming behavior (see the [Settings Reference](/docs/advanced/settings-reference#proxy)). A few settings change how players and the proxy reach the editor:
 
-# Connect to external proxy
-M3U_PROXY_HOST=m3u-proxy
-M3U_PROXY_PORT=38085
-M3U_PROXY_TOKEN=your-secure-token-here
-```
+| Setting | Use it when |
+|---|---|
+| **Override URL** | Players should use a different address for proxied streams than `APP_URL`, for example your LAN IP while `APP_URL` is your domain. Also settable with `PROXY_URL_OVERRIDE`. |
+| **Resolve proxy public URL dynamically at request time** | Players reach the editor at more than one address (LAN, VPN, Tailscale). Each player gets stream URLs on the address it used. |
+| **Resolver URL** | The address the proxy uses to call back to the editor, for [advanced failover](/docs/proxy/failover), [pooled providers](/docs/advanced/playlist-pooled_providers), and [network broadcasts](/docs/integrations/media_networks_integration). Use the editor's LAN or Docker address, like `http://m3u-editor:36400`. |
 
-### M3U Proxy Environment
+## Move to a separate proxy container
 
-```bash
-# API Authentication (must match M3U_PROXY_TOKEN)
-API_TOKEN=your-secure-token-here
-PORT=38085
+To move an all-in-one install to the modular setup, keeping your data:
 
-# Redis Configuration
-REDIS_ENABLED=true
-REDIS_HOST=redis
-REDIS_SERVER_PORT=36790   # match m3u-editor's bundled Redis; use 6379 for a standalone redis you manage
-REDIS_DB=6                # m3u-editor uses db 0 on the same instance
-ENABLE_REDIS_POOLING=true
+<Steps>
+<Step title="Back up">
 
-# Logging
-LOG_LEVEL=INFO
+Copy your `./data` folder, and run `docker compose down`.
 
-# Optional: Adjust pool settings
-REDIS_POOL_MAX_CONNECTIONS=50
-STREAM_TIMEOUT=300
-CLEANUP_INTERVAL=60
-```
+</Step>
+<Step title="Switch compose files">
 
-## Hardware Acceleration
+Download [`docker-compose.proxy.yml`](https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml) as your new `docker-compose.yml`. It uses the same `./data`, `pgdata`, and `./storage` volumes, so it picks up your existing database.
 
-### Enable GPU Access
+Keep the `pgdata` volume name the same as before. Docker prefixes volume names with the folder name, so run the new file from the same folder.
 
-Add GPU device mapping to your docker-compose.yml:
+</Step>
+<Step title="Set the new variables">
 
-```yaml
-m3u-proxy:
-  devices:
-    - /dev/dri:/dev/dri  # Intel/AMD GPU
-    # - /dev/nvidia0:/dev/nvidia0  # NVIDIA GPU
-```
+Add `REDIS_PASSWORD` to your `.env`, and make sure `M3U_PROXY_TOKEN` is set. The all-in-one setup generates a token if you didn't set one; the separate proxy needs it in `.env`.
 
-### Verify GPU Access
+</Step>
+<Step title="Start it and test">
 
-```bash
-# Check if GPU is accessible
-docker exec -it m3u-proxy ls -la /dev/dri
-```
+Run `docker compose up -d`, then use **Test connection** in **Settings → Proxy**. It should show the proxy running as an external service.
 
-### Supported Hardware
-
-- Intel Quick Sync (QSV)
-- AMD VCE/AMF
-- NVIDIA NVENC (requires nvidia-docker)
-
-## Redis Pooling
-
-Redis pooling efficiently manages active streams.
-
-### Benefits
-
-- Reuses existing connections for the same stream
-- Reduces load on IPTV providers
-- Improves stream startup time
-- Prevents duplicate streams
-
-### Configuration
-
-```bash
-# Enable pooling
-ENABLE_REDIS_POOLING=true
-
-# Max connections per stream
-REDIS_POOL_MAX_CONNECTIONS=50
-
-# Stream timeout (seconds)
-STREAM_TIMEOUT=300
-
-# Cleanup interval (seconds)
-CLEANUP_INTERVAL=60
-```
-
-## Monitoring
-
-### Check Proxy Status
-
-```bash
-# Via artisan command
-docker exec -it m3u-editor php artisan m3u-proxy:status
-
-# Via API
-curl -H "X-API-Token: your-token" http://localhost:38085/health
-```
-
-### View Statistics
-
-```bash
-# Get current stats
-curl -H "X-API-Token: your-token" http://localhost:38085/stats
-```
-
-### Logs
-
-```bash
-# View real-time logs
-docker logs m3u-proxy -f
-
-# Last 100 lines
-docker logs m3u-proxy --tail 100
-```
+</Step>
+</Steps>
 
 ## Troubleshooting
 
-### Proxy Not Connecting
+| Problem | What to check |
+|---|---|
+| **Test connection** fails | `M3U_PROXY_TOKEN` on the editor and `API_TOKEN` on the proxy must match, and `M3U_PROXY_HOST` must be the proxy's container name. Check `docker compose ps` shows the proxy as `healthy`. |
+| The proxy container stays `unhealthy` | Its health check uses `M3U_PROXY_TOKEN` from `.env`. If you set the token directly in the compose file instead, the check can't authenticate. |
+| Stream URLs show `localhost` | Set `APP_URL` to your server's address, or set the **Override URL**. See [Editor Configuration](/docs/configuration#application). |
+| Channels play directly but not through the proxy | Read the proxy log while starting the channel. Setting `LOG_LEVEL=DEBUG` on the proxy shows more detail. |
+| Failover or network broadcasts don't work | Set the **Resolver URL** to an address the proxy can reach, and use **Test resolver connection** next to it. |
 
-**Check token configuration:**
-```bash
-# Tokens must match
-docker exec -it m3u-editor env | grep M3U_PROXY_TOKEN
-docker exec -it m3u-proxy env | grep API_TOKEN
-```
-
-**Verify network connectivity:**
-```bash
-# Ping from m3u-editor
-docker exec -it m3u-editor ping m3u-proxy
-
-# Check proxy health
-docker exec -it m3u-proxy curl http://localhost:38085/health?api_token=your-token
-```
-
-### Streams Not Playing
-
-**Check proxy logs:**
-```bash
-docker logs m3u-proxy --tail 50
-```
-
-**Verify stream URL:**
-```bash
-# Test direct access
-curl -H "X-API-Token: your-token" "http://localhost:38085/stream/channel-url-here"
-```
-
-**Check Redis connection:**
-```bash
-# Ping Redis
-docker exec -it m3u-proxy redis-cli -h redis ping
-```
-
-### High CPU/Memory Usage
-
-**Limit resources in docker-compose.yml:**
-```yaml
-m3u-proxy:
-  deploy:
-    resources:
-      limits:
-        cpus: '2.0'
-        memory: 2G
-      reservations:
-        cpus: '0.5'
-        memory: 512M
-```
-
-## Performance Tuning
-
-### For High Concurrent Streams
-
-```bash
-# Increase max connections
-REDIS_POOL_MAX_CONNECTIONS=100
-
-# Adjust timeout
-STREAM_TIMEOUT=600
-
-# More frequent cleanup
-CLEANUP_INTERVAL=30
-```
-
-### For Low-Resource Systems
-
-```bash
-# Reduce max connections
-REDIS_POOL_MAX_CONNECTIONS=25
-
-# Shorter timeout
-STREAM_TIMEOUT=180
-
-# Less frequent cleanup
-CLEANUP_INTERVAL=120
-```
-
-## Migration Guide
-
-### From Embedded to External
-
-1. **Stop current deployment:**
-   ```bash
-   docker-compose down
-   ```
-
-2. **Update configuration:**
-   ```bash
-   # Edit .env
-   M3U_PROXY_ENABLED=false
-   M3U_PROXY_HOST=m3u-proxy
-   ```
-
-3. **Deploy with external proxy:**
-   ```bash
-   docker-compose -f docker-compose.proxy.yml up -d
-   ```
-
-4. **Verify migration:**
-   ```bash
-   docker exec -it m3u-editor php artisan m3u-proxy:status
-   ```
-
-## Next Steps
-
-- [Docker Compose Deployments](/docs/deployment/docker-compose) - Other deployment options
-- [Caddy vs Nginx](/docs/deployment/caddy-vs-nginx) - Reverse proxy options
-- [EPG Cache Overview](/docs/advanced/epg-optimization) - Performance tuning
+More stream problems are covered in [Troubleshooting](/docs/troubleshooting).

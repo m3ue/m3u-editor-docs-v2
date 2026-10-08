@@ -1,321 +1,49 @@
 ---
-sidebar_position: 5
-description: EPG caching and performance optimization
+sidebar_position: 13
+description: How M3U Editor prepares large guides in the background so the guide viewer, M3U TV, and the DVR stay fast.
 tags:
   - Advanced
   - EPG
   - Performance
-title: EPG Cache Overview
+title: EPG Cache
 ---
 
-# EPG Cache Overview
+# EPG Cache
 
-M3U Editor includes comprehensive EPG caching for dramatically improved performance with large EPG files.
+Guide files can be huge: hundreds of thousands of programs in one XML file. Reading that file every time someone opens the guide would be far too slow, so after each EPG sync, M3U Editor reads it once and stores the programs in a fast, searchable cache. The guide viewer, the Xtream API's guide data, M3U TV, and the DVR all read from the cache.
 
-## Overview
+It's automatic. You'll mostly notice it in **EPG → EPGs**:
 
-The EPG optimization system provides:
+| Column | Shows |
+|---|---|
+| **Cache Progress** | How far the cache build has got after a sync. |
+| **Cached** | Whether the EPG has a cache. |
+| **Has DVR** | Whether a playlist using this EPG has the [DVR](/docs/integrations/dvr_integration) on. For those, the build also prepares the programs the DVR schedules from, which takes a little longer. |
+| **Cache Time** | How long the last build took. |
 
-- ✅ **Instant data retrieval** instead of slow XML parsing
-- ✅ **Date-chunked storage** for efficient access
-- ✅ **Memory-efficient pagination** support
-- ✅ **Automatic cache validation** based on file modification times
+**Generate Cache** rebuilds an EPG's cache by hand, from its row or for several selected EPGs. Use it if the guide looks out of date or empty after a sync.
 
-## How It Works
+The cache is kept in the `epg-cache` folder in your `./data` volume, one folder per EPG. It's safe to delete: it's rebuilt on the next sync or **Generate Cache**.
 
-### EPG Cache Service
+## If the guide is slow or empty
 
-The `EpgCacheService` provides high-performance caching:
+| Problem | What to check |
+|---|---|
+| The guide is empty after a sync | **Cache Progress** reached 100%. If the build failed, check the EPG's status, and try **Generate Cache**. |
+| Builds take a long time | Very large guides take a few minutes; this is normal. If your provider's guide covers channels you don't use, a smaller guide (or a [Merged EPG](/docs/resources/epg-setup#combine-guides) of only what you need) builds faster. |
+| The guide shows old data | Check the EPG is syncing (**Last Synced**), then use **Generate Cache**. |
 
-**Features:**
-- JSON-based cache files for fast access
-- Programmes organized by date for efficient queries
-- Automatic validation against source EPG changes
-- Support for large EPG files (100,000+ programmes)
+<details>
+<summary>Reading cached guide data from the API</summary>
 
-### Automatic Cache Generation
+The guide viewer loads its data from these endpoints, which you can use too:
 
-Caches are automatically generated:
-- After EPG import completes
-- When EPG is refreshed
-- On EPG file modification detection
+| Endpoint | Returns |
+|---|---|
+| `GET /api/epg/{epg-uuid}/data` | Channels and programs from one EPG |
+| `GET /api/epg/playlist/{playlist-uuid}/data` | Programs for a playlist's enabled channels |
+| `GET /api/epg/playlist/{playlist-uuid}/groups` | The playlist's groups |
 
-**Manual generation:**
-```bash
-php artisan epg:cache-generate {uuid}
-```
+Filter with `start_date` and `end_date` (`YYYY-MM-DD`), search with `search`, and page with `page` and `per_page` (default 50). Requests are limited to 60 a minute.
 
-## API Endpoints
-
-### Get EPG Data for Specific EPG
-
-**Endpoint:** `GET /api/epg/{uuid}/data`
-
-**Parameters:**
-- `page` - Page number (default: 1)
-- `per_page` - Items per page (default: 50)
-- `start_date` - Filter start date (YYYY-MM-DD)
-- `end_date` - Filter end date (YYYY-MM-DD)
-
-**Example:**
-```javascript
-fetch('/api/epg/9f21e8bd-921c-452f-bec7-14fc0144c51b/data?page=1&per_page=50&start_date=2025-07-23')
-  .then(response => response.json())
-  .then(data => {
-    console.log('Channels:', data.channels);
-    console.log('Programmes:', data.programmes);
-    console.log('Pagination:', data.pagination);
-  });
-```
-
-### Get EPG Data for Playlist Channels
-
-**Endpoint:** `GET /api/epg/playlist/{uuid}/data`
-
-Returns EPG data for all enabled channels in a playlist.
-
-**Parameters:**
-- Same as above
-
-**Example:**
-```javascript
-fetch('/api/epg/playlist/playlist-uuid-here/data?page=1&per_page=50&start_date=2025-07-23')
-  .then(response => response.json())
-  .then(data => {
-    console.log('Playlist:', data.playlist);
-    console.log('Channels:', data.channels);
-    console.log('Programmes:', data.programmes);
-    console.log('Cache Info:', data.cache_info);
-  });
-```
-
-## Response Format
-
-```json
-{
-  "epg": {
-    "id": 1,
-    "name": "EPG Name",
-    "uuid": "uuid-here"
-  },
-  "date_range": {
-    "start": "2025-07-23",
-    "end": "2025-07-23"
-  },
-  "pagination": {
-    "current_page": 1,
-    "per_page": 50,
-    "total_channels": 23588,
-    "returned_channels": 50,
-    "has_more": true
-  },
-  "channels": [
-    {
-      "id": "channel-id",
-      "display_name": "Channel Name",
-      "icon": "https://example.com/logo.png"
-    }
-  ],
-  "programmes": {
-    "channel-id": [
-      {
-        "start": "20250723120000 +0000",
-        "stop": "20250723130000 +0000",
-        "title": "Programme Title",
-        "desc": "Programme description",
-        "category": "Entertainment"
-      }
-    ]
-  },
-  "cache_info": {
-    "cached": true,
-    "source": "cache"
-  }
-}
-```
-
-## Performance Benefits
-
-### Before Optimization
-
-**Large EPG files (100,000+ programmes):**
-- Initial load: 30+ seconds
-- XML parsing on every request
-- High memory usage
-- Timeouts on very large files
-
-### After Optimization
-
-**With caching:**
-- Initial load: < 1 second
-- No XML parsing needed
-- Minimal memory usage
-- Handles any EPG size
-
-## Cache Management
-
-### Cache Location
-
-Caches are stored in:
-```
-storage/app/epg-cache/{uuid}/
-├── channels.json
-└── programmes/
-    ├── 2025-07-23.json
-    ├── 2025-07-24.json
-    └── ...
-```
-
-### Cache Validation
-
-Caches automatically invalidate when:
-- Source EPG file is modified
-- EPG is re-imported
-- Manual cache clear requested
-
-### Manual Cache Management
-
-**Generate cache:**
-```bash
-php artisan epg:cache-generate {uuid}
-```
-
-**Clear cache:**
-```bash
-php artisan epg:cache-clear {uuid}
-```
-
-**Clear all caches:**
-```bash
-php artisan epg:cache-clear --all
-```
-
-## Integration
-
-### EPG Generate Controller
-
-The EPG generation controller automatically uses cached data:
-
-```php
-// Automatically uses cache when available
-$xml = app(EpgGenerateController::class)->generate($playlist);
-```
-
-**Benefits:**
-- Dramatically faster EPG XML generation
-- Reduced server load
-- Better user experience
-
-### API Controllers
-
-Both EPG API endpoints leverage the cache service:
-
-- `EpgApiController::getData()` - Single EPG data
-- `EpgApiController::getDataForPlaylist()` - Playlist EPG data
-
-**Fallback behavior:**
-If cache is unavailable, falls back to XML parsing automatically.
-
-## Pagination Support
-
-Efficient pagination for large EPG files:
-
-**Example pagination:**
-```javascript
-// Load first 50 channels
-let page = 1;
-const perPage = 50;
-
-async function loadEPG() {
-  const response = await fetch(
-    `/api/epg/playlist/${playlistUuid}/data?page=${page}&per_page=${perPage}&start_date=2025-07-23`
-  );
-  const data = await response.json();
-  
-  // Process channels and programmes
-  displayEPG(data.channels, data.programmes);
-  
-  // Check if more pages available
-  if (data.pagination.has_more) {
-    page++;
-    // Load more as needed
-  }
-}
-```
-
-## Troubleshooting
-
-### Cache Not Generating
-
-**Check:**
-- ✅ EPG import completed successfully
-- ✅ Storage directory is writable
-- ✅ Sufficient disk space
-
-**Solution:**
-```bash
-# Manually generate cache
-php artisan epg:cache-generate {uuid}
-
-# Check logs for errors
-tail -f storage/logs/laravel.log
-```
-
-### Slow EPG Loading
-
-**If EPG is still slow:**
-1. Verify cache exists:
-   ```bash
-   ls storage/app/epg-cache/{uuid}/
-   ```
-
-2. Check cache is being used:
-   - Look for `"cached": true` in API response
-
-3. Regenerate cache:
-   ```bash
-   php artisan epg:cache-clear {uuid}
-   php artisan epg:cache-generate {uuid}
-   ```
-
-### Cache Out of Date
-
-**If EPG data seems old:**
-- Cache automatically updates on EPG refresh
-- Manually refresh EPG from the UI
-- Or force regenerate:
-  ```bash
-  php artisan epg:cache-generate {uuid} --force
-  ```
-
-## Best Practices
-
-### For Large EPG Files
-
-**✅ Recommended:**
-- Enable automatic caching (default)
-- Use pagination in API calls
-- Limit date ranges when possible
-- Filter to only needed channels
-
-### For API Integration
-
-**✅ Recommended:**
-- Use `per_page` parameter to limit results
-- Implement progressive loading
-- Cache API responses client-side
-- Use date ranges to reduce data
-
-### For Playlist Output
-
-**✅ Recommended:**
-- Cache handles generation automatically
-- Use time-limited outputs (7-14 days)
-- Filter to only mapped channels
-- Regenerate periodically
-
-## Next Steps
-
-- [EPG Setup](/docs/resources/epg-setup) - Initial EPG configuration
-- [Auto-Merge Channels](/docs/advanced/auto-merge-channels) - Automatic channel management
-- [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - External proxy setup
+</details>

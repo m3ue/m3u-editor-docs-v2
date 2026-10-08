@@ -81,7 +81,7 @@ Use the **PVR IPTV Simple Client** add-on (in **Add-ons → My add-ons → PVR c
 </TabItem>
 <TabItem value="plex" label="Plex">
 
-The easiest way is the [Plex integration](/docs/integrations/plex_integration#dvr--live-tv-tuner): it registers the playlist as a tuner in Plex for you, guide included.
+The easiest way is the [Plex integration](/docs/integrations/plex_integration#live-tv--dvr-tuners): it registers the playlist as a tuner in Plex for you, guide included.
 
 To add it by hand, go to **Settings → Live TV & DVR → Set up Plex DVR**. If the tuner isn't found automatically, enter its address manually as `your-server:36400/{uuid}/hdhr`. When asked for guide data, choose the XMLTV option and enter the guide URL.
 

@@ -1,7 +1,7 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Push Notifications
-description: How mobile push notifications work, what the relay does and doesn't store, and why it's safe to use with a self-hosted instance
+description: Get M3U Editor notifications on your phone while M3U TV is closed, through a stateless open-source relay - and send your own.
 tags:
   - M3U TV
   - Security
@@ -10,53 +10,33 @@ tags:
 
 # Push Notifications
 
-M3U TV's mobile builds (phone/tablet — not TV builds) can receive push notifications for things like sync completions, recordings, and alerts, even when the app is closed. Since a self-hosted M3U Editor instance usually isn't reachable directly from Apple's and Google's push services, delivery goes through a small relay.
+M3U TV on phones and tablets can show notifications from M3U Editor, like finished syncs, recordings, and [alerts](/docs/advanced/alerts), even when the app is closed. TV and desktop versions show them while the app is open.
 
-:::info Mobile only
-Push notifications only apply to phone/tablet builds of M3U TV. Android TV and tvOS builds don't register for push — there's no background/closed state to notify on a TV the way there is on a phone.
-:::
+## How it's delivered
 
-## Why a relay exists
-
-Apple (APNs) and Google (FCM) push delivery both require a registered, credentialed backend project to hand notifications to — a random self-hosted server can't call either service directly without provisioning its own Firebase/Apple credentials. Rather than asking every self-hoster to set that up, M3U Editor ships pointed at a small, shared, **open-source relay**: [`m3u-push-relay`](https://github.com/m3ue/m3u-push-relay).
-
-## What lives where
-
-This is the part worth being explicit about, since it involves a third-party hop:
+Apple and Google only deliver push notifications from registered services, which your own server isn't. So M3U Editor sends them through [m3u-push-relay](https://github.com/m3ue/m3u-push-relay), a small open-source service that passes each notification to Firebase, which delivers it to Android and iOS.
 
 ```mermaid
 flowchart LR
-    subgraph YourServer["Your self-hosted M3U Editor"]
-        DB[("Device tokens<br/>+ user/playlist data<br/>(your database)")]
-    end
-
-    subgraph Relay["m3u-push-relay (shared, open source)"]
-        RelayCode["POST /push { token, title, body }<br/>Stateless — no database,<br/>no per-user state"]
-    end
-
-    subgraph Google["Firebase Cloud Messaging"]
-        FCM["Delivers to Android natively,<br/>bridges to APNs for iOS"]
-    end
-
-    DB --> RelayCode
-    RelayCode --> FCM
+    Editor["Your M3U Editor<br/>(stores device tokens)"] --> Relay["m3u-push-relay<br/>(stores nothing)"]
+    Relay --> FCM["Firebase"]
     FCM --> Phone["Your phone"]
 ```
 
-- **Your M3U Editor instance** is the only place device tokens and any associated user/playlist data live. It's your own database, on your own server.
-- **The relay holds no database and no per-user state at all.** It receives a notification payload (`token`, `title`, `body`, optional `data`), forwards it to Firebase, and forgets it. The only secret *it* holds is a single shared Firebase service account credential — nothing about you, your server, or your content.
-- **Firebase Cloud Messaging** is the actual delivery mechanism to both platforms. FCM is required for Android push regardless (Google retired the alternative years ago), and since a Firebase project is needed anyway, the relay uploads the Apple push key into Firebase too — so it never touches Apple credentials directly, and only ever manages one credential for both platforms.
+- Your device tokens, users, and content stay in your own database.
+- The relay has no database. It receives one notification (a device token, a title, and a message), forwards it, and forgets it.
+- The relay has no API key, because any key built into a public app wouldn't stay secret. Instead it rate limits by address and by device, so a leaked device token can only be used to send a few notifications to that one device.
 
-In short: **the relay is a stateless forwarder, not a data store.** Nothing about your account, your library, or your viewers is ever sent to it beyond the single push payload being delivered at that moment.
+To use your own relay instead of the shared one, deploy it from its [README](https://github.com/m3ue/m3u-push-relay#readme) and set `PUSH_RELAY_URL` to its address.
 
-## Why no auth token on the relay
+## Settings
 
-You might notice `/push` doesn't require an API key. That's intentional, not an oversight: the relay ships inside a **publicly-distributed, open-source app** — any secret baked into a client that ships to end users can't actually stay secret. Instead of a false sense of security from a bundled key, abuse is bounded the way public APIs like this actually should be: **rate limiting**, per source IP and per device token, enforced server-side on the relay itself. A leaked or guessed device token lets someone send a bounded number of pushes to that one device — nothing else.
+All in **Settings → TV App**:
 
-## Self-hosting your own relay
-
-Since the relay is open source and stateless, you're never required to trust the shared community instance. Point M3U Editor at your own deployment by setting the `PUSH_RELAY_URL` environment variable to your own relay's URL — the relay's [README](https://github.com/m3ue/m3u-push-relay#readme) covers deploying your own copy (it ships as a small Docker image, deployable anywhere).
-
-## Turning it off
-
-Push notifications are **on by default**, pointed at the community relay. Disable them from **Settings → TV App → Push Notifications (Mobile) → Enable push relay**. Registered device tokens that stop checking in are automatically pruned after a configurable number of days (60 by default) regardless of whether the relay itself is enabled.
+| Setting | What it does |
+|---|---|
+| **Enable push relay** | Send notifications to phones through the relay. On by default. |
+| **Manage Devices** | See registered devices, under **Administration → Devices → Registered Devices**. Devices that stop checking in are removed after 60 days. |
+| **Send Push Notification** | Send a test notification to one device. |
+| **Send Notification** | Send a message to everyone using a playlist, with a level, a channel, and optionally to admins only. |
+| **Notification Channels** | Categories people can subscribe to in the app, so they only get what they care about. |

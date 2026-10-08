@@ -1,12 +1,12 @@
 {
   "label": "Integrations",
-  "position": 6,
-  "description": "Media servers, TMDB, DVR, Sonarr and Radarr, AIOStreams, and more.",
+  "position": 8,
+  "description": "TMDB, the DVR, media servers, Sonarr and Radarr, and more.",
   "customProps": {
     "icon": "hub"
   },
   "link": {
     "type": "generated-index",
-    "description": "Integrate media servers (Emby, Jellyfin, Plex), local/WebDAV media sources, or AIOStreams to import and serve VOD and series alongside IPTV sources — proxy streams, sync libraries, and expose a compatible Xtream Codes API. Also includes Media Networks for pseudo-TV broadcasting, WebDAV media hosting, and on-demand debrid streaming via AIOStreams."
+    "description": "Connect TMDB, your media servers, Sonarr and Radarr, and AIOStreams, record live TV, and build your own channels."
   }
 }

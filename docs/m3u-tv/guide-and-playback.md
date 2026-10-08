@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1.5
-title: Guide & Playback
+sidebar_position: 2
+title: Guide and Playback
 description: The M3U TV programme guide, catchup replay, remote buttons, display settings like refresh-rate matching and deinterlacing, sorting, and cache clearing
 tags:
   - M3U TV
@@ -8,7 +8,7 @@ tags:
   - Playback
 ---
 
-# Guide & Playback
+# Guide and Playback
 
 This page covers the parts of M3U TV you use every day: the programme guide, catchup replay, remote buttons, and the playback and display settings.
 

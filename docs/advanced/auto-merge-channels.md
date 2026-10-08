@@ -1,6 +1,6 @@
 ---
-sidebar_position: 2
-description: Automatically merge duplicate channels with failover support
+sidebar_position: 6
+description: Link duplicate channels across your playlists as failovers of each other, automatically after each sync or on demand.
 tags:
   - Advanced
   - Channels
@@ -10,257 +10,73 @@ title: Auto-Merge Channels
 
 # Auto-Merge Channels
 
-Automatically merge duplicate channels into a single master channel with failover relationships.
+Many providers list the same channel more than once, and if you have two providers, they share most channels. Merging links duplicates together: one becomes the **master** that players see, and the others become its [failovers](/docs/proxy/failover), tried in order when the master stops working.
 
-## Overview
+Channels are matched by their stream ID: the ID the provider gives each channel, which you can override with a channel's **ID** field. The same channel from different playlists merges when they share an ID. Channels without an ID can be matched by name instead ([below](#channels-without-an-id)).
 
-The Auto-Merge Channels feature streamlines playlist management by:
+Failover needs the [proxy](/docs/proxy/overview), so merging is most useful on proxied playlists.
 
-- ✅ Automatically merging channels with identical stream IDs
-- ✅ Creating failover relationships for reliability
-- ✅ Optionally disabling failover channels to clean up your playlist
-- ✅ Supporting resolution-based prioritization (use with caution)
+## Merge after every sync
 
-## How It Works
+Edit the playlist, open **Processing → Auto-Merge Processing**, and turn on **Enable auto-merge after sync**.
 
-### 1. Automatic Trigger
+**Merge source configuration** decides where duplicates come from:
 
-Auto-merge runs automatically after playlist sync when:
-- Playlist has **Auto-merge channels** enabled
-- Sync completes successfully
-- Channels exist with duplicate stream IDs
+| Setting | What it does |
+|---|---|
+| **Preferred Playlist** | Masters come from this playlist when it has the channel. Leave empty to merge only within this playlist. |
+| **Additional Failover Playlists** | Other playlists to take failovers from, in order. |
 
-### 2. Channel Grouping
+**Merge behavior** decides how:
 
-The system groups channels by their stream ID:
-- Uses `stream_id_custom` if set, otherwise `stream_id`
-- Only processes channels within the configured playlists
-- Excludes already-configured failovers (unless force re-merge is enabled)
+| Setting | What it does |
+|---|---|
+| **Merge only new channels** | Only merge channels added by this sync. Turn off to re-check every channel each time. |
+| **Deactivate failover channels** | Disable the channels that become failovers, so players only see one copy of each channel. They still work as failovers. |
+| **Prefer catch-up as primary** | Pick a channel with catch-up as the master when there is one. |
+| **Exclude disabled groups from master selection** | Channels in disabled groups can only be failovers. |
+| **Scrubber-aware master selection** | Don't pick channels a [Channel Scrubber](channel-scrubbers) found dead as masters. |
+| **Prioritize by resolution** | Pick the highest resolution as the master. This opens every stream to check it, which can get you rate limited or blocked by providers. |
+| **Force complete re-merge** | Rebuild every failover link from scratch, including ones already set up. |
+| **Regex merge patterns** | Group channels whose names match the same pattern, for channels named differently across providers. |
+| **VOD Merge key** | Match movies by **Stream ID** (the default) or by **TMDB ID**, which merges the same movie across providers even when their IDs differ. |
 
-### 3. Master Channel Selection
+To keep a channel out of merges, select it and use **Disable Merge** from the bulk actions, or turn off **Can merge** when editing it.
 
-Two modes for selecting the master channel:
+## Channels without an ID
 
-#### Default Mode (Recommended for IPTV)
+**Fallback matching for channels without IDs** matches channels that have no usable stream ID by their name. Turn on **Enable name or alias fallback**, and pick a **Fallback match mode**:
 
-**✅ Safe for all IPTV providers**
+- **Exact normalized name only:** names that match once tidied up (case, spacing, punctuation).
+- **Alias rules only:** names you've listed as the same channel in **Fallback alias groups**. For example, a group labelled "BBC One" with the aliases `BBC One`, `BBC 1`, and `BBC1`.
+- **Normalized name and alias rules:** both.
 
-Selection priority:
-1. If **Preferred Playlist** is set: First channel from that playlist (sorted by ID)
-2. Otherwise: First channel based on playlist priority, then sorted by ID
+Quality labels like HD, FHD, and 4K are kept when names are tidied, so SD and HD versions of a channel aren't merged by accident.
 
-**Benefits:**
-- No stream access required
-- Prevents provider rate limiting
-- Fast processing
+## Choosing the master
 
-#### Resolution Mode
+**Advanced Priority Scoring** decides which duplicate becomes the master, and the order of the failovers:
 
-**⚠️ Use with caution - May trigger rate limiting**
+| Setting | What it does |
+|---|---|
+| **Preferred Codec** | Prefer HEVC (smaller) or H.264 (plays on more devices). Needs [probed](stream-probing) streams. |
+| **Priority Keywords** | Prefer channels with these words in their names, like `RAW` or `LOCAL`. |
+| **Group Priority Weights** | Prefer channels from certain groups, weighted from 1 to 1000. |
+| **Priority Order** | The order these factors are applied in: playlist priority, group priority, catch-up support, resolution, codec, and keyword match. |
 
-Selection priority:
-1. Analyzes each stream to determine resolution
-2. If **Preferred Playlist** is set: First channel from that playlist with highest resolution
-3. Otherwise: First channel with highest resolution
+## Merge on demand
 
-**Warning:**
-This mode accesses each stream to check resolution, which can:
-- Trigger rate limiting from IPTV providers
-- Cause IP blocking
-- Significantly slow down processing
+To merge without waiting for a sync, use **Merge Same ID** from the **Actions** menu on **Live Channels → Channels** or **VOD Channels → Channels**, or on a single group. It has the same options. **Unmerge Same ID** removes the links again.
 
-Only use when:
-- Your provider explicitly allows stream analysis
-- You have confirmed no rate limiting
-- Resolution quality is critical for your use case
+For series, **Merge Episodes** on the Series list links the same episode across playlists, by TMDB ID or by season and episode number.
 
-### 4. Failover Configuration
-
-Remaining channels become failovers:
-- Sorted by playlist priority and channel ID (or resolution if enabled)
-- Optionally disabled if **Deactivate failover channels** is enabled
-- Existing relationships are updated automatically
-
-## Configuration
-
-### Enable Auto-Merge
-
-1. Navigate to **Playlists** → Edit your playlist
-2. Scroll to **Sync Settings**
-3. Enable **Auto-merge channels after sync**
-4. (Optional) Enable **Deactivate failover channels**
-
-### Advanced Settings
-
-Click **Advanced Settings** to configure:
-
-**Prioritize by resolution:**
-- ⚠️ Enables resolution-based master selection
-- Analyzes streams (may cause rate limiting)
-- Only use with provider permission
-
-**Force complete re-merge:**
-- Reprocesses all channels, not just new ones
-- Useful after configuration changes
-- More resource intensive
-
-### Preferred Playlist
-
-Set a preferred playlist to prioritize:
-1. During auto-merge or manual merge
-2. Select the playlist to favor for master channels
-3. Channels from this playlist become masters when possible
-
-## Manual Merge
-
-Merge channels manually from the Channels page:
-
-1. Navigate to **Channels** for your playlist
-2. Select **Merge Same ID** action
-3. Configure:
-   - **Preferred Playlist**: Playlist to prioritize as master
-   - **Failover Playlists**: Playlists to use for failovers
-   - **Order by Resolution**: ⚠️ Enable resolution check (caution!)
-   - **Deactivate Failover Channels**: Disable failover channels
-
-4. Click **Merge**
-
-## Use Cases
-
-### Multiple Provider Sources
-
-Merge channels from multiple IPTV providers:
-- Set your most reliable provider as **Preferred Playlist**
-- Other providers become automatic failovers
-- Disable failover channels to keep playlist clean
-
-### Redundant Streams
-
-Handle providers that offer duplicate streams:
-- Auto-merge consolidates them
-- Maintains reliability through failovers
-- Reduces playlist clutter
-
-### Quality Prioritization
-
-When providers allow stream analysis:
-- Enable **Prioritize by resolution**
-- Highest quality becomes master
-- Lower qualities serve as failovers
-
-## Best Practices
-
-### For IPTV Providers
-
-**✅ Recommended:**
-- Use default mode (no resolution check)
-- Set preferred playlist for reliable provider
-- Enable **Deactivate failover channels** for clean output
-
-**❌ Avoid:**
-- Resolution-based prioritization (unless confirmed safe)
-- Frequent force re-merges
-- Processing during peak hours
-
-### For Custom Streams
-
-If using custom/self-hosted streams:
-- Resolution checking is safe to use
-- Force re-merge as needed
-- Process at any time
-
-## Performance Considerations
-
-### Minimal Impact
-
-For most playlists:
-- Default mode processes quickly
-- Uses efficient database queries
-- Minimal resource usage
-
-### Higher Impact Scenarios
-
-Watch for:
-- Very large playlists (10,000+ channels)
-- Resolution checking enabled
-- Force complete re-merge
-- Many duplicate stream IDs
-
-**Mitigation:**
-- Run during off-peak hours
-- Use default mode (no resolution check)
-- Avoid force re-merge unless needed
-- Monitor queue workers
+The API can start a merge too: `POST /playlist/{uuid}/merge-channels`, with a token from **Tools → API Tokens**.
 
 ## Troubleshooting
 
-### Auto-merge Not Running
-
-**Check:**
-- ✅ Auto-merge is enabled in playlist settings
-- ✅ Playlist sync completed successfully
-- ✅ Queue workers are running
-- ✅ Channels have matching stream IDs
-
-### No Channels Merging
-
-**Possible causes:**
-- Channels don't have matching stream IDs
-- Channels already in failover relationships
-- Need to enable **Force complete re-merge**
-
-**Solution:**
-1. Check channel stream IDs match
-2. Enable force re-merge once
-3. Manually trigger sync
-4. Check notifications for results
-
-### Rate Limiting Issues
-
-**If you experience rate limiting:**
-1. Immediately disable **Prioritize by resolution**
-2. Wait for provider cooldown period
-3. Re-sync with default mode
-4. Contact provider about analysis restrictions
-
-## Database Schema
-
-Auto-merge uses these fields:
-
-### Playlists Table
-```
-auto_merge_channels_enabled (boolean)
-auto_merge_deactivate_failover (boolean)
-auto_merge_config (JSON)
-```
-
-### Channel Failovers Table
-```
-channel_id (references master channel)
-failover_channel_id (references failover)
-order (failover priority)
-user_id (owner)
-```
-
-## API Integration
-
-### Programmatic Dispatch
-
-```php
-use App\Jobs\MergeChannels;
-
-dispatch(new MergeChannels(
-    user: $user,
-    playlists: collect([['playlist_failover_id' => $playlist->id]]),
-    playlistId: $playlist->id,
-    checkResolution: false,
-    deactivateFailoverChannels: true,
-    forceCompleteRemerge: false
-));
-```
-
-## Next Steps
-
-- [EPG Setup](/docs/resources/epg-setup) - Configure Electronic Program Guide
-- [EPG Cache Overview](/docs/advanced/epg-optimization) - Performance tuning
-- [Docker Compose Deployments](/docs/deployment/docker-compose) - Deploy to production
+| Problem | What to check |
+|---|---|
+| Nothing merges | The duplicates have the same stream ID. If they don't, use name fallback or regex patterns. |
+| The wrong channel is the master | Set a **Preferred Playlist**, or adjust **Advanced Priority Scoring**. |
+| Changes don't apply to channels merged before | Turn on **Force complete re-merge** for one sync, or run **Merge Same ID** with it on. |
+| The provider started blocking you | Turn off **Prioritize by resolution**, which opens every stream. |

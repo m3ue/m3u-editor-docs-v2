@@ -1,129 +1,73 @@
 ---
 sidebar_position: 1
-title: Overview & Architecture
-description: How the M3U Proxy works — streaming design, stream types, and performance model
+title: M3U Proxy Overview
+description: What M3U Proxy does, when to turn it on, and the features it adds - shared connections, failover, transcoding, and stream monitoring.
 tags:
   - Proxy
   - Architecture
   - Streaming
 ---
 
-# M3U Proxy Overview
+import LinkCards from '@site/src/components/LinkCards';
 
-The M3U Proxy is a high-performance HTTP proxy server purpose-built for IPTV streaming. It sits between your media players and IPTV providers, handling stream delivery, failover, transcoding, and monitoring — all without introducing unnecessary overhead.
+# M3U Proxy
 
-## Design Philosophy
+M3U Proxy is the streaming half of M3U Editor. Without it, your players get your provider's stream addresses and connect to the provider themselves. With it, they connect to your server, and the proxy fetches the stream for them.
 
-The proxy is built around a **true live proxy** model: every byte delivered to a client comes directly from the upstream provider with no persistent buffering layer. This means:
+That middle step is what makes these possible:
 
-- **Zero transcoding by default** — pure pass-through for maximum performance
-- **Connection sharing for live streams** — multiple viewers share one upstream provider connection
-- **Immediate cleanup** — connections close the moment the last client stops watching
-- **Isolated failover** — one client's problem never affects another
+- **Shared connections.** Several people watching the same channel use one provider connection. This matters most when your provider limits how many streams you can run at once.
+- **Connection limits.** Cap streams per playlist or per login, and stop the oldest stream to make room for a new one.
+- **Failover.** When a stream drops, switch to a backup channel or provider, usually with only a short pause.
+- **Transcoding.** Convert streams for devices that can't play the original, with your GPU if you have one.
+- **Monitoring.** See what's playing, who's watching, and how each stream is doing.
+- **Recording.** The [DVR](/docs/integrations/dvr_integration) and [Networks](/docs/integrations/media_networks_integration) both rely on it.
 
-## Stream Types
+Setting up the proxy is covered in [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration). The shipped compose files include it.
 
-The proxy automatically detects the stream type and applies the correct delivery strategy.
+## Turn it on
 
-### Continuous Streams (`.ts`, `.mp4`, `.mkv`, `.webm`, `.avi`)
+The proxy is opt-in per playlist. In a playlist's **Output** tab, under **Streaming Output**, turn on **Enable Stream Proxy**. Every stream in that playlist then goes through the proxy. Custom Playlists, Merged Playlists, and Aliases have the same switch.
 
-For **live** streams, the proxy uses a **primary/subscriber broadcast model**: the first client opens a single upstream connection and broadcasts chunks to all subsequent clients via in-memory queues. Only one provider connection is ever opened per channel, regardless of how many viewers are watching.
+Other ways to use it:
 
-```
-Provider → primary client → Client A (direct yield)
-                          ↘ Queue → Client B (subscriber)
-                          ↘ Queue → Client C (subscriber)
-```
+- **One channel:** turn on **Enable Stream Proxy** on a channel's edit page to proxy just that channel. When its playlist is proxied, every channel in it already is.
+- **One player:** add `?proxy=true` to a playlist's M3U URL. See [Client Configuration](/docs/client_configuration#pick-an-output).
+- **M3U TV:** apps can offer proxied playback per device when a login has **Proxy Access**. See [Playlist Auths](/docs/resources/playlist-auth#what-a-login-can-use).
 
-Key properties:
-- **One upstream connection** per live channel — conserves provider connection slots
-- **Subscriber promotion** — if the primary disconnects, the longest-running subscriber seamlessly takes over and inherits the upstream TCP connection
-- Truly ephemeral — connection closes when the last client disconnects
-- **VOD is excluded** — each VOD client gets an independent connection for full seek/range support
+Provider Profiles (pooling several logins from one provider) always use the proxy. See [Provider Profiles](/docs/advanced/playlist-pooled_providers).
 
-### HLS Streams (`.m3u8`)
+## How it handles streams
 
-HLS uses a **shared connection model**: multiple clients share one upstream connection, and segments are fetched on demand. The proxy rewrites playlist URLs so segments are served through the proxy itself.
+The proxy works out each stream's type and delivers it the right way:
 
-- One upstream connection serves many clients
-- Efficient playlist processing and URL rewriting
-- Shared HTTP client with connection pooling
-- Per-stream failover with seamless playlist switching
+| Stream | How it's delivered |
+|---|---|
+| **Live MPEG-TS** (`.ts`) | One provider connection per channel, shared with every viewer. When the viewer holding the connection leaves, another takes it over, so nobody else is interrupted. |
+| **HLS** (`.m3u8`) | The playlist is rewritten so segments come through the proxy, and viewers of the same channel share it. |
+| **VOD** (movies and episodes) | Each viewer gets their own connection, so everyone can pause and seek on their own. |
+| **DASH** (`.mpd`) | The manifest and segments are passed through as they are. |
 
-### VOD Streams (Video on Demand)
+Streams aren't transcoded unless you ask for it, so by default the proxy passes the original stream through untouched. The connection closes as soon as the last viewer stops watching.
 
-VOD streams support full byte-range requests, allowing clients to seek freely within the content:
+If your source M3U sets per-channel request headers with `#EXTVLCOPT` (`http-user-agent`, `http-referrer`, `http-origin`, `http-cookie`) or `#KODIPROP:inputstream.adaptive.stream_headers`, the proxy sends them to the provider. When both set the same header, `#KODIPROP` wins.
 
-- Each client can be at a different position simultaneously
-- Range headers are honoured and forwarded to the upstream
-- Works correctly with all standard video players
+## Features
 
-## Performance Architecture
+<LinkCards
+  items={[
+    { to: '/docs/proxy/transcoding', icon: 'movie', title: 'Transcoding', text: 'Stream profiles, presets, and rule-based profiles.' },
+    { to: '/docs/proxy/hardware-acceleration', icon: 'memory', title: 'Hardware acceleration', text: 'Transcode with NVIDIA, Intel, or AMD GPUs.' },
+    { to: '/docs/proxy/failover', icon: 'swap_horiz', title: 'Failover and retries', text: 'Keep streams playing when a source fails.' },
+    { to: '/docs/proxy/stream-monitor', icon: 'monitoring', title: 'Stream Monitor', text: 'See every active stream and who is watching.' },
+  ]}
+/>
 
-### uvloop
+For specific players and providers:
 
-The proxy uses [uvloop](https://github.com/MagicStack/uvloop) as the event loop, providing 2–4x faster async I/O than the Python default. It is detected and enabled automatically at startup.
+- [Strict Live TS](strict-live-ts): steadier live TV in Kodi and other PVR clients.
+- [Sticky Sessions](sticky-sessions): stops playback loops with load-balanced providers.
+- [Silence Detection](silence-detection): fails over when a channel's audio goes silent.
+- [Redis Pooling](redis-pooling): shares transcoding between viewers.
 
-### Connection Pooling
-
-HTTP clients are configured with optimised connection limits to maximise throughput while avoiding resource exhaustion:
-
-- `max_keepalive_connections: 20`
-- `max_connections: 100`
-- `keepalive_expiry: 30s`
-
-### Lightweight Stats Tracking
-
-Per-client metrics (bytes served, segments delivered, error counts) are tracked with minimal overhead. No database writes occur during streaming.
-
-## Seamless Failover
-
-When an upstream connection fails, the proxy switches to a backup URL with less than 100ms interruption — transparent to the client. Failover is **per-client**, so a single viewer experiencing a hiccup doesn't impact anyone else.
-
-See [Failover](./failover.md) for the full architecture and configuration.
-
-## Optional Features
-
-The proxy is designed to work well out of the box, but includes several advanced capabilities you can enable as needed:
-
-| Feature | Default | Description |
-|---------|---------|-------------|
-| [Transcoding](./transcoding.md) | Off | FFmpeg-based video transcoding with hardware acceleration |
-| [Redis Pooling](./redis-pooling.md) | Off | Shared streams across multiple workers |
-| [Strict Live TS](./strict-live-ts.md) | Off | Enhanced stability for Kodi and PVR clients |
-| [Sticky Sessions](./sticky-sessions.md) | Off | Lock clients to specific load balancer backends |
-| [Bitrate Monitoring](./configuration.md#bitrate-monitoring) | Off | Auto-failover on degraded streams |
-| [Authentication](./authentication.md) | Off | API token protection for management endpoints |
-| [Event System](./event-system.md) | Built-in | Webhook notifications for stream lifecycle events |
-
-## Per-Channel Headers from the Source M3U
-
-If your source M3U sets per-channel request headers with `#EXTVLCOPT` or `#KODIPROP` tags, the proxy sends them when it fetches that channel from the provider. Supported tags:
-
-- `#EXTVLCOPT:http-user-agent`, `http-referrer`, `http-origin`, `http-cookie`
-- `#KODIPROP:inputstream.adaptive.stream_headers` (a `Key1=Val1&Key2=Val2` list)
-
-When both set the same header, the `#KODIPROP` value wins.
-
-## Quick Start
-
-The proxy ships as a Docker image. The quickest way to get started is via Docker Compose — see the [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) deployment guide.
-
-For a standalone run:
-
-```bash
-docker run -d \
-  -p 8085:8085 \
-  -e API_TOKEN="your-secret-token" \
-  sparkison/m3u-proxy:latest
-```
-
-The proxy starts on port `8085` by default. Visit `http://localhost:8085/health?api_token=your-secret-token` to confirm it is running.
-
-## Further Reading
-
-- [Configuration](./configuration.md) — All environment variables
-- [Authentication](./authentication.md) — Securing the management API
-- [Failover](./failover.md) — Automatic backup URL switching
-- [Retry Configuration](./retry.md) — Fine-tuning retry behaviour
-- [API Reference](./api-reference.md) — REST endpoint reference
+The [Configuration Reference](configuration) lists every proxy setting, and the [API Reference](api-reference) covers using the proxy from your own tools.

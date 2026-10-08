@@ -270,7 +270,7 @@ function Playback() {
               </li>
             ))}
           </ul>
-          <Link to="/docs/m3u-tv/overview#platforms-supported" className={styles.engineLink}>
+          <Link to="/docs/m3u-tv/overview#platforms" className={styles.engineLink}>
             Platform details <MaterialIcon name="arrow_forward" />
           </Link>
         </div>

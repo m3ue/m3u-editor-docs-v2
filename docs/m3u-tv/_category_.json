@@ -1,12 +1,12 @@
 {
   "label": "M3U TV",
-  "position": 6.5,
+  "position": 9,
   "description": "The native player for TV, mobile, and desktop.",
   "customProps": {
     "icon": "tv"
   },
   "link": {
     "type": "generated-index",
-    "description": "M3U TV, the cross-platform TV/mobile client for M3U Editor. Covers the app itself, the guide and playback settings, device pairing, mobile push notifications, cross-client Continue Watching, and logs for troubleshooting."
+    "description": "M3U TV, the free player app for M3U Editor on TV, mobile, and desktop: getting it, pairing devices, the guide, notifications, and troubleshooting."
   }
 }

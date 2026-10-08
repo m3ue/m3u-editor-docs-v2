@@ -1,75 +1,52 @@
 ---
-sidebar_position: 2
-description: Import VOD and Series data into M3U-Editor
-title: Emby Integration
-hide_title: true
+sidebar_position: 4
+description: Connect an Emby or Jellyfin server to M3U Editor with an API key, and import its movies and series.
+title: Emby and Jellyfin
 tags:
   - Integrations
   - Emby
   - Jellyfin
- 
 ---
 
-# Emby Integration
+# Emby and Jellyfin
 
-:::note Read Me First
-These instructions assume you have a working Emby or Jellyfin Media server
-:::
+Emby and Jellyfin connect the same way: with the server's address and an API key.
 
-You will need to make sure you have your url for your Emby Server. This can be in the form of an IP address or FQDN (DNS). To facilitate the integration, you will also need to generate or use an existing Emby API key.
+## Get an API key
 
-### Generate API Key
-1. Access the Management Dashboard by clicking the gear icon in the upper right of the screen
-  
-  ![Emby Management Dashboard](/img/doc_imgs/emby_settings.png)
-   
-2. In the left panel scroll down to `Adanced` and select `API Keys`
+In Emby:
 
-  ![Emby Management Dashboard](/img/doc_imgs/emby_settings_advanced_api.png)
+1. Open the dashboard with the gear icon at the top right.
 
-3. Select New API Key and assign in descriptive name for your records
-  :::tip
-  You can use an existing API key for the integration.
-  :::
+   ![Emby dashboard](/img/doc_imgs/emby_settings.png)
 
-![Emby New API Key](/img/doc_imgs/emby_api_new.png)
+2. In the left panel, under **Advanced**, choose **API Keys**.
 
-## 🛠️ Configure the Integration
+   ![Emby API Keys](/img/doc_imgs/emby_settings_advanced_api.png)
 
-1. In M3U-Editor expand the sidebar (left side), locate the integrations section and select **Media Servers**
+3. Choose **New API Key** and name it, for example "M3U Editor". An existing key works too.
 
-  ![Media Server Integration Sidenav](/img/doc_imgs/media_server_integration_sidenav.png)
+   ![Emby new API key](/img/doc_imgs/emby_api_new.png)
 
-2. Click **Add Media Server**
-3. Fill in the details:
-   - **Display Name**: A friendly name for your server (e.g., "My Emby Server")
-   - **Server Type**: Select **Emby** or **Jellyfin** (depending on your server type) from the dropdown
-   - **Host / IP Address**: Your Emby server address (e.g., `192.168.1.100` or `emby.example.com`)
-   - **Port**: The default Emby port is `8096`
-   - **Use HTTPS**: Enable if your server uses SSL/TLS
-   - **API Key/Token**: Paste your Emby token obtained above
+In Jellyfin, open the **Dashboard**, find **API Keys** (under **Advanced** in most versions), and choose **+** to create one.
 
-4. Click **Test Connection & Discover Libraries** to verify the connection and discover available libraries
-5. Select which libraries you want to import (Movies, TV Shows, and Mixed Content libraries are all supported)
-6. Click **Create** to save the integration
+## Add the server
 
+Go to **Integrations → Media Servers** and choose **Add Media Server**:
 
-:::tip
-Your media server should now be displayed under the Media Servers integrations
-:::
+| Field | Enter |
+|---|---|
+| **Display Name** | Any name, like "Living room Emby" |
+| **Server Type** | **Emby** or **Jellyfin** |
+| **Host / IP Address** | The server's LAN IP or domain, for example `192.168.1.100` |
+| **Port** | `8096` by default |
+| **Use HTTPS** | On if you reach the server over HTTPS |
+| **API Key/Token** | The key from above |
 
-## What Gets Synced
+Choose **Test Connection & Discover Libraries**, select the movie, TV, or mixed libraries to import, and save. The first sync starts straight away.
 
-When you sync your Emby server, M3U Editor imports:
+M3U Editor imports each movie and series with its details (plot, cast, genres, ratings, and artwork), plus every season and episode. The [Media Servers](emby_integration_settings) page covers the integration's other settings and actions.
 
-- **Movies**: All movies from selected libraries, including metadata (title, year, genre, rating, overview, cast, poster art)
-- **TV Series**: Complete series with seasons and episodes, including all associated metadata
-- **Artwork**: Posters and backdrop images are proxied through M3U-Editor to protect your token
+## Publish to Emby
 
-:::info
-The sync process respects your library selection and genre handling settings. For large libraries, the initial sync may take several minutes.
-:::
-
-## Publishing Content Back to Emby
-
-The steps above cover *importing* content from an existing Emby library. To go the other direction and publish M3U Editor's own VOD/series content out as a managed Emby library via a companion Emby plugin, see [Managed Emby Library Publishing](./emby_library_publishing.md).
+This integration brings content *from* Emby into M3U Editor. To go the other way, and publish your IPTV movies and series *into* Emby as libraries, see [Emby Library Publishing](emby_library_publishing).

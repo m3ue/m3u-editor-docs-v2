@@ -1,7 +1,7 @@
 ---
-sidebar_position: 13
+sidebar_position: 5
 title: Stream Monitor
-description: Real-time visibility into active streams — EPG, encoder stats, failover status, and URL management
+description: See every stream the proxy is serving - who's watching, what's on, bandwidth, encoder speed, and failover - and stop or fail over streams.
 tags:
   - Proxy
   - Monitoring
@@ -10,119 +10,30 @@ tags:
 
 # Stream Monitor
 
-The Stream Monitor gives you a live view of every stream currently being served by the proxy — including what clients are watching, real-time encoding stats, current and upcoming EPG programmes, and failover status.
+**Proxy → Stream Monitor** shows every stream M3U Proxy is serving right now. It's the first place to look when someone says a channel isn't working.
 
-**Access**: Sidebar → **Proxy** → **Stream Monitor**
+The top of the page totals active streams, viewers, and bandwidth, and shows how long the proxy has been running. Below, each stream has a card with:
 
-:::note
-The Stream Monitor is only available when the proxy integration is enabled. If you don't see it in the sidebar, check that `M3U_PROXY_INTEGRATION_ENABLED` is not set to `false`.
+- the channel, and the playlist or alias it's from
+- its viewers, and the data and bandwidth they're using
+- **Now** and **Next** from the guide, with how far into the current show it is
+- the source and output format, and, when it's being transcoded, the encoder's bitrate, frame rate, and speed
+- whether it has failed over to a backup, and whether [smart failover](failover#smart-failover) is choosing its backups
+
+:::tip Encoder speed
+If a transcoded stream's speed is below `1.0x`, the encoder can't keep up and viewers will buffer. Use a [GPU](hardware-acceleration) or a lighter profile.
 :::
 
----
+## Actions
 
-## Overview
-
-The Stream Monitor page shows one card per active stream, updated automatically. Each card shows:
-
-- **Channel name** and logo
-- **Source playlist / alias** the stream is coming from
-- **Active client count** connected to this stream
-- **Current URL** (toggleable visibility — see below)
-- **Failover status** — which source is currently active when failover has triggered
-- **Encoder stats** — live FFmpeg output metrics when transcoding is active
-- **EPG: Now & Next** — current programme and upcoming programme (when EPG data is available)
-
-The page auto-refreshes on a configurable interval and pauses when the browser tab is hidden to save resources.
-
----
-
-## Auto-Refresh
-
-The Stream Monitor refreshes automatically to keep data current.
-
-### Configuring the Refresh Interval
-
-1. Open the Stream Monitor page
-2. Use the **Refresh interval** selector in the top toolbar
-3. Choose from available intervals (e.g. 5s, 10s, 30s, 60s)
-
-### Visibility-Aware Refresh
-
-The monitor detects when the browser tab is hidden and **pauses** auto-refresh automatically. Refresh resumes when you bring the tab back into focus. This prevents unnecessary background requests when you are not actively watching the monitor.
-
----
-
-## URL Visibility Toggle
-
-Stream URLs are hidden by default in the Stream Monitor output to prevent accidental exposure of provider credentials in screen shares or recordings.
-
-To toggle URL visibility:
-1. Click the **eye icon** (👁) in the top toolbar of the Stream Monitor
-2. URLs become visible / hidden across all stream cards
-
-URL visibility is per-session and resets when you reload the page.
-
----
-
-## EPG: Now & Next
-
-When EPG data is available for a channel, the stream card shows:
-
-| Section | Description |
+| Action | What it does |
 |---|---|
-| **Now** | Title of the currently airing programme |
-| **Progress** | A progress bar showing how far through the current programme the stream is |
-| **Next** | Title of the upcoming programme (when available in the EPG data) |
+| **Trigger Failover** | Switch the stream to its next backup now. |
+| **Remove Stream** | Stop the stream and disconnect everyone watching it. |
+| **Refresh** | Update the page now. |
 
-EPG is fetched from the cached EPG data that M3U Editor maintains. Channels without EPG mapping show no programme information.
+The page refreshes on its own every 5 seconds. Change the interval (3, 5, 10, or 30 seconds) or turn it off with **Auto-refresh**. It pauses while the browser tab is hidden.
 
----
+**Hide URLs** blurs stream addresses, which contain provider logins, for screenshots and screen sharing. Both choices are remembered in your browser.
 
-## Live Encoder Output Stats
-
-When a stream is being transcoded via FFmpeg or Streamlink, the stream card shows live encoder output metrics:
-
-| Stat | Description |
-|---|---|
-| **Bitrate** | Current output bitrate (kbps or Mbps) |
-| **FPS** | Frames per second being encoded |
-| **Speed** | Encoding speed relative to real-time (1.0x = real-time) |
-| **Quality** | Quality factor (CRF/QP) if applicable |
-
-These stats come directly from the FFmpeg or encoder process output and update on each refresh cycle.
-
-:::tip
-If **Speed** drops below `1.0x`, the encoder is falling behind real-time. This causes buffering for clients. Consider using hardware acceleration or a less demanding profile. See [Hardware Acceleration](./hardware-acceleration.md).
-:::
-
----
-
-## Failover Status
-
-When advanced failover is enabled and a stream has switched to a backup source, the stream card displays:
-
-- **Failover active** indicator
-- The **failover channel name** or source that is currently serving the stream
-
-This makes it easy to spot streams that are degraded or using backup providers at a glance.
-
----
-
-## Stopping a Stream
-
-You can stop an active stream directly from the monitor:
-
-1. Click the **Stop** button on a stream card
-2. If clients are connected, a confirmation prompt appears
-3. Use the **Force stop** option to stop the stream even with active clients
-
-The **Force stop** flag overrides the safety check that normally prevents stopping streams with connected viewers. Use it when you need to immediately terminate a stuck or problematic stream.
-
----
-
-## Related Resources
-
-- [Failover](./failover.md) - Automatic backup URL switching
-- [Transcoding & Stream Profiles](./transcoding.md) - FFmpeg transcoding configuration
-- [Hardware Acceleration](./hardware-acceleration.md) - GPU-accelerated encoding
-- [Job Monitoring](../advanced/job-monitoring.md) - Background job tracking
+If the page shows no streams when something is playing, check the stream is actually [proxied](overview#turn-it-on), and that **Settings → Proxy → Test connection** succeeds.

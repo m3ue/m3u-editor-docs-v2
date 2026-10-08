@@ -1,69 +1,36 @@
 ---
 sidebar_position: 1
-description: Introduction to the AI Copilot — an in-app chat assistant for M3U Editor
+description: The AI Copilot is a chat assistant inside M3U Editor that can find, change, and explain things for you in plain language.
 tags:
   - AI Copilot
   - Assistant
-  - Overview
-title: Overview
+title: AI Copilot
 ---
 
 # AI Copilot
 
-The AI Copilot is an in-app chat assistant built into M3U Editor. It lives in the top navigation bar as a chat icon and lets admins interact with the application using plain English — searching records, creating or editing data, navigating pages, and looking up documentation — without ever leaving the UI.
+The AI Copilot is a chat assistant inside M3U Editor. Ask it something in plain language, and it can look things up, make changes, map guide data, schedule recordings, and answer questions from these docs, without you hunting through menus.
 
-:::info
-The AI Copilot is only accessible to **admin users** and users who have the **Use AI Copilot** permission added.
-:::
+It uses an AI provider you choose, like OpenAI, Anthropic, or a model running on your own machine with Ollama. The Copilot is only available to admin users.
 
----
+## Turn it on
 
-## How It Works
+1. Go to **Settings → AI Copilot**.
+2. Turn on **Enable AI Copilot**.
+3. Choose a **Provider** and enter its **API Key**. Local providers like Ollama don't need one. See [Configuration](configuration).
+4. Save, and refresh the page.
 
-When enabled, the Copilot opens a chat panel where you type requests in natural language. Behind the scenes the assistant can call **tools** to take real actions:
+The Copilot's icon appears in the top bar. Select it to open the chat.
 
-- **Search & list** channels, playlists, EPG sources, and other resources
-- **Create, edit, or delete** records directly from the chat
-- **Navigate** to any page in the admin panel
-- **Look up documentation** from the M3U Editor docs site
-- **Remember facts** across sessions so you don't have to repeat context
+## What to ask
 
-Tools are discrete PHP classes with typed inputs. The AI receives their descriptions and decides autonomously which ones to call during a conversation.
-
----
-
-## Enabling the Copilot
-
-1. Go to **Settings → AI Copilot** (admin only).
-2. Toggle **Enable AI Copilot** to **ON**.
-3. Choose an **AI Provider** and enter your **API Key** (see [Configuration](./configuration) for all options).
-4. Click **Save**.
-
-The chat icon will appear in the top navigation bar immediately — no server restart required.
-
-:::tip
-Settings are stored in the database, so changes take effect instantly for all admin users.
-:::
-
----
-
-## What You Can Ask
-
-Here are some example prompts to get you started:
-
-| Prompt | What happens |
+| Ask | What happens |
 |---|---|
-| `Find the channel called BBC One` | Searches channels and returns a matching record |
-| `Show me all playlists that have proxy enabled` | Lists filtered playlist records |
-| `Create a new EPG source for...` | Opens a creation form pre-filled from your message |
-| `How do I set up provider profiles?` | Searches the docs and returns an excerpt |
-| `Remember that my main playlist is called "Home"` | Stores the note in the assistant's memory |
+| "How many channels in my Sports group are disabled?" | It looks it up and answers. |
+| "Map guide data for the unmapped channels in my main playlist." | It finds likely matches and, once you approve, applies them. |
+| "What's on ESPN tonight?" | It checks the guide for your mapped channels. |
+| "Record every new episode of Jeopardy." | It creates a DVR series rule. |
+| "How do I set up Provider Profiles?" | It searches these docs and explains. |
+| "Remember that my main playlist is called Home." | It saves the note for later conversations. |
 
----
-
-## Next Steps
-
-- [Configuration](./configuration) — Set up your AI provider and fine-tune behaviour
-- [Tools](./tools) — See every built-in tool the assistant can use
-- [Quick Actions](./quick-actions) — Add one-click shortcut buttons to the chat
-- [Management](./management) — Browse conversation history, audit logs, and rate limits
+Some of these need their tool turned on under **Enabled Tools** in [Configuration](configuration#tools), like guide mapping and the DVR. Changes that are hard to undo, like database writes and applying guide mappings, ask for your approval in the chat first. See [Tools](tools).

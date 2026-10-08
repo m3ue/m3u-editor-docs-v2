@@ -1,12 +1,12 @@
 {
   "label": "Resources",
   "position": 5,
-  "description": "Playlists, EPGs, custom and merged playlists, aliases, and logins.",
+  "description": "Playlists, channels, guide data, and the logins you share.",
   "customProps": {
     "icon": "playlist_play"
   },
   "link": {
     "type": "generated-index",
-    "description": "Primary resource types available in M3U Editor."
+    "description": "Add your sources, organize what they import, add guide data, and build the lineups and logins you share with your players."
   }
 }

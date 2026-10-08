@@ -1,232 +1,126 @@
 ---
 sidebar_position: 1
-description: Docker Compose deployment options for M3U Editor
+description: What runs in each shipped Docker Compose setup, what to change, and the commands for running M3U Editor day to day.
 tags:
   - Deployment
   - Docker
   - Docker Compose
-title: Docker Compose Deployments
+title: Docker Compose Setups
 ---
 
-# Docker Compose Deployments
+# Docker Compose Setups
 
-M3U Editor offers multiple Docker Compose configurations to fit different use cases.
+This page goes one level deeper than [Compose Examples](/docs/installation): what runs in each shipped compose file, the parts you might change, and the commands for running it day to day. If you haven't picked a setup yet, start there.
 
-## Deployment Options Overview
+## Everyday commands
 
-| Use Case | File | Description |
-|----------|------|-------------|
-| **⭐⭐ Recommended** | `docker-compose.proxy.yml` | Modular setup with separate containers for m3u-editor, m3u-proxy, and Redis |
-| **Simple** | `docker-compose.aio.yml` | All-in-one container for quick testing |
-| **VPN** | `docker-compose.proxy-vpn.yml` | Modular deployment with Gluetun VPN |
-| **Advanced** | `docker-compose.external-all.yml` | Fully modular with external Nginx |
-| **Advanced** | `docker-compose.external-all-caddy.yml` | Fully modular with Caddy (auto HTTPS) |
+Run these from the folder that holds your `docker-compose.yml`:
 
-## Modular Deployment (Recommended)
+| To | Run |
+|---|---|
+| Start, or apply changes to the compose file or `.env` | `docker compose up -d` |
+| Update to the newest images | `docker compose pull` then `docker compose up -d` |
+| Check that every container is `healthy` | `docker compose ps` |
+| Follow the editor's logs | `docker compose logs -f m3u-editor` |
+| Restart everything | `docker compose restart` |
+| Stop and remove the containers (your data is kept) | `docker compose down` |
 
-**File**: `docker-compose.proxy.yml`
+Your data lives in volumes, so recreating or updating the containers never touches it. [Keeping your data](/docs/installation#keeping-your-data) lists what each volume holds.
 
-This is the **recommended production setup** with separate containers for each service.
+## Modular
 
-### Features
+`docker-compose.proxy.yml`, the recommended setup.
 
-- ✅ Hardware acceleration support (via external m3u-proxy)
-- ✅ Independent service scaling
-- ✅ Redis-based stream pooling
-- ✅ Easy to manage and troubleshoot
+| Container | Runs | Reachable from |
+|---|---|---|
+| `m3u-editor` | The web app, playlist outputs, and an embedded PostgreSQL database | Port `36400` on your server |
+| `m3u-proxy` | [M3U Proxy](/docs/proxy/overview), which streams to your players | The Docker network only |
+| `m3u-redis` | Redis, shared by the editor and proxy | The Docker network only |
 
-### Quick Start
+Players never connect to the proxy directly. Stream URLs point at the editor (`http://your-server:36400/m3u-proxy/...`), and the editor's web server passes them on. See [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration) for how the two connect.
 
-```bash
-# Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
+Redis runs as a cache only: nothing is written to disk, and it's capped at 256 MB. The proxy uses Redis database `6` so it doesn't collide with the editor.
 
-# Generate secure tokens
-echo "M3U_PROXY_TOKEN=$(openssl rand -hex 32)" >> .env
-echo "PG_PASSWORD=$(openssl rand -base64 32)" >> .env
-echo "APP_URL=http://localhost" >> .env
+Optional parts of the file are already there, commented out:
 
-# Start services
-docker-compose -f docker-compose.proxy.yml up -d
-```
+- **Hardware acceleration:** uncomment `devices: - /dev/dri:/dev/dri` under `m3u-proxy`. See [Hardware Acceleration](/docs/proxy/hardware-acceleration), including NVIDIA.
+- **Resource limits:** uncomment a `deploy.resources` block to cap a container's CPU and memory.
+- **Database access from the host:** uncomment the PostgreSQL port under `m3u-editor` to reach the database with your own tools.
 
-### Services Included
+## All-in-one
 
-| Service | Container | Port | Purpose |
-|---------|-----------|------|---------|
-| m3u-editor | m3u-editor | 36400 | Main application |
-| m3u-proxy | m3u-proxy | 8085* | Streaming proxy |
-| Redis | m3u-redis | 36790* | Caching and pooling |
-| PostgreSQL | embedded | 5432* | Database |
+`docker-compose.aio.yml` runs everything in the one `m3u-editor` container: the web app, PostgreSQL, Redis, and an embedded proxy. Only port `36400` is published.
 
-*Internal ports only
+It's the quickest way to try M3U Editor, with two trade-offs:
 
-### Management Commands
+- Hardware acceleration isn't supported.
+- The editor and proxy are updated and restarted together.
 
-```bash
-# View logs
-docker-compose -f docker-compose.proxy.yml logs -f
+You can move to the modular setup later without losing anything. See [Move to a separate proxy container](/docs/deployment/m3u-proxy-integration#move-to-a-separate-proxy-container).
 
-# Restart services
-docker-compose -f docker-compose.proxy.yml restart
+## Modular + VPN
 
-# Stop services
-docker-compose -f docker-compose.proxy.yml down
+`docker-compose.proxy-vpn.yml` is the modular setup plus [Gluetun](https://github.com/qdm12/gluetun). The editor, proxy, and Redis all join Gluetun's network, so everything they fetch (playlists, guide data, and streams) goes out through your VPN. Port `36400` is published on the `gluetun` container instead of the editor.
 
-# Check status
-docker-compose -f docker-compose.proxy.yml ps
-```
-
-## All-in-One Deployment
-
-**File**: `docker-compose.aio.yml`
-
-Simple single-container deployment for testing and development.
-
-### Features
-
-- ✅ Quick setup
-- ✅ Minimal configuration
-- ❌ No hardware acceleration support
-
-### Quick Start
+Set your VPN details in `.env`. The file is set up for WireGuard:
 
 ```bash
-# Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.aio.yml
-
-# Start service
-docker-compose -f docker-compose.aio.yml up -d
+VPN_SERVICE_PROVIDER=mullvad
+WIREGUARD_PRIVATE_KEY=your-private-key
 ```
 
-:::warning
-This setup does **not** support hardware acceleration for transcoding.
+Other Gluetun options, such as `WIREGUARD_ADDRESSES` and `SERVER_COUNTRIES`, are listed commented out under the `gluetun` service. Uncomment the ones your provider needs. For OpenVPN or provider-specific settings, see the [Gluetun wiki](https://github.com/qdm12/gluetun-wiki).
+
+:::tip Reaching services on your network
+Gluetun blocks traffic to your local network by default. If M3U Editor needs to reach something on your LAN, like a Plex, Emby, or Jellyfin server, uncomment `FIREWALL_OUTBOUND_SUBNETS` and set it to your LAN's range, for example `192.168.1.0/24`.
 :::
 
-## VPN Deployment
+<details>
+<summary>Media server movies and episodes won't play, but syncing works</summary>
 
-**File**: `docker-compose.proxy-vpn.yml`
+If your media server runs on the same machine as the VPN containers, requests from M3U Editor reach it through Docker's internal bridge rather than your LAN. The media server then sees a Docker address (like `172.19.0.2`) and may treat the stream as remote. Library sync, artwork, and live TV still work, but movies and episodes fail or stall.
 
-Route proxy traffic through a VPN using Gluetun.
+Plex is the most common case: it applies its remote bandwidth limit, and its log shows `Bandwidth exceeded` followed by `Cannot make a decision`.
 
-### Features
+To fix it, add the Docker subnet to the media server's list of local networks:
 
-- ✅ All modular deployment benefits
-- ✅ VPN protection for streaming
-- ✅ Support for multiple VPN providers
+- **Plex:** **Settings → Network → LAN Networks**, for example `172.19.0.0/16`
+- **Emby or Jellyfin:** the local network addresses setting under **Networking**
 
-### Quick Start
+Find the subnet with `docker network inspect <network-name>` on the host.
+
+</details>
+
+## Fully external
+
+`docker-compose.external-all.yml` (Nginx) and `docker-compose.external-all-caddy.yml` (Caddy) run every service in its own container: PostgreSQL, Redis, the proxy, the editor (PHP only), and a web server in front.
+
+Each needs its web server config file next to the compose file:
 
 ```bash
-# Download configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy-vpn.yml
+# Nginx
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/nginx.conf
 
-# Configure VPN settings in the file
-# Edit the gluetun service section
-
-# Start services
-docker-compose -f docker-compose.proxy-vpn.yml up -d
+# Caddy
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all-caddy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/Caddyfile
 ```
 
-### Supported VPN Providers
+In `.env`, set `APP_URL`, `APP_PORT`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, and `REDIS_PASSWORD`. Set `APP_PORT` even if you keep the default: the web server publishes `36400` when it's unset, but the editor builds its links with `8080`.
 
-Gluetun supports many providers including:
-- NordVPN
-- ProtonVPN
-- ExpressVPN
-- Mullvad
-- And many more...
+The bundled config files route `/m3u-proxy/` to the proxy and websockets to the editor, the same as the editor's own web server does. To add HTTPS to them, see [The bundled Nginx and Caddy](/docs/deployment/caddy-vs-nginx#the-bundled-nginx-and-caddy).
 
-See [Gluetun documentation](https://github.com/qdm12/gluetun) for configuration details.
+## Ports
 
-### Troubleshooting: Media Server (Plex/Emby/Jellyfin) VOD playback fails, but sync works
+Only the editor's port is published to your network. Everything else is reached over the Docker network.
 
-If you're running a media server integration (Plex, Emby, or Jellyfin) on the **same host machine** as your VPN-routed M3U Editor container, you may see this pattern:
+| Service | Default port | Set with |
+|---|---|---|
+| M3U Editor | `36400` | `APP_PORT` |
+| Xtream API only (optional) | `36401` | `XTREAM_PORT`, with `XTREAM_ONLY_ENABLED=true` |
+| M3U Proxy | `38085` | `M3U_PROXY_PORT` |
+| PostgreSQL | `5432` | `PG_PORT` |
+| Redis (embedded) | `36790` | `REDIS_SERVER_PORT` |
 
-- Syncing the media server, and loading posters/backdrops, all work fine.
-- Live channels play fine.
-- VOD (movies/episodes) from that media server fail to play, hang, or error out - even though the connection test in M3U Editor succeeds.
-
-This happens because the request from the Gluetun-networked container to your media server has to leave the container, hit your host's LAN IP, and loop back in to another service on the same host (a "hairpin" route through Docker's own bridge networking). Metadata and image requests are unaffected, but some media servers apply different network/bandwidth rules to the actual streaming endpoint based on what address the request appears to come from - and a hairpinned request often shows up as a Docker-internal bridge IP (e.g. `172.19.0.2`) rather than your real LAN IP.
-
-**For Plex specifically**, this commonly surfaces as Plex applying its remote-stream bandwidth cap (default 8000 kbps) to a high-bitrate Direct Play file, since Plex doesn't recognize the Docker bridge address as part of your local network. Check Plex's own server log (**Settings → Troubleshooting → Logs**, or the `Plex Media Server.log` file) right after a failed playback attempt - a `Bandwidth exceeded` warning followed by `Cannot make a decision` confirms this.
-
-**Fix**: add the Docker bridge subnet your VPN-routed container is using to your media server's local/trusted network list, so it stops treating that traffic as remote:
-
-- **Plex**: Settings → Network → **LAN Networks**, add the bridge subnet (e.g. `172.19.0.0/16`). Find the exact subnet with `docker network inspect <network-name>` on the host.
-- **Emby/Jellyfin**: check the equivalent "Local network addresses" / "Known proxies" setting under Networking settings.
-
-## Fully External Deployment
-
-**Files**: 
-- `docker-compose.external-all.yml` (Nginx)
-- `docker-compose.external-all-caddy.yml` (Caddy)
-
-Maximum modularity with all services externalized.
-
-### Features
-
-- ✅ Complete service isolation
-- ✅ Independent scaling
-- ✅ External reverse proxy (Nginx or Caddy)
-- ✅ Automatic HTTPS (Caddy only)
-
-### Architecture
-
-```
-Nginx/Caddy (Reverse Proxy)
-    ├── M3U Editor (PHP-FPM)
-    ├── M3U Proxy (Streaming)
-    ├── PostgreSQL (Database)
-    └── Redis (Cache)
-```
-
-### When to Use
-
-Choose fully external deployment when you need:
-- Maximum control over each service
-- Independent service updates
-- Custom reverse proxy configuration
-- Multi-instance deployment
-
-See the deployment guides for detailed configuration options.
-
-## Persisting User-Uploaded Assets
-
-By default, all compose configurations mount `./data` for configuration persistence and a named volume for PostgreSQL. However, files uploaded through the **Assets** manager (logos, images, etc.) are stored in `storage/app/public` inside the container and are **not** covered by the `./data` mount.
-
-Without a volume for this path, uploaded assets will be lost whenever the container is recreated (e.g., after a `docker-compose pull` and `up`).
-
-All provided compose files already include this volume:
-
-```yaml
-volumes:
-  - ./storage:/var/www/html/storage/app/public
-```
-
-This maps a local `./storage` directory next to your compose file to the container's public storage path. The directory will be created automatically by Docker on first run.
-
-:::tip
-If you are migrating an existing deployment, copy the contents of the container's `/var/www/html/storage/app/public` to your local `./storage` directory before adding the volume mount to avoid losing existing uploaded files.
-:::
-
-## Port Configuration
-
-Default ports for each setup:
-
-| Service | Default Port | Customizable |
-|---------|-------------|--------------|
-| M3U Editor | 36400 | ✅ `APP_PORT` |
-| M3U Proxy | 38085 | ✅ `M3U_PROXY_PORT` |
-| PostgreSQL | 5432 | ✅ `PG_PORT` |
-| Redis | 36790 | ✅ `REDIS_SERVER_PORT` |
-| Nginx | 8080 | ✅ `NGINX_PORT` |
-| Caddy | 8080 | ✅ `CADDY_PORT` |
-
-Change ports by setting environment variables in your `.env` file.
-
-## Next Steps
-
-- [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - Detailed proxy setup
-- [Caddy vs Nginx](/docs/deployment/caddy-vs-nginx) - Choose your reverse proxy
-- [Configuration Guide](/docs/configuration) - Configure environment variables
+The optional Xtream-only port serves just the Xtream API, so you can expose it to the internet without exposing the rest of the app. Add it to the editor's `ports:` list to publish it. See [Editor Configuration](/docs/configuration#application).

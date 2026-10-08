@@ -1,283 +1,162 @@
 ---
-sidebar_position: 4
-description: Compare Caddy and Nginx reverse proxy options
+sidebar_position: 3
+description: Serve M3U Editor at your own domain with HTTPS, using Nginx Proxy Manager, Caddy, Nginx, or Traefik.
 tags:
   - Deployment
   - Nginx
   - Caddy
   - Reverse Proxy
-title: Caddy vs Nginx
+title: Reverse Proxy and HTTPS
 ---
 
-# Caddy vs Nginx
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-Choose between Nginx and Caddy for your reverse proxy setup.
+# Reverse Proxy and HTTPS
 
-## Quick Comparison
+To reach M3U Editor at your own domain, like `https://m3u.example.com`, put a reverse proxy in front of it. The reverse proxy handles the HTTPS certificate and forwards requests to the editor's port.
 
-| Feature | Nginx | Caddy |
-|---------|-------|-------|
-| **Configuration File** | `nginx.conf` | `Caddyfile` |
-| **Config Syntax** | Complex, verbose | Simple, concise |
-| **HTTPS Setup** | Manual configuration | Automatic with Let's Encrypt |
-| **Container Port** | `NGINX_PORT` (default: 8080) | `CADDY_PORT` (default: 8080) |
-| **SSL Certificates** | Manual management | Auto-renewal |
+If you already run one (Nginx Proxy Manager, Caddy, Traefik, SWAG), add M3U Editor to it like any other app. The editor container serves everything on its one port, including proxied streams (`/m3u-proxy/`) and the live updates in the web interface (websockets at `/app`), so there's only one address to forward.
 
-## When to Choose Nginx
+## What the reverse proxy needs
 
-Choose Nginx if you:
+- **Forward every path** to the editor, at `http://<server-ip>:36400`, or `http://m3u-editor:36400` if the reverse proxy is on the same Docker network.
+- **Allow websockets.** The web interface uses them for live progress and notifications.
+- **Don't buffer or time out streams.** Streams and large playlist downloads stay open for a long time.
+- **Send `X-Forwarded-Proto`.** Most reverse proxies do this by default. It tells the editor the request arrived over HTTPS, so it builds `https://` links.
 
-- ✅ Need maximum control and customization
-- ✅ Are already familiar with nginx configuration
-- ✅ Have complex routing requirements
-- ✅ Want to manage SSL certificates manually
-- ✅ Need specific nginx modules
-
-## When to Choose Caddy
-
-Choose Caddy if you:
-
-- ✅ Want automatic HTTPS with zero configuration
-- ✅ Prefer simpler, more readable configurations
-- ✅ Want Let's Encrypt certificates automatically managed
-- ✅ Are setting up a new deployment
-- ✅ Value ease of use over maximum control
-
-## Nginx Setup
-
-### Starting Nginx Version
+Then set `APP_URL` to your domain, with no port, and recreate the container:
 
 ```bash
-docker-compose -f docker-compose.external-all.yml up -d
+APP_URL=https://m3u.example.com
 ```
 
-### Configuration File
+For an `https://` address, the editor leaves the port off the links it builds, since the reverse proxy listens on 443.
 
-Traditional nginx syntax with separate blocks:
+## Examples
+
+<Tabs groupId="reverse-proxy" queryString>
+<TabItem value="npm" label="Nginx Proxy Manager" default>
+
+Add a **Proxy Host**:
+
+1. **Details:** enter your domain, set the scheme to `http`, the forward hostname to your server's IP (or `m3u-editor`), and the port to `36400`. Turn on **Websockets Support**.
+2. **SSL:** request a Let's Encrypt certificate, and turn on **Force SSL**.
+3. **Advanced:** paste the following, so long streams aren't cut off or buffered:
 
 ```nginx
-upstream m3u_editor {
-    server m3u-editor:9000;
-}
+proxy_buffering off;
+proxy_read_timeout 3600s;
+proxy_send_timeout 3600s;
+```
 
-upstream m3u_proxy {
-    server m3u-proxy:38085;
-}
+</TabItem>
+<TabItem value="caddy" label="Caddy">
 
-server {
-    listen 80;
-    server_name _;
+Caddy gets and renews the certificate on its own, and passes websockets and forwarded headers by default.
 
-    location /health {
-        access_log off;
-        return 200 "healthy\n";
-        add_header Content-Type text/plain;
+```caddyfile
+m3u.example.com {
+    reverse_proxy 192.168.1.50:36400 {
+        flush_interval -1
     }
+}
+```
+
+`flush_interval -1` sends stream data on immediately instead of buffering it.
+
+</TabItem>
+<TabItem value="nginx" label="Nginx">
+
+```nginx
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name m3u.example.com;
+
+    ssl_certificate     /etc/letsencrypt/live/m3u.example.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/m3u.example.com/privkey.pem;
+
+    client_max_body_size 1024M;
 
     location / {
-        fastcgi_pass m3u_editor;
-        fastcgi_index index.php;
-        include fastcgi_params;
+        proxy_pass http://192.168.1.50:36400;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Websockets
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        # Long-running streams
+        proxy_buffering off;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
     }
 }
 ```
 
-### HTTPS Configuration
+`client_max_body_size` allows large uploads, like M3U and EPG files or backups.
 
-Manual SSL setup required:
+</TabItem>
+<TabItem value="traefik" label="Traefik">
 
-1. **Obtain certificates** (Let's Encrypt, commercial CA, etc.)
+Add labels to the `m3u-editor` service, and attach it to Traefik's network. Traefik passes websockets and forwarded headers by default.
 
-2. **Uncomment HTTPS server block** in `nginx.conf`
-
-3. **Mount certificates** in docker-compose.yml:
-   ```yaml
-   nginx:
-     volumes:
-       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-       - ./ssl:/etc/nginx/ssl:ro
-     ports:
-       - "80:80"
-       - "443:443"
-   ```
-
-4. **Update nginx.conf**:
-   ```nginx
-   server {
-       listen 443 ssl http2;
-       server_name your-domain.com;
-
-       ssl_certificate /etc/nginx/ssl/fullchain.pem;
-       ssl_certificate_key /etc/nginx/ssl/privkey.pem;
-       
-       # ... rest of config
-   }
-   ```
-
-## Caddy Setup
-
-### Starting Caddy Version
-
-```bash
-docker-compose -f docker-compose.external-all-caddy.yml up -d
+```yaml
+services:
+  m3u-editor:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.m3u.rule=Host(`m3u.example.com`)
+      - traefik.http.routers.m3u.entrypoints=websecure
+      - traefik.http.routers.m3u.tls.certresolver=letsencrypt
+      - traefik.http.services.m3u.loadbalancer.server.port=36400
 ```
 
-### Configuration File
+Use the entry point and certificate resolver names from your own Traefik setup.
 
-Simple, declarative Caddyfile syntax:
+</TabItem>
+</Tabs>
 
-```caddyfile
-{
-    admin off
-}
+## Exposing it to the internet
 
-http://localhost:80 {
-    @health {
-        path /health
-    }
-    handle @health {
-        respond "healthy" 200
-    }
+A reverse proxy makes M3U Editor reachable from anywhere, so:
 
-    handle_path /m3u-proxy/* {
-        reverse_proxy m3u-proxy:38085
-    }
+- Always use HTTPS, and change the default `admin` password (you're asked to on first sign-in).
+- Consider exposing only what remote players need. With `XTREAM_ONLY_ENABLED=true`, the editor also serves just the Xtream API on port `36401`, which you can forward instead of the whole app. See [Editor Configuration](/docs/configuration#application).
+- Give each person their own login with [Playlist Auths](/docs/resources/playlist-auth), and use [Single Sign-On](/docs/advanced/sso-oidc) if you already have an identity provider.
+- To keep players on your LAN using a local address while `APP_URL` is your domain, set the proxy's **Override URL** or turn on **Resolve proxy public URL dynamically**. See [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration#settings-that-affect-the-connection).
 
-    handle {
-        reverse_proxy m3u-editor:9000 {
-            transport fastcgi {
-                root /var/www/html/public
-            }
-        }
-    }
-}
-```
+## The bundled Nginx and Caddy
 
-### HTTPS Configuration (Automatic!)
+The [fully external](/docs/deployment/docker-compose#fully-external) compose files include their own web server instead of the one inside the editor container. Their config files, `nginx.conf` and `Caddyfile`, already route the app, the proxy, and websockets, and serve plain HTTP on port `36400`.
 
-Caddy automatically handles SSL certificates:
+If another reverse proxy sits in front, leave them as they are and point it at port `36400`, as above. To have them serve HTTPS themselves:
 
-1. **Update your Caddyfile** with your domain:
-   ```caddyfile
-   https://your-domain.com {
-       tls your-email@example.com
-       
-       # Rest of your config...
-   }
-   ```
+<Tabs groupId="bundled-web-server" queryString>
+<TabItem value="caddy" label="Caddy" default>
 
-2. **Update environment variables**:
-   ```bash
-   APP_URL=https://your-domain.com
-   CADDY_SSL_PORT=443
-   ```
+1. In the `Caddyfile`, delete the `auto_https off` line and replace `:80` with your domain, for example `m3u.example.com`.
+2. In the compose file, publish ports `80` and `443` on the `caddy` service.
+3. Set `APP_URL=https://m3u.example.com`.
 
-3. **Uncomment HTTPS port** in docker-compose:
-   ```yaml
-   caddy:
-     ports:
-       - "80:80"
-       - "443:443"  # Uncomment this
-   ```
+Caddy then gets and renews a Let's Encrypt certificate. Your domain must point at the server, and ports 80 and 443 must be reachable from the internet.
 
-That's it! Caddy will automatically:
-- Obtain SSL certificates from Let's Encrypt
-- Renew certificates before expiration
-- Redirect HTTP to HTTPS
-- Handle OCSP stapling
+</TabItem>
+<TabItem value="nginx" label="Nginx">
 
-## Configuration Syntax Examples
+1. Get a certificate for your domain, for example with Certbot.
+2. Mount it into the `nginx` service, for example `./ssl:/etc/nginx/ssl:ro`.
+3. In `nginx.conf`, change `listen 80;` to `listen 443 ssl;`, and add `ssl_certificate` and `ssl_certificate_key` lines pointing at the mounted files.
+4. In the compose file, publish port `443` (the line is there, commented out).
+5. Set `APP_URL=https://m3u.example.com`.
 
-### Health Check Endpoint
+Nginx doesn't renew certificates itself, so renew them on the host and restart the container.
 
-**Nginx:**
-```nginx
-location /health {
-    access_log off;
-    return 200 "healthy\n";
-    add_header Content-Type text/plain;
-}
-```
-
-**Caddy:**
-```caddyfile
-@health {
-    path /health
-}
-handle @health {
-    respond "healthy" 200
-}
-```
-
-### Reverse Proxy
-
-**Nginx:**
-```nginx
-location /api {
-    proxy_pass http://backend:8000;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-}
-```
-
-**Caddy:**
-```caddyfile
-handle_path /api/* {
-    reverse_proxy backend:8000
-}
-```
-
-## Health Checks
-
-Both configurations include health checks:
-
-```bash
-# Test health endpoint
-curl http://localhost:8080/health
-
-# Should return: "healthy"
-```
-
-## Environment Variables
-
-### Nginx Setup
-```bash
-APP_PORT=36400
-NGINX_PORT=8080
-# NGINX_SSL_PORT=443  # Uncomment for HTTPS
-```
-
-### Caddy Setup
-```bash
-APP_PORT=36400
-CADDY_PORT=8080
-# CADDY_SSL_PORT=443  # Uncomment for HTTPS
-```
-
-## Performance Considerations
-
-Both Nginx and Caddy are excellent performers for M3U Editor:
-
-- **Nginx**: Slightly better for very high-traffic scenarios
-- **Caddy**: Optimized out-of-the-box, less tuning needed
-
-For most M3U Editor deployments, the performance difference is negligible.
-
-## Recommendation
-
-For new deployments, we recommend **Caddy** for its:
-- Automatic HTTPS
-- Simpler configuration
-- Zero-touch certificate management
-- Modern defaults
-
-For existing Nginx users or complex setups, stick with **Nginx** for its:
-- Maximum flexibility
-- Extensive module ecosystem
-- Familiar configuration
-
-## Next Steps
-
-- [Docker Compose Deployments](/docs/deployment/docker-compose) - All deployment options
-- [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - External proxy setup
-- [Configuration Guide](/docs/configuration) - Environment variables and settings
+</TabItem>
+</Tabs>

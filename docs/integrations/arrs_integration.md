@@ -1,8 +1,7 @@
 ---
-sidebar_position: 8
-description: Integrate Sonarr and Radarr to request and manage TV show and movie downloads
-title: Sonarr & Radarr (Arrs) Integration
-hide_title: true
+sidebar_position: 10
+description: Request shows and movies through Sonarr and Radarr, for you and your guests, and follow their downloads.
+title: Sonarr and Radarr
 tags:
   - Integrations
   - Sonarr
@@ -11,30 +10,15 @@ tags:
   - Downloads
 ---
 
-# Sonarr & Radarr (Arrs) Integration
+# Sonarr and Radarr
 
-:::note Version Requirement
-The Sonarr & Radarr integration requires **v0.12.45+**.
-:::
-
-M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://radarr.video) to let you request TV shows and movies for download directly from the editor — including from the guest panel. Once connected, you can search content, browse by genre via TMDB, add items to your download queue, and monitor active downloads across all your *arr servers.
-
-**Key Features:**
-- Connect multiple Sonarr and/or Radarr instances
-- Search and request content from a unified discovery UI
-- TMDB-powered browse/discover mode (when a TMDB API key is configured)
-- Interactive episode search — trigger a manual release search for specific episodes
-- Download queue monitoring with live status updates (refreshes every 10 seconds)
-- Webhook notifications for real-time queue events (grab, download, etc.), registered in one click
-- Optional caching through Radarr/Sonarr instead of the provider *(v0.13.2+)*
-- Guest panel support — guests can request content on playlists where requests are enabled
-- Quality profile and root folder selection per integration
+Connect [Sonarr](https://sonarr.tv) and [Radarr](https://radarr.video) to request TV shows and movies from inside M3U Editor, and let the people you share playlists with request them too. You can search, browse what's trending through TMDB, and watch downloads progress across all your servers.
 
 ## Prerequisites
 
 - A running Sonarr instance (port `8989` default) and/or Radarr instance (port `7878` default)
-- API keys from each *arr server
-- The `use_integrations` permission granted to your user account (Admin → Users → Permissions)
+- The API key from each server
+- The **Use Integrations** permission on your user account (admins have it)
 
 ## Add an Integration
 
@@ -47,12 +31,12 @@ M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://rada
 | **Display Name** | A friendly label (e.g., `Sonarr - 1080p TV`, `Radarr - 4K Movies`) |
 | **Type** | Select `Sonarr` or `Radarr` *(cannot be changed after creation)* |
 | **Server URL** | Full URL to your instance (e.g., `http://192.168.1.42:8989`) |
-| **API Key** | Found in your *arr server under **Settings → General → API Key** |
+| **API Key** | In Sonarr or Radarr, under **Settings → General → API Key** |
 
 4. Click **Test Connection & Discover** to verify the connection and load available quality profiles and root folders
 5. Under **Options**, select:
-   - **Quality Profile** — the default profile used when adding content
-   - **Root Folder** — where new content will be placed on disk
+   - **Quality Profile**: the profile used when adding content
+   - **Root Folder**: where new content is saved
 6. Optionally turn on **Allow Guest Requests** and the [caching options](#using-an-arr-for-caching)
 7. Click **Save**
 
@@ -68,8 +52,8 @@ Go to **Integrations → Media Servers → Request Content** to find and request
 
 ### Searching
 
-- Type a title in the search bar — M3U Editor queries all enabled *arr integrations simultaneously
-- Results show the content type (TV / Movie), current status in *arr, and available actions
+- Type a title in the search bar. Every enabled integration is searched at once.
+- Results show whether it's TV or a movie, its status in Sonarr or Radarr, and what you can do
 
 ### Browsing via TMDB
 
@@ -84,11 +68,11 @@ From any search or discover result:
 3. Click **Add to Sonarr** / **Add to Radarr**
 4. The item is added using the quality profile and root folder configured on the integration
 
-For TV shows you can also trigger an **Interactive Search** on specific episodes — this forces *arr to search all configured indexers for a particular episode release immediately.
+For TV shows you can also run an **Interactive Search** on a specific episode, which has Sonarr search all its indexers for that episode right away.
 
 ## Download Queue
 
-Navigate to **Integrations → Download Queue** to see live download status across all your Sonarr and Radarr servers. The page auto-refreshes every 10 seconds.
+Go to **Integrations → Download Queue** to see live download status across all your Sonarr and Radarr servers. The page auto-refreshes every 10 seconds.
 
 Each item shows:
 - Title, series, and episode
@@ -97,7 +81,7 @@ Each item shows:
 
 ## Webhook Notifications
 
-A webhook lets your *arr server push real-time status updates to M3U Editor. After saving the integration, open it again: the **Webhook** section shows the URL to use.
+A webhook lets Sonarr or Radarr push status updates to M3U Editor as they happen. After saving the integration, open it again: the **Webhook** section shows the URL to use.
 
 *(v0.13.2+)* Click **Register Webhook** to add it to Sonarr/Radarr for you. M3U Editor tests the URL first and saves nothing in the arr if the arr can't reach it. **Test Webhook** sends a test from the arr to check an existing webhook.
 
@@ -132,35 +116,36 @@ These options only appear when **Enable cache** is on in **Settings → Cache**.
 
 ## Guest Requests
 
-When **Allow Guest Requests** is enabled on an integration, it applies to every playlist that has **Content Requests** enabled (Playlists → Edit → Request Settings). Guests on those playlists can:
+Three switches must be on for a guest to request content:
 
-- Search and browse content in the guest panel
-- Add TV shows or movies to the download queue via that integration
+1. **Allow Guest Requests** on the Sonarr or Radarr integration.
+2. **Enable Content Requests** in the playlist's **Requests** tab.
+3. **Content Requests** on the guest's [Playlist Auth](/docs/resources/playlist-auth#what-a-login-can-use). **Auto-approve Content Requests** there skips your approval.
 
-Guest requests use the same quality profile and root folder as the admin-configured defaults.
+Guests then get a **Request Content** page in the [guest portal](/docs/resources/playlist-auth#guest-portal). Their requests use the integration's quality profile and root folder.
 
 ## Troubleshooting
 
 **"Test Connection" fails**
 - Verify the server URL includes the correct scheme (`http://` or `https://`) and port
-- Confirm the API key is correct — find it under **Settings → General** in Sonarr/Radarr
+- Confirm the API key is correct. It's under **Settings → General** in Sonarr or Radarr.
 - Ensure Sonarr/Radarr is accessible from the M3U Editor host (check firewall / Docker networking)
 
 **Quality profiles or root folders are empty after test**
 - Use the **Sync Profiles & Folders** action on the integration's row to re-fetch them
-- Confirm at least one quality profile and one root folder are configured in your *arr server
+- Confirm at least one quality profile and one root folder are set up in Sonarr or Radarr
 
 **Guest users can't see the request button**
 - Check that **Allow Guest Requests** is enabled on the integration
-- Check that **Content Requests** is enabled on the playlist under **Playlists → Edit → Request Settings**
+- Check that **Enable Content Requests** is on in the playlist's **Requests** tab, and **Content Requests** is on for their Playlist Auth
 
 **Register Webhook fails**
 - The arr must be able to reach the Webhook URL. If you're browsing M3U Editor at `localhost`, open it at its LAN address and try again
 - Check Docker networking between the arr container and M3U Editor
 
 **Download queue is empty**
-- Confirm your *arr server has active downloads in its own queue
-- The queue page only shows items actively in the *arr download client queue
+- Confirm Sonarr or Radarr has active downloads in its own queue
+- The queue page only shows items actively in the download client queue
 
 ## Related Documentation
 

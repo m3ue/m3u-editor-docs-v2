@@ -1,6 +1,6 @@
 ---
-sidebar_position: 8
-description: Configure multiple server URLs for Xtream playlists with automatic failover
+sidebar_position: 7
+description: Give an Xtream playlist backup server addresses, so it switches to a working one when your provider's main address goes down.
 tags:
   - Playlists
   - Xtream
@@ -10,78 +10,26 @@ title: Xtream DNS Failover
 
 # Xtream DNS Failover
 
-M3U Editor supports configuring multiple server URLs for Xtream Codes playlists. When the primary server is unreachable, the application will automatically try the next URL in the list — no manual intervention required.
+Many providers give you more than one server address for the same account. Add the extras to an Xtream playlist, and when the main address stops answering, M3U Editor switches to one that works, with no changes needed on your players.
 
-This is useful when your IPTV provider supplies backup server addresses, or when you want to load-balance across multiple DNS entries pointing to the same service.
+## Add backup addresses
 
-## How It Works
+1. Edit an Xtream playlist and open its **Type** tab.
+2. Expand **DNS failover URLs** and add each address under **Alternative URLs**, up to 10. Use the same `http://host:port` form as the main URL, with no path or login; the playlist's username and password are used for all of them.
+3. **Test** next to an address checks it with your login. Drag them into the order you want them tried.
+4. Save.
 
-Each Xtream playlist has a **primary URL** and an optional list of **fallback URLs**. When M3U Editor makes a request to the primary URL and it fails (connection error, timeout, or HTTP error response), it will:
+## How it switches
 
-1. Try each fallback URL in order.
-2. On success, **promote** the working URL to primary and persist the change to the database, so future requests use the new primary without delay.
-3. If all URLs fail, the operation is aborted and an error is reported.
+Whenever M3U Editor talks to your provider (syncing, fetching metadata, and so on) and the main address fails, it tries the alternatives in order. The first one that answers becomes the new main address, and the old one moves to the list of alternatives. The change is saved, so later requests and new stream URLs use the working address straight away.
 
-URL promotion is permanent — the working URL stays as primary until another failover or until you reorder them manually.
+When it switches, it also updates:
 
-## Adding Fallback URLs
+- the playlist's [provider EPG](epg-setup), if the EPG is tied to the playlist
+- [Aliases](playlist-alias) with **Inherit DNS failover from source playlist** turned on, which keep their own credentials
 
-1. Navigate to **Playlists** in the sidebar.
-2. Open the edit page for an Xtream playlist.
-3. Scroll to the **DNS failover URLs** section.
-4. Click **Add URL** and enter an alternative server address.
-5. Repeat for each additional URL (up to 10 fallbacks supported).
-6. Use the drag handles to reorder fallback priority.
-7. Click **Save**.
+## Check the addresses
 
-:::tip
-Enter only the base server URL, e.g. `https://backup.example.com:8080`. Do not include path or credentials — these are taken from the primary playlist configuration.
-:::
+On the playlist's page, the **Xtream API** tab shows **Server DNS Status**: whether each address is reachable, how fast it answered, and which one is currently the main address. It refreshes every few seconds, and **Check All** tests them all now.
 
-## Health Status Panel
-
-When at least one fallback URL is configured, a live health status panel appears on the playlist edit page. It shows:
-
-- **Online / Offline** status for each URL
-- **Response time** (ms) for reachable URLs
-- Which URL is currently marked as **Primary**
-- Error details for unreachable URLs
-
-The panel updates automatically every 5 seconds. You can also trigger an immediate check by clicking **Check All**.
-
-Health check results are cached for 5 minutes to avoid hammering your servers. The cache is refreshed when you load the edit page or click **Check All**.
-
-## URL Rotation Behaviour
-
-Failover follows a round-robin rotation:
-
-- If the current primary fails, the next URL in the ordered list is tried.
-- The list wraps around cyclically, so all URLs are eventually tried.
-- Once a working URL is found, it is promoted to primary and the previously-failed URL is moved to the fallback list.
-
-This means over time, the list self-organizes to keep the fastest/most-reliable URL at the top.
-
-## Limitations
-
-- Fallback URLs are only available for **Xtream Codes API** playlists — not M3U URL or file-based playlists.
-- Up to **10** fallback URLs can be configured per playlist.
-- Health checks use the same credentials (username/password) as the primary URL.
-- SSL verification follows the playlist's existing SSL setting.
-
-## Troubleshooting
-
-### Failover is not triggering
-
-- Check that the fallback URLs are saved correctly on the playlist edit page.
-- Verify the URLs are reachable using the **Check All** button in the health panel.
-- Ensure URLs include the correct port number and scheme (`http://` or `https://`).
-
-### Health panel shows all URLs as offline
-
-- Confirm your network/Docker configuration allows outbound connections to the provider servers.
-- Try the URL directly in a browser to rule out a credential or provider issue.
-- Check your SSL settings — if the provider uses a self-signed certificate you may need to disable SSL verification on the playlist.
-
-### Promoted URL reverted after container restart
-
-This should not happen — promoted URLs are persisted to the database immediately after a successful failover. If you observe this, verify your database volume is correctly mounted and persisted.
+If every address shows as offline, check that the server can reach the internet, then try one of the addresses in a browser. If your provider uses a self-signed certificate, turn on **Disable SSL verification** for the playlist.

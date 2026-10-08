@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-description: How to build a plugin for M3U Editor — scaffolding, manifest, contracts, execution context, and the install/trust flow.
+description: How to build a plugin for M3U Editor - scaffolding, manifest, contracts, execution context, and the install and trust flow.
 tags:
   - Plugins
   - Development
@@ -11,8 +11,8 @@ title: Developing Plugins
 
 A plugin is a directory containing two required files:
 
-- **`plugin.json`** — the manifest that declares the plugin's ID, capabilities, hooks, permissions, settings, and actions.
-- **`Plugin.php`** (or whichever entrypoint you declare in the manifest) — the PHP class that implements the plugin logic.
+- **`plugin.json`**: the manifest that declares the plugin's ID, capabilities, hooks, permissions, settings, and actions.
+- **`Plugin.php`** (or whichever entrypoint you declare in the manifest): the PHP class that implements the plugin logic.
 
 Everything else in the directory is optional: scripts, stubs, a README, CI configuration, and any support classes your plugin needs.
 
@@ -24,7 +24,7 @@ Everything else in the directory is optional: scripts, stubs, a README, CI confi
 
 ## Scaffold a new plugin
 
-Use the `make:plugin` Artisan command to generate a ready-to-run plugin scaffold:
+The quickest way is **Plugins → Create Plugin** in the admin UI, which walks through the name, capabilities, and hooks, and generates the files. From the command line, the `make:plugin` Artisan command does the same:
 
 ```bash
 php artisan make:plugin "My Plugin Name"
@@ -175,7 +175,7 @@ class Plugin implements PluginInterface, HookablePluginInterface, LifecyclePlugi
 
 | Interface | Required | When to implement |
 |---|---|---|
-| `PluginInterface` | Yes | All plugins — provides `runAction()` |
+| `PluginInterface` | Yes | All plugins. Provides `runAction()`. |
 | `HookablePluginInterface` | If hooks declared | Provides `runHook()` |
 | `ScheduledPluginInterface` | If `scheduled` capability | Provides `scheduledActions()` |
 | `LifecyclePluginInterface` | Optional | Provides `uninstall()` for custom cleanup |
@@ -196,20 +196,20 @@ $context->info('Starting sync.');
 $context->warning('Rate limit hit, backing off.');
 $context->error('Connection refused.', ['host' => $host]);
 
-// Progress (0–100)
+// Progress (0 to 100)
 $context->checkpoint(50, 'Halfway through stations.');
 
-// Heartbeat — call this inside long loops to prevent stale-run detection
+// Heartbeat: call this inside long loops to prevent stale-run detection
 $context->heartbeat('Processing station 42 of 100.', progress: 42);
 
-// Cancellation — check this inside long loops
+// Cancellation: check this inside long loops
 if ($context->cancellationRequested()) {
     return PluginActionResult::cancelled('Run was cancelled by operator.');
 }
 
-// Dry run — make no persistent changes
+// Dry run: make no persistent changes
 if ($context->dryRun) {
-    return PluginActionResult::success('Dry run — no changes written.');
+    return PluginActionResult::success('Dry run, no changes written.');
 }
 ```
 
@@ -373,7 +373,7 @@ Or they can upload the `.zip` directly from the admin UI.
 
 ### Regex tester
 
-Any text input that accepts a regular expression automatically shows a **Regex tester** button in the UI. Click it to open a live preview panel where you can type test strings and see matches highlighted in real time — without leaving the settings form.
+Any text input that accepts a regular expression automatically shows a **Regex tester** button in the UI. Click it to open a live preview panel where you can type test strings and see matches highlighted in real time, without leaving the settings form.
 
 To signal that a field expects a regex, set `"is_regex": true` in the field definition:
 
@@ -422,6 +422,6 @@ The checker compares the installed `version` against the latest GitHub release t
 
 - Set `PLUGIN_SCAN_DRIVER=fake` in `.env` to skip ClamAV scanning during local development.
 - Use `--bare` with `make:plugin` if you just want the two core files without the starter kit.
-- Plugin settings are preserved across reinstalls — you do not need to re-configure after updating.
+- Plugin settings are preserved across reinstalls, so you don't need to reconfigure after updating.
 - Use `$context->heartbeat()` inside any loop that might run for more than a few seconds to prevent the run from being marked stale.
 - Always check `$context->cancellationRequested()` inside long-running loops so operators can stop a run cleanly from the UI.

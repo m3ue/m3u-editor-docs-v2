@@ -1,7 +1,7 @@
 ---
-sidebar_position: 13
+sidebar_position: 11
 title: API Reference
-description: Complete REST API reference for the M3U Proxy
+description: Use M3U Proxy from your own tools - authentication, endpoints, stream metadata, and webhooks for stream events.
 tags:
   - Proxy
   - API
@@ -10,326 +10,107 @@ tags:
 
 # API Reference
 
-The proxy exposes a REST API for managing streams, monitoring clients, and configuring webhooks. Interactive API docs are available at `/docs` (Swagger UI) and `/redoc` when the proxy is running.
+M3U Editor drives M3U Proxy through its REST API, and you can use the same API from your own scripts and tools. This page is an overview. The proxy serves complete, interactive docs for every endpoint at `/docs`: in M3U Editor, open **Settings → Proxy** and choose **API docs**.
 
-All management endpoints require the `X-API-Token` header when [authentication](./authentication.md) is enabled. Streaming endpoints are always public.
+## Authentication
 
----
+When `API_TOKEN` is set on the proxy (the compose files always set it), management endpoints need that token. Send it as a header, or as a query parameter where a header isn't possible:
 
-## Streams
-
-### Create stream
-
-`POST /streams`
-
-Creates a new proxy stream and returns a stream ID and endpoint URL.
-
-**Request body:**
-
-```json
-{
-  "url": "https://provider.com/stream.m3u8",
-  "failover_urls": ["https://backup.com/stream.m3u8"],
-  "user_agent": "MyApp/1.0",
-  "strict_live_ts": false,
-  "use_sticky_session": false,
-  "metadata": {
-    "local_id": "channel_123",
-    "category": "sports"
-  }
-}
+```bash
+curl -H "X-API-Token: your-token" http://m3u-proxy:38085/stats
+curl "http://m3u-proxy:38085/health?api_token=your-token"
 ```
 
-| Field | Required | Description |
-|-------|----------|-------------|
-| `url` | ✅ | Primary stream URL |
-| `failover_urls` | — | Ordered list of backup URLs |
-| `user_agent` | — | User-Agent to send upstream |
-| `strict_live_ts` | — | Enable [Strict Live TS Mode](./strict-live-ts.md) for this stream |
-| `use_sticky_session` | — | Enable [Sticky Sessions](./sticky-sessions.md) for this stream |
-| `metadata` | — | Arbitrary key/value pairs — see [Stream Metadata](./stream-metadata.md) |
+A missing or wrong token gets a `401` response. In M3U Editor, **Settings → Proxy → API key** shows the token in use.
 
-**Response:**
+Endpoints that serve video to players never need the token: `/stream/{id}`, `/hls/{id}/...`, `/dash/{id}/...`, and broadcast playlists and segments. The stream ID itself is hard to guess, and only M3U Editor hands it out.
 
-```json
-{
-  "stream_id": "abc123def456",
-  "primary_url": "https://provider.com/stream.m3u8",
-  "stream_type": "hls",
-  "stream_endpoint": "/hls/abc123def456/playlist.m3u8",
-  "message": "Stream created successfully (hls)"
-}
+:::warning
+Keep the proxy on your Docker network, as the compose files do, and reach it through M3U Editor. Don't publish its port to the internet.
+:::
+
+## Endpoints
+
+All paths are relative to the proxy's root (`/m3u-proxy` when reached through M3U Editor).
+
+| Method | Path | Does |
+|---|---|---|
+| `GET` | `/health` | Health check, with the proxy's version |
+| `GET` | `/info` | Version, hardware acceleration, FFmpeg, Streamlink, yt-dlp, and Redis details |
+| `POST` | `/streams` | Start proxying a stream, and get its ID and playback path |
+| `POST` | `/transcode` | Start a transcoded stream (see [Transcoding](transcoding)) |
+| `GET` | `/transcode/profiles` | List the built-in transcoding profiles |
+| `GET` | `/streams`, `/streams/{id}` | List streams, or get one, with viewers and statistics |
+| `DELETE` | `/streams/{id}` | Stop a stream and disconnect its viewers |
+| `POST` | `/streams/{id}/failover` | Switch a stream to its next backup now |
+| `GET` | `/streams/by-metadata` | Find streams by a metadata field (below) |
+| `GET` | `/streams/counts-by-metadata` | Count streams grouped by a metadata field |
+| `DELETE` | `/streams/by-metadata`, `/streams/oldest-by-metadata` | Stop matching streams, or the oldest one |
+| `DELETE` | `/hls/{id}/clients/{client_id}` | Disconnect one viewer |
+| `GET` | `/stats`, `/stats/detailed`, `/stats/performance`, `/stats/streams`, `/stats/clients` | Statistics |
+| `GET` | `/clients` | List connected viewers |
+| `POST` | `/test-connection` | Check the proxy can reach a URL |
+| `POST`, `GET`, `DELETE` | `/webhooks` | Add, list, or remove webhooks (below) |
+| `POST` | `/webhooks/test` | Send a test event to a webhook |
+| `POST`, `GET`, `DELETE` | `/broadcast/...` | Network broadcasts and DVR recordings, used by M3U Editor |
+
+### Start a stream
+
+```bash
+curl -X POST http://m3u-proxy:38085/streams \
+  -H "Content-Type: application/json" \
+  -H "X-API-Token: your-token" \
+  -d '{
+    "url": "http://provider.example/live/channel.ts",
+    "failover_urls": ["http://backup.example/live/channel.ts"],
+    "user_agent": "MyPlayer/1.0",
+    "metadata": { "channel": "news-1" }
+  }'
 ```
 
----
+The response includes the `stream_id` and the path to play it from (`/stream/{id}` or `/hls/{id}/playlist.m3u8`). Optional fields include `headers`, `strict_live_ts`, `use_sticky_session`, and the silence detection settings.
 
-### List streams
+### Stream metadata
 
-`GET /streams`
+`metadata` is any set of keys and values you attach to a stream, returned with it everywhere. Use it to find streams by your own IDs:
 
-Returns all registered streams with their current status and stats.
-
-**Response:**
-
-```json
-{
-  "streams": [
-    {
-      "stream_id": "abc123",
-      "original_url": "https://provider.com/stream.m3u8",
-      "current_url": "https://backup.com/stream.m3u8",
-      "stream_type": "HLS",
-      "client_count": 3,
-      "total_bytes_served": 10485760,
-      "error_count": 1,
-      "is_active": true,
-      "has_failover": true,
-      "created_at": "2025-10-05T14:30:00.000000",
-      "last_access": "2025-10-05T14:35:00.000000",
-      "metadata": { "local_id": "channel_123" }
-    }
-  ],
-  "total": 1
-}
+```bash
+curl -H "X-API-Token: your-token" \
+  "http://m3u-proxy:38085/streams/by-metadata?field=channel&value=news-1&active_only=true"
 ```
 
----
-
-### Get stream
-
-`GET /streams/{stream_id}`
-
-Returns information about a specific stream.
-
----
-
-### Delete stream
-
-`DELETE /streams/{stream_id}`
-
-Removes a stream and disconnects all clients.
-
----
-
-### Trigger failover
-
-`POST /streams/{stream_id}/failover`
-
-Immediately switches the stream to the next failover URL without waiting for an error.
-
----
-
-### Filter by metadata
-
-`GET /streams/by-metadata?field={key}&value={value}&active_only={true|false}`
-
-Returns streams matching a metadata field/value pair. See [Stream Metadata](./stream-metadata.md).
-
----
-
-## Streaming
-
-These endpoints are **always public** — no authentication required.
-
-### Direct stream
-
-`GET /stream/{stream_id}`
-
-Returns the raw stream content. Used for continuous (`.ts`, `.mp4`) streams.
-
----
-
-### HLS playlist
-
-`GET /hls/{stream_id}/playlist.m3u8`
-
-Returns the HLS playlist with segment URLs rewritten to route through the proxy.
-
----
-
-### HLS segment
-
-`GET /hls/{stream_id}/segment`
-`GET /hls/{stream_id}/segment.ts`
-
-Returns an individual HLS segment.
-
----
-
-### DASH manifest
-
-`GET /dash/{stream_id}/manifest.mpd`
-
-Returns the DASH (MPD) manifest with `BaseURL` rewritten to route segment requests through the proxy. Used for channels whose source is a DASH stream. DASH sources are proxied for client-side playback only and cannot be transcoded.
-
----
-
-### DASH segment
-
-`GET /dash/{stream_id}/segment/{encoded_base}/{path}`
-
-Returns an individual DASH segment, resolved relative to the rewritten `BaseURL` directory from the manifest.
-
----
-
-## Transcoding
-
-### Create transcoded stream
-
-`POST /transcode`
-
-Creates a stream with FFmpeg transcoding applied. See [Transcoding & Profiles](./transcoding.md).
-
-**Request body:**
-
-```json
-{
-  "url": "https://source.example.com/stream.m3u8",
-  "profile": "hq",
-  "profile_variables": {
-    "video_bitrate": "3500k",
-    "audio_bitrate": "192k"
-  },
-  "failover_urls": [],
-  "metadata": {}
-}
-```
-
----
-
-## Statistics
-
-### Overall stats
-
-`GET /stats`
-
-Returns an overview of active streams, clients, and data served.
-
----
-
-### Detailed stats
-
-`GET /stats/detailed`
-
-Extended statistics with per-stream and per-client breakdowns.
-
----
-
-### Performance stats
-
-`GET /stats/performance`
-
-Performance-focused metrics including throughput and latency.
-
----
-
-### Stream stats
-
-`GET /stats/streams`
-
-Statistics broken down by stream.
-
----
-
-### Client stats
-
-`GET /stats/clients`
-
-Statistics broken down by connected client.
-
----
-
-## Clients
-
-### List clients
-
-`GET /clients`
-
-Returns all currently connected clients.
-
----
-
-### Get client
-
-`GET /clients/{client_id}`
-
-Returns information about a specific client.
-
----
-
-### Disconnect client
-
-`DELETE /hls/{stream_id}/clients/{client_id}`
-
-Forcibly disconnects a client from an HLS stream.
-
----
-
-## Health
-
-### Health check
-
-`GET /health`
-
-Returns the proxy health status. Useful for container orchestration liveness/readiness probes.
-
-**Response:**
-
-```json
-{
-  "status": "healthy",
-  "active_streams": 5,
-  "active_clients": 12,
-  "uptime_seconds": 3600
-}
-```
-
----
+M3U Editor uses metadata this way to count and limit streams per playlist and per login.
 
 ## Webhooks
 
-### Register webhook
+The proxy can call a URL when something happens to a stream:
 
-`POST /webhooks`
+| Event | When |
+|---|---|
+| `stream_started`, `stream_stopped`, `stream_failed` | A stream starts, stops, or fails for good |
+| `client_connected`, `client_disconnected` | A viewer joins or leaves |
+| `failover_triggered` | A stream switches to a backup |
+| `connection_idle_warning`, `connection_idle_error` | A connection has been idle for longer than `CONNECTION_IDLE_ALERT_THRESHOLD` or `CONNECTION_IDLE_ERROR_THRESHOLD` |
+
+Add a webhook for some or all events (all, if `events` is left out):
+
+```bash
+curl -X POST http://m3u-proxy:38085/webhooks \
+  -H "Content-Type: application/json" \
+  -H "X-API-Token: your-token" \
+  -d '{ "url": "https://example.com/hook", "events": ["failover_triggered", "stream_failed"] }'
+```
+
+Each call is a JSON `POST`:
 
 ```json
 {
-  "url": "https://your-server.com/webhook",
-  "events": ["stream_started", "failover_triggered"],
-  "timeout": 10,
-  "retry_attempts": 3
+  "event_id": "2b7e...",
+  "event_type": "failover_triggered",
+  "stream_id": "abc123",
+  "timestamp": "2026-10-08T21:38:15.724Z",
+  "data": { "old_url": "http://provider.example/...", "new_url": "http://backup.example/..." }
 }
 ```
 
-See [Event System & Webhooks](./event-system.md) for event types and payload formats.
-
----
-
-### List webhooks
-
-`GET /webhooks`
-
----
-
-### Remove webhook
-
-`DELETE /webhooks?webhook_url={url}`
-
----
-
-### Test webhook
-
-`POST /webhooks/test?webhook_url={url}`
-
-Sends a test payload to verify the webhook endpoint is reachable.
-
----
-
-## Authentication Methods
-
-All protected endpoints accept the token via:
-
-1. **Header** (recommended): `X-API-Token: your_token`
-2. **Query parameter**: `?api_token=your_token`
-
-See [Authentication](./authentication.md) for full details.
+M3U Editor registers its own webhook on the proxy to keep its stream counts current. Running `php artisan m3u-proxy:register-webhook` in the editor container registers it again if needed.

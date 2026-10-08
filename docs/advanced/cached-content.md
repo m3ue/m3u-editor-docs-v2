@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3.5
+sidebar_position: 10
 description: Download VOD movies and series episodes to local storage and play them from the local copy
 tags:
   - VOD
@@ -31,7 +31,7 @@ volumes:
   - ./cache:/var/www/html/storage/app/private/cache
 ```
 
-You can move the cache folder with the [`CACHE_STORAGE_PATH`](environment-variables.md#cache_storage_path) environment variable.
+You can move the cache folder with the [`CACHE_STORAGE_PATH`](environment-variables.md#storage) environment variable.
 :::
 
 ## Caching Content
@@ -155,6 +155,6 @@ Two scheduled tasks handle cleanup:
 
 ## Performance
 
-Downloads run on their own `cache-queue` Horizon supervisor, so a slow provider or a multi-GB download can't hold up playlist imports and syncs. Each playlist downloads one file at a time, and the total number of downloads running at once is capped by [`HORIZON_CACHE_MAX_PROCESSES`](environment-variables.md#horizon_cache_max_processes) (1 on SQLite, 4 otherwise).
+Downloads run on their own `cache-queue` Horizon supervisor, so a slow provider or a multi-GB download can't hold up playlist imports and syncs. Each playlist downloads one file at a time, and the total number of downloads running at once is capped by [`HORIZON_CACHE_MAX_PROCESSES`](environment-variables.md#background-workers) (1 on SQLite, 4 otherwise).
 
 Opening the provider connection goes through the same provider rate limiting as imports (**Settings → Sync Options**).

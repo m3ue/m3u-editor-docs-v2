@@ -1,142 +1,59 @@
 ---
-sidebar_position: 10
-title: Alert Channels
-description: Send error notifications to Discord, Slack, or Telegram when syncs fail or provider connections have issues
+sidebar_position: 4
+title: Alerts
+description: Get errors and failed syncs sent to Discord, Slack, or Telegram, so you hear about problems without watching the app.
 tags:
-  - Integrations
   - Notifications
   - Discord
   - Slack
   - Telegram
 ---
 
-# Alert Channels
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-M3U Editor can send error-level notifications to a Discord channel, Slack workspace, and/or Telegram chat via webhooks/bot. This lets you catch sync failures, provider connection errors, and other issues without actively monitoring the app. All three channels can be enabled at once — alerts are sent to every enabled channel.
+# Alerts
 
-**Access**: Sidebar → **Settings** → **Alerts**
+M3U Editor can send its errors to Discord, Slack, or Telegram, so you find out a sync failed before someone tells you a channel is missing. Set them up in **Settings → Alerts**. You can turn on more than one; every alert goes to all of them.
 
----
+<Tabs groupId="alert-channel" queryString>
+<TabItem value="discord" label="Discord" default>
 
-## Discord
+1. In Discord, open **Server Settings → Integrations → Webhooks**, choose **New Webhook**, and pick the channel.
+2. Copy the webhook URL.
+3. In M3U Editor, open the **Discord** tab, turn on **Enable Discord alerts**, and paste it into **Discord Webhook URL**.
 
-### Setup
+</TabItem>
+<TabItem value="slack" label="Slack">
 
-1. In Discord, open **Server Settings** → **Integrations** → **Webhooks**
-2. Click **New Webhook**, give it a name, and choose the target channel
-3. Copy the **Webhook URL**
-4. In M3U Editor: **Settings → Integrations → Alerts → Discord**
-5. Enable **Discord alerts**
-6. Paste the webhook URL into **Discord Webhook URL**
-7. Save
+1. At [api.slack.com/apps](https://api.slack.com/apps), choose **Create New App → From scratch**.
+2. Turn on **Incoming Webhooks**, choose **Add New Webhook to Workspace**, and pick the channel.
+3. Copy the webhook URL.
+4. In M3U Editor, open the **Slack** tab, turn on **Enable Slack alerts**, and paste it into **Slack Webhook URL**.
 
-### Testing
+</TabItem>
+<TabItem value="telegram" label="Telegram">
 
-Click **Send test alert** (visible when enabled + webhook URL is filled) to send a test message to your Discord channel and confirm the integration works.
+1. In Telegram, message [@BotFather](https://t.me/BotFather), send `/newbot`, and follow the prompts. Copy the bot token it gives you.
+2. Send your new bot a message. For a group, add the bot to the group and post a message there.
+3. Open `https://api.telegram.org/bot<your-bot-token>/getUpdates` in a browser, and find `"chat":{"id":...}`. That number is the chat ID (groups have negative IDs).
+4. In M3U Editor, open the **Telegram** tab, turn on **Enable Telegram alerts**, and enter the **Telegram Bot Token** and **Telegram Chat ID**.
 
----
+</TabItem>
+</Tabs>
 
-## Slack
+Save, then choose **Send test alert** to check it arrives.
 
-### Setup
+## What's sent
 
-1. In Slack, go to **api.slack.com/apps** → **Create New App** → **From scratch**
-2. Add the **Incoming Webhooks** feature and activate it
-3. Click **Add New Webhook to Workspace**, choose your channel, and authorize
-4. Copy the **Webhook URL**
-5. In M3U Editor: **Settings → Integrations → Alerts → Slack**
-6. Enable **Slack alerts**
-7. Paste the webhook URL into **Slack Webhook URL**
-8. Save
+Every error M3U Editor logs is sent, such as a provider that can't be reached or a sync that crashed. Routine events, like a sync finishing, aren't. If sending an alert fails, that failure isn't alerted again, so a broken webhook can't cause a loop.
 
-### Testing
+**Additional Notifications** adds a few more:
 
-Click **Send test alert** to verify the Slack integration is working before relying on it for real alerts.
-
----
-
-## Telegram
-
-Send alerts to a Telegram chat, group, or channel via a bot.
-
-### Setup
-
-1. Open Telegram and start a chat with [@BotFather](https://t.me/BotFather)
-2. Send `/newbot` and follow the prompts to name your bot
-3. Copy the **bot token** BotFather gives you
-4. Start a chat with your new bot and send it any message (for group alerts, add the bot to the group and post a message there)
-5. Open `https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates` in your browser
-6. Find `"chat":{"id":...}` in the response — that's your **Chat ID** (group IDs are negative numbers)
-7. In M3U Editor: **Settings → Integrations → Alerts → Telegram**
-8. Enable **Telegram alerts**
-9. Paste the **Bot Token** and **Chat ID**
-10. Save
-
-### Testing
-
-Click **Send test alert** (visible when enabled + bot token and chat ID are filled) to confirm the bot can reach your chat.
-
-:::note Security
-The bot token is encrypted before it's queued for delivery, so it's never stored or transmitted in plain text as part of a job payload.
-:::
-
----
-
-## What Triggers an Alert
-
-All three channels fire on the same **error-level events**, including:
-
-- Playlist sync failures (provider unreachable, bad credentials, parse errors)
-- Provider connection errors during sync
-- Job failures that exceed the retry limit
-- Database backup failures
-
-Routine events (sync completed successfully, probe finished) do not trigger alerts.
-
-A failed alert delivery itself is never re-alerted — this prevents a misconfigured channel (e.g. a broken webhook or expired bot token) from looping forever.
-
----
-
-## Additional Notifications
-
-Beyond the default error-log forwarding, you can opt in to two targeted notifications once at least one alert channel is enabled. **Access**: **Settings → Integrations → Alerts → Additional Notifications**
-
-| Setting | Description |
+| Setting | Sends an alert when |
 |---|---|
-| **Notify on queued job failures** | Sends an alert whenever a queued job (import, sync, probe, etc.) fails permanently after all retry attempts. |
-| **Notify on playlist import failures** | Sends an alert when a playlist sync fails entirely, e.g. all provider URLs were unreachable. |
-| **Notify on invalidated playlist syncs** *(v0.13.1+)* | Sends an alert when a playlist sync is canceled because it would have removed more channels, groups, or series than the [invalidation thresholds](../resources/playlists.md#sync-invalidation) allow. Off by default. |
+| **Notify on queued job failures** | A background job (a sync, probe, download, and so on) fails for good, after its retries. |
+| **Notify on playlist import failures** | A playlist sync fails completely, for example because every provider address was unreachable. |
+| **Notify on invalidated playlist syncs** *(v0.13.1+)* | A sync is cancelled because it would have [removed too much](/docs/resources/playlists#protect-against-bad-syncs). |
 
----
-
-## Alert Format
-
-Alerts are plain-text messages containing:
-
-- The error type / event name
-- A brief description of what failed
-- The affected resource (playlist name, job type, etc.)
-- Timestamp
-
-Example Discord message:
-```
-[m3u-editor] Sync failed for playlist "Home IPTV"
-Error: Connection refused to provider (https://provider.example.com)
-Time: 2026-06-08 14:32:11 UTC
-```
-
-Telegram messages are sent as plain text (no Markdown parsing), so forwarded log content can never break message formatting.
-
----
-
-## Routing Alerts to Multiple Channels
-
-You can configure Discord, Slack, and Telegram simultaneously — all enabled channels receive every alert. To route different alert types to different destinations, use each platform's own routing capabilities (e.g. multiple webhooks in Discord, channel routing in Slack, a dedicated bot/chat in Telegram).
-
----
-
-## Related Resources
-
-- [Settings Reference](../advanced/settings-reference.md) — Full settings page reference
-- [Job Monitoring](../advanced/job-monitoring.md) — In-app job status and failure tracking
-- [Environment Variables](../advanced/environment-variables.md) — Environment-level configuration
+M3U TV users can also get notifications on their phones. See [Push Notifications](/docs/m3u-tv/push-notifications).

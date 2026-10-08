@@ -1,12 +1,12 @@
 {
   "label": "Deployment",
-  "position": 5,
-  "description": "Docker Compose, Caddy or Nginx, M3U Proxy setup, and hosting.",
+  "position": 6,
+  "description": "Docker Compose, the proxy connection, HTTPS, and managed hosting.",
   "customProps": {
     "icon": "rocket_launch"
   },
   "link": {
     "type": "generated-index",
-    "description": "Production deployment guides for M3U Editor."
+    "description": "Run M3U Editor with Docker Compose, connect M3U Proxy, and serve it over HTTPS at your own domain."
   }
 }

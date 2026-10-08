@@ -24,10 +24,10 @@ The [Compose Wizard](/compose-wizard) walks through your database, proxy, Redis,
 
 | Setup | Containers | Hardware acceleration | Best for |
 |---|---|:-:|---|
-| **Modular** (recommended) | Editor, proxy, Redis | ✓ | Most installs |
-| **All-in-one** | One container | | Trying it out, or light use |
-| **Modular + VPN** | Editor, proxy, Redis, Gluetun | ✓ | Sending provider traffic through a VPN |
-| **Fully external** | Editor, proxy, Redis, PostgreSQL, Nginx or Caddy | ✓ | Running every service in its own container |
+| **Modular** (recommended) | Editor, proxy, Redis | Yes | Most installs |
+| **All-in-one** | One container | No | Trying it out, or light use |
+| **Modular + VPN** | Editor, proxy, Redis, Gluetun | Yes | Sending provider traffic through a VPN |
+| **Fully external** | Editor, proxy, Redis, PostgreSQL, Nginx or Caddy | Yes | Running every service in its own container |
 
 Every file reads its secrets from a `.env` file next to it and falls back to `changeme`, so always set your own. Generate tokens and passwords with `openssl rand -hex 32`.
 
@@ -40,7 +40,7 @@ Separate containers for the editor, [M3U Proxy](/docs/proxy/overview), and Redis
 curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
 ```
 
-Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#modular-deployment-recommended)
+Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#modular)
 
 </TabItem>
 <TabItem value="aio" label="All-in-one">
@@ -51,7 +51,7 @@ Everything in a single container: the editor, an embedded proxy, PostgreSQL, and
 curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.aio.yml
 ```
 
-Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#all-in-one-deployment)
+Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#all-in-one)
 
 </TabItem>
 <TabItem value="vpn" label="Modular + VPN">
@@ -62,22 +62,24 @@ The modular setup plus a [Gluetun](https://github.com/qdm12/gluetun) container, 
 curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy-vpn.yml
 ```
 
-Set in `.env`: the modular variables, plus `VPN_SERVICE_PROVIDER`, `WIREGUARD_PRIVATE_KEY`, `WIREGUARD_ADDRESSES`, and optionally `SERVER_COUNTRIES`. The file is set up for WireGuard; its comments show the OpenVPN settings. [More about this setup](/docs/deployment/docker-compose#vpn-deployment)
+Set in `.env`: the modular variables, plus `VPN_SERVICE_PROVIDER` and `WIREGUARD_PRIVATE_KEY`. Other Gluetun options, like `SERVER_COUNTRIES`, are commented out in the file. [More about this setup](/docs/deployment/docker-compose#modular--vpn)
 
 </TabItem>
 <TabItem value="external" label="Fully external">
 
-Every service in its own container, with the editor's embedded services turned off: PostgreSQL, Redis, the proxy, and a reverse proxy in front. Choose Nginx, or Caddy for automatic HTTPS.
+Every service in its own container, with the editor's embedded services turned off: PostgreSQL, Redis, the proxy, and a reverse proxy in front. Choose Nginx or Caddy as the web server.
 
 ```bash
 # Nginx
 curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/nginx.conf
 
 # Caddy
 curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all-caddy.yml
+curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/Caddyfile
 ```
 
-Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#fully-external-deployment) and [Caddy vs Nginx](/docs/deployment/caddy-vs-nginx)
+Set in `.env`: `APP_URL`, `APP_PORT`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#fully-external)
 
 </TabItem>
 </Tabs>
@@ -106,7 +108,7 @@ Map these container paths to volumes so nothing is lost when a container is recr
 | `/var/lib/postgresql/data` | The embedded PostgreSQL database | `pgdata` |
 | `/var/www/html/storage/app/public` | Logos and images you upload | `./storage` |
 
-If you use the [DVR](/docs/integrations/dvr_integration#persisting-recordings-in-docker) or [Cached Content Downloads](/docs/advanced/cached-content#enabling-the-cache), mount a volume for those files too. Their locations are set by [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#dvr_storage_path) and [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#cache_storage_path).
+If you use the [DVR](/docs/integrations/dvr_integration#set-it-up) or [Cached Content Downloads](/docs/advanced/cached-content#enabling-the-cache), mount a volume for those files too. Their locations are set by [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#storage) and [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#storage).
 
 ## Health checks
 
@@ -134,7 +136,7 @@ services:
   items={[
     { to: '/docs/configuration', icon: 'tune', title: 'Editor configuration', text: 'The environment variables for URLs, database, Redis, and the proxy.' },
     { to: '/docs/deployment/m3u-proxy-integration', icon: 'router', title: 'M3U Proxy setup', text: 'How the editor and proxy talk to each other, and how to tune it.' },
-    { to: '/docs/deployment/caddy-vs-nginx', icon: 'dns', title: 'Reverse proxies', text: 'Put M3U Editor behind Caddy or Nginx, with HTTPS.' },
+    { to: '/docs/deployment/caddy-vs-nginx', icon: 'dns', title: 'Reverse proxy and HTTPS', text: 'Serve M3U Editor at your own domain, with HTTPS.' },
     { to: '/docs/resources/playlists', icon: 'playlist_play', title: 'Add a playlist', text: 'Import your first source once the editor is running.' },
   ]}
 />

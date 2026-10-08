@@ -1,7 +1,7 @@
 ---
 sidebar_position: 6
-title: Strict Live TS Mode
-description: Enhanced stability for live MPEG-TS streams with Kodi and PVR clients
+title: Strict Live TS
+description: Steadier live MPEG-TS playback in Kodi and other PVR clients - no buffering loops after tuning, faster stall detection, and no jump-back on reconnect.
 tags:
   - Proxy
   - Kodi
@@ -9,173 +9,45 @@ tags:
   - Live TV
 ---
 
-# Strict Live TS Mode
+# Strict Live TS
 
-Strict Live TS Mode is an optional feature that improves playback stability for live MPEG-TS streams delivered over HTTP — particularly with PVR clients like Kodi PVR IPTV Simple.
+Strict Live TS makes live MPEG-TS channels play more steadily in PVR clients like Kodi's IPTV Simple Client. Turn it on if you see:
 
-## The Problem It Solves
+- a "play for a second, buffer, repeat" loop after changing channels
+- buffering right after tuning, or slow channel changes
+- playback jumping back a few seconds after a brief dropout
 
-Without this mode, many IPTV clients experience a frustrating pattern when watching live channels:
+Turn it on for a playlist with **Enable Strict Live TS Handling**, in its **Output** tab under **Streaming Output**. It applies to live TS channels that aren't being [transcoded](transcoding).
 
-- **"1 second play → cache → repeat"** loops after channel switching
-- Frequent buffering immediately after tuning
-- Slow channel change times
-- Rapid reconnection loops when upstream momentarily stalls
+## What it changes
 
-These issues are caused by how IPTV clients handle Range headers and the lack of a pre-buffer when starting a live stream.
+| Change | Why |
+|---|---|
+| **Treats live streams as unseekable.** Players' range requests are ignored, and the response never has a length. | Some players treat live TV like a file and keep requesting byte ranges, which causes the buffering loop. |
+| **Pre-buffers** about 256 KB (half a second to a second) before sending anything. | A smoother start, without the first-byte stall. |
+| **Fails over faster.** If no data arrives for 2 seconds, the source is marked bad for 60 seconds and the proxy [fails over](failover). | Stops the player reconnecting over and over to a stalled source. |
+| **Answers `HEAD` requests itself**, without contacting the provider. | Avoids extra provider connections. |
+| **Trims the replay after a reconnect.** *(Proxy v0.4.31+)* | When a provider drops the connection, it usually resumes a few seconds back. The proxy finds where the player left off and continues from there, so nothing replays. |
 
-## What It Does
+It adds a short delay when tuning (the pre-buffer) and uses a little memory per stream, and no extra CPU.
 
-When Strict Live TS Mode is enabled, the proxy applies five optimisations:
+## Settings
 
-### 1. Range Header Neutralisation
+To turn it on for every live TS stream instead, set `STRICT_LIVE_TS=true` on the proxy. The details can be tuned with the proxy's [environment variables](configuration#strict-live-ts):
 
-Strips incoming `Range` headers from live TS requests and always responds with `HTTP 200 OK` (never `206 Partial Content`). This prevents clients from treating a live stream like a seekable file.
-
-- Sets `Accept-Ranges: none` to tell clients not to retry with range requests
-- Sends no `Content-Length` header — the stream has no defined end
-
-### 2. Startup Pre-buffering
-
-Reads 256–512 KB (~0.5–1 second of data) from upstream before sending the first byte to the client. This smooths the initial connection and eliminates the common first-byte delay.
-
-- Configurable buffer size and timeout
-- Pre-buffer progress is logged for monitoring
-
-### 3. Circuit Breaker
-
-Monitors upstream data flow. If no data arrives for more than 2 seconds (configurable), the upstream is marked as "bad":
-
-- The endpoint is temporarily blacklisted for 60 seconds
-- Automatic failover to the next backup URL is triggered
-- Prevents rapid reconnection loops to stalled sources
-
-### 4. Optimised HEAD Requests
-
-HEAD requests for live TS streams return immediately without hitting the upstream provider. This avoids redundant connections that can interfere with live stream state.
-
-### 5. Overlap Trimming on Reconnect
-
-*(Proxy v0.4.31+)* Some providers close the connection every so often. When the proxy reconnects, the provider usually restarts from its rolling buffer, a few seconds behind what the client already received, so players jump back and replay that section.
-
-With overlap trimming (on by default), the proxy looks for the last bytes it already delivered in the new connection and drops everything up to them, so playback continues from the exact next byte. If no match turns up within `STRICT_LIVE_TS_OVERLAP_MAX_WAIT` seconds or `STRICT_LIVE_TS_OVERLAP_MAX_SEARCH_SIZE` bytes, the data is forwarded unchanged. Set `STRICT_LIVE_TS_OVERLAP_TRIM=false` to turn it off.
-
-## Enabling Strict Live TS
-
-There are three ways to enable this feature, from most specific to most broad:
-
-### Per-Playlist (M3U Editor UI)
-
-Open a playlist in the editor and go to the **Proxy Settings** section. Toggle **Enable Strict Live TS Handling** on.
-
-This applies to all channels from that playlist. It is the recommended approach for most users — you can target specific providers without affecting others.
-
-:::note
-The **Enable Strict Live TS Handling** option is only relevant when the playlist is **not** using a transcoding profile. If a stream profile is assigned to the playlist, transcoding takes over and strict TS handling is bypassed.
-:::
-
-### Per-Stream (Proxy API)
-
-When calling the proxy API directly, pass `strict_live_ts: true` on the stream creation request:
-
-```bash
-curl -X POST "http://localhost:8085/streams" \
-  -H "Content-Type: application/json" \
-  -H "X-API-Token: your-token" \
-  -d '{
-    "url": "http://provider.com/channel.ts",
-    "strict_live_ts": true,
-    "failover_urls": ["http://backup.com/channel.ts"]
-  }'
-```
-
-### Globally (Environment Variable)
-
-Enable for all live TS streams across every playlist:
-
-```bash
-# .env or docker-compose environment
-STRICT_LIVE_TS=true
-```
-
-Per-stream and per-playlist settings override the global setting for that specific stream.
-
-## Configuration
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `STRICT_LIVE_TS` | `false` | Enable globally for all live TS streams |
-| `STRICT_LIVE_TS_PREBUFFER_SIZE` | `262144` | Pre-buffer size in bytes (default 256 KB) |
-| `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` | `2` | Seconds without data before circuit breaker triggers |
-| `STRICT_LIVE_TS_CIRCUIT_BREAKER_COOLDOWN` | `60` | Seconds to avoid a failed upstream before retrying |
-| `STRICT_LIVE_TS_PREBUFFER_TIMEOUT` | `10` | Maximum seconds to wait for pre-buffer to fill |
-| `STRICT_LIVE_TS_OVERLAP_TRIM` | `true` | Drop the provider's replayed rolling-buffer overlap after a silent reconnect (prevents jump-back) |
-| `STRICT_LIVE_TS_OVERLAP_SIGNATURE_SIZE` | `16384` | Bytes of already-delivered data used to locate the overlap |
-| `STRICT_LIVE_TS_OVERLAP_MAX_SEARCH_SIZE` | `8388608` | Maximum bytes held from the new connection while searching (8 MB) |
-| `STRICT_LIVE_TS_OVERLAP_MAX_WAIT` | `0.5` | Maximum seconds to hold data while searching before forwarding it unchanged |
-
-## Compatible Clients
-
-| Client | Status |
-|--------|--------|
-| Kodi PVR IPTV Simple | ✅ Primary use case |
-| VLC Media Player | ✅ |
-| MPV Player | ✅ |
-| FFplay | ✅ |
-| Android IPTV apps | ✅ (varies by app) |
-
-## Logs
-
-When active, you'll see entries like:
-
-```
-[INFO] STRICT MODE: Starting direct proxy with STRICT LIVE TS MODE for client abc123, stream xyz789
-[INFO] STRICT MODE: Completely stripping Range header for live TS stream: bytes=0-1024
-[INFO] STRICT MODE: Pre-buffering 262144 bytes (~0.5-1s) before streaming to client abc123
-[INFO] STRICT MODE: Pre-buffer complete: 262144 bytes in 8 chunks
-[INFO] STRICT MODE: Emitted pre-buffer, now streaming live for client abc123
-```
-
-Circuit breaker activation:
-
-```
-[ERROR]   STRICT MODE: Circuit breaker triggered - no data for 3.5s (threshold: 2s)
-[WARNING] STRICT MODE: Marking upstream as bad for 60s
-[INFO]    STRICT MODE: Attempting failover due to circuit breaker
-```
-
-## Performance Impact
-
-- **CPU**: Minimal — no transcoding, just buffering logic
-- **Memory**: ~256–512 KB per active stream for the pre-buffer
-- **Latency**: Adds ~0.5–1 second initial delay (pre-buffer time)
-- **Network**: Slightly increased upstream traffic due to pre-buffering
+| Variable | Default | What it does |
+|---|---|---|
+| `STRICT_LIVE_TS_PREBUFFER_SIZE` | `262144` | Bytes to pre-buffer (256 KB). |
+| `STRICT_LIVE_TS_PREBUFFER_TIMEOUT` | `10` | Longest wait, in seconds, for the pre-buffer to fill. |
+| `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` | `2` | Seconds without data before the source is marked bad. |
+| `STRICT_LIVE_TS_CIRCUIT_BREAKER_COOLDOWN` | `60` | Seconds a bad source is avoided. |
+| `STRICT_LIVE_TS_OVERLAP_TRIM` | `true` | Trim the replay after a reconnect. |
 
 ## Troubleshooting
 
-**Still seeing buffering loops**
-- Increase `STRICT_LIVE_TS_PREBUFFER_SIZE` to `524288` (512 KB)
-- Check logs for circuit breaker activation
-- Verify failover URLs are configured and reachable
-- Try increasing `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` to 3–5 seconds
-
-**Too much delay on channel switch**
-- Decrease `STRICT_LIVE_TS_PREBUFFER_SIZE` to `131072` (128 KB)
-- Reduce `STRICT_LIVE_TS_PREBUFFER_TIMEOUT` to 5 seconds
-
-**Circuit breaker triggering too often**
-- Increase `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` to 5–10 seconds (upstream may have natural pauses)
-- Check upstream source stability and network connectivity
-
-**Streams not detected as live continuous**
-- The proxy detects live TS by URL pattern (`.ts` extension or `/live/` path segment)
-- Check logs for `"is_live_continuous": true`
-- Force strict mode per-stream via the API if auto-detection fails
-
-## Best Practices
-
-1. **Enable globally** if most of your streams are live TS channels
-2. **Configure failover URLs** for critical streams — the circuit breaker is most effective with backup URLs available
-3. **Monitor logs** during initial rollout to tune pre-buffer and timeout settings
-4. **Start with defaults** and adjust based on your network conditions
-5. **Test channel switching** thoroughly with your client before rolling out to production
+| Problem | Try |
+|---|---|
+| Still buffering after tuning | A bigger pre-buffer: `STRICT_LIVE_TS_PREBUFFER_SIZE=524288`. |
+| Channel changes feel slow | A smaller pre-buffer: `131072`, and `STRICT_LIVE_TS_PREBUFFER_TIMEOUT=5`. |
+| It fails over too often | The provider pauses briefly now and then. Raise `STRICT_LIVE_TS_CIRCUIT_BREAKER_TIMEOUT` to 5. |
+| It doesn't seem to apply | Strict mode only applies to live TS streams (a `.ts` address or a `/live/` path) that aren't transcoded. |

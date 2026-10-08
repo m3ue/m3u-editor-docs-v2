@@ -207,7 +207,7 @@ const generateVolumes = (config, useEmbeddedProxy = true) => {
   if (config.STRM_PATH) {
     volumes.push(`      - ${config.STRM_PATH}:/strm`);
   }
-  // HLS volume mounts — only on the editor when proxy is embedded;
+  // HLS volume mounts - only on the editor when proxy is embedded;
   // for external proxy these are mounted on the proxy container instead.
   if (useEmbeddedProxy) {
     if (config.HLS_TEMP_DIR_HOST) {

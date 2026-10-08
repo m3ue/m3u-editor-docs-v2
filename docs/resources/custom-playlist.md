@@ -1,6 +1,6 @@
 ---
-sidebar_position: 1
-description: Create custom playlists with hand-picked channels and content
+sidebar_position: 3
+description: Build your own lineup from channels, movies, and series across all your playlists, with your own groups and order.
 tags:
   - Resources
   - Playlists
@@ -10,192 +10,64 @@ title: Custom Playlists
 
 # Custom Playlists
 
-Custom Playlists allow you to create curated collections of channels, series, and VOD content hand-picked from your existing playlists. This is perfect for creating themed playlists, family-friendly collections, or personalized channel lineups.
+A Custom Playlist is a lineup you build by hand, picking channels, movies, and series from any of your playlists. It has its own groups, order, and channel numbers, and its own outputs, so you can give one to each person or room: a kids' lineup, a sports package, or your favorites from three providers.
 
-## What is a Custom Playlist?
+Custom Playlists don't copy channels. They point at the originals, so when a source playlist syncs, the streams stay current.
 
-A Custom Playlist is a manually curated collection where you select exactly which content to include:
-- Choose specific live TV channels
-- Select individual series
-- Pick VOD movies and shows
-- Organize content your way
+:::info Custom or merged?
+A **Custom Playlist** holds only what you add to it. A [Merged Playlist](merged-playlist) takes everything from the playlists you pick. To expose part of one playlist with its own login, an [Alias](playlist-alias) is often simpler.
+:::
 
-Unlike merged playlists that combine entire playlists, custom playlists give you granular control over every item.
+## Create one
 
-## Use Cases
+Go to **Playlist → Custom Playlists** and choose **New custom playlist**. Only a name is needed; the other tabs can wait.
 
-### Curated Collections
-- **Kids Playlist**: Family-friendly channels and content only
-- **Sports Package**: All sports channels from multiple sources
-- **Premium Movies**: Hand-picked VOD content
-- **News & Documentary**: Curated news and educational content
+## Add content
 
-### Client-Specific Playlists
-- Different playlists for different rooms/devices
-- Subscription tier-based content access
-- Language-specific collections
-- Regional content groupings
+There are three ways to fill it:
 
-### Testing and Organization
-- Test channels before adding to main playlist
-- Organize channels by category or preference
-- Create backup playlists with alternative sources
+- **From the channel lists:** in **Live Channels → Channels** (or VOD, or Series), select items, open the bulk actions, and choose **Add to Custom Playlist**. You can put them straight into a custom group.
+- **From the Custom Playlist:** on its **Channels**, **VOD**, or **Series** tab, choose **Attach** and search for items.
+- **Automatically after each sync:** in a source playlist's **Processing** tab, add an **Auto-Add to Custom Playlist** rule. It keeps chosen groups in the Custom Playlist, including channels the provider adds later.
 
-## Creating a Custom Playlist
+You can also add streams of your own with **Create Custom Channel** on the **Channels** tab.
 
-1. Navigate to **Custom Playlists** in the sidebar
-2. Click **Create Custom Playlist**
-3. Configure basic settings:
-   - **Name**: Descriptive name for the playlist
-   - **Enabled**: Activate the playlist
-4. Click **Save**
+## Organize it
 
-## Duplicating a Custom Playlist
+Each tab lists the Custom Playlist's items, with your own grouping and order:
 
-To quickly create a copy of an existing custom playlist with all its settings:
+- **Add to custom group** (or **Add to custom category** for series) files items under groups that only exist in this playlist. Manage those groups, and their order, on the **Groups** and **Categories** tabs.
+- Drag rows to reorder them, or use **Sort Alpha** and **Renumber Channels** on a selection.
+- **Detach Selected** removes items from the Custom Playlist. The originals aren't touched.
 
-1. Find the playlist in the **Custom Playlists** list
-2. Click the actions menu (three dots)
-3. Select **Duplicate**
+To re-sort or renumber automatically after each sync, add **Processing Configs** in the **Processing** tab. Each one runs **Sort Alpha** or **Renumber Channels** on all channels, live, or VOD, for all or some groups, in the order you list them.
 
-The duplicate is created with all settings and channel selections copied over. It is independent of the original — changes to one do not affect the other.
+## Settings
 
-## Adding Content
-
-After creating a custom playlist, add content from your existing playlists:
-
-### Adding Channels
-
-1. Open your Custom Playlist
-2. Go to the **Channels** tab
-3. Click **Add Channels**
-4. Select channels from your existing playlists
-5. Click **Add Selected**
-
-You can add:
-- Live TV channels
-- VOD channels (movies)
-- Both enabled and disabled channels
-
-### Adding Series
-
-1. Open your Custom Playlist
-2. Go to the **Series** tab
-3. Click **Add Series**
-4. Select series from your existing playlists
-5. Click **Add Selected**
-
-### Channel Filtering
-
-Use the search and filter options to find specific content:
-- Search by channel name
-- Filter by category/group
-- Filter by source playlist
-- Show only enabled channels
-
-## VOD and Series Output
-
-Custom Playlists can include VOD and series content in their M3U and Xtream API output, not just live channels. Enable this under the playlist's **Output** settings to allow clients to browse and play VOD/series content from the custom playlist.
-
-## Auto-Sync Source Groups
-
-When the source playlist syncs new channels, those channels can be automatically added to your custom playlists that include channels from the same source. Enable **Auto-sync source groups** in the playlist's sync settings to have new channels from tracked groups added automatically after each sync.
-
-## Custom Sort
-
-Control the order channels appear within your custom playlist independently of the source playlist.
-
-### Sort Options
-
-- **Custom sort column**: Manually drag channels into your preferred order
-- **Sort alphabetically**: Automatically sort all channels A→Z by name
-
-To reorder manually:
-1. Open the **Channels** tab
-2. Use the drag handle on each row to reorder
-3. Save
-
-To sort alphabetically:
-1. Click the **Sort Alpha** action in the table actions menu
-2. The channels are reordered immediately
-
-## Post-Processing
-
-Post-processing actions run automatically after each sync that adds or updates channels in the custom playlist. This keeps the playlist tidy without manual intervention.
-
-### Configuring Post-Processing
-
-1. Open the Custom Playlist → **Edit**
-2. Go to the **Processing** tab
-3. Click **Add processing action**
-4. Configure each action:
-
-| Field | Description |
+| Tab | What's in it |
 |---|---|
-| **Enabled** | Toggle the action on or off without removing it |
-| **Action** | What to do: `Sort Alpha` or `Renumber Channels` |
-| **Target** | Which channels to apply to: `All`, `Live`, or `VOD` |
-| **Groups** | Limit to specific groups, or `All groups` |
+| **General** | Name, user agent, short URLs, and the unique identifier used in its URLs |
+| **Auth** | [Playlist Auths](playlist-auth) and the [default login](playlist-auth#default-login) |
+| **Processing** | Processing Configs (above) |
+| **Output** | The same output options as a regular playlist: output types, numbering, VOD and series in M3U, placeholder guides, the proxy, connection limits, and transcoding. See [Playlists](playlists#output). |
+| **DVR**, **Requests**, **AIOStreams** | The [DVR](/docs/integrations/dvr_integration), [content requests](/docs/integrations/arrs_integration), and [AIOStreams](/docs/integrations/aiostreams_integration) for this lineup |
 
-5. Drag actions to set their execution order — actions run top to bottom
-6. Save
+**Available Streams** on a Custom Playlist only limits custom channels you created in it; other channels follow their source playlist's limits.
 
-### Available Actions
+**Duplicate** in the actions menu copies a Custom Playlist with all its settings and content. The copy is independent of the original.
 
-| Action | Description |
-|---|---|
-| **Sort Alpha** | Sorts channels alphabetically within the target group/type |
-| **Renumber Channels** | Reassigns sequential channel numbers starting from 1 |
+## Manage it from a script
 
-### Example: Sort live channels after every sync
+Custom Playlists have their own API, using a token from **Tools → API Tokens** (sent as `Authorization: Bearer <token>`). Find a Custom Playlist's UUID with `GET /user/playlists`.
 
-| Setting | Value |
-|---|---|
-| Action | Sort Alpha |
-| Target | Live Channels |
-| Groups | All groups |
-
-This ensures live channels are always in alphabetical order after a sync adds new entries.
-
-## Provider URL Output
-
-By default, Custom Playlists use the editor's Xtream-formatted URLs in M3U output. Two options let you change this behaviour:
-
-### Use Provider URLs Directly
-
-Enable **Use provider URLs directly** to include the raw upstream provider URLs in the M3U output instead of proxied/editor URLs. This bypasses the proxy layer entirely for this playlist.
-
-**Use case**: Clients that need direct provider access for better performance, or when proxy is not needed for certain users.
-
-### Disable Xtream-Formatted URLs
-
-Enable **Disable Xtream-formatted URLs** to output standard M3U URLs instead of Xtream API format. This is useful for clients that don't support Xtream Codes URL patterns.
-
-## DVR and Guest Requests
-
-Custom Playlists have their own **DVR** tab with the same recording rules, quotas, and settings as a standard playlist (see [DVR Integration](../integrations/dvr_integration.md)), and support guest content **Requests** the same way — so you can schedule recordings or accept guest requests against your curated lineup directly.
-
-## Managing Custom Playlists via the API
-
-Custom Playlists can be managed programmatically with a personal access token (**Tools → Personal Access Tokens**, sent as `Authorization: Bearer <token>`). Use `GET /user/playlists` to find a custom playlist's UUID (entries have `"type": "custom_playlist"`).
-
-| Method | Endpoint | Description |
+| Method | Endpoint | Does |
 |---|---|---|
-| `GET` | `/custom-playlist/{uuid}/channels` | List the channels in the custom playlist |
+| `GET` | `/custom-playlist/{uuid}/channels` | List its channels |
 | `POST` | `/custom-playlist/{uuid}/channels` | Add channels: `{"ids": [1, 2, 3], "group": "Sports", "channel_number": 100}` (`group` and `channel_number` optional) |
 | `DELETE` | `/custom-playlist/{uuid}/channels` | Remove channels: `{"ids": [1, 2, 3]}` |
-| `PATCH` | `/custom-playlist/{uuid}/channels/{id}` | Update a channel's `group`, `channel_number`, or `sort` within this custom playlist |
-| `GET` | `/custom-playlist/{uuid}/groups` | List the custom playlist's groups |
+| `PATCH` | `/custom-playlist/{uuid}/channels/{id}` | Change a channel's `group`, `channel_number`, or `sort` in this playlist |
+| `GET` | `/custom-playlist/{uuid}/groups` | List its groups |
 | `POST` | `/custom-playlist/{uuid}/groups` | Create a group: `{"name": "Sports"}` |
-| `PATCH` | `/custom-playlist/{uuid}/groups/{id}` | Rename a group (`name`) or change its position (`order_column`) |
+| `PATCH` | `/custom-playlist/{uuid}/groups/{id}` | Rename a group (`name`) or move it (`order_column`) |
 
-Channel IDs must belong to your account. Full request and response details are in the in-app API docs (**Settings → API**).
-
-## Related Resources
-
-- [Adding Playlists](playlists.md) - Source playlist setup
-- [Merged Playlist](merged-playlist.md) - Combining entire playlists
-- [Playlist Alias](playlist-alias.md) - Alternative configurations
-- [Playlist Auth](playlist-auth.md) - Authentication setup
-- [DVR Integration](../integrations/dvr_integration.md) - Scheduling recordings
-- [Auto-Merge Channels](../advanced/auto-merge-channels.md) - Automatic channel merging
+The full API is documented in the app under **Settings → API → API Docs**.

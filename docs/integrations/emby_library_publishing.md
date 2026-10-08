@@ -1,16 +1,16 @@
 ---
-sidebar_position: 2.5
-description: Publish VOD and series content from M3U Editor into managed Emby libraries via a companion Emby plugin
-title: Managed Emby Library Publishing
+sidebar_position: 8
+description: Publish your M3U Editor movies and series into Emby as libraries, using a companion Emby plugin.
+title: Emby Library Publishing
 tags:
   - Integrations
   - Emby
   - Advanced
 ---
 
-# Managed Emby Library Publishing
+# Emby Library Publishing
 
-While [Emby Integration](./emby_integration.md) *imports* content from an existing Emby library into M3U Editor, Managed Library Publishing works in the opposite direction: it **publishes** VOD/series content that M3U Editor already knows about (from a playlist group, a series category, or a custom playlist) out to Emby as a library that Emby manages and scans like any other.
+The [Emby integration](./emby_integration.md) *imports* content from Emby into M3U Editor. Library publishing works the other way: it **publishes** VOD/series content that M3U Editor already knows about (from a playlist group, a series category, or a custom playlist) out to Emby as a library that Emby manages and scans like any other.
 
 :::info Requires a companion Emby plugin
 This feature is protocol-only on the M3U Editor side. The actual file placement and Emby library scanning is performed by a separate, community-maintained Emby plugin: [m3u-editor-for-emby](https://github.com/Serph91P/m3u-editor-for-emby), installed on your Emby server. M3U Editor exposes the catalog and accepts sync results; it does not write to Emby's filesystem directly.
@@ -41,7 +41,7 @@ sequenceDiagram
 
 - An Emby [Media Server Integration](./emby_integration.md) already configured in M3U Editor, enabled, and of type **Emby** (not Jellyfin, this feature is Emby-specific).
 - The [m3u-editor-for-emby](https://github.com/Serph91P/m3u-editor-for-emby) plugin installed on your Emby server.
-- The `use_integrations` permission on your M3U Editor user account.
+- The **Use Integrations** permission on your M3U Editor user account.
 
 ## Publishing Groups and Categories (Quick Start)
 
@@ -106,12 +106,12 @@ Each row in the **Managed Libraries** table has:
 - **Status** badge: `idle`, `pending`, `planned`, `synced`, `failed`, or `drifted` (drifted means the actual Emby library's config no longer matches what the mapping expects, e.g. an admin manually edited paths/type in Emby; this is surfaced rather than auto-corrected)
 - **Applied revision**: the content hash of the catalog that was last successfully synced
 - **Last success**: when the plugin last reported a successful sync
-- **Reconcile**: re-plans the mapping (creates the Emby library if `is_managed` and missing, or detects drift on an existing one)
+- **Reconcile**: re-plans the mapping (creates a managed Emby library if it's missing, or checks an existing one for drift)
 - **Preview**: shows the exact catalog plan (items, revision hash) that the plugin will act on, capped at 50 items in the UI for large libraries (the full list is still what's hashed and synced)
 
 ## Granting access to Playlist Auth credentials
 
-By default, only the playlist owner (`owner_auth`) can drive this protocol. To let a specific **Playlist Auth** credential's Emby plugin also read catalogs and report sync results, open that Playlist Auth and enable **Library Publishing Access → Enable Library Publishing**. This is off by default and only visible to users with the `use_integrations` permission.
+By default, the plugin signs in with the playlist owner's login. To let it use a [Playlist Auth](/docs/resources/playlist-auth) instead, open that Playlist Auth and turn on **Library Publishing Access → Enable Library Publishing**. It's off by default, and only shown to users with the **Use Integrations** permission.
 
 ## Troubleshooting Managed Setup
 
@@ -128,8 +128,3 @@ By default, only the playlist owner (`owner_auth`) can drive this protocol. To l
 | Blocked by the integration security policy | The integration's security settings |
 
 Retry setup once you've fixed the cause.
-
-## Related Documentation
-
-- [Emby Integration](./emby_integration.md) - Importing content from Emby/Jellyfin
-- [Media Server Integrations](./overview.md) - Integrations architecture overview

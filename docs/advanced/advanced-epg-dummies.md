@@ -1,6 +1,6 @@
 ---
-sidebar_position: 6
-description: Generate smart, context-aware dummy EPG from IPTV stream titles using regex extraction
+sidebar_position: 12
+description: Build guide entries for event channels (sports, PPV) from the event name and time in the channel's title.
 tags:
   - Advanced
   - EPG
@@ -10,164 +10,65 @@ title: Advanced EPG Dummies (AED)
 
 # Advanced EPG Dummies (AED)
 
-Generate smart, context-aware EPG entries for channels that have no EPG source — by extracting event information directly from the provider's stream title.
-
-## Overview
-
-Many IPTV providers dynamically update the stream title to reflect the currently airing event. For example, a PPV channel might show:
+Event channels, like sports and pay-per-view, rarely have guide data. Instead, providers often put the event in the channel's name:
 
 ```
 PPV 1: Tommy Fury vs. Eddie Hall [DAZN] (06.13 13:00 ET / 18:00 BST)
 ```
 
-Standard dummy EPG creates a generic repeating block titled with the channel name. AED reads the stream title, extracts the event title, start time, and date using configurable regex patterns, and generates a meaningful single-event EPG entry instead.
+An **AED profile** reads names like that, pulls out the event, its start time, and its date, and builds a proper guide entry: the event at the right time, with "starting soon" and "signing off" slots around it. Channels it can't read fall back to the regular [placeholder guide](/docs/resources/epg-setup#placeholder-guides).
 
-**What AED provides:**
+## Create a profile
 
-- ✅ Event-aware EPG entries derived from live stream titles
-- ✅ Correct start times extracted and converted between timezones
-- ✅ Configurable title and description templates
-- ✅ AI-assisted regex generation
-- ✅ Group-level and per-channel profile assignment
-- ✅ Override mode to force AED even when an EPG channel is mapped
+Go to **EPG → AED Profiles** and choose **New AED Profile**.
 
-## How It Works
+### Read the channel name
 
-1. **Profile** — define regex patterns that extract the event title, start time, and optionally the date from a channel's stream title
-2. **Assignment** — attach the profile to a group (all channels inherit it) or override it on individual channels
-3. **Generation** — when the EPG XML is generated, channels with an AED profile use the extractor instead of the standard repeating dummy slots
+Regular expressions pick each part out of the name:
 
-If extraction fails (the stream title doesn't match the patterns), the channel falls back to the standard dummy EPG behaviour automatically.
-
-## Creating an AED Profile
-
-Navigate to **AED Profiles** in the sidebar and click **New profile**.
-
-### Source Extraction
-
-These fields control how information is pulled from the raw stream title.
-
-| Field | Description |
+| Field | Picks out |
 |---|---|
-| **Title Regex** | Captures the event name. Use a named group `(?P<title>...)` or the first capture group. |
-| **Time Regex** | Captures the start time string. First capture group is used. |
-| **Time Format** | PHP `date()` format string matching what Time Regex captures — e.g. `H:i`, `h:i A`. |
-| **Source Timezone** | The timezone of the extracted time (e.g. `America/New_York`, `Europe/London`). |
-| **Date Regex** | *(Optional)* Captures a date string from the title. If absent, today's date is assumed. |
-| **Date Format** | *(Optional)* PHP `date()` format for the captured date — e.g. `m.d`, `d/m/Y`. |
+| **Title Regex** | The event, like `Tommy Fury vs. Eddie Hall`. Leave it empty to use the whole name. |
+| **Team Delimiter** | Optional. Splits the event into `{team1}` and `{team2}`, for example on ` vs. `. |
+| **Time Regex**, **Time Format** | The start time, and its format (PHP date format, like `H:i` or `g:i A`; separate several with a pipe). |
+| **Date Regex**, **Date Format** | The date, if the name has one, like `m.d`. Without it, today is assumed. |
+| **Timezone of Source** | The timezone the time is written in, like `America/New_York`. |
+| **Logo URL** | Optional artwork for the entries. |
 
-#### AI Regex Builder
+**Test Extraction** tries the patterns on a sample name, so you can check them before saving.
 
-:::note
-The AI Regex Builder requires **AI Copilot** to be enabled in Settings. See [AI Copilot](/docs/ai-copilot/overview) for setup instructions.
+:::tip Let AI write the patterns
+With the [AI Copilot](/docs/ai-copilot/overview) set up, **AI Regex** writes the patterns for you. Paste a few channel names into **Sample Titles**, choose **Generate Regex**, and apply the suggestions.
 :::
 
-The **AI Regex** action (accessible from the profile form) generates pattern suggestions automatically:
+### Build the guide entry
 
-1. Open or create an AED Profile
-2. Click **AI Regex** in the top-right of the form header
-3. Select the channel group whose titles should be sampled
-4. Click **Generate** — the AI analyses the titles and suggests regex patterns
-5. Review the **Suggested Patterns** section and click **Apply Suggestions** to populate the form fields
+| Field | Default | What it does |
+|---|---|---|
+| **Title Output Format** | `{title}` | The program title. Use `{title}`, `{team1}`, `{team2}`, `{channel}`, `{date}`, and `{time}`. |
+| **Description Output Format** | The title | The description, with the same placeholders. |
+| **Event Duration (minutes)** | 180 | How long the event lasts in the guide. |
+| **Pre-Event Format** | `Live in {time_until}: {title}` | Fills the time before the event. Empty leaves it blank. |
+| **Post-Event Format** | `Signing Off` | Fills the time after it. Empty leaves it blank. |
+| **No Event Format** | `{channel}` | The title when the name can't be read. Empty adds no entry at all. |
+| **EPG Category** | None | A category for the entries, like `Sports`. |
+| **Output Timezone** | UTC | The timezone written into the guide. |
+| **Dummy EPG Length (days)** | The playlist's | How many days of entries to make. |
 
-:::tip
-The AI works best with structured titles that follow a consistent format (e.g. `Channel: Event Title (HH:MM TZ)`). Channels with generic placeholder titles like `EVENT 1` are automatically excluded from the sample set.
-:::
+**Override** uses the profile even on channels that already have guide data mapped. Turn it on when the channel names are more accurate than your guide.
 
-### Output Format
+## Use a profile
 
-These fields control what the generated EPG entry looks like.
+- **For a group:** set **AED Profile (Advanced EPG Dummy)** on the group in **Live Channels → Groups**. Every channel in it uses the profile, unless it has its own.
+- **For channels:** set **AED Profile** when editing a channel, or select channels and use **Set AED Profile** from the bulk actions.
 
-| Field | Description |
-|---|---|
-| **Event Duration (minutes)** | Length of the dummy programme block. Default: `180`. |
-| **Dummy EPG Length (days)** | *(Optional)* How many days of EPG data to generate for channels using this profile. Leave blank to use the playlist's dummy EPG length. |
-| **Output Timezone** | Timezone for the `start`/`stop` attributes in the XMLTV output. Default: `UTC`. |
-| **Title Format** | Template for the `<title>` element. Supports `{title}`, `{channel}`, `{date}`, `{time}`. |
-| **Description Format** | *(Optional)* Template for the `<desc>` element. Same variables available. |
-| **No Event Format** | Fallback title when extraction fails. Default: `{channel}`. |
-| **Category** | *(Optional)* `<category>` value written into the EPG entry. |
-
-#### Override Mode
-
-When **Override** is enabled on a profile, channels assigned that profile will always use AED — even if they already have an EPG channel mapped. This is useful when provider titles are more accurate than the EPG source.
-
-When disabled, AED only activates for channels without any EPG match (the standard fallback behaviour).
-
-## Assigning Profiles
-
-### To a Group
-
-Assigning a profile to a group sets it as the default for every channel in that group.
-
-1. Navigate to **Groups**
-2. Open a group
-3. Set **AED Profile** in the EPG section
-4. Save
-
-All channels in the group without an individual profile will use this one.
-
-### To Individual Channels
-
-Per-channel assignment overrides the group's profile.
-
-1. Navigate to a playlist's **Channels**
-2. Open a channel
-3. Set **AED Profile** in the EPG section
-4. Save
-
-Leave the field blank to inherit from the group.
-
-### Bulk Assignment
-
-To assign (or remove) a profile across many channels at once:
-
-1. Navigate to a playlist's **Channels**
-2. Select channels using the checkboxes
-3. Click **Actions** → expand the **EPG** section
-4. Choose **Set AED Profile** or **Remove AED Profile**
-
-## Programme Title Source
-
-The **Dummy EPG Title Source** setting on each playlist controls which channel field is used as the programme title in dummy EPG entries (including AED-generated ones when the title template uses `{channel}`).
-
-Configure it under **Playlist Settings → EPG → Dummy EPG Title Source**.
-
-Fields are tried in the order you define — first non-empty value wins:
-
-| Field | Description |
-|---|---|
-| **Channel Title** | The stream's `tvg-name` or custom title |
-| **Channel Name** | The display name field |
-| **Stream ID** | The provider's stream/TVG ID |
-| **Channel Number** | The assigned channel number |
-
-If left empty, the channel title is used by default.
+The playlist also needs **Enable dummy EPG** on, under **Output → EPG Output**.
 
 ## Troubleshooting
 
-### No AED entry generated
-
-- Confirm the channel has an AED profile assigned (directly or via its group)
-- Check that **Dummy EPG** is enabled on the playlist
-- Verify the regex patterns match against sample titles using the **Regex Tester** inside the profile form
-- If **Override** is off, a mapped EPG channel takes precedence — enable Override or unmap the EPG channel
-
-### Wrong start time or timezone
-
-- Verify **Source Timezone** matches the timezone in the provider's title string
-- Check that **Time Format** matches the exact format of the extracted time
-- If the date is wrong, add a **Date Regex** + **Date Format** to extract an explicit date rather than defaulting to today
-
-### AI Regex generates empty patterns
-
-The AI requires structured titles to work with. Check that the selected group contains channels whose titles follow a consistent format with a recognisable time component (e.g. `18:00`, `6:00 PM`). Channels with generic titles like `EVENT 1` are excluded from the sample automatically.
-
-### Extraction falls back to standard dummy
-
-When the regex doesn't match the current title, AED falls back gracefully to the standard repeating dummy EPG. This is expected if the provider hasn't updated the title yet for the current event.
-
-## Next Steps
-
-- [EPG Setup](/docs/resources/epg-setup) — configure EPG sources and channel mapping
-- [EPG Cache Overview](/docs/advanced/epg-optimization) — caching and performance for large EPG files
+| Problem | What to check |
+|---|---|
+| No entries appear | The channel or its group has a profile, and the playlist has **Enable dummy EPG** on. If the channel has guide data mapped, turn on **Override**. |
+| Times are off by hours | **Timezone of Source** matches the time in the name, and **Time Format** matches how it's written. |
+| The date is wrong | Add a **Date Regex** and **Date Format**. |
+| Only the channel name shows | The patterns don't match this name. Check them with **Test Extraction**. The provider may not have put the next event in the name yet. |

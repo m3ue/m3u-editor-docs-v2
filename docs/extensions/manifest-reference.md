@@ -1,6 +1,6 @@
 ---
 sidebar_position: 5
-description: Full reference for the plugin.json manifest — every field, its type, whether it is required, and what it does.
+description: Full reference for the plugin.json manifest - every field, its type, whether it is required, and what it does.
 tags:
   - Plugins
   - Reference
@@ -9,7 +9,7 @@ title: Manifest Reference
 
 # Manifest Reference
 
-Every plugin must include a `plugin.json` file at the root of its directory. This is the manifest — the host reads it to understand what the plugin is, what it needs, and what it declares ownership of.
+Every plugin must include a `plugin.json` file at the root of its directory. This is the manifest: the host reads it to understand what the plugin is, what it needs, and what it declares ownership of.
 
 ## Full example
 
@@ -114,16 +114,14 @@ Hooks your plugin subscribes to. If any hooks are declared, your class must impl
 | `playlist.synced` | A playlist finishes syncing |
 | `epg.synced` | An EPG source finishes syncing |
 | `epg.cache.generated` | The EPG cache has been rebuilt |
-| `before.epg.map` | Just before an EPG map is applied |
-| `after.epg.map` | Just after an EPG map is applied |
-| `before.epg.output.generate` | Just before EPG output is generated |
-| `after.epg.output.generate` | Just after EPG output is generated |
+| `before.epg.map`, `after.epg.map` | Reserved: accepted, but not run yet |
+| `before.epg.output.generate`, `after.epg.output.generate` | Reserved: accepted, but not run yet |
 
 ---
 
 ## Permissions
 
-Declare every permission your plugin needs. These are informational — the host does not enforce them at runtime — but the validator will warn if declared permissions do not match declared capabilities.
+Declare every permission your plugin needs. These are informational (the host doesn't enforce them at runtime), but the validator will warn if declared permissions do not match declared capabilities.
 
 | Permission | Risk | What it allows |
 |---|---|---|
@@ -187,7 +185,7 @@ A `section` entry groups nested fields visually. It uses `type: section` and con
 
 | Property | Description |
 |---|---|
-| `id` | Identifier for the section (optional — not used for settings access). |
+| `id` | Identifier for the section (optional, not used for settings access). |
 | `type` | Must be `"section"`. |
 | `label` | Section heading. |
 | `description` / `helper_text` | Optional subheading below the label. |
@@ -196,7 +194,7 @@ A `section` entry groups nested fields visually. It uses `type: section` and con
 | `collapsed` | `true` to start collapsed. Requires `collapsible: true`. |
 | `columns` | Number of grid columns for the nested fields (default: `1`). |
 | `compact` | Reduce visual padding inside the section (default: `true`). |
-| `fields` | Array of nested field definitions — same structure as top-level settings. Sections may be nested. |
+| `fields` | Array of nested field definitions, same structure as top-level settings. Sections may be nested. |
 
 ```json
 {
@@ -284,7 +282,7 @@ If your plugin needs its own database tables, declare them here. The host create
 
 ### UI tables (`schema.ui_tables`)
 
-Alongside physical table declarations, you can declare admin CRUD interfaces for those tables. The host renders these on a **Data** tab on the plugin edit page — no PHP required.
+Alongside physical table declarations, you can declare admin CRUD interfaces for those tables. The host renders these on a **Data** tab on the plugin edit page, with no PHP required.
 
 ```json
 "schema": {
@@ -316,7 +314,7 @@ Alongside physical table declarations, you can declare admin CRUD interfaces for
 |---|---|---|
 | `id` | Yes | Unique identifier within this plugin (used in the URL) |
 | `label` | Yes | Page heading |
-| `table` | Yes | Physical table name — must be declared in `schema.tables` |
+| `table` | Yes | Physical table name, must be declared in `schema.tables` |
 | `model_label` | No | Singular noun for the "New …" button (defaults to singular of `label`) |
 | `description` | No | Subheading shown on the table page |
 | `create` | No | Set `false` to hide the create action (default: `true`) |
@@ -332,7 +330,7 @@ Alongside physical table declarations, you can declare admin CRUD interfaces for
 | `delete_success_message` | No | Success notification title after a clear action |
 | `export_formats` | No | On-demand download formats. `["csv"]`, `["json"]`, `["csv", "json"]`, or `[]` to disable. Defaults to both. |
 | `columns` | No | Column definitions for the list view (see below) |
-| `fields` | No | Field definitions for the create/edit form — same field types as `settings` |
+| `fields` | No | Field definitions for the create/edit form, same field types as `settings` |
 | `prefill` | No | Auto-populate rows from a source table on page mount |
 
 **Column definition fields:**
@@ -347,7 +345,7 @@ Alongside physical table declarations, you can declare admin CRUD interfaces for
 | `placeholder` | For editable select columns: override the placeholder text (default: `"None"` or `"Select an option"` when required) |
 | `searchable` | Enable full-text search (plain columns only, not supported on dot-notation or lookup columns) |
 | `sortable` | Enable column sort (plain columns only, not supported on dot-notation or lookup columns) |
-| `options` | Static `{ "value_key": "Display Label" }` map — displayed for plain text columns and available as choices for editable columns |
+| `options` | Static `{ "value_key": "Display Label" }` map, displayed for plain text columns and available as choices for editable columns |
 | `options_provider` | Provider name for dynamic options via `PluginSelectOptionsProviderInterface` |
 | `depends_on` | Column names whose current row values are passed to `options_provider` as context |
 | `lookup` | Resolve a stored FK value to a display label from another table. See [`lookup` fields](#lookup-fields) below. |
@@ -359,7 +357,7 @@ The `lookup` object on a column resolves a stored ID to a human-readable label f
 
 | Property | Default | Description |
 |---|---|---|
-| `table` | — | Table ID (declared in `schema.ui_tables`) or physical table name. Host tables are allowed for read-only lookups. |
+| `table` | None | Table ID (declared in `schema.ui_tables`) or physical table name. Host tables are allowed for read-only lookups. |
 | `key_column` | `"id"` | Column in the lookup table to match against the stored value. |
 | `label_column` | `"name"` | Column in the lookup table to use as the display label. |
 | `source_column` | column `name` | Column on the current row that holds the FK value (if different from `name`). |
@@ -387,16 +385,16 @@ The host automatically adds filters to a UI table based on column presence in th
 
 | Column present in DB table | Filter added |
 |---|---|
-| `extension_plugin_run_id` | **Run** — filter rows by the plugin run that wrote them. On the plugin run detail page the table is pre-scoped to the current run. |
-| `playlist_id` | **Playlist** — filter rows by the associated playlist. |
-| `result_type` | **Type** — filter by distinct `result_type` values. |
-| `decision` | **Decision** — filter by distinct `decision` values. |
+| `extension_plugin_run_id` | **Run**: filter rows by the plugin run that wrote them. On the plugin run detail page the table is pre-scoped to the current run. |
+| `playlist_id` | **Playlist**: filter rows by the associated playlist. |
+| `result_type` | **Type**: filter by distinct `result_type` values. |
+| `decision` | **Decision**: filter by distinct `decision` values. |
 
 These filters appear automatically in the embedded inline table view (on the plugin edit page and run detail page) but not on the standalone full-page table view.
 
 **Exports** are generated on demand from the current DB rows. The downloaded file includes all physical table columns: declared `columns` appear first (in declaration order, using `label` as the CSV header), followed by any remaining database columns not covered by a declaration (using the raw column name as the header).
 
-### `prefill` — auto-populate rows from a source table
+### `prefill`: auto-populate rows from a source table
 
 When `prefill` is declared on a UI table, the host inserts one row per record in the source table on page mount (if that row does not already exist). This is useful for per-playlist or per-source configuration tables where you want every source to have a row ready to configure.
 
@@ -425,12 +423,12 @@ When `prefill` is declared on a UI table, the host inserts one row per record in
 
 | Property | Default | Description |
 |---|---|---|
-| `source.table` | — | Source table ID (plugin-owned) or host table name (e.g. `playlists`). |
+| `source.table` | None | Source table ID (plugin-owned) or host table name (e.g. `playlists`). |
 | `source.key_column` | `"id"` | Primary key column in the source table; its value is written into `target_column`. |
 | `source.user_column` | `"user_id"` | User ownership column on the source table; used when `scope: "owned"`. |
-| `source.scope` | — | `"owned"` limits source rows to those belonging to the current user. |
+| `source.scope` | None | `"owned"` limits source rows to those belonging to the current user. |
 | `source.order_column` | `key_column` | Column to order the source rows by before inserting. |
-| `target_column` | — | Column in the plugin table to write the source key value into. |
+| `target_column` | None | Column in the plugin table to write the source key value into. |
 | `defaults` | `{}` | Additional column values to set on each new row (supports dot-notation for `json` columns). |
 
 ### Run result tables

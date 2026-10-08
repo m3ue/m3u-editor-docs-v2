@@ -1,305 +1,101 @@
 ---
-sidebar_position: 4
-description: Create pseudo-TV networks from integrated media server content
-title: Media Networks Integration
-hide_title: true
+sidebar_position: 9
+description: Turn movies and series from your media server into 24/7 live TV channels, with a schedule and guide.
+title: Networks
 tags:
   - Integrations
   - Networks
   - Media Servers
-  - Emby
-  - Jellyfin
-  - Plex
   - Broadcasting
 ---
 
-# Media Networks Integration
+import { Steps, Step } from '@site/src/components/Steps';
 
-## Overview
+# Networks
 
-Transform VOD content and Series into 24/7 live TV channels with automatic EPG generation and HLS streaming.
+A Network is a live TV channel made from your own library: a classic sitcom channel that plays episodes around the clock, or a movie channel that loops through a collection. M3U Editor builds the schedule and guide, and [M3U Proxy](/docs/proxy/overview) broadcasts it like a real channel.
 
-**Key Features:**
-- Continuous broadcasting with loop support
-- Automatic EPG generation
-- HLS streaming for broad compatibility
-- Mix movies and series episodes
-- Optional transcoding support
+You need a [media server integration](emby_integration_settings) with its content synced, and the proxy set up. For transcoding, a [separate proxy container with hardware acceleration](/docs/proxy/hardware-acceleration) helps a lot.
 
-## Prerequisites
+## Create a network
 
-- M3U Editor v0.12.45+
-- Media server integration configured (Emby/Jellyfin/Plex)
-- M3U Proxy enabled for streaming
-- Media content synced into M3U Editor
+Go to **Integrations → Networks** and choose **New network**. The wizard has four steps:
 
-**Recommended:** Redis, PostgreSQL, hardware acceleration, adequate storage
+<Steps>
+<Step title="Media Server">
 
-## Configuration
+Pick the media server the network plays from. A network uses one media server.
 
-Add to your `.env` file:
+</Step>
+<Step title="Network Info">
 
-```env
-# Enable broadcasting
-NETWORK_BROADCAST_ENABLED=true
+A **Network Name**, an optional **Channel Number**, **Logo URL**, and **Group Name** (`Networks` if empty).
 
-# HLS storage
-HLS_TEMP_DIR=/var/www/html/storage/app/hls-segments
-HLS_GC_ENABLED=true
-HLS_GC_INTERVAL=600          # Cleanup every 10 minutes
-HLS_GC_AGE_THRESHOLD=7200    # Delete segments older than 2 hours
-```
+</Step>
+<Step title="Schedule">
 
-**Optional but recommended:**
-```env
-REDIS_ENABLED=true
-ENABLE_POSTGRES=true
-M3U_PROXY_ENABLED=false  # Use external proxy
-```
+How content is ordered (**Schedule Type**), whether it loops, and the **Output Playlist** the network is published in. Networks are served through playlists made for them, so create one here if you don't have one yet.
 
-### Performance: HLS Segments on RAM Disk
+</Step>
+<Step title="Broadcast">
 
-:::tip Better Performance
-For optimal performance and reduced disk wear, store HLS segments in RAM using tmpfs. This provides faster I/O and eliminates disk writes for temporary segment files.
+Optional. Turn on **Enable Broadcasting** to stream the channel live (below). You can do this later.
+
+</Step>
+</Steps>
+
+Then open the network and add what it plays, with **Add Movies** and **Add Episodes**, and choose **Generate Schedule**.
+
+## Scheduling
+
+| Schedule Type | Plays |
+|---|---|
+| **Sequential** | Content in the order you list it. |
+| **Shuffle** | Content in a random order. |
+| **Manual** | What you place on a visual timeline in the **Schedule Builder**, repeating **Per Day**, as a **Weekly Template**, or as a **One Shot** that fills the window once. |
+
+**Loop Content** starts over when everything has played. **Schedule Window** sets how many days ahead the schedule is built (7 by default), and **Auto-regenerate Schedule** tops it up before it runs out. **Gap Between Programmes** adds space between items.
+
+Each item in the content list can also be **pinned** to a day and time, given a **Weight**, **chained** to the next item so they always play together, or set to a preferred audio and subtitle track.
+
+When you choose **Generate Schedule**, **Continue from current position** keeps what's airing and extends the schedule. **Fresh start** rebuilds it, which you'll want after reordering content.
+
+## Broadcasting
+
+Broadcasting streams the schedule live, so everyone watching sees the same thing at the same time. Settings are in the network's **Broadcast Settings** tab:
+
+| Setting | What it does |
+|---|---|
+| **Enable Broadcasting** | Stream the network live. |
+| **Start On Viewer Connection** | Wait for someone to tune in before starting, instead of running all the time. |
+| **Schedule Start Time** | Wait until a set date and time to start. |
+| **Output Format** | **HLS** (recommended) or **MPEG-TS**. |
+| **Segment Duration** | Length of each HLS segment (6 seconds is recommended). |
+
+Start and stop it with **Start Broadcast** and **Stop Broadcast**. The **Broadcast Status** section shows whether it's running.
+
+### Transcoding
+
+**Transcode Mode** chooses where video is converted, if at all:
+
+- **Direct (Passthrough):** no transcoding. The lightest option, but every file must already be in a format players can handle.
+- **Media Server:** Emby, Jellyfin, or Plex transcodes.
+- **Local (FFmpeg via Proxy):** the proxy transcodes, with your choice of **Video Bitrate**, **Audio Bitrate**, **Resolution**, codecs, **Encoder Preset**, and **Hardware Acceleration**.
+
+**Preferred Audio Language** and **Preferred Subtitle Language** pick tracks for the whole network. Restart the broadcast after changing any of these.
+
+## Watch it
+
+A network's **Stream Output** and **EPG Output** tabs list its URLs. Most people use the **Output Playlist** instead: it carries all its networks as live channels, with their guide, through the usual [playlist outputs](/docs/client_configuration). Each media server integration's **Networks** tab also has a playlist and guide URL covering every network built from that server.
+
+:::tip Broadcast segments in memory
+The proxy writes broadcast segments to `HLS_BROADCAST_DIR` (by default `/tmp/m3u-proxy-broadcasts`). Mounting a `tmpfs` there keeps them in RAM, which is faster and spares your disk. Allow roughly 50 to 200 MB per running network.
 :::
-
-For better performance and reduced disk wear, store HLS segments in RAM using tmpfs:
-
-**Docker Compose:**
-```yaml
-services:
-  m3u-editor:
-    # ... other config ...
-    volumes:
-      - ./data:/var/www/config
-      - pgdata:/var/lib/postgresql/data
-      - type: tmpfs
-        target: /var/www/html/storage/app/hls-segments
-        tmpfs:
-          size: 512M  # Adjust based on concurrent networks
-```
-
-**Benefits:**
-- Faster read/write for HLS segments
-- Reduced SSD/HDD wear
-- Automatic cleanup on restart
-
-**Considerations:**
-- RAM usage increases (50-200MB per active network)
-- Segments lost on container restart (regenerated automatically)
-- Not suitable for systems with limited RAM
-
-## Quick Setup
-
-### 1. Sync Media Server
-1. Navigate to **Integrations** → **Media Servers**
-2. Add your media server if needed
-3. Click **Sync Now**
-
-### 2. Create Network
-1. Go to **Networks** → **Create Network**
-2. Set **Name**, **Channel Number**, and **Media Server**
-3. Enable **Loop Content** and **Enabled**
-4. Save
-
-### 3. Add Content
-1. Open the network
-2. Click **Add Content**
-3. Select series episodes or movies
-4. Set **Sort Order** for playback sequence
-5. Save
-
-### 4. Generate Schedule
-1. Click **Generate Schedule**
-2. Review in **Programme Schedule** section
-3. Enable **Auto-regenerate** to keep schedule updated
-
-### 5. Start Broadcasting
-1. Open **Broadcast Settings**
-2. Enable **Broadcast Enabled**
-3. Configure HLS and transcoding options (see below)
-4. Click **Start Broadcast**
-
-#### HLS Settings
-- **Segment Duration**: Length of each HLS segment in seconds (default: 6)
-  - Lower = less latency, more CPU usage
-  - Higher = better buffering, less CPU usage
-- **HLS List Size**: Number of segments to keep in playlist (default: 5)
-
-#### Transcoding Settings
-- **Transcode Mode**: Choose transcoding behavior
-  - `copy`: No transcoding (fastest, least compatible) - direct stream
-  - `h264`: Transcode to H.264 (best compatibility, recommended)
-  - `hevc`: Transcode to H.265/HEVC (better compression, newer devices)
-- **Video Bitrate**: Target video bitrate in kbps
-  - Standard: 2500-3500 kbps
-  - Low bandwidth: 1500 kbps
-  - High quality: 6000+ kbps
-- **Audio Bitrate**: Target audio bitrate in kbps (typically 96-192 kbps)
-
-#### Audio & Subtitle Track Preferences
-- **Preferred Audio Language**: Selects a preferred audio language (ISO 639) for the broadcast. Applies to every item in the schedule — useful for content with multiple dubbed audio tracks. Leave blank to use each item's default track.
-- **Preferred Subtitle Language**: Enables subtitles in the selected language for the broadcast. Leave blank to disable subtitles.
-
-These preferences are resolved per source item against the tracks reported by your media server (Plex, Emby, or Jellyfin) and passed through to the proxy, so the correct track is selected automatically without per-item configuration.
-
-:::warning Resource Usage
-Transcoding is CPU-intensive. Use hardware acceleration with external m3u-proxy container and GPU passthrough (`/dev/dri:/dev/dri`) for optimal performance.
-:::
-
-## Access Your Network
-
-**HLS Stream:**
-```
-http://your-server:36400/network/{network-uuid}/hls/playlist.m3u8
-```
-
-**EPG:**
-```
-http://your-server:36400/network/{network-uuid}/epg
-```
-
-Add to media clients using the playlist M3U URL and EPG URL.
 
 ## Troubleshooting
 
-### Network Not Broadcasting
-- Verify `NETWORK_BROADCAST_ENABLED=true` in `.env`
-- Ensure content added and schedule generated
-- Check M3U Proxy is running: `docker ps | grep m3u-proxy`
-- Review logs: `docker logs m3u-editor`
-
-### Stream Not Playing
-- Verify broadcast is running
-- Check HLS directory exists and is writable
-- Verify disk space: `df -h`
-- Check proxy logs: `docker logs m3u-proxy`
-
-### EPG Not Showing
-- Click **Generate Schedule**
-- Refresh client's EPG data
-- Verify EPG URL in client
-
-### High CPU Usage
-- Enable hardware acceleration with m3u-proxy
-- Reduce bitrate or use `copy` mode
-- Limit concurrent broadcasts
-
-### Disk Space Issues
-- Verify `HLS_GC_ENABLED=true`
-- Lower `HLS_GC_AGE_THRESHOLD` value
-- Increase cleanup frequency with `HLS_GC_INTERVAL`
-
-## Transcoding Profiles
-
-**Low Bandwidth:**
-```
-Mode: h264 | Video: 1500 kbps | Audio: 96 kbps | Segment: 4s
-```
-
-**Standard Quality:**
-```
-Mode: h264 | Video: 3500 kbps | Audio: 128 kbps | Segment: 6s
-```
-
-**High Quality:**
-```
-Mode: hevc | Video: 6000 kbps | Audio: 192 kbps | Segment: 10s
-```
-
-**Direct Streaming:**
-```
-Mode: copy | Segment: 6s (best performance, limited compatibility)
-```
-
-## Docker Compose Example
-
-**With tmpfs (RAM disk) for HLS segments:**
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:experimental
-    container_name: m3u-editor
-    environment:
-      - TZ=America/New_York
-      - APP_URL=http://localhost
-      - APP_PORT=36400
-      - NETWORK_BROADCAST_ENABLED=true
-      - HLS_TEMP_DIR=/var/www/html/storage/app/hls-segments
-      - HLS_GC_ENABLED=true
-      - M3U_PROXY_ENABLED=false
-      - M3U_PROXY_HOST=m3u-proxy
-      - M3U_PROXY_TOKEN=${M3U_PROXY_TOKEN}
-      - REDIS_ENABLED=false
-      - REDIS_HOST=redis
-      - ENABLE_POSTGRES=true
-    volumes:
-      - ./data:/var/www/config
-      - pgdata:/var/lib/postgresql/data
-      - type: tmpfs
-        target: /var/www/html/storage/app/hls-segments
-        tmpfs:
-          size: 512M
-    ports:
-      - "36400:36400"
-    networks:
-      - m3u-network
-    depends_on:
-      - m3u-proxy
-      - redis
-
-  m3u-proxy:
-    image: sparkison/m3u-proxy:experimental
-    container_name: m3u-proxy
-    environment:
-      - API_TOKEN=${M3U_PROXY_TOKEN}
-      - REDIS_ENABLED=true
-      - REDIS_HOST=redis
-    devices:
-      - /dev/dri:/dev/dri  # Hardware acceleration
-    networks:
-      - m3u-network
-
-  redis:
-    image: redis:alpine3.22
-    container_name: m3u-redis
-    command: redis-server --requirepass ${REDIS_PASSWORD}
-    networks:
-      - m3u-network
-
-networks:
-  m3u-network:
-
-volumes:
-  pgdata:
-  redis-data:
-```
-
-## FAQ
-
-**Q: Can I use multiple media servers in one network?**
-A: No, each network uses one media server. Create multiple networks for different servers.
-
-**Q: How much disk space needed?**
-A: 50-200 MB per network for HLS segments. Varies by bitrate and duration.
-
-**Q: Can viewers seek/rewind?**
-A: Limited seeking within buffered segments. For full control, use VOD/series directly.
-
-**Q: Can I schedule specific content at specific times?**
-A: Not currently. Schedule is auto-generated based on content duration and order.
-
-**Q: Multiple networks simultaneously?**
-A: Yes, but monitor system resources (CPU, disk, bandwidth).
-
-## Related Documentation
-
-- [Emby Integration](./emby_integration.md)
-- [Plex Integration](./plex_integration.md)
-- [Docker Compose Deployments](../deployment/docker-compose.md)
-- [Environment Variables](../advanced/environment-variables.md)
-
-## Support
-
-- [GitHub Issues](https://github.com/sparkison/m3u-editor/issues)
-- [Discord Community](https://discord.gg/rS3abJ5dz7)
+| Problem | What to check |
+|---|---|
+| The network won't start | It has content and a generated schedule, and **Settings → Proxy → Test connection** succeeds. The proxy needs to reach the editor's **Resolver URL**; see [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration#settings-that-affect-the-connection). |
+| It plays but stutters | Transcoding is too much for the CPU. Use hardware acceleration, a lower bitrate, or **Direct** mode. |
+| The guide is empty | Choose **Generate Schedule**, then refresh the guide in your player. |

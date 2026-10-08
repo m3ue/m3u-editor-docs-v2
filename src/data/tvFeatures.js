@@ -212,6 +212,6 @@ export const CONNECT_STEPS = [
     icon: 'qr_code_2',
     title: 'Pair and watch',
     text: 'Choose "Pair with code" and approve it from M3U Editor, or enter your Xtream login by hand.',
-    link: { to: '/docs/m3u-tv/overview#connecting-to-m3u-editor', label: 'Connecting' },
+    link: { to: '/docs/m3u-tv/overview#connect-it', label: 'Connecting' },
   },
 ];
