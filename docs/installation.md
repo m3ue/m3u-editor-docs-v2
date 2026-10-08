@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-description: Get started with M3U Editor - Installation and quick setup guide
+description: Every Docker Compose setup M3U Editor ships, side by side, plus image tags, data volumes, and health checks.
 tags:
   - Getting Started
   - Installation
@@ -8,110 +8,133 @@ tags:
 title: Compose Examples
 ---
 
-<div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
-  <img src="/img/logo.png" alt="M3U Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
-</div>
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LinkCards from '@site/src/components/LinkCards';
 
-# Docker Compose Installation
+# Compose Examples
 
-Get M3U Editor up and running in minutes with Docker!
+M3U Editor ships a Docker Compose file for each common setup. Start with the recommended **Modular** setup unless you have a reason not to; the [Quick Start](/docs/quick_start) walks through it step by step.
 
-## Prerequisites
-
-Before you begin, ensure you have:
-
-- [Docker](https://www.docker.com/) installed on your system
-- Xtream codes API login info **or** M3U URLs/files containing an M3U playlist of video streams
-- (Optional) EPG URLs/files containing valid XMLTV data
-
-## Quick Start Options
-
-M3U Editor offers several deployment options to fit your needs:
-
-#### 🐳 Docker compose file reference
-
-| Use Case                    | File                                                    | Description                                                                                            |
-| --------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Modular Deployment**      | [docker-compose.proxy.yml](./installation#-recommended-modular-deployment)         | ⭐⭐ Recommended! Separate containers for **m3u-editor**, **m3u-proxy** (_the external proxy setup is required for hardware acceleration_), and **Redis** — perfect if you want more granular control (_Postgres and NGINX can be easily added as a seperate container as well_). |
-| **All-in-One Deployment**   | [docker-compose.aio.yml](./installation#simple-all-in-one-deployment) | A simple, all-in-one solution — everything runs in a single container for quick setup (_hardware acceleration is not supported in this setup_).  |
-| **Modular + VPN** | [docker-compose.proxy-vpn](./installation#advanced-modular-with-vpn) | Example of modular deployment using Gluetun VPN.          |
-
-<small>For more examples, see the [Deployments](./deployment/docker-compose.md) page</small>
-
-### ⭐⭐ Recommended: Modular Deployment
-
-**File**: `docker-compose.proxy.yml`
-
-This setup runs separate containers for **m3u-editor**, **m3u-proxy** (external proxy required for hardware acceleration), and **Redis** — perfect for production use with granular control.
-
-```bash
-# Download the configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
-
-# Start the services
-docker-compose -f docker-compose.proxy.yml up -d
-```
-
-**What you get**:
-- M3U Editor (main application)
-- M3U Proxy (streaming with hardware acceleration support)
-- Redis (stream pooling and caching)
-- PostgreSQL (embedded in m3u-editor)
-
-:::tip
-PostgreSQL and NGINX can be easily added as separate containers if needed!
+:::tip Build your own
+The [Compose Wizard](/compose-wizard) walks through your database, proxy, Redis, VPN, web server, and storage choices, and generates a compose file and `.env` for your setup.
 :::
 
-### Simple: All-in-One Deployment
+## Choose a setup
 
-**File**: `docker-compose.aio.yml`
+| Setup | Containers | Hardware acceleration | Best for |
+|---|---|:-:|---|
+| **Modular** (recommended) | Editor, proxy, Redis | ✓ | Most installs |
+| **All-in-one** | One container | | Trying it out, or light use |
+| **Modular + VPN** | Editor, proxy, Redis, Gluetun | ✓ | Sending provider traffic through a VPN |
+| **Fully external** | Editor, proxy, Redis, PostgreSQL, Nginx or Caddy | ✓ | Running every service in its own container |
 
-Everything runs in a single container for quick setup and testing.
+Every file reads its secrets from a `.env` file next to it and falls back to `changeme`, so always set your own. Generate tokens and passwords with `openssl rand -hex 32`.
 
-```bash
-# Download the configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.aio.yml
+<Tabs groupId="compose-setup" queryString>
+<TabItem value="modular" label="Modular" default>
 
-# Start the service
-docker-compose -f docker-compose.aio.yml up -d
-```
-
-:::warning
-Hardware acceleration is **not supported** in the all-in-one setup.
-:::
-
-### Advanced: Modular with VPN
-
-**File**: `docker-compose.proxy-vpn.yml`
-
-Modular deployment with Gluetun VPN integration.
+Separate containers for the editor, [M3U Proxy](/docs/proxy/overview), and Redis. PostgreSQL runs inside the editor container. The proxy runs in its own container, which is what makes [hardware acceleration](/docs/proxy/hardware-acceleration) possible.
 
 ```bash
-# Download the configuration
-curl -O https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy-vpn.yml
-
-# Configure your VPN settings in the file
-# Then start the services
-docker-compose -f docker-compose.proxy-vpn.yml up -d
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
 ```
 
-## After Installation
+Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#modular-deployment-recommended)
 
-Once your containers are running:
+</TabItem>
+<TabItem value="aio" label="All-in-one">
 
-1. Open your browser and navigate to `http://localhost:36400` (or your configured port)
-2. Complete the initial setup wizard
-3. Add your first playlist
-4. Start organizing your streams!
+Everything in a single container: the editor, an embedded proxy, PostgreSQL, and Redis. The simplest to run, but hardware acceleration isn't supported.
 
-## Next Steps
+```bash
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.aio.yml
+```
 
-- [Configuration Guide](/docs/configuration) - Configure M3U Editor for your needs
-- [Adding Playlists](/docs/resources/playlists) - Import your first M3U playlist
-- [EPG Setup](/docs/resources/epg-setup) - Add Electronic Program Guide data
+Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#all-in-one-deployment)
 
-## Need Help?
+</TabItem>
+<TabItem value="vpn" label="Modular + VPN">
 
-- Join our [Discord](https://discord.gg/rS3abJ5dz7)
-- [Report an issue](https://github.com/m3ue/m3u-editor/issues/new?template=bug_report.md)
-- [GitHub Discussions](https://github.com/m3ue/m3u-editor/discussions)
+The modular setup plus a [Gluetun](https://github.com/qdm12/gluetun) container, so traffic to your provider goes out through your VPN.
+
+```bash
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy-vpn.yml
+```
+
+Set in `.env`: the modular variables, plus `VPN_SERVICE_PROVIDER`, `WIREGUARD_PRIVATE_KEY`, `WIREGUARD_ADDRESSES`, and optionally `SERVER_COUNTRIES`. The file is set up for WireGuard; its comments show the OpenVPN settings. [More about this setup](/docs/deployment/docker-compose#vpn-deployment)
+
+</TabItem>
+<TabItem value="external" label="Fully external">
+
+Every service in its own container, with the editor's embedded services turned off: PostgreSQL, Redis, the proxy, and a reverse proxy in front. Choose Nginx, or Caddy for automatic HTTPS.
+
+```bash
+# Nginx
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all.yml
+
+# Caddy
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.external-all-caddy.yml
+```
+
+Set in `.env`: `APP_URL`, `M3U_PROXY_TOKEN`, `PG_PASSWORD`, `REDIS_PASSWORD`. [More about this setup](/docs/deployment/docker-compose#fully-external-deployment) and [Caddy vs Nginx](/docs/deployment/caddy-vs-nginx)
+
+</TabItem>
+</Tabs>
+
+Then start it with `docker compose up -d`. To use your own PostgreSQL or Redis instead of the bundled ones, see [Editor Configuration](/docs/configuration#database).
+
+## Image tags
+
+M3U Editor and M3U Proxy are published to Docker Hub as `sparkison/m3u-editor` and `sparkison/m3u-proxy`. The compose files use the `IMAGE_TAG` variable (default `latest`) for both, so you can switch channels from `.env`.
+
+| Tag | What you get |
+|---|---|
+| `latest` | Stable releases. Recommended. |
+| `dev` | The development branch: fixes land here first and are usually stable. |
+| `experimental` | Features still being built. Expect rough edges. |
+
+Each editor release is also tagged with its version (for example `sparkison/m3u-editor:0.13.3`, and `dev-` or `experimental-` versions for the other channels). To pin a version, set it on the `image:` line rather than through `IMAGE_TAG`, since the editor and proxy are versioned separately.
+
+## Keeping your data
+
+Map these container paths to volumes so nothing is lost when a container is recreated or updated:
+
+| Container path | Holds | In the shipped files |
+|---|---|---|
+| `/var/www/config` | Configuration, logs, and the SQLite database if you use one | `./data` |
+| `/var/lib/postgresql/data` | The embedded PostgreSQL database | `pgdata` |
+| `/var/www/html/storage/app/public` | Logos and images you upload | `./storage` |
+
+If you use the [DVR](/docs/integrations/dvr_integration#persisting-recordings-in-docker) or [Cached Content Downloads](/docs/advanced/cached-content#enabling-the-cache), mount a volume for those files too. Their locations are set by [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#dvr_storage_path) and [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#cache_storage_path).
+
+## Health checks
+
+The editor reports its health at `/up`. The shipped files already use it, so other services can wait for the editor to be ready:
+
+```yaml
+services:
+  m3u-editor:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${APP_PORT:-36400}/up"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  my-service:
+    depends_on:
+      m3u-editor:
+        condition: service_healthy
+```
+
+## Next steps
+
+<LinkCards
+  items={[
+    { to: '/docs/configuration', icon: 'tune', title: 'Editor configuration', text: 'The environment variables for URLs, database, Redis, and the proxy.' },
+    { to: '/docs/deployment/m3u-proxy-integration', icon: 'router', title: 'M3U Proxy setup', text: 'How the editor and proxy talk to each other, and how to tune it.' },
+    { to: '/docs/deployment/caddy-vs-nginx', icon: 'dns', title: 'Reverse proxies', text: 'Put M3U Editor behind Caddy or Nginx, with HTTPS.' },
+    { to: '/docs/resources/playlists', icon: 'playlist_play', title: 'Add a playlist', text: 'Import your first source once the editor is running.' },
+  ]}
+/>

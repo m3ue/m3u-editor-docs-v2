@@ -214,52 +214,12 @@
   font-size: 0.95rem;
 }
 
-/* ---- Start steps ---- */
-
-.steps {
-  margin: 1.5rem 0;
-  padding: 0;
-  list-style: none;
-}
-
-.step {
-  position: relative;
-  display: grid;
-  grid-template-columns: 2.25rem minmax(0, 1fr);
-  gap: 1rem;
-  margin: 0;
-  padding-bottom: 1.4rem;
-}
-
-/* The line joining one number to the next */
-.step:not(:last-child)::before {
-  content: '';
-  position: absolute;
-  top: 2.6rem;
-  bottom: 0.35rem;
-  left: calc(1.125rem - 1px);
-  width: 2px;
-  border-radius: 2px;
-  background-color: var(--docs-hairline-strong);
-}
-
-.stepNumber {
-  display: grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 50%;
-  background: var(--docs-brand-gradient);
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 700;
-}
+/* ---- Start steps (layout from src/components/Steps) ---- */
 
 .stepTitle {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 0.3rem;
   color: var(--docs-link-strong);
   font-size: 1.05rem;
   font-weight: 650;
@@ -283,7 +243,7 @@
 }
 
 .stepText {
-  margin: 0.15rem 0 0;
+  margin: 0;
   color: var(--docs-link-muted);
   font-size: 0.925rem;
   line-height: 1.55;

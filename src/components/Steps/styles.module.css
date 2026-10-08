@@ -1,0 +1,68 @@
+/* Numbered walkthrough: gradient number badges joined by a hairline */
+.steps {
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0;
+  padding-bottom: 1.5rem;
+}
+
+.step:last-child {
+  padding-bottom: 0;
+}
+
+/* The line joining one number to the next */
+.step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  top: 2.6rem;
+  bottom: 0.35rem;
+  left: calc(1.125rem - 1px);
+  width: 2px;
+  border-radius: 2px;
+  background-color: var(--docs-hairline-strong);
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  background: var(--docs-brand-gradient);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.body {
+  min-width: 0;
+}
+
+.title {
+  margin-top: 0.3rem;
+  color: var(--docs-link-strong);
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.content {
+  margin-top: 0.35rem;
+  color: var(--ifm-font-color-base);
+}
+
+.content > :last-child {
+  margin-bottom: 0;
+}
+
+.content > p {
+  margin-bottom: 0.75rem;
+}

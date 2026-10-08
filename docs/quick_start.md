@@ -1,283 +1,107 @@
 ---
 sidebar_position: 1
-description: Getting up and running quickly
+description: Get M3U Editor running with Docker in a few minutes, using the recommended editor, proxy, and Redis setup.
 tags:
   - Getting Started
 title: Quick Start
 ---
 
-<div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
-  <img src="/img/logo.png" alt="M3U Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
-</div>
+import { Steps, Step } from '@site/src/components/Steps';
+import LinkCards from '@site/src/components/LinkCards';
 
-# Getting Started with m3u-editor
+# Quick Start
 
-:::tip Server Access
-M3U Editor Defaults to **Port 36400**. -- **This can be changed in the docker-compose file.**
+This gets M3U Editor running with the recommended setup: the editor, [M3U Proxy](/docs/proxy/overview) for streaming, and Redis, each in its own container. It takes a few minutes.
 
-**Default Username:** admin
+You need a machine with [Docker](https://docs.docker.com/get-docker/) and Docker Compose, and at least one source: an Xtream login, or an M3U URL or file. Guide data is optional.
 
-**Default Password:** admin
-:::
+## Install
 
-## 🤔 Pick Your Deployment
+<Steps>
+<Step title="Get the compose file">
 
-**M3U-Proxy with External Setup (Recommended)**
+Make a folder for M3U Editor and download the recommended compose file into it:
 
-Multiple concurrent users. Stream pooling: one provider subscription serves multiple viewers via shared connection. Separate containers for app, proxy, and Redis cache.
-
-**[Jump to example](#deployment-recommended "M3U-Proxy with External Setup")**
-
-**M3U-Proxy Embedded**
-
-Single container. Same pooling concept, no Redis. Good for light to moderate use.
-
-**[Jump to example](#deployment-proxy_embedded "M3U-Proxy with Embedded Proxy Setup")**
-
-**Internal PostgreSQL**
-
-Better reliability than SQLite. PostgreSQL container managed by Docker Compose. Better for concurrent access and crash resilience.
-
-**[Jump to example](#deployment-internal_postgres "Internal PostgreSQL")**
-
-**External PostgreSQL**
-
-Point m3u-editor to your existing Postgres instance elsewhere.
-
-**[Jump to example](#deployment-external_postgres "External PostgreSQL")**
-
-## 🏷️ Image Versions
-
-M3U Editor is available in the following versions:
-
-|                                               Version                                              |                     Description                     |                  Docker Image                 |
-| :------------------------------------------------------------------------------------------------: | :-------------------------------------------------: | :-------------------------------------------: |
-|       **[sparkison/m3u-editor:latest](https://github.com/m3ue/m3u-editor/tree/master)**       |              Recommended Stable Branch              |    docker pull sparkison/m3u-editor:latest    |
-|          **[sparkison/m3u-editor:dev](https://github.com/m3ue/m3u-editor/tree/dev)**          |             Stable-ish, quick bug fixes             |      docker pull sparkison/m3u-editor:dev     |
-| **[sparkison/m3u-editor:experimental](https://github.com/m3ue/m3u-editor/tree/experimental)** | Bleeding edge features -- **There be dragons here** | docker pull sparkison/m3u-editor:experimental |
-
-## 🐳 Deployment Examples
-
-### M3U-Proxy with External Setup (Recommended){#deployment-recommended}
-
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:${IMAGE_TAG:-latest}
-    container_name: m3u-editor
-    environment:
-      # Timezone
-      - TZ=Etc/UTC
-      
-      # Application URL (change to your domain or IP)
-      - APP_URL=${APP_URL:-http://localhost}
-      - APP_PORT=${APP_PORT:-36400}
-
-      # Postgres Configuration
-      - ENABLE_POSTGRES=true # Use embedded Postgres, disable to use your own Postgres service
-      - PG_DATABASE=${PG_DATABASE:-m3ue}
-      - PG_USER=${PG_USER:-m3ue}
-      - PG_PASSWORD=${PG_PASSWORD:-changeme}
-      - PG_PORT=${PG_PORT:-5432}
-
-      # Database Connection (m3u-editor)
-      - DB_CONNECTION=pgsql
-      - DB_HOST=localhost
-      - DB_PORT=${PG_PORT:-5432}
-      - DB_DATABASE=${PG_DATABASE:-m3ue}
-      - DB_USERNAME=${PG_USER:-m3ue}
-      - DB_PASSWORD=${PG_PASSWORD:-changeme}
-
-      # Redis configuration
-      - REDIS_ENABLED=true # Use embedded Redis
-      - REDIS_SERVER_PORT=${REDIS_PORT:-6379}
-      # -REDIS_PASSWORD=${M3U_PROXY_TOKEN:-changeme} # Automatically set to API_TOKEN
-      
-      # M3U Proxy Configuration (External)
-      - M3U_PROXY_ENABLED=false # Disable embedded and use external m3u-proxy
-      - M3U_PROXY_PORT=${M3U_PROXY_PORT:-38085}
-      - M3U_PROXY_HOST=${M3U_PROXY_HOST:-m3u-proxy} # Internal network hostname of m3u-proxy container
-      - M3U_PROXY_TOKEN=${M3U_PROXY_TOKEN:-changeme}
-    volumes:
-      # Persistent configuration data
-      - ./data:/var/www/config
-      
-      # PostgreSQL data persistence
-      - pgdata:/var/lib/postgresql/data
-    restart: unless-stopped
-    ports:
-      - "${APP_PORT:-36400}:${APP_PORT:-36400}"  # Main application port
-      # - "${PG_PORT:-5432}:${PG_PORT:-5432}"  # Uncomment to expose PostgreSQL
-    networks:
-      - m3u-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:${APP_PORT:-36400}/up"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
-  m3u-proxy:
-    image: sparkison/m3u-proxy:${IMAGE_TAG:-latest}
-    container_name: m3u-proxy
-    environment:
-      # API Authentication Token (must match M3U_PROXY_TOKEN above)
-      - API_TOKEN=${M3U_PROXY_TOKEN:-changeme}
-      - PORT=${M3U_PROXY_PORT:-38085}
-
-      # Redis Configuration (for stream pooling)
-      - REDIS_ENABLED=true
-      - REDIS_PORT=${REDIS_PORT:-6379}
-      - REDIS_HOST=m3u-editor # Connect to m3u-editor's embedded Redis instance
-      - REDIS_DB=6 # 1-5 used by m3u-editor, so use 6 for m3u-proxy
-      # -REDIS_PASSWORD=${M3U_PROXY_TOKEN:-changeme} # Automatically set to API_TOKEN
-      - ENABLE_REDIS_POOLING=true
-      
-      # Logging
-      - LOG_LEVEL=INFO
-    restart: unless-stopped
-    # Don't expose port externally - only accessible via internal network
-    # ports:
-    #   - "${PROXY_PORT:-38085}:${PROXY_PORT:-38085}"  # Uncomment only if you need direct external access
-    networks:
-      - m3u-network
-    depends_on:
-      m3u-editor:
-        condition: service_healthy
-    #devices:
-    #  - /dev/dri:/dev/dri
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:${PROXY_PORT:-38085}/health?api_token=${M3U_PROXY_TOKEN:-changeme}"]
-      interval: 30s
-      timeout: 2s
-      retries: 12
-      start_period: 10s
-
-networks:
-  m3u-network:
-    driver: bridge
-
-volumes:
-  pgdata:
-    driver: local
-
+```bash
+mkdir m3u-editor && cd m3u-editor
+curl -o docker-compose.yml https://raw.githubusercontent.com/m3ue/m3u-editor/master/docker-compose.proxy.yml
 ```
 
-### M3U-Proxy Embedded (Simple Alternative){#deployment-proxy\_embedded}
+Want a different setup, like a single container, a VPN, or your own database? Build a file with the [Compose Wizard](/compose-wizard), or pick one from [Compose Examples](/docs/installation).
 
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:latest
-    container_name: m3u-editor
-    environment:
-      - TZ=Etc/UTC
-      - APP_URL=http://localhost
-      - M3U_PROXY_ENABLED=true
-    volumes:
-      - ./data:/var/www/config
-    restart: unless-stopped
-    ports:
-      - 36400:36400
+</Step>
+<Step title="Set your secrets">
 
-networks: {}
+The compose file falls back to `changeme` for every password, so create a `.env` file next to it with your own:
+
+```bash
+cat > .env <<EOF
+APP_URL=http://192.168.1.50
+M3U_PROXY_TOKEN=$(openssl rand -hex 32)
+PG_PASSWORD=$(openssl rand -hex 24)
+REDIS_PASSWORD=$(openssl rand -hex 24)
+EOF
 ```
 
-### Internal PostgreSQL {#deployment-internal\_postgres}
+Set `APP_URL` to the address you'll open the editor at, without the port: your server's LAN IP, or your domain if it sits behind a reverse proxy. See [Editor Configuration](/docs/configuration#application) for details.
 
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:latest
-    container_name: m3u-editor
-    environment:
-      - TZ=Etc/UTC
-      - APP_URL=http://localhost
-      - ENABLE_POSTGRES=true
-      - PG_DATABASE=m3ue
-      - PG_USER=m3ue
-      - PG_PASSWORD=changeme
-      - DB_CONNECTION=pgsql
-      - DB_HOST=localhost
-      - DB_PORT=5432
-      - DB_DATABASE=m3ue
-      - DB_USERNAME=m3ue
-      - DB_PASSWORD=changeme
-    volumes:
-      - ./data:/var/www/config
-      - pgdata:/var/lib/postgresql/data
-    restart: unless-stopped
-    ports:
-      - 36400:36400
+</Step>
+<Step title="Start it">
 
-networks: {}
-volumes:
-  pgdata:
+```bash
+docker compose up -d
 ```
 
-### External PostgreSQL {#deployment-external\_postgres}
+The first start takes a minute or two while the database is set up. `docker compose ps` shows the containers as `healthy` once they're ready, and `docker compose logs -f m3u-editor` shows what's happening.
 
-```yaml
-services:
-  m3u-editor:
-    image: sparkison/m3u-editor:latest
-    container_name: m3u-editor
-    environment:
-      - TZ=Etc/UTC
-      - APP_URL=http://localhost
-      - DB_CONNECTION=pgsql
-      - DB_HOST=your-postgres-hostname  # localhost, 192.168.1.50, db.example.com, etc.
-      - DB_PORT=5432
-      - DB_DATABASE=m3ue
-      - DB_USERNAME=m3ue
-      - DB_PASSWORD=changeme
-    volumes:
-      - ./data:/var/www/config
-    restart: unless-stopped
-    ports:
-      - 36400:36400
+</Step>
+<Step title="Sign in">
 
-networks: {}
+Open `http://<your-server>:36400` and sign in with the username **admin** and password **admin**. You'll be asked to choose a new password straight away.
+
+</Step>
+<Step title="Add a playlist and connect a player">
+
+Add your provider under **Playlists**, optionally attach guide data, then point your player at M3U Editor. The guides below walk through each part.
+
+</Step>
+</Steps>
+
+## What's running
+
+| Container | What it does | Reachable at |
+|---|---|---|
+| `m3u-editor` | The web app, API, and playlist outputs. Runs its own PostgreSQL database inside the container. | Port `36400` on your server |
+| `m3u-proxy` | Streams channels to your players, shares provider connections, and transcodes. | Inside the Docker network only |
+| `m3u-redis` | Stream pooling and caching for the proxy and the editor. | Inside the Docker network only |
+
+Your data lives in four places. Keep them when you update, and back up the first two:
+
+| Volume | Holds |
+|---|---|
+| `./data` | Configuration and logs |
+| `pgdata` | The database |
+| `./storage` | Logos and images you upload |
+| `redis-data` | Redis data (safe to lose) |
+
+## Updating
+
+Pull the new images and recreate the containers. Your data volumes are kept.
+
+```bash
+docker compose pull
+docker compose up -d
 ```
 
-:::tip
-Change **DB\_HOST** to wherever your PostgreSQL instance is running. Make sure the database and user already exist on that instance.
-:::
+To follow the `dev` or `experimental` builds instead of stable releases, add `IMAGE_TAG=dev` (or `experimental`) to your `.env`. See [Image tags](/docs/installation#image-tags) for what each one means.
 
-### 💾 Data Persistence
+## Next steps
 
-Link a volume to **/var/www/config** to persist configurations, database, as well as logs accross container restarts
-
-```yaml
-volumes:
-  - ./data:/var/www/config              # Current directory (common)
-  - /mnt/storage/m3u:/var/www/config    # Absolute path
-  - ~/m3u-editor:/var/www/config        # Home directory
-```
-
-### 🩺 Health Checks
-
-Add to m3u-editor service to monitor status:
-
-```yaml
-healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:36400/up"]
-  interval: 10s
-  timeout: 10s
-  retries: 10
-  start_period: 60s
-```
-
-Other containers can wait for m3u-editor to be healthy before starting:
-
-```yaml
-depends_on:
-  m3u-editor:
-    condition: service_healthy
-```
-
-***
-
-:::danger Disclaimer
-M3U Editor is an independent, open‑source playlist manager — not an IPTV provider. We don’t host channels or partner with streaming services; please only use content you’re authorized to access.
-:::
+<LinkCards
+  items={[
+    { to: '/docs/resources/playlists', icon: 'playlist_play', title: 'Add a playlist', text: 'Import an Xtream login, M3U URL, or file, then organize its channels.' },
+    { to: '/docs/resources/epg-setup', icon: 'tv_guide', title: 'Set up the guide', text: 'Attach XMLTV or Schedules Direct and map it to your channels.' },
+    { to: '/docs/client_configuration', icon: 'devices', title: 'Connect your players', text: 'Set up TiviMate, Kodi, Plex, Emby, Jellyfin, M3U TV, and more.' },
+    { to: '/docs/configuration', icon: 'tune', title: 'Editor configuration', text: 'The environment variables for URLs, database, Redis, and the proxy.' },
+  ]}
+/>

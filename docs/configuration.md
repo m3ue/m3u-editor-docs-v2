@@ -1,63 +1,81 @@
 ---
 sidebar_position: 3
-description: Configure M3U Editor environment variables and settings
+description: The environment variables M3U Editor needs before it starts - its address, database, Redis, the proxy connection, and the web server.
 tags:
   - Getting Started
   - Configuration
 title: Editor Configuration
-hide_title: true
 ---
-<div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
-  <img src="/img/logo.png" alt="M3U Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
-</div>
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LinkCards from '@site/src/components/LinkCards';
 
 # Editor Configuration
 
-M3U Editor uses environment variables for configuration. This guide covers the most important settings.
+Most of M3U Editor is configured in the app, under **Settings**: syncing, the proxy's behavior, EPG, integrations, alerts, and more (see the [Settings Reference](/docs/advanced/settings-reference)).
 
-## Basic Configuration
+A few things have to be known before the app starts, so they're set as environment variables, either in your compose file's `environment:` section or in the `.env` file next to it:
 
-### Application Settings
+- **Application:** the address the editor is served on
+- **Database:** which database the editor uses
+- **Redis:** the Redis instance it connects to
+- **M3U Proxy:** how it reaches the proxy
+- **Web server:** the server in front of it
+
+This page covers each of these. Every variable is listed in the [Environment Variables reference](/docs/advanced/environment-variables).
+
+After changing any of them, run `docker compose up -d` to recreate the container with the new values.
+
+## Application
+
+| Variable | Default | What it does |
+|---|---|---|
+| `APP_URL` | `http://localhost` | The scheme and host clients use to reach the editor, **without the port**: your LAN IP (`http://192.168.1.50`) or your domain (`https://m3u.example.com`). It's used to build every playlist, guide, and stream URL. |
+| `APP_PORT` | `36400` | The port the editor listens on. For an `http://` `APP_URL`, it's added to generated URLs. For `https://`, the editor assumes a reverse proxy on port 443 and leaves the port off. |
+| `TZ` | `UTC` | The timezone the app runs in, used for sync schedules and every date and time it shows. **Application Timezone** in **Settings → General** overrides it. |
+| `XTREAM_ONLY_ENABLED` | `false` | Also serve the Xtream API alone on a second port, `XTREAM_PORT` (default `36401`), for example to expose only that port to the internet. |
+
+:::tip Links point at localhost?
+If playlist or stream URLs in the app show `localhost`, `APP_URL` is still the default. Set it to the address your players use, then recreate the container.
+:::
+
+## Database
+
+<Tabs groupId="database" queryString>
+<TabItem value="sqlite" label="SQLite">
+
+The default when nothing else is set. The database is a file in `/var/www/config`, so there's nothing to configure. It suits small setups; for large playlists or many users, use PostgreSQL. You can move an existing install over later with the [SQLite to PostgreSQL migration](/docs/advanced/sqlite-to-postgres).
+
+</TabItem>
+<TabItem value="embedded" label="Embedded PostgreSQL" default>
+
+PostgreSQL running inside the editor container, which is what the shipped compose files use. Mount `/var/lib/postgresql/data` to a volume so the database survives updates.
 
 ```bash
-# Application URL - Change to your domain or IP
-APP_URL=http://localhost
-APP_PORT=36400
-
-# Timezone
-TZ=Etc/UTC
-```
-
-### Database Configuration
-
-M3U Editor supports PostgreSQL (recommended), MySQL, and SQLite.
-
-#### PostgreSQL (Embedded - Default)
-
-```bash
-# Enable embedded PostgreSQL
 ENABLE_POSTGRES=true
 PG_DATABASE=m3ue
 PG_USER=m3ue
-PG_PASSWORD=changeme
-PG_PORT=5432
+PG_PASSWORD=your-secure-password
 
-# Database connection
 DB_CONNECTION=pgsql
 DB_HOST=localhost
 DB_PORT=5432
 DB_DATABASE=m3ue
 DB_USERNAME=m3ue
-DB_PASSWORD=changeme
+DB_PASSWORD=your-secure-password
 ```
 
-#### External PostgreSQL
+The `PG_*` values create the embedded database, and the `DB_*` values connect the app to it, so they should match.
+
+</TabItem>
+<TabItem value="external" label="Your own PostgreSQL">
+
+Connect to a PostgreSQL server you already run. Create the database and user first.
 
 ```bash
-# Disable embedded PostgreSQL
 ENABLE_POSTGRES=false
 
-# Connect to external database
 DB_CONNECTION=pgsql
 DB_HOST=your-postgres-host
 DB_PORT=5432
@@ -66,150 +84,119 @@ DB_USERNAME=m3ue
 DB_PASSWORD=your-secure-password
 ```
 
-### Redis Configuration
+</TabItem>
+</Tabs>
 
-M3U Editor uses Redis for caching and queue management. Both embedded and external Redis are supported.
+## Redis
 
-#### Embedded Redis (Default)
+The editor uses Redis for its queues and cache, and the proxy uses it to share streams between viewers.
+
+<Tabs groupId="redis" queryString>
+<TabItem value="embedded" label="Embedded" default>
+
+Redis runs inside the editor container, on port `36790`. This is the default, and what the all-in-one setup uses.
 
 ```bash
 REDIS_ENABLED=true
-REDIS_HOST=localhost
-REDIS_SERVER_PORT=6379
-REDIS_PASSWORD=changeme  # Automatically set to M3U_PROXY_TOKEN if not provided
+REDIS_PASSWORD=your-secure-password   # optional
 ```
 
-:::info Automatic Configuration
-**Embedded Redis**: If `REDIS_PASSWORD` is not set, it's automatically configured to match `M3U_PROXY_TOKEN`. This ensures the proxy and Redis credentials stay synchronized.
+If `REDIS_PASSWORD` isn't set, the editor uses `M3U_PROXY_TOKEN` as the password, or generates one if that isn't set either.
 
-**Custom Password** (optional):
-```bash
-# Set a custom password (must match across all services)
-REDIS_PASSWORD=$(openssl rand -hex 32)
-```
-:::
+</TabItem>
+<TabItem value="container" label="Separate container">
 
-#### External Redis
+Redis in its own container, as in the modular setup. Turn the embedded one off and point the editor at it. The proxy connects to the same Redis, so give it the same host and password.
 
 ```bash
 REDIS_ENABLED=false
-REDIS_HOST=your-redis-host
+REDIS_HOST=redis
 REDIS_SERVER_PORT=6379
-REDIS_PASSWORD=your-redis-password  # REQUIRED: Must match your Redis requirepass
+REDIS_PASSWORD=your-secure-password   # must match the Redis --requirepass
 ```
 
-:::danger External Redis Password Required
-When using external Redis, you **MUST** explicitly set `REDIS_PASSWORD` to match your Redis instance's `requirepass` configuration.
+</TabItem>
+</Tabs>
 
-**Important**: The automatic password setting only works with embedded Redis. External Redis connections will fail if passwords don't match.
-:::
+<details>
+<summary>Troubleshooting Redis connections</summary>
 
-#### Testing Redis Connection
+| Error | Cause | Fix |
+|---|---|---|
+| `NOAUTH Authentication required` | Redis has a password but the editor wasn't given one | Set `REDIS_PASSWORD` to the Redis password |
+| `ERR invalid password` | The passwords don't match | Use the same value for `REDIS_PASSWORD` and the Redis `--requirepass` |
+
+To test the connection to a Redis container, run `docker exec -it m3u-redis redis-cli -a your-password ping`. It should answer `PONG`.
+
+</details>
+
+## M3U Proxy
+
+[M3U Proxy](/docs/proxy/overview) streams channels to your players, shares provider connections, and transcodes. The editor and proxy authenticate each other with a shared token, so generate one with `openssl rand -hex 32`.
+
+<Tabs groupId="proxy" queryString>
+<TabItem value="container" label="Separate container" default>
+
+The recommended setup, and the only one that supports hardware acceleration. Turn off the embedded proxy and point the editor at the proxy container.
 
 ```bash
-# From m3u-editor container
-docker exec -it m3u-editor php artisan tinker
->>> Redis::ping();
-# Should return: "+PONG"
-
-# Direct Redis connection
-docker exec -it redis redis-cli -a your-password ping
-# Should return: PONG
+M3U_PROXY_ENABLED=false
+M3U_PROXY_HOST=m3u-proxy
+M3U_PROXY_PORT=38085
+M3U_PROXY_TOKEN=your-secure-token   # must match API_TOKEN on the proxy
 ```
 
-#### Common Redis Issues
+</TabItem>
+<TabItem value="embedded" label="Embedded">
 
-**Error: "NOAUTH Authentication required"**
-- **Cause**: Redis requires password but `REDIS_PASSWORD` not set
-- **Solution**: Set `REDIS_PASSWORD` environment variable matching your Redis password
-
-**Error: "ERR invalid password"**
-- **Cause**: Mismatch between Redis `requirepass` and `REDIS_PASSWORD`
-- **Solution**: Ensure passwords match in both Redis and m3u-editor configuration
-
-## M3U Proxy Configuration
-
-The M3U Proxy handles stream restreaming and transcoding.
-
-### Embedded Proxy
+The proxy runs inside the editor container. This is the default when `M3U_PROXY_ENABLED` isn't set. If `M3U_PROXY_TOKEN` is empty, a random one is generated at startup.
 
 ```bash
 M3U_PROXY_ENABLED=true
-M3U_PROXY_PORT=38085
-M3U_PROXY_HOST=localhost
-M3U_PROXY_TOKEN=changeme
 ```
 
-### External Proxy (Recommended for Production)
+</TabItem>
+</Tabs>
+
+See [M3U Proxy Setup](/docs/deployment/m3u-proxy-integration) for how the two connect and how to check it's working.
+
+## Web server
+
+<Tabs groupId="webserver" queryString>
+<TabItem value="embedded" label="Embedded Nginx" default>
+
+The container serves the app with its own Nginx. Nothing to set. Put a reverse proxy such as Caddy, Nginx Proxy Manager, or Traefik in front of it if you want HTTPS.
+
+</TabItem>
+<TabItem value="own" label="Your own web server">
+
+Turn off the embedded Nginx and serve the app's PHP-FPM from your own Nginx or Caddy container, as in the fully external compose files.
 
 ```bash
-# Disable embedded proxy
-M3U_PROXY_ENABLED=false
-
-# Connect to external m3u-proxy container
-M3U_PROXY_PORT=38085
-M3U_PROXY_HOST=m3u-proxy
-M3U_PROXY_TOKEN=your-secure-token
-```
-
-:::tip Generate Secure Tokens
-Always use secure, randomly generated tokens:
-```bash
-openssl rand -hex 32
-```
-:::
-
-## Web Server Configuration
-
-### Embedded NGINX (Default)
-
-```bash
-NGINX_ENABLED=true
-```
-
-### External NGINX or Caddy
-
-```bash
-# Disable embedded NGINX
 NGINX_ENABLED=false
-
-# Configure FPM port if needed
 FPMPORT=9000
 ```
 
-## Advanced Settings
+</TabItem>
+</Tabs>
 
-### HLS Storage
+[Caddy vs Nginx](/docs/deployment/caddy-vs-nginx) covers both setups, including HTTPS.
 
-Configure where HLS segments are stored:
+## Storage paths
 
-```bash
-# Use host /dev/shm (recommended for performance)
-HLS_TEMP_DIR=/hls-segments
+Where the editor writes large files can be changed too, which is useful for putting them on a separate disk:
 
-# Enable garbage collection
-HLS_GC_ENABLED=true
-HLS_GC_INTERVAL=600        # 10 minutes
-HLS_GC_AGE_THRESHOLD=3600  # 1 hour
-```
+- HLS segments for live streaming: [`HLS_TEMP_DIR`](/docs/advanced/environment-variables#hls_temp_dir). Mounting the host's `/dev/shm` keeps them in memory.
+- [DVR](/docs/integrations/dvr_integration) recordings: [`DVR_STORAGE_PATH`](/docs/advanced/environment-variables#dvr_storage_path)
+- [Cached content downloads](/docs/advanced/cached-content): [`CACHE_STORAGE_PATH`](/docs/advanced/environment-variables#cache_storage_path)
 
-## Environment File Examples
+## Next steps
 
-M3U Editor provides example environment files for different setups:
-
-- `.env.proxy.example` - External proxy setup
-- `.env.example` - Basic setup
-
-Copy and customize these files for your deployment:
-
-```bash
-cp .env.proxy.example .env
-# Edit .env with your settings
-```
-
-## Next Steps
-
-- [Adding Playlists](/docs/resources/playlists) - Import your first M3U playlist
-- [Deployment Guides](/docs/deployment/docker-compose) - Advanced deployment options
-- [M3U Proxy Integration](/docs/deployment/m3u-proxy-integration) - Setup external proxy
-- [Environment Variables](/docs/advanced/environment-variables) - List of available variables
+<LinkCards
+  items={[
+    { to: '/docs/advanced/environment-variables', icon: 'terminal', title: 'Environment variables', text: 'Every variable the editor reads, with defaults.' },
+    { to: '/docs/advanced/settings-reference', icon: 'tune', title: 'Settings reference', text: 'Everything you can configure in the app, page by page.' },
+    { to: '/docs/installation', icon: 'folder_zip', title: 'Compose examples', text: 'The shipped compose files, image tags, and data volumes.' },
+    { to: '/docs/client_configuration', icon: 'devices', title: 'Connect your players', text: 'Point TiviMate, Kodi, Plex, Emby, and others at the editor.' },
+  ]}
+/>

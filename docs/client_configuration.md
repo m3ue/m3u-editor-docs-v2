@@ -1,108 +1,132 @@
 ---
 sidebar_position: 4
-description: Configure clients to work with M3U Editor environment variables and settings
+description: Connect IPTV apps, media servers, and players to M3U Editor through Xtream Codes, M3U, HDHomeRun, and XMLTV.
 tags:
   - Getting Started
   - Configuration
 title: Client Configuration
-hide_title: true
 ---
 
-<div style={{ textAlign: 'center', padding: '0 0 2rem 0' }}>
-  <img src="/img/logo.png" alt="M3U-Editor logo" style={{ width: '220px', maxWidth: '10%' }} />
-</div>
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import LinkCards from '@site/src/components/LinkCards';
 
 # Client Configuration
 
-## 📋 Prerequisites
+M3U Editor serves every playlist in four formats, so almost any player or media server can use it. This page shows where to find your connection details, which format to pick, and how to set up common clients.
 
-Before configuring any integration:
+## Find your connection details
 
-1. Create and configure your playlist in m3u-editor
-2. Note your playlist UUID from Playlists → Edit → Step 1 (Links)
-3. Ensure m3u-editor is accessible from your client/media server (same network or via DNS)
-4. Replace `YOUR_M3U_EDITOR_IP` with your actual IP or hostname (e.g., `192.168.1.50`, `m3u.example.com`)
+Open your playlist under **Playlists**:
 
-## ➰ Output Methods
+- The **Xtream API** tab shows the server URL, username, and password.
+- The **Links** tab has the M3U, guide, and HDHomeRun URLs, ready to copy.
 
-m3u-editor provides multiple ways to consume your playlists. Choose based on what your client supports.
+The same applies to [Custom Playlists](/docs/resources/custom-playlist), [Merged Playlists](/docs/resources/merged-playlist), and [Playlist Aliases](/docs/resources/playlist-alias), each of which has its own outputs.
 
-### Xtream API
+The Xtream password depends on the playlist's [default login](/docs/resources/playlist-auth#default-login): the playlist's UUID unless you've set a custom password. To give each person or device its own login, use [Playlist Auths](/docs/resources/playlist-auth).
 
-Standard IPTV provider protocol. Clients authenticate with username/password and receive structured data (channels, VOD, series).
-**Use when:** Client supports Xtream API (TiviMate, IPTV Smarters, OTT Navigator, etc.)
-**Server URL:** `http://YOUR_M3U_EDITOR_IP:36400`
-
-### HDHomeRun
-
-Emulates a physical HDHomeRun tuner. Provides channel discovery and live TV integration at the OS/media-server level.
-
-**Use when:** Media server has native HDHomeRun support (Jellyfin, Emby, Plex)
-
-**Discovery URL:** `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/discover.json`
-
-### Direct M3U Playlist
-
-Raw M3U file for generic players. Works everywhere but minimal metadata/structure.
-
-**Use when:** Client only supports M3U or you need maximum compatibility
-
-**Playlist URL:** `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/playlist.m3u`
-
-**With Proxy:** `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/playlist.m3u?proxy=true`
-
-### EPG (Electronic Program Guide)
-
-XMLTV format guide data for live TV listings. Works with HDHomeRun and some Xtream clients.
-
-**EPG URL:** `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/epg.xml`
-
-***
-
-## 🔎 Finding Your Playlist Details
-
-:::tip
-Information in this section will be helpful for the steps outlined in** [Client Configurations](#client-config)**
+:::tip Use an address your player can reach
+The URLs use `APP_URL` from your [configuration](/docs/configuration#application). If they show `localhost`, players on other devices can't reach them. Set `APP_URL` to your server's LAN IP or domain.
 :::
-In m3u-editor:
 
-1. Go to **Playlists**
-2. Click your playlist to open it
-3. The **Links** and **Xtream API** tabs show:
-   * **Playlist UUID** (used in URLs)
-   * **Username/Password** (for Xtream API)
-   * Direct URLs for M3U, EPG, HDHomeRun, etc.
+## Pick an output
 
-The password depends on the playlist's [Default login](resources/playlist-auth.md#default-login) mode: the playlist UUID by default, or a custom password you set. You can also give clients their own [Playlist Auth](resources/playlist-auth.md) credentials.
+| Output | Use it for | Address |
+|---|---|---|
+| **Xtream Codes API** | IPTV apps like TiviMate, IPTV Smarters, OTT Navigator, and M3U TV. One login brings live TV, movies, series, and the guide. | Server `http://your-server:36400`, plus username and password |
+| **M3U playlist** | Players that only take a playlist URL, like VLC or Kodi's IPTV Simple Client | `http://your-server:36400/{uuid}/playlist.m3u` |
+| **HDHomeRun** | Live TV in Plex, Emby, and Jellyfin, which see M3U Editor as a network tuner | `http://your-server:36400/{uuid}/hdhr` |
+| **XMLTV guide** | The guide, to pair with an M3U playlist or an HDHomeRun tuner | `http://your-server:36400/{uuid}/epg.xml` (or `epg.xml.gz`) |
 
-Copy these values as needed for your client configuration.
+Prefer Xtream when your player supports it: it carries the most metadata and needs no separate guide URL.
 
-***
+**Logins in URLs.** When a login is needed (a [Playlist Auth](/docs/resources/playlist-auth), or the Custom Password login mode), add it to the M3U URL as `?username=...&password=...`. For HDHomeRun, it goes in the path: `/{uuid}/hdhr/{username}/{password}`. The URLs in the **Links** tab already include it when your login mode needs it.
 
-## 🔧 Client Configuration {#client-config}
+**Proxy per URL.** Add `?proxy=true` (or `&proxy=true`) to an M3U URL to send its streams through [M3U Proxy](/docs/proxy/overview), or `proxy=false` to skip it, whatever the playlist's own setting.
 
-### TiviMate
+Each output can be turned off per playlist under **Output → Playlist Output → Enabled output types**. A disabled output answers with "Output disabled".
 
-Popular Android IPTV client supporting both Xtream API and M3U.
+## Set up your player
 
-#### Xtream API Setup
+<Tabs groupId="client" queryString>
+<TabItem value="tivimate" label="TiviMate" default>
 
-1. Open TiviMate
-2. Select **Add Playlist**
-3. Choose **Xtream Codes**
-4. Enter:
-   * **Server URL:** `http://YOUR_M3U_EDITOR_IP:36400`
-   * **Username:** Your playlist username
-   * **Password:** Your playlist password
-5. Click **Next** and complete setup
+1. Choose **Add playlist**, then **Xtream Codes**.
+2. Enter the server URL `http://your-server:36400` and your username and password.
+3. Choose **Next** and finish setup. The guide comes in automatically.
 
-#### M3U Setup
+To use M3U instead, choose **M3U playlist**, enter the playlist URL, and add the XMLTV URL as the guide source.
 
-1. Open TiviMate
-2. Select **Add Playlist**
-3. Choose **M3U Playlist**
-4. Enter playlist URL: `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/playlist.m3u`
-5. (Optional) Add EPG URL: `http://YOUR_M3U_EDITOR_IP:36400/{playlist-uuid}/epg.xml`
-6. Click **Save**
+</TabItem>
+<TabItem value="smarters" label="IPTV Smarters / OTT Navigator">
 
+Add a new profile or provider with an **Xtream Codes** login:
 
+- **Server URL:** `http://your-server:36400`
+- **Username** and **Password** from the playlist's Xtream API tab
+
+Live TV, movies, series, and the guide all come from that one login.
+
+</TabItem>
+<TabItem value="kodi" label="Kodi">
+
+Use the **PVR IPTV Simple Client** add-on (in **Add-ons → My add-ons → PVR clients**):
+
+1. Open the add-on's **Configure** screen.
+2. Under **General**, set the location to a remote path and enter the M3U playlist URL.
+3. Under **EPG**, enter the XMLTV guide URL.
+4. Restart Kodi, or disable and re-enable the add-on, to load the channels.
+
+</TabItem>
+<TabItem value="plex" label="Plex">
+
+The easiest way is the [Plex integration](/docs/integrations/plex_integration#dvr--live-tv-tuner): it registers the playlist as a tuner in Plex for you, guide included.
+
+To add it by hand, go to **Settings → Live TV & DVR → Set up Plex DVR**. If the tuner isn't found automatically, enter its address manually as `your-server:36400/{uuid}/hdhr`. When asked for guide data, choose the XMLTV option and enter the guide URL.
+
+</TabItem>
+<TabItem value="emby" label="Emby / Jellyfin">
+
+In the server's **Live TV** settings:
+
+1. Add a **tuner device** of type **HDHomeRun** with the URL `http://your-server:36400/{uuid}/hdhr`. An **M3U tuner** with the playlist URL works too.
+2. Add a **TV guide data provider** of type **XMLTV** with the guide URL, and map it to the tuner.
+
+For Emby, M3U Editor can also sync your Emby libraries and publish content into them. See [Emby Integration](/docs/integrations/emby_integration).
+
+</TabItem>
+<TabItem value="m3utv" label="M3U TV">
+
+[M3U TV](/docs/m3u-tv/overview) is built for M3U Editor. On a TV, choose **Pair with code** and enter the code in M3U Editor from your phone or computer; no typing passwords on the remote (see [Device Pairing](/docs/m3u-tv/device-pairing)). On other devices you can also sign in with the Xtream server URL, username, and password.
+
+M3U TV needs **Enhanced output enabled**, under **Settings → General**, which is on by default.
+
+</TabItem>
+<TabItem value="vlc" label="VLC">
+
+Choose **Media → Open Network Stream** and enter the M3U playlist URL. VLC loads the channels as a playlist; it doesn't show a guide.
+
+</TabItem>
+</Tabs>
+
+## Troubleshooting
+
+| Problem | What to check |
+|---|---|
+| The player can't connect | Use your server's LAN IP or domain, not `localhost`. Make sure port `36400` is reachable from the player's network, then try opening the URL in a browser on the same device. |
+| The login is rejected | The playlist's [default login](/docs/resources/playlist-auth#default-login) mode, and whether the Playlist Auth is enabled and not expired. |
+| "Output disabled" | That output type is turned off for the playlist under **Output → Playlist Output**. |
+| Channels load but don't play | Try the stream with `?proxy=true` on the M3U URL, and check your provider's connection limit. See [Troubleshooting](/docs/troubleshooting). |
+| No guide data | Map guide data to your channels ([EPG Setup](/docs/resources/epg-setup)), and give M3U and HDHomeRun clients the XMLTV URL. Xtream clients get the guide automatically. |
+
+## Next steps
+
+<LinkCards
+  items={[
+    { to: '/docs/resources/playlist-auth', icon: 'groups', title: 'Playlist Auths', text: 'Give each person or device its own login and connection limit.' },
+    { to: '/docs/resources/playlist-alias', icon: 'merge', title: 'Playlist Aliases', text: 'Serve the same playlist with different credentials, groups, or settings.' },
+    { to: '/docs/m3u-tv/overview', icon: 'tv', title: 'M3U TV', text: 'The native player for TV, mobile, and desktop.' },
+    { to: '/docs/integrations/plex_integration', icon: 'live_tv', title: 'Plex integration', text: 'Register tuners and sync libraries with Plex.' },
+  ]}
+/>

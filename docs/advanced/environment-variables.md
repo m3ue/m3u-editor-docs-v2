@@ -460,10 +460,12 @@ Handles [Cached Content Downloads](cached-content.md). Downloads run only on thi
 
 ## HLS Storage Configuration
 
+These set where HLS segments are written and how often old ones are cleaned up. The defaults below are the editor container's, which also apply to the embedded proxy. A standalone [M3U Proxy](../proxy/configuration.md#hls) container has its own defaults.
+
 ### HLS_TEMP_DIR
-- **Default**: `/tmp/hls`
+- **Default**: `/var/www/html/storage/app/hls-segments`
 - **Description**: Directory for storing HLS segments
-- **Note**: Ensure sufficient disk space for concurrent streams
+- **Note**: Ensure sufficient disk space for concurrent streams. Mounting the host's `/dev/shm` here keeps segments in memory.
 
 ### HLS_GC_ENABLED
 - **Default**: `true`
@@ -472,12 +474,12 @@ Handles [Cached Content Downloads](cached-content.md). Downloads run only on thi
 - **Note**: Recommended to keep enabled to prevent disk space issues
 
 ### HLS_GC_INTERVAL
-- **Default**: `60`
+- **Default**: `600` (10 minutes)
 - **Description**: How often to run garbage collection (in seconds)
 - **Range**: Any positive integer
 
 ### HLS_GC_AGE_THRESHOLD
-- **Default**: `300`
+- **Default**: `7200` (2 hours)
 - **Description**: Delete HLS segments older than this value (in seconds)
 - **Recommendation**: Adjust based on your stream buffering needs
 

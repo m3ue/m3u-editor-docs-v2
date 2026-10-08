@@ -12,6 +12,7 @@ import Link from '@docusaurus/Link';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import { useDocsSidebar } from '@docusaurus/plugin-content-docs/client';
 import DocCardList from '@theme/DocCardList';
+import { Steps, Step } from '../Steps';
 import MaterialIcon from '../MaterialIcon';
 import GitHubMark from '../GitHubMark';
 import { ecosystem, flow } from '../../data/homeFeatures';
@@ -123,23 +124,23 @@ export function SuiteOverview() {
   );
 }
 
-/** The four steps from nothing to watching, as a vertical timeline. */
+/** The four steps from nothing to watching. */
 export function StartSteps() {
   return (
-    <ol className={styles.steps}>
-      {START_STEPS.map((step, index) => (
-        <li key={step.title} className={styles.step}>
-          <span className={styles.stepNumber}>{index + 1}</span>
-          <div>
+    <Steps>
+      {START_STEPS.map((step) => (
+        <Step
+          key={step.title}
+          title={
             <Link to={step.to} className={styles.stepTitle}>
               {step.title}
               <MaterialIcon name="arrow_forward" />
             </Link>
-            <p className={styles.stepText}>{step.text}</p>
-          </div>
-        </li>
+          }>
+          <p className={styles.stepText}>{step.text}</p>
+        </Step>
       ))}
-    </ol>
+    </Steps>
   );
 }
 
