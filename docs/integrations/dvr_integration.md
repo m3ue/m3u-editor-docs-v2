@@ -217,6 +217,18 @@ When a playlist has content requests enabled, guests can:
 
 Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlist basis under **Playlists → Edit**.
 
+### Recording Through Outages
+
+*(Editor v0.13.3+ with proxy v0.4.33+)* A recording survives short problems with the source or the proxy:
+
+- **Source drops or stalls.** When FFmpeg exits early, the proxy restarts the capture in place for the remaining time and appends to the same recording, so you get one file with a short gap rather than a failed or split recording. A capture that is still running but hasn't written a segment for 30 seconds is restarted too. The recording is only marked failed once the outage lasts longer than 60 seconds. Both limits are proxy settings: [`DVR_RESTART_WINDOW_SECONDS` and `DVR_STALL_TIMEOUT_SECONDS`](../proxy/configuration.md).
+- **Proxy restarts.** If the proxy restarts mid-recording, the editor's per-minute scheduler notices the capture is gone and resumes it into the same recording. Recordings that started less than a minute ago or end within 30 seconds are left alone.
+- **Retrying a failed recording** continues the existing recording instead of starting over. Before proxy v0.4.33, a retry could lose everything recorded before the failure.
+
+While a recording is in progress, players can seek across everything recorded so far, not just a short live window.
+
+*(v0.13.3+)* Links to recordings shared with guests (a channel being recorded, and recordings listed as VOD) now use signed URLs scoped to that one recording, instead of URLs that carried the playlist owner's login.
+
 ## Environment Variables
 
 | Variable | Default | Description |
@@ -239,6 +251,10 @@ Guest DVR access is controlled by the **Guest Requests** toggle on a per-playlis
 - The series title must match the EPG programme title exactly (case-insensitive)
 - Run a manual playlist sync to refresh EPG data; the deep scan runs automatically as part of that sync and picks up newly added programme data right away
 - If it's still not matching after a sync, disable and re-enable the rule to trigger an immediate re-match
+
+**Recording has a short gap**
+- This is expected when the source dropped or the proxy restarted mid-recording. The capture was resumed into the same file (see [Recording Through Outages](#recording-through-outages))
+- If gaps are frequent, check the provider stream's stability, or raise `DVR_RESTART_WINDOW_SECONDS` on the proxy for sources with longer drops
 
 **Metadata / poster art missing**
 - Ensure a TMDB API key is configured in **Settings**

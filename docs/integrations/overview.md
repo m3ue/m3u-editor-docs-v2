@@ -33,7 +33,7 @@ Configuring one has zero effect on the other. If you're troubleshooting a MediaF
 
 ## AIOStreams flow
 
-AIOStreams is a *source* you add under **Integrations → Servers**, not a destination you route other traffic through. M3U Editor always resolves AIOStreams streams itself and masks the real (debrid) URL before it ever reaches a client:
+AIOStreams is a *source* you add under **Integrations → Media Servers**, not a destination you route other traffic through. M3U Editor always resolves AIOStreams streams itself and masks the real (debrid) URL before it ever reaches a client:
 
 ```mermaid
 flowchart LR

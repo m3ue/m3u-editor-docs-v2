@@ -86,6 +86,19 @@ EPG-to-channel matching is managed through the **EPG Maps** resource (sidebar â†
 | **Exact Match Distance** | Maximum distance still treated as an exact match (default `8`) |
 | **Widen matching with pg_trgm similarity (Postgres only)** | Postgres-only, disabled by default. See [Postgres Trigram Matching](#postgres-trigram-matching-advanced) below |
 
+If **Remove quality indicators** is on and the custom list is left empty, the built-in list is used. *(v0.13.3+)* This now applies the same way to mapping runs, candidate review, and the AI Copilot's EPG mapper; before, review and Copilot stripped nothing in that case.
+
+### How Automatic Matches Are Checked
+
+*(v0.13.3+)* A fuzzy match is only applied automatically if one of the guide channel's names doesn't conflict with the channel's name:
+
+- **Numbers must agree.** `TSN+ 42` no longer matches `TSN+ 12`, and `MLS 18` no longer matches `TSN+ 18`.
+- **Different words must look like a typo.** If each name has a word the other lacks, at least one pair must be a likely typo (about one edit per four letters). So `NHL GP 16` no longer matches `NFL GP 16`.
+
+Extra words (`Radio: Dallas Cowboys` and `Dallas Cowboys`), typos, plurals (`Mysteries` and `Mystery`), and quality or HB/LB bitrate labels still match, and exact matches aren't affected. Channels rejected by these checks are still offered as review candidates, so you can map them by hand.
+
+Mapping runs are also faster in v0.13.3, especially on large EPGs. To measure mapping speed on your own data, run `php artisan epg:benchmark-mapping --map=<id>`. It runs against an existing EPG map inside a transaction that is always rolled back, so it changes nothing. Run it with `--help` for the other options.
+
 ### Postgres Trigram Matching (Advanced)
 
 On Postgres, EPG matching can optionally widen its candidate search using the `pg_trgm` extension's trigram similarity operator (`%`). This catches typos and transliteration differences (e.g. `Soprtsnet` vs `Sportsnet`) that literal substring (`LIKE`) matching misses.

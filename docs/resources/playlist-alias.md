@@ -58,9 +58,19 @@ Provide the same content with user-specific access:
 
 Aliases live under **Playlist → Playlist Aliases**, which has two tabs: **Aliases** and **Bouquets**. An alias can point at a standard playlist, a [Custom Playlist](custom-playlist.md), or a [Merged Playlist](merged-playlist.md) (choose the **Playlist type** first).
 
+*(v0.13.3+)* Creating or editing an alias opens a full page instead of a modal. Its settings are split into tabs:
+
+| Tab | Contains |
+|---|---|
+| **General** | Name, description, user agent, unique identifier, and the source playlist |
+| **Auth** | The alias's own Xtream login ([Alias Credentials](#alias-credentials)) |
+| **Providers** | [Provider credentials and URL replacement](#provider-credentials-and-url-replacement) |
+| **Channel Filter** | Bouquets, allowed groups and categories, and the [custom live group order](#custom-live-group-sort-order) |
+| **Output** | Enabled outputs, stream profile, proxy, and HTTP headers |
+
 ## Provider Credentials and URL Replacement
 
-The **Provider Credentials** section has one entry per provider URL used by the source playlist's streams. For each entry you can:
+The **Providers** tab has one entry per provider URL used by the source playlist's streams. For each entry you can:
 
 - **Swap credentials**: enter a different **Xtream API Username** and **Xtream API Password**, for example a second line from the same provider.
 - **Replace the provider URL**: turn on **Replace provider URL** and enter a **Replacement URL**. Clients receive this URL instead of the provider URL; the rest of the stream URL is kept. This is useful for sending streams through a VPN-only address or a different provider host.
@@ -76,13 +86,13 @@ Turn on **Inherit DNS failover from source playlist** if the alias should follow
 
 ## Alias Credentials
 
-Under **Auth (optional)** you can give the alias its own Xtream API username and password, and an optional expiration date and time. They must be unique across all aliases and [Playlist Auths](playlist-auth.md).
+In the **Auth** tab, under **Auth (optional)**, you can give the alias its own Xtream API username and password, and an optional expiration date and time. They must be unique across all aliases and [Playlist Auths](playlist-auth.md).
 
 Usernames and passwords can't contain spaces, `/`, `\`, `?`, `#`, or `%`. Xtream clients put the credentials in every stream URL, so these characters would break playback.
 
 ## Channel Filter
 
-The **Channel Filter (optional)** section limits which live groups, VOD groups, and series categories the alias exposes. Leave it empty to expose everything. The filter applies everywhere: M3U output, EPG, the Xtream API, and the guest panel.
+The **Channel Filter** tab limits which live groups, VOD groups, and series categories the alias exposes. Leave it empty to expose everything. The filter applies everywhere: M3U output, EPG, the Xtream API, and the guest panel.
 
 For aliases of a **Merged Playlist**, selections are tracked per source playlist. Selecting "Sports" from one provider doesn't include another provider's "Sports" group. When more than one source is involved, the picker shows a **Source Playlist** column.
 
@@ -96,12 +106,15 @@ Bouquets are named, reusable selections of a playlist's groups and categories th
 2. Give it a **Name** and choose the **Target Playlist** (a standard or custom playlist). The playlist can't be changed later.
 3. Select the **Live channel groups**, **VOD groups**, and **Series categories** to include.
 4. Optionally turn on **Automatically include new live groups** or **Automatically include new VOD groups** so new provider groups join the bouquet on each sync.
+5. *(v0.13.3+)* To only auto-include some new groups, add regex patterns under **Only include new live groups matching** or **Only include new VOD groups matching**. A new group is added only if its name matches at least one pattern (case-sensitive, no delimiters, for example `^FR\|`). Leave empty to add every new group.
 
 You can also add groups to a bouquet from the **Groups**, **VOD Groups**, and **Categories** pages with the **Add to Bouquet** row and bulk actions.
 
 ### Assigning Bouquets
 
-In the alias's **Channel Filter** section, choose one or more **Assigned bouquets**. The alias then allows a channel if its group is in **any** assigned bouquet **or** in the manual selections. Assigning a bouquet never removes anything the manual pickers allow.
+In the alias's **Channel Filter** tab, choose one or more **Assigned bouquets**. The alias then allows a channel if its group is in **any** assigned bouquet **or** in the manual selections. Assigning a bouquet never removes anything the manual pickers allow.
+
+Assigned bouquets keep the order you picked them in. **Clear all** removes every assigned bouquet; like other changes, it takes effect when you save the alias.
 
 Bouquets are live: editing a bouquet updates every alias that uses it right away.
 
@@ -109,6 +122,7 @@ Bouquets are live: editing a bouquet updates every alias that uses it right away
 
 - When a provider renames a group, bouquet selections (and alias filters) are updated to the new name.
 - If a group disappears from the provider, it stays in the bouquet and starts working again if the provider brings it back. The bouquet's edit page flags missing entries, and **Clean up missing** removes them.
+- A group you removed from an auto-include bouquet stays removed. *(v0.13.3+)* Previously, a provider that re-issued the category under a new ID could cause it to be added back on the next sync.
 
 :::note
 Bouquets can't be assigned to Merged Playlist aliases yet. Use the per-source Channel Filter for those.
@@ -122,7 +136,7 @@ To quickly create a copy of an existing alias with all its settings intact:
 2. Click the actions menu (three dots)
 3. Select **Duplicate**
 
-The duplicate is created immediately with all settings copied over. Credentials (username/password) are not duplicated — you will need to set new ones to avoid conflicts.
+The duplicate is created immediately with all settings copied over, including its assigned bouquets *(v0.13.2+)*. Credentials (username and password) are not duplicated, so set new ones to avoid conflicts.
 
 ## Filter Aliases by Category
 
@@ -147,10 +161,12 @@ This is useful after rotating credentials or when diagnosing stream failures.
 
 Each alias can have its own channel group sort order independent of the source playlist. This is useful for serving clients that expect a specific channel lineup order.
 
-1. Open the alias edit form
-2. Go to the **Group Sort** tab (or section)
+1. Open the alias and go to the **Channel Filter** tab
+2. Under **Live channel groups**, turn on **Sort groups in custom order**
 3. Drag groups into your preferred order
 4. Save
+
+The list includes groups that come from assigned bouquets *(v0.13.2+)*, with a **Bouquet** column showing where each one comes from. New groups are added to the end of the list in the source playlist's group order. Use **Reset to playlist order** to rebuild a saved order from the source playlist.
 
 The custom sort applies only to live channel groups for this alias. VOD and series group ordering follows the source playlist.
 

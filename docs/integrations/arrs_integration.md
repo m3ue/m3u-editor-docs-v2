@@ -25,7 +25,8 @@ M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://rada
 - TMDB-powered browse/discover mode (when a TMDB API key is configured)
 - Interactive episode search — trigger a manual release search for specific episodes
 - Download queue monitoring with live status updates (refreshes every 10 seconds)
-- Webhook notifications for real-time queue events (grab, download, etc.)
+- Webhook notifications for real-time queue events (grab, download, etc.), registered in one click
+- Optional caching through Radarr/Sonarr instead of the provider *(v0.13.2+)*
 - Guest panel support — guests can request content on playlists where requests are enabled
 - Quality profile and root folder selection per integration
 
@@ -37,8 +38,8 @@ M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://rada
 
 ## Add an Integration
 
-1. In M3U Editor, expand the sidebar and navigate to **Integrations → Sonarr & Radarr**
-2. Click **New Sonarr/Radarr**
+1. In M3U Editor, go to **Integrations → Media Servers** and open the **Sonarr & Radarr** tab
+2. Click **Add Sonarr / Radarr**
 3. Fill in the **Connection** details:
 
 | Field | Description |
@@ -52,8 +53,10 @@ M3U Editor integrates with [Sonarr](https://sonarr.tv) and [Radarr](https://rada
 5. Under **Options**, select:
    - **Quality Profile** — the default profile used when adding content
    - **Root Folder** — where new content will be placed on disk
-6. Optionally toggle **Allow Guest Requests** to let guests request content via this integration
+6. Optionally turn on **Allow Guest Requests** and the [caching options](#using-an-arr-for-caching)
 7. Click **Save**
+
+Integrations are created and edited in a slide-over. The table has quick toggles for **Enabled**, **Guest**, and **Caching**.
 
 :::tip
 The **Type** (Sonarr / Radarr) is locked after creation. Create separate integrations for TV and movies.
@@ -61,7 +64,7 @@ The **Type** (Sonarr / Radarr) is locked after creation. Create separate integra
 
 ## Discover & Request Content
 
-Navigate to the **Integrations → Download Queue** page or use the integrated search available within the app to find and request content.
+Go to **Integrations → Media Servers → Request Content** to find and request content.
 
 ### Searching
 
@@ -94,10 +97,18 @@ Each item shows:
 
 ## Webhook Notifications
 
-Configure a webhook in your *arr server to push real-time status updates to M3U Editor:
+A webhook lets your *arr server push real-time status updates to M3U Editor. After saving the integration, open it again: the **Webhook** section shows the URL to use.
+
+*(v0.13.2+)* Click **Register Webhook** to add it to Sonarr/Radarr for you. M3U Editor tests the URL first and saves nothing in the arr if the arr can't reach it. **Test Webhook** sends a test from the arr to check an existing webhook.
+
+:::tip
+The arr has to be able to reach the Webhook URL. If you opened M3U Editor at `localhost`, the URL will point at `localhost` too. Open the editor at its LAN address and try again.
+:::
+
+To set it up by hand instead:
 
 1. In Sonarr/Radarr, go to **Settings → Connect → + (Add Connection) → Webhook**
-2. Set the **URL** to the webhook URL shown on the integration's **Webhook** section (visible after saving)
+2. Set the **URL** to the webhook URL shown in the integration's **Webhook** section
 3. Enable the following triggers:
    - **On Grab**
    - **On Download**
@@ -107,9 +118,21 @@ Configure a webhook in your *arr server to push real-time status updates to M3U 
 
 With webhooks configured, the download queue in M3U Editor updates in near-real time rather than relying solely on polling.
 
+## Using an Arr for Caching
+
+*(v0.13.2+)* When [Cached Content Downloads](../advanced/cached-content.md) are enabled, an integration can take over caching for playlists that [prefer media server sources](../resources/playlists.md#media-server-sources). Cache Now and dynamic group caching then add new titles to the arr instead of downloading them from the provider, and playback uses the media server copy once it lands.
+
+| Option | Shown for | What it does |
+|---|---|---|
+| **Use for caching** | Radarr and Sonarr | Send new cached titles here instead of downloading them from the provider. Titles already in the library are never changed or removed. |
+| **Fail back to the provider** *(v0.13.3+)* | Radarr and Sonarr | If a title fails to download, or still isn't downloaded or downloading after 24 hours, download it from the provider instead. The title is unmonitored in the arr; nothing is deleted from it. |
+| **Remove after leaving dynamic groups** | Radarr | Remove movies that dynamic group caching added here, files included, once they leave every dynamic group. |
+
+These options only appear when **Enable cache** is on in **Settings → Cache**. See [Caching Through Radarr or Sonarr](../advanced/cached-content.md#caching-through-radarr-or-sonarr) for the full behavior.
+
 ## Guest Requests
 
-When **Allow Guest Requests** is enabled on an integration, and the playlist has **Content Requests** enabled (Playlists → Edit → Request Settings), guests can:
+When **Allow Guest Requests** is enabled on an integration, it applies to every playlist that has **Content Requests** enabled (Playlists → Edit → Request Settings). Guests on those playlists can:
 
 - Search and browse content in the guest panel
 - Add TV shows or movies to the download queue via that integration
@@ -124,12 +147,16 @@ Guest requests use the same quality profile and root folder as the admin-configu
 - Ensure Sonarr/Radarr is accessible from the M3U Editor host (check firewall / Docker networking)
 
 **Quality profiles or root folders are empty after test**
-- Use the **Sync Profiles & Folders** action on the integration's edit page to re-fetch them
+- Use the **Sync Profiles & Folders** action on the integration's row to re-fetch them
 - Confirm at least one quality profile and one root folder are configured in your *arr server
 
 **Guest users can't see the request button**
 - Check that **Allow Guest Requests** is enabled on the integration
 - Check that **Content Requests** is enabled on the playlist under **Playlists → Edit → Request Settings**
+
+**Register Webhook fails**
+- The arr must be able to reach the Webhook URL. If you're browsing M3U Editor at `localhost`, open it at its LAN address and try again
+- Check Docker networking between the arr container and M3U Editor
 
 **Download queue is empty**
 - Confirm your *arr server has active downloads in its own queue
@@ -137,4 +164,5 @@ Guest requests use the same quality profile and root folder as the admin-configu
 
 ## Related Documentation
 
+- [Cached Content Downloads](../advanced/cached-content.md)
 - [DVR Integration](./dvr_integration.md)

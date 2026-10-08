@@ -26,7 +26,7 @@ These issues are caused by how IPTV clients handle Range headers and the lack of
 
 ## What It Does
 
-When Strict Live TS Mode is enabled, the proxy applies four optimisations:
+When Strict Live TS Mode is enabled, the proxy applies five optimisations:
 
 ### 1. Range Header Neutralisation
 
@@ -53,6 +53,12 @@ Monitors upstream data flow. If no data arrives for more than 2 seconds (configu
 ### 4. Optimised HEAD Requests
 
 HEAD requests for live TS streams return immediately without hitting the upstream provider. This avoids redundant connections that can interfere with live stream state.
+
+### 5. Overlap Trimming on Reconnect
+
+*(Proxy v0.4.31+)* Some providers close the connection every so often. When the proxy reconnects, the provider usually restarts from its rolling buffer, a few seconds behind what the client already received, so players jump back and replay that section.
+
+With overlap trimming (on by default), the proxy looks for the last bytes it already delivered in the new connection and drops everything up to them, so playback continues from the exact next byte. If no match turns up within `STRICT_LIVE_TS_OVERLAP_MAX_WAIT` seconds or `STRICT_LIVE_TS_OVERLAP_MAX_SEARCH_SIZE` bytes, the data is forwarded unchanged. Set `STRICT_LIVE_TS_OVERLAP_TRIM=false` to turn it off.
 
 ## Enabling Strict Live TS
 

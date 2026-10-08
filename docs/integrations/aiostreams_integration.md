@@ -41,7 +41,7 @@ AIOStreams and MediaFlow Proxy are unrelated, parallel paths — AIOStreams is n
 
 ## Add the Integration
 
-1. Go to **Integrations → Servers** and click **New Integration**.
+1. Go to **Integrations → Media Servers** and click **Add Media Server**.
 2. Select **AIOStreams** as the type.
 3. Enter a descriptive **Name** (e.g. `My AIOStreams`).
 4. Paste your **Manifest URL** — this is the full URL ending in `/manifest.json` that your AIOStreams instance provides (e.g. `https://your-aiostreams.example.com/stremio/uuid/token/manifest.json`).
@@ -72,7 +72,7 @@ You can also trigger an immediate refresh at any time using the **Sync Now** act
 
 ## Adding Content to Your Library
 
-Every AIOStreams integration automatically provisions its own dedicated Playlist. Browsing a catalog is still on-demand and doesn't touch this playlist, but from any movie or series detail page in the browser (**Integrations → Servers → your integration → Browse Catalog**) an admin can click **Add to Library** (movies) or **Add Series to Library** (series) to create a persistent entry instead.
+Every AIOStreams integration automatically provisions its own dedicated Playlist. Browsing a catalog is still on-demand and doesn't touch this playlist, but from any movie or series detail page in the browser (**Integrations → Media Servers → your integration → Browse Catalog**) an admin can click **Add to Library** (movies) or **Add Series to Library** (series) to create a persistent entry instead.
 
 What happens next:
 

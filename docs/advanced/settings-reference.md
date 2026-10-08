@@ -209,9 +209,9 @@ Refresh the page after saving to see the new menu.
 
 ## 📺 TV App
 
-### TV Notification Tester
+### Send Notification
 
-Use the **Send Notification** action to dispatch a test TV notification to any playlist target and verify the TV app notification system is connected.
+Use the **Send Notification** header action to dispatch a test TV notification to any playlist target and verify the TV app notification system is connected.
 
 **Send Notification** modal fields:
 - **Playlist type**: Playlist / Custom Playlist / Merged Playlist / Alias
@@ -258,12 +258,19 @@ When an Xtream provider answers with "429 Too Many Requests" during a sync or me
 - **Description**: Minimum delay between provider requests, in milliseconds. Recommended: 500–2,000 ms.
 - **Visibility**: Only shown when request delay is enabled
 
-### Sync Invalidation
+### Sync Invalidation & Retries
 
 **Enable Sync Invalidation**
 - **Type**: Toggle
 - **Default**: Disabled
 - **Description**: Prevent a sync from proceeding if it would remove more entries than the configured thresholds. Useful for protecting against provider outages or temporary data issues.
+- **Environment override**: `INVALIDATE_IMPORT`
+
+**Failed Sync Retry Cooldown** *(v0.13.1+)*
+- **Type**: Number (minutes)
+- **Default**: `15`
+- **Description**: Minutes to wait before automatically retrying a failed playlist or EPG sync. Playlists only retry when **Auto resync on failure** is on for that playlist, up to its **Max retry attempts**. Invalidated syncs always wait for the next scheduled sync. See [Failed Sync Retries](../resources/playlists.md#failed-sync-retries).
+- **Environment override**: `FAILED_RETRY_COOLDOWN_MINUTES`
 
 **Channel Removal Threshold**
 - **Type**: Number
@@ -450,6 +457,12 @@ Settings for [Cached Content Downloads](../advanced/cached-content.md), which sa
 **Share cache across playlists by default**
 - **Type**: Toggle
 - **Description**: Default for the **Share cache across playlists** option on new playlists.
+
+**Manage Cached Items** (header action) opens the **Cached Downloads** page.
+
+:::info Cache through Radarr or Sonarr
+*(v0.13.2+)* Turn on **Use for caching** on a Radarr or Sonarr integration to send new titles there instead of downloading them from the provider, for playlists that prefer media server sources. See [Caching Through Radarr or Sonarr](../advanced/cached-content.md#caching-through-radarr-or-sonarr).
+:::
 
 :::tip Docker volume
 When caching is enabled, the page shows the volume to mount so cached files survive container rebuilds (for example `./cache:/var/www/html/storage/app/private/cache`). The path can also be changed with the `CACHE_STORAGE_PATH` environment variable.
@@ -675,6 +688,11 @@ This applies only to regular playlist/Xtream/EPG output — it is unrelated to A
 **Notify on Playlist Import Failures**
 - **Type**: Toggle
 - **Description**: Sends an alert when a playlist sync fails entirely, e.g. all provider URLs were unreachable.
+
+**Notify on Invalidated Playlist Syncs** *(v0.13.1+)*
+- **Type**: Toggle
+- **Default**: Disabled
+- **Description**: Sends an alert when a playlist sync is canceled because it would have removed more channels, groups, or series than the invalidation thresholds allow.
 
 
 

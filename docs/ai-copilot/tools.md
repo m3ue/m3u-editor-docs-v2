@@ -53,7 +53,7 @@ Resource tools are context-aware — they are scoped to the resource you are cur
 Database tools allow the assistant to query and interact with your M3U Editor database directly. These are powerful tools intended for advanced users - enable them under **Settings → AI Copilot → Global Tools**.
 
 :::warning Use with care
-Database execute tools can modify your data. The assistant will always describe what it is about to do before executing and will ask for confirmation on destructive operations. You can always say "no" or ask it to stop.
+Database execute tools can modify your data. Any query that isn't a plain `SELECT` waits for your approval before it runs (see [Tool Approvals](#tool-approvals)).
 :::
 
 | Tool | Description |
@@ -71,6 +71,25 @@ What are the 10 most recently synced playlists?
 ```
 Set the enabled flag to false for all channels in the group "Adult"
 ```
+
+---
+
+## Tool Approvals
+
+*(v0.13.1+)* Tools that change data in bulk pause and show **Approve** and **Reject** buttons in the chat before they run. The chat input is disabled until you choose. These tools ask for approval:
+
+| Tool | Why it asks |
+|---|---|
+| Database query (anything other than `SELECT`) | The query changes records in your database |
+| Smart EPG Mapper, when applying mappings | It applies EPG mappings to your channels |
+| Network content bulk add | It adds content to a network playlist |
+| Network content pin | It changes when content airs in a network schedule |
+
+Creating, editing, and deleting individual records through the resource tools doesn't use approvals. Those still follow your account's permissions.
+
+## Rating Replies
+
+*(v0.13.1+)* Each assistant reply has thumbs up and thumbs down buttons. The rating is saved with that message.
 
 ---
 
@@ -151,5 +170,5 @@ The assistant will search the docs, retrieve the most relevant sections, and sum
 
 - **Ask the AI what it can do** — type `What tools do you have available?` and it will list everything in the current context.
 - **Tools respect permissions** — the AI cannot create or delete records if your account does not have permission to do so.
-- **Tools are always confirmed** — destructive actions (delete, bulk update) will be clearly described by the AI before execution. You can always say "no" or ask it to stop.
+- **Bulk changes need your approval** - write queries, applying EPG mappings, and network content changes wait for **Approve** before they run. You can always reject or ask it to stop.
 - **Autonomous mode** — the Copilot can be configured to operate as an automated agent for data management tasks. See [Configuration](./configuration.md) for details.

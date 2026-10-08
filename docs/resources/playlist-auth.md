@@ -47,6 +47,27 @@ Create isolated credentials for testing:
 - Create a throwaway account for evaluating client apps
 - Disable it when done
 
+## Default Login
+
+*(v0.13.3+)* Every playlist also has a built-in "default" login for its owner: your m3u editor username plus a password. **Default login**, under **Default Authentication** in the playlist's **Auth** tab, controls which password that is. It's available on Playlists, Custom Playlists, Merged Playlists, and Playlist Aliases.
+
+| Mode | Owner login (your m3u editor username + ...) | M3U and HDHR URLs |
+|---|---|---|
+| **UUID as Password** (default) | the playlist's unique identifier (UUID) | Work with just the UUID, unless Playlist Auths are assigned |
+| **Custom Password** | a password you set (the UUID stops working) | Require your credentials or a Playlist Auth |
+| **Disabled** | not accepted | Playlist Auths only |
+
+Existing playlists stay on **UUID as Password**, so nothing changes until you switch. The setting never affects Playlist Auths or alias credentials.
+
+- **Custom Password** must be URL-safe and can't be the same as another of your Custom Password playlists. Use the generate button next to the field for a random one.
+- In Custom Password mode, the M3U and HDHR URLs shown in the editor include your credentials. Plex DVR setup uses them automatically.
+- URLs the editor builds for itself (the in-app player, EPG viewer, proxy, and `.strm` files) keep working in every mode. Changing the mode or the custom password invalidates those links, so copied URLs stop working and `.strm` files are rewritten.
+- Duplicating a playlist never copies the custom password. A copy of a Custom Password playlist starts with the default login **Disabled**.
+
+:::tip Lock a playlist down to Playlist Auths
+Set **Default login** to **Disabled** and assign [Playlist Auths](#assigning-to-playlists) to give each person or device its own login, without anyone being able to use the owner's.
+:::
+
 ## Creating Playlist Auth
 
 1. Navigate to **Playlist → Playlist Auths** in the sidebar

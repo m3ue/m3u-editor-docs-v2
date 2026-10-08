@@ -402,9 +402,16 @@ Handles [Cached Content Downloads](cached-content.md). Downloads run only on thi
 ### INVALIDATE_IMPORT_THRESHOLD
 - **Default**: `100`
 - **Description**: If the current sync result has fewer items than the current count minus this value, the sync is cancelled automatically.
-- **Note**: Only applies when `INVALIDATE_IMPORT=true`
-- **Applies to**: Live channels, groups/categories, and series (not just channel count)
+- **Note**: Only applies when `INVALIDATE_IMPORT=true`. When set, it locks **Channel removal threshold** in **Settings → Sync Options**
 - **Example**: If you have 1000 channels and threshold is 100, sync will fail if new import has fewer than 900 channels
+
+### INVALIDATE_IMPORT_SERIES_THRESHOLD
+- **Default**: unset (uses **Series removal threshold** in Sync Options, default `100`)
+- **Description**: Cancel the sync if it would remove more than this many series. When set, it locks the matching field in Sync Options.
+
+### INVALIDATE_IMPORT_GROUP_THRESHOLD
+- **Default**: unset (uses **Group/category removal threshold** in Sync Options, default `50`)
+- **Description**: Cancel the sync if it would remove more than this many groups or categories. When set, it locks the matching field in Sync Options.
 
 ### DISABLE_M3U_XTREAM_FORMAT
 - **Default**: `false`
@@ -436,6 +443,11 @@ Handles [Cached Content Downloads](cached-content.md). Downloads run only on thi
 ### SYNC_RUN_STALE_MINUTES
 - **Default**: `20`
 - **Description**: Minutes a sync can go without progress before it is considered dead and cleaned up. Raise this if very large playlists are marked as failed while still processing.
+
+### FAILED_RETRY_COOLDOWN_MINUTES
+- **Default**: unset (uses **Settings → Sync Options → Failed sync retry cooldown**, which defaults to `15`)
+- **Description**: Minutes a failed playlist or EPG sync waits before it is retried automatically. When set, it overrides the value saved in Sync Options.
+- **Note**: Playlists only retry when **Auto resync on failure** is enabled on the playlist. Invalidated syncs are never retried early; they wait for the next scheduled sync. See [Failed Sync Retries](../resources/playlists.md#failed-sync-retries).
 
 ## Proxy URL Override
 

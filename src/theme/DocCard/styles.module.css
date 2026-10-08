@@ -1,0 +1,141 @@
+/* Same language as the previous/next cards (see "Docs" in custom.css): a
+   quiet outlined card that lights up with a brand gradient ring on hover */
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 100%;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--docs-hairline-strong);
+  border-radius: 0.75rem;
+  background-color: var(--docs-panel);
+  color: inherit;
+  transition:
+    border-color 0.25s ease-out,
+    box-shadow 0.25s ease-out,
+    translate 0.25s ease-out;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: transparent;
+  color: inherit;
+  text-decoration: none;
+  translate: 0 -2px;
+  box-shadow:
+    -0.5rem 0 1.5rem -0.6rem color-mix(in srgb, #f43f5e 45%, transparent),
+    0 0 1.5rem -0.6rem color-mix(in srgb, #b3509f 40%, transparent),
+    0.5rem 0 1.5rem -0.6rem color-mix(in srgb, #6366f1 45%, transparent);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--docs-brand-gradient);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+  pointer-events: none;
+}
+
+.card:hover::before,
+.card:focus-visible::before {
+  opacity: 1;
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  font-size: 1.35rem;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.icon > span {
+  font-size: inherit;
+}
+
+.card:hover .icon,
+.card:focus-visible .icon {
+  background: var(--docs-brand-gradient);
+  color: #fff;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  display: -webkit-box;
+  margin: 0 0 0.2rem;
+  overflow: hidden;
+  color: var(--docs-link-strong);
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.3;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  transition: color 0.2s ease;
+}
+
+.card:hover .title,
+.card:focus-visible .title {
+  color: var(--docs-active-text);
+}
+
+.description {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--docs-link-muted);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--docs-arrow-muted) center / 1.1rem no-repeat;
+  box-shadow: inset 0 0 0 1px var(--docs-hairline-strong);
+  transition: translate 0.2s ease-out;
+}
+
+.card:hover .arrow,
+.card:focus-visible .arrow {
+  background:
+    var(--docs-arrow-white) center / 1.1rem no-repeat,
+    var(--docs-brand-gradient);
+  box-shadow: none;
+  translate: 0.15rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::before,
+  .icon,
+  .arrow {
+    transition: none;
+  }
+
+  .card:hover,
+  .card:focus-visible,
+  .card:hover .arrow {
+    translate: none;
+  }
+}

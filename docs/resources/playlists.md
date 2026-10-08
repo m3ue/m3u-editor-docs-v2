@@ -84,6 +84,18 @@ After adding a playlist, you can configure various settings:
 Enabling "Prioritize by Resolution" requires analyzing each stream, which can cause rate limiting with some IPTV providers. Use with caution.
 :::
 
+### Media Server Sources
+
+*(v0.13.2+)* If the same movies and episodes also exist in one of your [media server integrations](../integrations/overview.md) (Emby, Jellyfin, Plex, or Local Media), the playlist can play those files instead of the provider's streams. Turn on **Prefer media server sources** under **Processing → Media Server Sources**.
+
+- Items are matched by TMDB, TVDB, or IMDB ID, so the playlist needs TMDB IDs. Enable TMDB lookup or a metadata fetch on the playlist first (see [TMDB Integration](../integrations/tmdb_integration.md)).
+- Matching runs when you turn the option on, after each playlist sync, and after each media server sync.
+- When [caching](../advanced/cached-content.md) is enabled, the **Cached** column in the VOD and Episodes tables shows a server icon for matched items ("Available on your media server").
+- Clients keep the same URLs. If the media server copy can't be reached, playback falls back to the provider stream.
+- This option is not shown on playlists that are themselves created by a media server integration.
+
+When this is on, [Cache Now and dynamic group caching](../advanced/cached-content.md#caching-through-radarr-or-sonarr) can also send titles to Radarr or Sonarr instead of downloading them from the provider.
+
 ## Easy Editor
 
 **Playlist → Easy Editor** is a simpler, split-pane way to organize a playlist. Pick a playlist and switch between **Live** and **VOD**: groups are listed on the left and the selected group's channels on the right. You can edit, enable or disable, and sort groups and channels in one place, and drag channels onto another group to move them.
@@ -98,15 +110,34 @@ If a sync would result in significantly fewer channels than the current count (o
 
 When triggered, a confirmation dialog describes how many channels would be removed and asks whether to proceed or cancel the sync.
 
-### Sync Invalidation Threshold
+### Sync Invalidation
 
-The `INVALIDATE_IMPORT` environment variable enables an automatic cancel if the incoming sync result falls too far below the current channel count. See [Environment Variables](../advanced/environment-variables.md#invalidate_import) for configuration details.
+Sync invalidation cancels a sync that would remove too much content at once, which usually means the provider returned a partial or broken response. Turn it on in **Settings → Sync Options → Sync Invalidation & Retries** with **Enable sync invalidation**, then set the limits:
 
-The threshold now applies to **groups/categories** and **series** in addition to live channels — not just the channel count.
+| Setting | Default | Cancels the sync when it would remove more than... |
+|---|---|---|
+| **Channel removal threshold** | `100` | this many channels |
+| **Series removal threshold** | `100` | this many series |
+| **Group/category removal threshold** | `50` | this many groups or categories |
+
+The [`INVALIDATE_IMPORT`](../advanced/environment-variables.md#invalidate_import) environment variables still work. When set, they lock the matching fields on the settings page.
+
+An invalidated sync is never retried early. It waits for the next scheduled sync. To be told when this happens, turn on **Notify on invalidated playlist syncs** in [Alerts](../advanced/alerts.md).
+
+### Failed Sync Retries
+
+*(v0.13.1+)* When a scheduled sync fails (for example, the provider timed out), the playlist can retry it on its own instead of waiting for the next scheduled run. In the playlist's **Scheduling** tab, with **Auto Sync** on:
+
+- **Auto resync on failure**: on by default.
+- **Max retry attempts**: how many retries to make before giving up until the next scheduled sync (default `3`, up to `10`).
+
+Each retry waits for the **Failed sync retry cooldown** set in **Settings → Sync Options** (default 15 minutes, or [`FAILED_RETRY_COOLDOWN_MINUTES`](../advanced/environment-variables.md#failed_retry_cooldown_minutes)). The same cooldown applies to failed EPG syncs. Running **Sync Now** by hand resets the retry count.
 
 ### Sync Run History
 
 M3U Editor tracks each sync run with a timestamp, status, and result summary. This history is available on the playlist detail page under the **Sync Runs** tab and is useful for diagnosing intermittent sync failures.
+
+Each sync's log lists what was added and removed. *(v0.13.3+)* Logs also track added and removed **series**, and can be filtered by **Content Type** (Live, VOD, Series) and by change (added or removed channels, groups, or series).
 
 ## Managing Playlists
 
@@ -243,6 +274,10 @@ Each playlist can turn its outputs on or off individually under **Output → Pla
 - **XMLTV (EPG)**
 
 A disabled output returns an "Output disabled" error instead of content. All four are on by default. The same options exist on Custom Playlists, Merged Playlists, and Playlist Aliases.
+
+### Sort by Channel Number
+
+*(v0.13.1+)* By default, channels are output grouped by group, in your group order. Turn on **Sort by channel number** under **Output → Playlist Output** to output one flat list ordered by channel number instead. Channels without a number come last, in the standard group order. The same option exists on Custom Playlists and Merged Playlists.
 
 ### Cache
 

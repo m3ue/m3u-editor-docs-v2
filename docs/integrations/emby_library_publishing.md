@@ -47,7 +47,7 @@ sequenceDiagram
 
 The quickest way to publish content is the **Publish to Emby** action:
 
-1. Navigate to **Integrations → Servers** → open your Emby integration.
+1. Navigate to **Integrations → Media Servers** → open your Emby integration.
 2. Go to the **Managed Libraries** tab and click **Publish to Emby**.
 3. **What do you want to publish?** Choose **Movies** or **TV shows**.
 4. Select one or more **Movie groups** or **Series categories**. Sources that are already published aren't offered again. Matching Custom Playlist groups are included.
@@ -62,7 +62,7 @@ Each selected group or category gets its own mapping and subfolder, all publishe
 
 For finer control (for example a Dynamic Group source), create a single mapping:
 
-1. Navigate to **Integrations → Servers** → open your Emby integration.
+1. Navigate to **Integrations → Media Servers** → open your Emby integration.
 2. Go to the **Managed Libraries** tab.
 3. Create a mapping and configure:
 
@@ -112,6 +112,22 @@ Each row in the **Managed Libraries** table has:
 ## Granting access to Playlist Auth credentials
 
 By default, only the playlist owner (`owner_auth`) can drive this protocol. To let a specific **Playlist Auth** credential's Emby plugin also read catalogs and report sync results, open that Playlist Auth and enable **Library Publishing Access → Enable Library Publishing**. This is off by default and only visible to users with the `use_integrations` permission.
+
+## Troubleshooting Managed Setup
+
+*(v0.13.2+)* If managed setup fails, M3U Editor shows the actual cause instead of a generic "install the companion" prompt:
+
+| Message | What to check |
+|---|---|
+| Managed setup could not connect | Emby is reachable from M3U Editor (URL, port, Docker networking) |
+| Emby rejected the managed setup request | The administrator credential and its permissions |
+| The managed setup endpoint was not found | The companion plugin is installed correctly |
+| The companion does not support managed setup version 1 | Update the companion plugin |
+| Emby is not ready for managed setup, or returned an invalid response | The companion plugin's configuration |
+| Binding conflict | Reconnect the integration, then retry |
+| Blocked by the integration security policy | The integration's security settings |
+
+Retry setup once you've fixed the cause.
 
 ## Related Documentation
 

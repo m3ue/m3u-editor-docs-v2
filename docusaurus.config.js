@@ -27,6 +27,7 @@ const MATERIAL_ICONS = [
   'connected_tv',
   'construction',
   'content_copy',
+  'description',
   'desktop_windows',
   'devices',
   'dns',

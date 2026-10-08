@@ -70,6 +70,29 @@ When **Probe VOD & series streams after sync** is also enabled:
 |---|---|---|
 | **Only probe VOD and series streams that have not been probed before** | **On** | Skips VOD/series items that already have stored `stream_stats`. |
 | **Include disabled VOD/series streams** | Off | Also probes disabled VOD/series during auto-probe. |
+| **Retry failed probes after (days)** *(v0.13.2+)* | `7` | Shown when "only probe unprobed" is on. A VOD stream or episode whose probe failed is skipped until this many days have passed. `0` retries failures on every sync. |
+| **Pause probing when failures exceed (%)** *(v0.13.2+)* | `80` | Stops an automatic VOD and series probe run once at least 20 streams have been probed and more than this share failed, which usually means the provider is down. `0` never pauses. |
+| **Series episodes to probe** *(v0.13.2+)* | All Episodes | See [Sampled series probing](#sampled-series-probing). |
+
+#### Failed probes
+
+*(v0.13.2+)* A failed VOD or episode probe is now recorded, so these items show up under the **Probe failed** filter. Before, a dead stream was probed again on every sync, waiting the full probe timeout each time. Now it waits for **Retry failed probes after (days)**. An item that still has stats from an earlier successful probe keeps them when a later probe fails. To retry failures right away, filter by **Probe failed** and run the **Probe Streams** bulk action.
+
+When a run pauses because too many probes failed, you get a **VOD stream probing paused** notification. Streams that weren't probed are tried again on the next sync. Retries of known failures don't count toward the threshold.
+
+Live channel probes don't record failures yet.
+
+#### Sampled series probing
+
+*(v0.13.2+)* Episodes of a season usually share the same codec, resolution, HDR format, and audio tracks. **Series episodes to probe** lets you probe one episode and reuse its stream info for the rest, which makes probing large series catalogs much faster:
+
+| Option | Probes |
+|---|---|
+| **All Episodes** (default) | Every episode |
+| **First episode of each season** | One episode per season |
+| **First episode of each series** | One episode per series |
+
+The sampled episode is the first regular episode. Specials (season 0) are only used when there's nothing else, and never as the source for a whole series. Episodes that reuse stream info get their own icon in the probe status column, and Trash Guides naming, NFO files, and Emby technical metadata use the copied stats as usual. New episodes added to an already-probed season pick up its stats right away, without a probe. Switching back to **All Episodes** probes those episodes individually.
 
 :::info Incremental by default
 The "only probe unprobed" defaults mean automatic probing is incremental: only new channels picked up during a sync get probed. This is the recommended behaviour for large playlists. If you want to re-probe everything (e.g. after a provider changes codecs), disable the toggle temporarily, trigger a sync or manual probe, then re-enable it.

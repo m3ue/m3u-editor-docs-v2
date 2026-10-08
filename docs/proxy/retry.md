@@ -45,6 +45,7 @@ Retries trigger automatically for:
 Retries are **not** applied for:
 
 - **VOD mid-stream failures** — once bytes have started flowing, VOD uses Range-header reconnection instead
+- **VOD `416 Range Not Satisfiable`** *(v0.4.32+)* - an upstream `416` for a VOD stream (for example, a seek past the end of the file) is returned to the client straight away, with the provider's `Content-Range` header. Other errors, and live streams, keep the retry behaviour above
 - **Client disconnections** — errors originating from the client side
 - **Streams with active data** — retries only apply when a connection fails before data is received
 

@@ -67,11 +67,13 @@ Information in this section will be helpful for the steps outlined in** [Client 
 In m3u-editor:
 
 1. Go to **Playlists**
-2. Click **Edit** on your playlist
-3. In **Step 1 (Links)**, you'll see:
+2. Click your playlist to open it
+3. The **Links** and **Xtream API** tabs show:
    * **Playlist UUID** (used in URLs)
    * **Username/Password** (for Xtream API)
    * Direct URLs for M3U, EPG, HDHomeRun, etc.
+
+The password depends on the playlist's [Default login](resources/playlist-auth.md#default-login) mode: the playlist UUID by default, or a custom password you set. You can also give clients their own [Playlist Auth](resources/playlist-auth.md) credentials.
 
 Copy these values as needed for your client configuration.
 

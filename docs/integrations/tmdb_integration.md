@@ -15,6 +15,7 @@ M3U Editor uses [The Movie Database (TMDB)](https://www.themoviedb.org/) to fill
 
 - TMDB, TVDB, and IMDB IDs (needed for Trash Guides naming in Sonarr/Radarr and for `.strm` folders)
 - Plot, artwork, clear logos (transparent title art), genres, ratings, and full cast lists
+- US age certifications (for example `PG-13` or `TV-MA`), series networks, and movie studios *(v0.13.1+)*
 - "More like this" recommendations limited to what's in your own library
 - **Dynamic Groups** such as Trending, Popular, or Top Comedy
 - Optional **genre reclassification** of your VOD groups and series categories
@@ -75,7 +76,9 @@ The response contains the `person` (name, photo, bio) and their `credits`. Each 
 
 ## Dynamic Groups
 
-Dynamic Groups are per-playlist virtual groups built from TMDB lists. They are added to the top of the Xtream VOD and series category lists, and their membership updates on every sync.
+Dynamic Groups are per-playlist virtual groups built from TMDB lists. They are added to the top of the Xtream VOD and series category lists, and their membership refreshes daily and on every playlist sync.
+
+Members are listed in TMDB's own order *(v0.13.1+)*, so a **Trending** group shows the most-trending title first rather than the most recently added one.
 
 ### Available sources
 
@@ -95,23 +98,39 @@ Only titles that exist in your playlist are included.
 
 You can create them in two places:
 
-- **VOD Channels → Dynamic Groups** or **Series → Dynamic Groups**, using **New VOD Dynamic Group** or **New Series Dynamic Group**. The group is built right away.
+- **VOD Channels → Dynamic Groups** or **Series → Dynamic Groups**, using **Create VOD Dynamic Group** or **Create Series Dynamic Group**. The rule is saved right away and its members are fetched from TMDB in the background, so they appear shortly after.
 - On the playlist: **Edit Playlist → Processing → Dynamic Groups (TMDB)**, under **Dynamic Groups Configuration**. Use the **Preview** button on a rule to see what it matches before saving.
 
 For each rule, set:
 
 - **Content Type**: VOD (Movies) or Series
 - **Source**, plus any source-specific options
-- **Pages to Fetch**: TMDB returns about 20 results per page. Raise this if titles you expect (such as a recent release) are missing.
+- **Pages to Fetch**: TMDB returns about 20 results per page. The default is 3 pages and the maximum is 10 (about 200 titles). Raise this if titles you expect (such as a recent release) are missing.
 - **Category Name**: what clients see, for example `Trending Now` or `Netflix`
+- **Caching** *(v0.13.2+)*: when Cached Content Downloads are enabled, a rule can download its members automatically. See [Dynamic Group Caching](../advanced/cached-content.md#dynamic-group-caching).
 
-The **Dynamic Groups** list pages show each group's playlist and item count, and **View** shows the actual members. Deleting a Dynamic Group also removes its rule from the playlist.
+The **Dynamic Groups** list pages show each group's playlist and item count, and **View** shows the actual members. **Edit** opens the same rule form used on the playlist, including **Preview**. Deleting a Dynamic Group also removes its rule from the playlist.
 
 Dynamic Groups can also be published to Emby as libraries. See [Emby Library Publishing](emby_library_publishing.md).
 
 :::note
 Dynamic Groups require a configured TMDB API key. They can be turned off entirely with the [`PLAYLIST_TMDB_DYNAMIC_GROUPS`](../advanced/environment-variables.md#playlist_tmdb_dynamic_groups) environment variable.
 :::
+
+## Ratings, Networks and Studios
+
+*(v0.13.1+)* TMDB enrichment also stores:
+
+- **Movies**: the US certification (theatrical release preferred) and the production studios.
+- **Series**: the US content rating and the networks the show airs on.
+
+These come from the same TMDB request enrichment already makes, so there are no extra API calls. Titles enriched before v0.13.1 pick up the new fields the first time a client opens their details.
+
+Where they show up:
+
+- Xtream `get_vod_info` and `get_series_info` return the rating as `mpaa_rating`. For series, a media server's official rating is used when TMDB has none.
+- The Xtream `age` field is filled from the TMDB certification only when the provider left it blank. A provider-sent age always wins.
+- `.nfo` files written for [STRM output](../advanced/strm-files.md) include the rating as `<mpaa>`, plus the studios (movies) or networks (series) as `<studio>`.
 
 ## Reclassify to TMDB Genres
 

@@ -39,7 +39,7 @@ M3U TV is entirely optional. M3U Editor's generated M3U/Xtream/EPG output works 
 
 ## Features
 
-- **Live TV** with category filtering and an EPG timeline view
+- **Live TV** with category filtering and a D-pad friendly programme guide, including catchup replay (see [Guide & Playback](./guide-and-playback.md))
 - **Movies (VOD)** and **TV Series**, with season/episode navigation
 - **Search** across live channels, movies, and series
 - **Favorites** for quick access to the content you watch most
@@ -47,6 +47,8 @@ M3U TV is entirely optional. M3U Editor's generated M3U/Xtream/EPG output works 
 - **Device Pairing** — connect a TV without typing a password on the remote (see [Device Pairing](./device-pairing.md))
 - **Push Notifications** on mobile — get notified about sync results, recordings, and alerts even when the app is closed (see [Push Notifications](./push-notifications.md))
 - **Localization** — English, German, Spanish, French, and Simplified Chinese
+- **Display matching**: optional refresh-rate matching and deinterlacing (see [Display Settings](./guide-and-playback.md#display-settings))
+- **Logs & Diagnostics**: view this session's logs on the device and upload them to your editor for troubleshooting (see [Logs & Diagnostics](./logs-diagnostics.md))
 
 ## Download
 
@@ -86,3 +88,5 @@ Once connected, M3U TV is just another Xtream client from the editor's point of 
 - [Device Pairing](./device-pairing.md) — how the remote-friendly pairing flow works, and why it's safe
 - [Push Notifications](./push-notifications.md) — the mobile push relay, and what it does (and doesn't) store
 - [Continue Watching](./continue-watching.md) — how playback position is centralized on the editor across every client
+- [Guide & Playback](./guide-and-playback.md): the programme guide, catchup, remote buttons, and display settings
+- [Logs & Diagnostics](./logs-diagnostics.md): collecting logs to troubleshoot a device

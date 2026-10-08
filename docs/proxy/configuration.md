@@ -43,6 +43,7 @@ All proxy settings are configured via environment variables — in a `.env` file
 | `SHARED_STREAM_TIMEOUT` | `30` | Seconds for shared (pooled) stream operations |
 | `CLEANUP_INTERVAL` | `30` | Seconds between cleanup cycles for inactive streams and clients |
 | `SHARED_STREAM_GRACE` | `3` | Grace period (seconds) before a shared FFmpeg process is cleaned up after all clients leave |
+| `PRIMARY_HANDOFF_WAIT_SECONDS` | `2.0` | When the client reading a shared direct stream leaves, one remaining client takes over its provider connection. This is how long that client waits for the handoff before opening a new connection (which makes most providers replay the last 10 to 20 seconds and uses an extra connection slot). *(v0.4.31+)* |
 
 ## Connection Idle Monitoring
 

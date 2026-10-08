@@ -105,6 +105,7 @@ Beyond the default error-log forwarding, you can opt in to two targeted notifica
 |---|---|
 | **Notify on queued job failures** | Sends an alert whenever a queued job (import, sync, probe, etc.) fails permanently after all retry attempts. |
 | **Notify on playlist import failures** | Sends an alert when a playlist sync fails entirely, e.g. all provider URLs were unreachable. |
+| **Notify on invalidated playlist syncs** *(v0.13.1+)* | Sends an alert when a playlist sync is canceled because it would have removed more channels, groups, or series than the [invalidation thresholds](../resources/playlists.md#sync-invalidation) allow. Off by default. |
 
 ---
 
