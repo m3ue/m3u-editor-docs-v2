@@ -3,7 +3,7 @@ sidebar_position: 4
 description: Configure clients to work with M3U Editor environment variables and settings
 tags:
   - Getting Started
-  - Configuratione
+  - Configuration
 title: Client Configuration
 hide_title: true
 ---

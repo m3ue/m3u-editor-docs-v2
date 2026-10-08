@@ -828,3 +828,214 @@ html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-side
 .theme-doc-sidebar-menu .menu__list-item-collapsible > .menu__link[aria-current='page'] {
   color: var(--docs-active-text);
 }
+
+/* ------------------------------------------------------------------ */
+/* Admonitions (:::note, :::tip, :::info, :::warning, :::danger)       */
+/* ------------------------------------------------------------------ */
+
+/* A tinted card with a coloured left edge and an icon chip. Each type
+   sets --adm (edge, chip, border) and --adm-text (heading and links,
+   picked for contrast on the tint in each theme). The icons themselves
+   are Material Symbols, see src/theme/Admonition/Icon */
+.theme-admonition {
+  --adm: #64748b;
+  --adm-text: #334155;
+  --ifm-alert-foreground-color: var(--ifm-font-color-base);
+  --ifm-alert-border-color: var(--adm);
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 1.25rem 1rem 1.4rem;
+  border: 1px solid color-mix(in srgb, var(--adm) 26%, transparent);
+  border-radius: 0.75rem;
+  background-color: color-mix(in srgb, var(--adm) 7%, var(--ifm-background-color));
+  box-shadow: none;
+  color: var(--ifm-font-color-base);
+}
+
+.theme-admonition::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--adm);
+}
+
+.theme-admonition-tip {
+  --adm: #10b981;
+  --adm-text: #047857;
+}
+
+.theme-admonition-info {
+  --adm: #6366f1;
+  --adm-text: #4f46e5;
+}
+
+.theme-admonition-warning,
+.theme-admonition-caution {
+  --adm: #f59e0b;
+  --adm-text: #b45309;
+}
+
+.theme-admonition-danger {
+  --adm: #f43f5e;
+  --adm-text: #be123c;
+}
+
+[data-theme='dark'] .theme-admonition {
+  --adm: #94a3b8;
+  --adm-text: #e2e8f0;
+  background-color: color-mix(in srgb, var(--adm) 9%, var(--ifm-background-color));
+}
+
+[data-theme='dark'] .theme-admonition-tip {
+  --adm: #34d399;
+  --adm-text: #6ee7b7;
+}
+
+[data-theme='dark'] .theme-admonition-info {
+  --adm: #818cf8;
+  --adm-text: #a5b4fc;
+}
+
+[data-theme='dark'] .theme-admonition-warning,
+[data-theme='dark'] .theme-admonition-caution {
+  --adm: #fbbf24;
+  --adm-text: #fcd34d;
+}
+
+[data-theme='dark'] .theme-admonition-danger {
+  --adm: #fb7185;
+  --adm-text: #fda4af;
+}
+
+/* Heading: icon chip plus a small uppercase label, like the "Previous"
+   and "Next" sublabels */
+.theme-admonition > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--adm-text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  line-height: 1.3;
+}
+
+.theme-admonition > div:first-child:not(:last-child) {
+  margin-bottom: 0.55rem;
+}
+
+.theme-admonition > div:first-child > span:first-child {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  margin: 0;
+  border-radius: 0.5rem;
+  background-color: color-mix(in srgb, var(--adm) 18%, transparent);
+  color: var(--adm-text);
+  font-size: 1.1rem;
+}
+
+.theme-admonition > div:first-child > span:first-child > span {
+  font-size: inherit;
+}
+
+.theme-admonition > div:last-child {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.theme-admonition a {
+  color: var(--adm-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--adm) 50%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.theme-admonition a:hover {
+  text-decoration-color: currentColor;
+}
+
+.theme-admonition :not(pre) > code {
+  border-color: color-mix(in srgb, var(--adm) 22%, transparent);
+  background-color: color-mix(in srgb, var(--adm) 10%, transparent);
+}
+
+/* ------------------------------------------------------------------ */
+/* Tags                                                                */
+/* ------------------------------------------------------------------ */
+
+/* Pills, in the doc footer and on the /docs/tags index. A gradient dot
+   marks each one; hover tints it like the current sidebar page */
+.theme-doc-footer-tags-row b {
+  margin-right: 0.35rem;
+  color: var(--docs-link-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.theme-doc-footer-tags-row ul {
+  margin-left: 0 !important;
+}
+
+a[rel='tag'] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid var(--docs-hairline-strong);
+  border-radius: 999px;
+  background-color: var(--docs-panel);
+  color: var(--docs-link-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+a[rel='tag']:hover {
+  border-color: color-mix(in srgb, #6366f1 45%, transparent);
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  text-decoration: none;
+}
+
+/* The tags index draws a luggage-tag outline with these; the dot
+   replaces it */
+a[rel='tag']::after {
+  content: none;
+}
+
+a[rel='tag']::before {
+  content: '';
+  position: static;
+  flex-shrink: 0;
+  width: 0.4rem;
+  height: 0.4rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--docs-brand-gradient);
+  transform: none;
+}
+
+/* Tags index: the doc count as a small badge */
+a[rel='tag'] > span {
+  margin-left: 0.1rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background-color: var(--docs-active-tint);
+  color: var(--docs-active-text);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+/* Tags index: tighter rows than the default 1rem left gap per pill */
+.docs-tags-list-page article ul > li {
+  margin: 0.5rem 0.5rem 0 0;
+}

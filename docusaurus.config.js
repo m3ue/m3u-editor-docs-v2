@@ -42,8 +42,10 @@ const MATERIAL_ICONS = [
   'hdr_on',
   'history',
   'hub',
+  'info',
   'input',
   'laptop_mac',
+  'lightbulb',
   'live_tv',
   'memory',
   'menu_book',
@@ -59,6 +61,7 @@ const MATERIAL_ICONS = [
   'playlist_play',
   'qr_code_2',
   'radio_button_checked',
+  'report',
   'rocket_launch',
   'router',
   'search',
@@ -66,6 +69,7 @@ const MATERIAL_ICONS = [
   'smart_toy',
   'smartphone',
   'star',
+  'sticky_note_2',
   'subtitles',
   'sync',
   'tablet_mac',
@@ -75,6 +79,7 @@ const MATERIAL_ICONS = [
   'tv',
   'tv_guide',
   'volunteer_activism',
+  'warning',
 ];
 
 /** @type {import('@docusaurus/types').Config} */
