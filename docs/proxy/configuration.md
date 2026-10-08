@@ -106,6 +106,8 @@ Controls automatic retry behaviour when a stream encounters a connection error. 
 | `BROADCAST_START_RETRY_WINDOW` | `300.0` | Time window (seconds) in which retries are counted |
 | `BROADCAST_START_RETRY_COOLDOWN` | `15.0` | Cooldown (seconds) between retry attempts |
 | `BROADCAST_START_FAILURE_GRACE` | `3.0` | Grace period (seconds) before a failed broadcast is cleaned up |
+| `DVR_RESTART_WINDOW_SECONDS` | `60.0` | How long a DVR recording keeps restarting FFmpeg in place after the source drops before the recording is marked failed. Resets whenever a new segment is written |
+| `DVR_STALL_TIMEOUT_SECONDS` | `30.0` | Seconds without a new DVR segment before a still-running capture is treated as stalled and restarted |
 
 ## Strict Live TS Mode
 
