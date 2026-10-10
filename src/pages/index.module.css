@@ -467,7 +467,7 @@
 
 .ecosystemGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 1.25rem;
 }
 
@@ -496,6 +496,12 @@
   font-size: 1.6rem;
 }
 
+/* The text column must be allowed to shrink, or long link rows push the
+   card wider than its grid cell */
+.ecosystemCard > div {
+  min-width: 0;
+}
+
 .ecosystemCard h3 {
   font-size: 1.1rem;
   margin-bottom: 0.35rem;
@@ -509,7 +515,8 @@
 
 .ecosystemLinks {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
 }
 
 .ecosystemLinks a {

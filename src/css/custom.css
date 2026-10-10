@@ -4,8 +4,33 @@
  * work well for content-centric websites.
  */
 
+/* Brand typeface: Plus Jakarta Sans (SIL Open Font License, see
+   src/fonts/plus-jakarta-sans/OFL.txt), bundled with the site so nothing is
+   fetched from a font CDN. Same face as the editor and M3U TV. */
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans/PlusJakartaSans-Variable.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: italic;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../fonts/plus-jakarta-sans/PlusJakartaSans-Italic-Variable.woff2') format('woff2');
+}
+
+/* Its word space is narrow; open it up slightly for running text */
+body {
+  word-spacing: 0.06em;
+}
+
 /* You can override the default Infima variables here. */
 :root {
+  --ifm-font-family-base: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
   /* Brand colors taken from the logo gradient: pink -> purple -> indigo */
   --ifm-color-primary: #6366f1; /* indigo */
   --ifm-color-primary-dark: #5b4ee0;
