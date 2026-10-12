@@ -31,7 +31,7 @@ Regular expressions pick each part out of the name:
 | **Title Regex** | The event, like `Tommy Fury vs. Eddie Hall`. Leave it empty to use the whole name. |
 | **Team Delimiter** | Optional. Splits the event into `{team1}` and `{team2}`, for example on ` vs. `. |
 | **Time Regex**, **Time Format** | The start time, and its format (PHP date format, like `H:i` or `g:i A`; separate several with a pipe). |
-| **Date Regex**, **Date Format** | The date, if the name has one, like `m.d`. Without it, today is assumed. |
+| **Date Regex**, **Date Format** | The date, if the name has one, like `m.d`. Without it, today is assumed. *(v0.13.4+)* Separate several formats with a pipe, like the time format. |
 | **Timezone of Source** | The timezone the time is written in, like `America/New_York`. |
 | **Logo URL** | Optional artwork for the entries. |
 

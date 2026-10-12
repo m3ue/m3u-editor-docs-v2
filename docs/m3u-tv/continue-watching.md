@@ -16,6 +16,16 @@ Stop a movie or episode on your phone, and pick it up on the TV at the same seco
 
 Progress belongs to the login, not the device. If each person has their own [Playlist Auth](/docs/resources/playlist-auth), each gets their own list. They're listed under **Playlist → Playlist Viewers**.
 
+## Add or edit progress by hand
+
+*(v0.13.4+)* Open a viewer on **Playlist Viewers** to see their **Watch History**, one tab per type.
+
+- **Add Progress** (on the **VOD** and **Series** tabs) searches TMDB for a movie or episode and records a position for it. Useful when someone watched it elsewhere. It needs a [TMDB API key](/docs/integrations/tmdb_integration).
+- **Edit** on a row changes its position, duration, or completed state. Positions take `h:mm:ss`, `m:ss`, or a number of minutes.
+- **Mark as watched** and **Mark as unwatched** work on selected rows.
+
+A title that isn't in the playlist yet is added as **Not in playlist**. Once the title is in the library, it's linked the next time M3U TV loads that viewer's progress, or when you run **Relink Watch Progress**. Until then, the relink tools below keep it instead of removing it.
+
 ## After a re-sync or provider change
 
 Entries remember each title's TMDB ID. When a title's ID changes, for example after you flush and re-sync a media server or [migrate to a new provider](/docs/resources/playlists#moving-to-a-new-provider), entries are relinked to the new copy instead of disappearing.

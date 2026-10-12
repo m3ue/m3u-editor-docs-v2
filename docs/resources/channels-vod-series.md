@@ -29,7 +29,7 @@ Only **enabled** items appear in your outputs, and new imports start disabled un
 The quickest way to build a lineup is by group. In **Live Channels → Groups**:
 
 - **Enable group channels** or **Disable group channels** switches a whole group on or off.
-- **Auto Enable New Channels** on a group enables channels the provider adds to it later.
+- **Auto Enable New Channels** on a group enables channels the provider adds to it later. *(v0.13.4+)* It matches on the provider's group name, so it keeps working after you rename the group.
 
 VOD groups and series categories work the same way.
 
@@ -44,7 +44,7 @@ Open a channel to change it. Leave a field empty to keep the provider's value.
 | Field | Use it to |
 |---|---|
 | **Title**, **Name** | Rename the channel. The title is what players show. |
-| **Channel No.** | Set the channel number. |
+| **Channel No.** | Set the channel number. *(v0.13.4+)* Over-the-air sub-channels like `5.1` work too, and are kept when a provider sends them in `tvg-chno`. The Xtream API reports only the whole number (`5`), since Xtream players expect an integer. |
 | **Group** | Move it to another group. |
 | **Logo Override** | Use a different logo. Upload logos under **Tools → Assets**. |
 | **URL Override** | Play a different stream URL. |
