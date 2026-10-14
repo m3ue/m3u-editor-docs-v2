@@ -1,0 +1,216 @@
+<!doctype html>
+<!--
+  Social share card template (1200x630), rendered by
+  scripts/generate-social-cards.sh. Pick the card with ?card=editor or ?card=tv.
+  Screenshots come straight from static/img, so re-running the script after
+  updating them is all a new card needs.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Social card</title>
+<style>
+  @font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 200 800;
+    src: url('../../src/fonts/plus-jakarta-sans/PlusJakartaSans-Variable.woff2') format('woff2');
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+
+  body {
+    position: relative;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #fff;
+    /* Same background as the site hero (.hero in src/pages/index.module.css) */
+    background:
+      radial-gradient(ellipse 60% 70% at 10% 10%, rgba(244, 63, 94, 0.45), transparent 60%),
+      radial-gradient(ellipse 55% 60% at 90% 20%, rgba(99, 102, 241, 0.5), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 50% 110%, rgba(179, 80, 159, 0.45), transparent 60%),
+      #0b1020;
+  }
+
+  /* Faint grid, as .gridBackground on the site hero */
+  .grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 80%);
+  }
+
+  .copy {
+    position: absolute;
+    left: 72px;
+    top: 0;
+    bottom: 0;
+    width: 560px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+
+  .brand .mark {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: var(--glow);
+  }
+
+  .brand .mark img { display: block; width: 100%; height: 100%; }
+
+  .brand span { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
+
+  h1 {
+    font-size: 60px;
+    white-space: nowrap;
+    line-height: 1.08;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
+  h1 em {
+    font-style: normal;
+    background: var(--accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  p {
+    margin-top: 26px;
+    font-size: 22px;
+    line-height: 1.55;
+    color: rgba(226, 232, 240, 0.9);
+  }
+
+  .url {
+    margin-top: 28px;
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .stage { position: absolute; inset: 0; z-index: 1; }
+
+  /* Editor: dashboard window tilted away, bleeding off the right edge */
+  .editor-shot {
+    position: absolute;
+    left: 700px;
+    top: 72px;
+    width: 760px;
+    transform: perspective(1600px) rotateY(-14deg) rotateX(3deg);
+    transform-origin: left center;
+    /* .heroShot in src/pages/index.module.css: glow along the window outline */
+    filter: drop-shadow(0 0 40px rgba(99, 102, 241, 0.3));
+  }
+
+  /* TV: TV home, with tablet and phone overlapping in front */
+  /* Frames and shadows from .heroTv/.heroTablet/.heroPhone in src/pages/tv.module.css */
+  .device { position: absolute; background: #07070b; border: 1px solid rgba(255, 255, 255, 0.14); }
+  .device img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  .device-tv {
+    left: 640px;
+    top: 94px;
+    width: 680px;
+    height: 382px;
+    padding: 6px;
+    border-radius: 10px;
+    box-shadow: 0 0 60px rgba(99, 102, 241, 0.35), 0 30px 60px rgba(0, 0, 0, 0.45);
+  }
+  .device-tv img { border-radius: 5px; }
+
+  .device-tablet {
+    left: 600px;
+    top: 318px;
+    width: 172px;
+    height: 240px;
+    padding: 7px;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  }
+  .device-tablet img { border-radius: 9px; }
+
+  .device-phone {
+    left: 972px;
+    top: 286px;
+    width: 118px;
+    height: 240px;
+    padding: 5px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
+  }
+  .device-phone img { border-radius: 15px; }
+
+  [data-card] { display: none; }
+  body.editor [data-card~="editor"],
+  body.tv [data-card~="tv"] { display: block; }
+  body.editor .copy[data-card~="editor"],
+  body.tv .copy[data-card~="tv"] { display: flex; }
+
+  body.editor {
+    /* .heroTitleAccent and .logo in src/pages/index.module.css */
+    --accent: linear-gradient(90deg, #fb7185 0%, #d8a0f5 50%, #a5b4fc 100%);
+    --glow: 0 0 30px rgba(244, 63, 94, 0.35), 0 0 50px rgba(99, 102, 241, 0.25);
+  }
+
+  body.tv {
+    /* .tvAccent and .tvLogo in src/pages/tv.module.css */
+    --accent: linear-gradient(90deg, #fda4af 0%, #ff4d6d 50%, #fb2c36 100%);
+    --glow: 0 0 30px rgba(255, 32, 86, 0.45), 0 0 50px rgba(251, 44, 54, 0.3);
+  }
+</style>
+</head>
+<body>
+  <div class="grid"></div>
+
+  <div class="copy" data-card="editor">
+    <div class="brand">
+      <div class="mark"><img src="../../static/img/logo.svg" alt=""></div>
+      <span>M3U Editor</span>
+    </div>
+    <h1>Your IPTV,<br><em>fully under control.</em></h1>
+    <p>Self-hosted playlists, EPG, VOD, and DVR, served to every client from one place.</p>
+    <div class="url">m3ue.sparkison.dev</div>
+  </div>
+
+  <div class="copy" data-card="tv">
+    <div class="brand">
+      <div class="mark"><img src="../../static/img/tv-logo.svg" alt=""></div>
+      <span>M3U TV</span>
+    </div>
+    <h1>Your library,<br><em>on every screen.</em></h1>
+    <p>Live TV, guide, movies, series, and DVR on your TV, phone, tablet, and desktop.</p>
+    <div class="url">m3ue.sparkison.dev/tv</div>
+  </div>
+
+  <div class="stage" data-card="editor">
+    <img class="editor-shot" src="../../static/img/screenshots/01_dashboard.png" alt="">
+  </div>
+
+  <div class="stage" data-card="tv">
+    <div class="device device-tv"><img src="../../static/img/tv/tv1.webp" alt=""></div>
+    <div class="device device-tablet"><img src="../../static/img/tv/tablet3.webp" alt=""></div>
+    <div class="device device-phone"><img src="../../static/img/tv/mobile5.webp" alt=""></div>
+  </div>
+
+  <script>
+    document.body.className = new URLSearchParams(location.search).get('card') || 'editor';
+  </script>
+</body>
+</html>
