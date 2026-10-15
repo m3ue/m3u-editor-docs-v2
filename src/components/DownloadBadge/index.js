@@ -13,8 +13,7 @@ export default function DownloadBadge() {
             target="_blank"
             rel="noopener noreferrer"
             className={styles.downloadBadge}
-            role="status"
-            aria-live="polite"
+            aria-label={`${downloadsText} Docker pulls on Docker Hub`}
         >
             <MaterialIcon name="download" size="1.15rem" className={styles.icon} />
             <span><strong>{downloadsText}</strong> Docker pulls</span>
