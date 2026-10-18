@@ -34,6 +34,14 @@ A live stream counts as failed when its connection errors, or when no data arriv
 
 To fail over by hand, use **Trigger Failover** on a stream in the [Stream Monitor](stream-monitor).
 
+### When the provider closes a live stream
+
+Some providers drop a live connection while the channel itself is fine. With backups set up, the proxy normally fails over straight away. Switching to a different feed mid-playback can make some players freeze or reconnect.
+
+To reconnect to the same stream first, turn on **Retry the same stream before failing over** in **Settings > Proxy**. If the stream drops again within the **Retry window** (default 60 seconds), or the retry delivers almost no data, the proxy fails over as normal. Each backup gets its own retry. This needs a recent M3U Proxy version.
+
+Without backups, the proxy always reconnects to the same stream after a healthy run, so this setting changes nothing there.
+
 ## Smart failover
 
 By default, the proxy is given the list of backups and tries them in order. With **smart failover**, it asks M3U Editor for the best backup each time, and the editor skips any that can't take another stream right now:

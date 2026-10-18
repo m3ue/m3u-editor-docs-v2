@@ -46,6 +46,7 @@ Settings for [M3U Proxy](/docs/proxy/overview). The buttons at the top are **Tes
 | | **Stop oldest stream when limit reached** | At a playlist's connection limit, stop its oldest stream to start the new one. |
 | | **Include logos in proxy URL override** | Use the override address for logos too. Turn off to keep HTTPS logo links for Plex while streams use a local address. |
 | **Failover & Recovery** | **Resolver URL**, **Enable advanced failover logic**, **playlist fail conditions** | [Smart failover](/docs/proxy/failover#smart-failover). |
+| | **Retry the same stream before failing over**, **Retry window (seconds)** | Reconnect once to a live stream the provider dropped before using a backup. Off by default. See [Failover](/docs/proxy/failover#when-the-provider-closes-a-live-stream). |
 | | **Enable silence detection** and its settings | [Silence Detection](/docs/proxy/silence-detection). |
 | **In-App Player Transcoding** | **Default Live Transcoding Profile**, **VOD and Series Transcoding Profile** | [Transcoding](/docs/proxy/transcoding#use-a-profile) for the player built into M3U Editor. |
 | | **Max Concurrent Players** | How many in-app players can be open at once. |

@@ -71,6 +71,7 @@ See [Failover and Retries](failover).
 | `LIVE_CHUNK_TIMEOUT_SECONDS` | `15.0` | Seconds without data before a live stream counts as stalled. |
 | `VOD_CHUNK_TIMEOUT_SECONDS` | `5.0` | Seconds without data before a movie or episode reconnects from where it stopped. |
 | `LIVE_SILENT_RECONNECT_MIN_CHUNKS` | `10` | Data a live connection must deliver before the proxy quietly reconnects it, so a stream that has really ended isn't reconnected forever. |
+| `LIVE_SILENT_CLOSE_RETRY_WINDOW_SECONDS` | `0` | With backups set up, reconnect to the same source once when the provider closes a healthy live stream, and fail over only if it closes again within this many seconds. `0` turns it off. M3U Editor sets this per stream with [Retry the same stream before failing over](failover#when-the-provider-closes-a-live-stream). |
 
 ## Bitrate monitoring
 
