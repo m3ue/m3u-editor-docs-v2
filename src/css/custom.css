@@ -235,6 +235,12 @@ body {
   box-shadow: none;
 }
 
+/* Own compositor layer for the links, separate from the blur below; sharing
+   it made them jitter by sub-pixel amounts while scrolling on 1x displays */
+.navbar__inner {
+  transform: translateZ(0);
+}
+
 .navbar::before {
   content: '';
   position: absolute;
@@ -296,7 +302,8 @@ html:has([data-navbar-over-hero]):not(.navbar-scrolled) .navbar:not(.navbar-side
 /* Wordmark next to the logo */
 .navbar__title {
   font-weight: 800;
-  font-size: 1.1rem;
+  /* Whole pixels (18px); a fractional size jitters while scrolling */
+  font-size: 1.125rem;
   letter-spacing: -0.01em;
 }
 
