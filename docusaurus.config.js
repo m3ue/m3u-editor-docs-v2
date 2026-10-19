@@ -148,7 +148,23 @@ const config = {
           showLastUpdateTime: true,
           editUrl: 'https://github.com/m3ue/m3u-editor-docs-v2/tree/master',
         },
-        blog: false,
+        blog: {
+          routeBasePath: 'blog',
+          blogTitle: 'M3U Suite Blog',
+          blogDescription: 'The story behind each M3U Editor and M3U TV release: what was added, and why.',
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
+          showReadingTime: true,
+          postsPerPage: 10,
+          feedOptions: {
+            type: ['rss', 'atom'],
+            title: 'M3U Suite Blog',
+            copyright: `Copyright ${new Date().getFullYear()} M3U Editor. Licensed under CC BY-NC-SA 4.0.`,
+          },
+          onInlineTags: 'throw',
+          onInlineAuthors: 'throw',
+          onUntruncatedBlogPosts: 'throw',
+        },
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -201,6 +217,11 @@ const config = {
           {
             to: '/compose-wizard',
             label: 'Compose Wizard',
+            position: 'left',
+          },
+          {
+            to: '/blog',
+            label: 'Blog',
             position: 'left',
           },
           // Icon buttons on desktop (styled in custom.css), plain text
@@ -275,6 +296,10 @@ const config = {
               {
                 label: 'GitHub Discussions',
                 href: 'https://github.com/m3ue/m3u-editor/discussions',
+              },
+              {
+                label: 'Blog',
+                to: '/blog',
               },
             ],
           },

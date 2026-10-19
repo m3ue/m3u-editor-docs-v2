@@ -1,0 +1,16 @@
+release:
+  label: Release
+  permalink: /release
+  description: Posts about a specific release
+editor:
+  label: M3U Editor
+  permalink: /m3u-editor
+  description: Posts about M3U Editor
+tv:
+  label: M3U TV
+  permalink: /m3u-tv
+  description: Posts about the M3U TV app
+proxy:
+  label: M3U Proxy
+  permalink: /m3u-proxy
+  description: Posts about M3U Proxy
