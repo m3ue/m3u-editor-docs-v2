@@ -1,55 +1,125 @@
 {
-  "tag": "v0.13.4",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.4",
-  "publishedAt": "2026-10-12T22:27:20Z",
+  "tag": "v0.13.5",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.5",
+  "publishedAt": "2026-10-19T16:29:38Z",
   "features": [
     {
-      "text": "Support OTA sub-channel numbers like 5.1 (#1604)",
-      "scope": "channels",
-      "pr": 1606
+      "text": "Opt-in proxy setting to retry the same stream before failing over",
+      "scope": null,
+      "pr": 1632
     },
     {
-      "text": "Explain every EPG Map column with a tooltip",
-      "scope": "epg-maps",
-      "pr": null
+      "text": "Privacy mode blurs URLs and credentials across the app",
+      "scope": "settings",
+      "pr": 1625
+    },
+    {
+      "text": "One-click merge of provider playlist with unmatched local media",
+      "scope": "merged-playlists",
+      "pr": 1615
+    },
+    {
+      "text": "Start late / finish early padding with sec/min toggle",
+      "scope": "dvr",
+      "pr": 1622
     }
   ],
   "fixes": [
     {
-      "text": "Dedupe repeated XMLTV programmes and stream gzip EPG output",
-      "scope": "epg",
-      "pr": 1609
-    },
-    {
-      "text": "Preserve programme poster and backdrop roles (#1568)",
-      "scope": "epg",
-      "pr": 1605
-    },
-    {
-      "text": "Validate schedule_dvr windows and padding",
-      "scope": "dvr",
-      "pr": null
-    },
-    {
-      "text": "Size Info column to content and escape provider text",
-      "scope": "channels",
-      "pr": null
-    },
-    {
-      "text": "Restore \"EPG is not mapped\" filter on Live Channels",
-      "scope": "channels",
-      "pr": null
-    },
-    {
-      "text": "Auto-enable now matches categories and groups on the provider's name",
+      "text": "DVR test case failing with corrected playback URL",
       "scope": null,
       "pr": null
+    },
+    {
+      "text": "Enable default downloaders on new managed libraries and publish movie genres",
+      "scope": "emby",
+      "pr": null
+    },
+    {
+      "text": "DVR recording URL construction missing port",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Keep TMDB season trailers through provider refreshes, and stop rechecking series TMDB has no seasons for",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Keep TMDB-filled plot/cover through blank provider refreshes, and recheck a reverted genre",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Stop repeat TMDB lookups on every sync, and scrubber logs for long titles",
+      "scope": null,
+      "pr": 1633
+    },
+    {
+      "text": "Keep the existing EPG guide when the file ends partway through, and drop queued chunk rows on failure",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Keep existing EPG data when a source returns non-XMLTV, plus import and SchedulesDirect integration tests",
+      "scope": null,
+      "pr": 1631
+    },
+    {
+      "text": "Catchup for plain M3U providers and Kodi/IPTVnator-compatible M3U catchup output (#1627)",
+      "scope": null,
+      "pr": 1630
+    },
+    {
+      "text": "Network playlist channels in merged playlists and Xtream re-imports",
+      "scope": null,
+      "pr": 1303
+    },
+    {
+      "text": "Apply channel EPG shift to Xtream EPG actions and viewer refresh",
+      "scope": "epg",
+      "pr": 1629
+    },
+    {
+      "text": "Map EPG to selected now links custom channels",
+      "scope": null,
+      "pr": 1628
+    },
+    {
+      "text": "Stop misclassifying movie recordings as series episodes",
+      "scope": "dvr",
+      "pr": 1626
+    },
+    {
+      "text": "Managed Emby library preparation lifecycle",
+      "scope": "media-server",
+      "pr": 1603
+    },
+    {
+      "text": "Post process header hint works for Jellyfin 12",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Jellyfin 12 integration 401s from removed legacy auth",
+      "scope": null,
+      "pr": 1619
+    },
+    {
+      "text": "Playlist viewer watch progress relink",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Distinguish missing TMDB seasons from lookup errors",
+      "scope": null,
+      "pr": 1613
     }
   ],
   "counts": {
-    "features": 2,
-    "fixes": 6,
-    "maintenance": 11
+    "features": 4,
+    "fixes": 18,
+    "maintenance": 9
   },
-  "fetchedAt": "2026-10-19T14:58:02.757Z"
+  "fetchedAt": "2026-10-19T18:51:45.273Z"
 }
