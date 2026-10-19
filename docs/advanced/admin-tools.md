@@ -73,3 +73,5 @@ A post process does something when a playlist or EPG changes: calls a URL, runs 
 4. Save, then add the playlists and EPGs it applies to with **Assign processing to item**.
 
 Each run is logged on the post process. URLs on your local network are blocked unless you set `ALLOW_PRIVATE_WEBHOOK_URLS=true`.
+
+To call Emby or Jellyfin, send the API key in a header. Emby uses `X-Emby-Token: API_KEY`. Jellyfin 10.8 and later use `Authorization: MediaBrowser Token="API_KEY"`, and Jellyfin 12 accepts only that form.

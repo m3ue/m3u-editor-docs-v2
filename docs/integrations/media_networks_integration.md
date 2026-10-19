@@ -86,7 +86,7 @@ Start and stop it with **Start Broadcast** and **Stop Broadcast**. The **Broadca
 
 ## Watch it
 
-A network's **Stream Output** and **EPG Output** tabs list its URLs. Most people use the **Output Playlist** instead: it carries all its networks as live channels, with their guide, through the usual [playlist outputs](/docs/client_configuration). Each media server integration's **Networks** tab also has a playlist and guide URL covering every network built from that server.
+A network's **Stream Output** and **EPG Output** tabs list its URLs. Most people use the **Output Playlist** instead: it carries all its networks as live channels, with their guide, through the usual [playlist outputs](/docs/client_configuration). Each media server integration's **Networks** tab also has a playlist and guide URL covering every network built from that server. *(v0.13.5+)* The Output Playlist can also be a source in a [Merged Playlist](/docs/resources/merged-playlist), to serve your networks alongside a provider's channels under one login.
 
 :::tip Broadcast segments in memory
 The proxy writes broadcast segments to `HLS_BROADCAST_DIR` (by default `/tmp/m3u-proxy-broadcasts`). Mounting a `tmpfs` there keeps them in RAM, which is faster and spares your disk. Allow roughly 50 to 200 MB per running network.

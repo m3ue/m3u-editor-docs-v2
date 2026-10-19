@@ -34,6 +34,6 @@ If a transcoded stream's speed is below `1.0x`, the encoder can't keep up and vi
 
 The page refreshes on its own every 5 seconds. Change the interval (3, 5, 10, or 30 seconds) or turn it off with **Auto-refresh**. It pauses while the browser tab is hidden.
 
-**Hide URLs** blurs stream addresses, which contain provider logins, for screenshots and screen sharing. Both choices are remembered in your browser.
+**Hide URLs** blurs stream addresses, which contain provider logins, for screenshots and screen sharing. Both choices are remembered in your browser. *(v0.13.5+)* With **Privacy mode** on (**Settings → General**), addresses are always blurred until you hover over them, and the button is hidden.
 
 If the page shows no streams when something is playing, check the stream is actually [proxied](overview#turn-it-on), and that **Settings → Proxy → Test connection** succeeds.

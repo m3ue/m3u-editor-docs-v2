@@ -124,7 +124,7 @@ A few output settings are worth knowing:
 
 - **HDHR/Xtream API Streams** is the number of tuners HDHomeRun clients see, and the connection count Xtream clients are told. `0` means unlimited.
 - **Available Streams** caps how many streams the proxy will run for this playlist at once.
-- **Provider Timezone** is needed for catch-up (timeshift) to line up. **Get from playlist status** fills it in from your provider.
+- **Provider Timezone** is needed for [catch-up](channels-vod-series#catch-up) (timeshift) to line up. **Get from playlist status** fills it in from your provider.
 - **Disable Xtream URL format in M3U output** puts the provider's own stream URLs in the M3U file, for players that can't use the Xtream-style links.
 
 ## Media server sources
@@ -137,6 +137,8 @@ A few output settings are worth knowing:
 - With [caching](/docs/advanced/cached-content) enabled, the **Cached** column shows a server icon for matched items, and caching can [send titles to Radarr or Sonarr](/docs/advanced/cached-content#caching-through-radarr-or-sonarr) instead of downloading them.
 
 The option isn't shown on playlists created by a media server integration.
+
+Titles that are only on your media server aren't added to the playlist. To serve them alongside the provider's, use *(v0.13.5+)* **Create Merged Playlist with Local Media** from the playlist's actions. See [Merged Playlists](merged-playlist#add-your-local-media-to-a-provider-playlist).
 
 ## Playlist actions
 
@@ -152,6 +154,7 @@ The actions menu on a playlist has more tools:
 | **Duplicate** | Copy the playlist and its settings. |
 | **Copy Changes** | Copy your channel edits (names, logos, numbers, groups, and more) onto matching channels in another playlist. |
 | **Migrate Provider** | Move your whole lineup to a new provider's playlist (below). |
+| **Create Merged Playlist with Local Media** | *(v0.13.5+)* With **Prefer media server sources** on, create a [Merged Playlist](merged-playlist#add-your-local-media-to-a-provider-playlist) of this playlist plus your media server libraries. |
 | **Purge Series** | Delete every series in the playlist. |
 
 ### Moving to a new provider

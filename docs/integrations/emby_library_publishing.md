@@ -82,7 +82,7 @@ For finer control (for example a Dynamic Group source), create a single mapping:
 | **Existing library** | Point at a library Emby already has, or leave blank to create a new one |
 | **Library name** | Name for the Emby library (auto-filled when an existing library is selected) |
 | **Companion output path** | Where the plugin writes companion files. Limited to paths the plugin itself has registered as writable; you can't type an arbitrary path |
-| **Create and manage this Emby library** | When enabled, M3U Editor treats the library as fully managed (created if missing, and reconciled if its config drifts) |
+| **Create and manage this Emby library** | When enabled, M3U Editor treats the library as fully managed (created if missing, and reconciled if its config drifts). *(v0.13.5+)* A new library is created with Emby's default metadata and image downloaders turned on, as if you'd added it in Emby, so items get artwork, cast, ratings, and genres. Libraries created earlier have them off: turn them on in the library's settings in Emby, then refresh its metadata. |
 | **Enabled** | Turn the mapping on/off without deleting it |
 
 ### Publishing Options
@@ -126,5 +126,7 @@ By default, the plugin signs in with the playlist owner's login. To let it use a
 | Emby is not ready for managed setup, or returned an invalid response | The companion plugin's configuration |
 | Binding conflict | Reconnect the integration, then retry |
 | Blocked by the integration security policy | The integration's security settings |
+| Emby could not create the managed library | The companion plugin's version and the administrator credential. *(v0.13.5+)* Any cleanup from the failed attempt finishes first, then retry. |
+| Managed library cleanup is pending | Wait for the cleanup to finish, then retry |
 
 Retry setup once you've fixed the cause.

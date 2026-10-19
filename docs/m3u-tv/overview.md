@@ -62,7 +62,8 @@ Video is decoded on the GPU on every platform, except Linux under X11. All platf
 
 ## Learn more
 
-- [Guide and Playback](guide-and-playback): the guide, catch-up, remote buttons, and display settings
+- [Settings](settings): every setting, its default, and which devices show it
+- [Guide and Playback](guide-and-playback): the guide, catch-up, Multiview, the player, and trailers
 - [Device Pairing](device-pairing): signing in a TV without typing a password
 - [Push Notifications](push-notifications): alerts on your phone, and what the relay does
 - [Continue Watching](continue-watching): resuming across devices

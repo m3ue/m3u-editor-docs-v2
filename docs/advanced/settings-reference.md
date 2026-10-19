@@ -16,18 +16,19 @@ When an environment variable is set for a setting, the field is locked and shows
 
 ## General
 
-| Setting | What it does |
-|---|---|
-| **Show breadcrumbs**, **Navigation position**, **Max width of the page content** | Layout of the interface. The sidebar can sit on the left or along the top. |
-| **Show queue indicator** | Show background job activity in the top bar. |
-| **Output WAN address in menu** | Show your server's public IP address in the menu. |
-| **Suppress success notifications** | Hide success and information pop-ups from background tasks. Errors and warnings always show. |
-| **Application Timezone** | The timezone for every date and time in the app, and for schedules. Overrides `TZ`. |
-| **Date Format** | How dates are shown, from presets or a custom format. |
-| **Allowed domains** | Only allow playlist URLs from these domains (wildcards allowed). Empty allows any. |
-| **Enhanced output enabled** | Extra Xtream API fields that [M3U TV](/docs/m3u-tv/overview) needs. On by default; leave it on. |
-| **HTTP Port**, **HTTPS Port** | The ports your Xtream API tells players to use, when they differ from `APP_PORT` and 443, for example behind a reverse proxy. |
-| **Xtream API panel message** | A message players can show from the Xtream API. |
+| Section | Setting | What it does |
+|---|---|---|
+| **Layout** | **Show breadcrumbs**, **Navigation position**, **Max width of the page content** | Layout of the interface. The sidebar can sit on the left or along the top. |
+| **Top bar** | **Show queue indicator** | Show background job activity in the top bar. |
+| | **Output WAN address in menu** | Show your server's public IP address in the top bar. |
+| **Privacy & notifications** | **Privacy mode** | *(v0.13.5+)* Blur URLs, usernames, passwords, and API keys everywhere in the app, for screenshots, screen sharing, and support requests. Hover over or click into a value to reveal it. Applies to every user. Off by default. |
+| | **Suppress success notifications** | Hide success and information pop-ups from background tasks. Errors and warnings always show. |
+| **Date & time** | **Application Timezone** | The timezone for every date and time in the app, and for schedules. Overrides `TZ`. |
+| | **Date Format** | How dates are shown, from presets or a custom format. |
+| **Allowed Playlist Domains** | **Allowed domains** | Only allow playlist URLs from these domains (wildcards allowed). Empty allows any. |
+| **Xtream API Panel Settings** | **Enhanced output enabled** | Extra Xtream API fields that [M3U TV](/docs/m3u-tv/overview) needs. On by default; leave it on. |
+| | **HTTP Port**, **HTTPS Port** | The ports your Xtream API tells players to use, when they differ from `APP_PORT` and 443, for example behind a reverse proxy. |
+| | **Xtream API panel message** | A message players can show from the Xtream API. |
 
 **Test WebSocket** at the top of the page checks that live updates reach your browser. If no pop-up appears, see [Reverse Proxy and HTTPS](/docs/deployment/caddy-vs-nginx#what-the-reverse-proxy-needs).
 

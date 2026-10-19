@@ -14,7 +14,7 @@ Typing a username and password with a TV remote is painful. With device pairing,
 
 ## Pair a TV
 
-1. In M3U TV, choose **Pair with code**. The TV shows a code like `XKQP-9F3T`, and a QR code that opens the right page.
+1. In M3U TV, choose **Pair with code**. The TV shows a code like `XKQP-9F3T`, and a QR code that opens the right page. *(v1.2.3+)* On a desktop or phone, **Copy code** copies it so you can paste it into M3U Editor.
 2. In M3U Editor, go to **Administration → Devices → Device Pairing** (or scan the QR code), and enter the code.
 3. Choose which login the TV should use: a playlist's [default login](/docs/resources/playlist-auth#default-login) or a [Playlist Auth](/docs/resources/playlist-auth).
 

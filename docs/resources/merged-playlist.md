@@ -30,6 +30,15 @@ For example, attach a movies-only provider with only **Include VOD** on, while y
 
 The **Playlists** tab counts what each source contributes. A content type you've turned off shows `0` and "Excluded from merge".
 
+Any playlist can be a source, including a [media server](/docs/integrations/overview) playlist and *(v0.13.5+)* the output playlist of your [Networks](/docs/integrations/media_networks_integration).
+
+## Add your local media to a provider playlist
+
+*(v0.13.5+)* [Prefer media server sources](playlists#media-server-sources) plays your own copy of titles the provider also has, but titles that are only on your media server aren't added to the provider playlist. To get everything in one lineup, merge the two:
+
+- **Create Merged Playlist with Local Media**, in the provider playlist's actions menu, does it in one step. It creates a Merged Playlist of the provider playlist plus your media server playlists, without listing a title twice. Your existing playlist and its logins are unchanged, so assign your [Playlist Auths](playlist-auth) to the new one to start using it. The action appears once **Prefer media server sources** is on, and needs an Emby, Jellyfin, Plex, or Local Media integration that has synced a playlist.
+- To set it up by hand, attach the media server playlist with **Only items not already provided by another playlist** on (also under **Content Types** on its row). It then adds only the titles no other source in the merge already serves through **Prefer media server sources**. It's off by default, so a media server source normally adds everything.
+
 ## Settings
 
 | Tab | What's in it |

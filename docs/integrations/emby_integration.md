@@ -45,6 +45,10 @@ Go to **Integrations → Media Servers** and choose **Add Media Server**:
 
 Choose **Test Connection & Discover Libraries**, select the movie, TV, or mixed libraries to import, and save. The first sync starts straight away.
 
+:::note Jellyfin 12
+Jellyfin 12 no longer accepts the older way of sending the API key, so M3U Editor v0.13.4 and earlier fail to connect to it (**401 Unauthorized**). Update to v0.13.5 or later. Jellyfin 10.8 and later work either way.
+:::
+
 M3U Editor imports each movie and series with its details (plot, cast, genres, ratings, and artwork), plus every season and episode. The [Media Servers](emby_integration_settings) page covers the integration's other settings and actions.
 
 ## Publish to Emby

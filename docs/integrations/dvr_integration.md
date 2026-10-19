@@ -55,7 +55,7 @@ Each playlist's **DVR** tab has its own settings:
 | **Output Format** | MPEG-TS | The file type: `.ts`, `.mp4`, or `.mkv`. The stream is copied, not re-encoded. |
 | **Transcode Recordings** | Off | Deinterlace and convert to H.264/AAC while recording. Turn on for HDHomeRun and over-the-air sources, so recordings play in a browser and take less space. |
 | **Max Concurrent Recordings** | 2 | How many recordings can run at once. Keep it within your provider's connection limit. |
-| **Start Early**, **End Late** | 30s, 60s | Padding before and after each show. |
+| **Start Early**, **End Late** | 30s, 60s | Padding before and after each show, up to 10 minutes. *(v0.13.5+)* Enter it in seconds or minutes. |
 | **Retention (days)** | 0 | Delete recordings older than this. `0` keeps them. |
 | **Disk Quota (GB)** | 0 | Delete the oldest recordings when this is exceeded. `0` means no limit. |
 | **Enable Metadata Enrichment** | Off | Fetch artwork, descriptions, and episode details from TMDB and TVMaze after recording. |
@@ -83,7 +83,9 @@ For series rules, **Record Episodes** chooses which airings to keep:
 
 Sports and other shows without episode numbers are matched by title. A same-title airing within the **Sports Dedup Window** (2 days unless you set it) counts as a replay and is skipped.
 
-While you edit a series rule, **Upcoming Airings** shows exactly what it would record, and which airings it would skip. **Keep Last N Recordings** deletes older episodes as new ones arrive. When more recordings are due than **Max Concurrent Recordings** allows, rules with a higher **Priority** (default 50) start first. A rule's **Start Early**, **End Late**, and **Commercial Detection** can override the playlist's defaults.
+While you edit a series rule, **Upcoming Airings** shows exactly what it would record, and which airings it would skip. **Keep Last N Recordings** deletes older episodes as new ones arrive. When more recordings are due than **Max Concurrent Recordings** allows, rules with a higher **Priority** (default 50) start first. A rule's **Start Padding**, **End Padding**, and **Commercial Detection** can override the playlist's defaults. Leave the padding blank to use the playlist's.
+
+*(v0.13.5+)* Rule padding can go either way, in seconds or minutes, up to 24 hours. Set **Start Padding** to **Early** to start before the guide time, or **Late** to start after it. Set **End Padding** to **Late** to keep recording after the show, or **Early** to stop before it ends. For example, start 2 minutes late to skip the end of the previous show, or finish early to drop the closing credits.
 
 :::tip No matched airings?
 A series rule matches the show's title in the guide (not case-sensitive). If it matches nothing, check the exact title in **Browse Shows**. New guide data is matched after each EPG sync, and saving a rule matches it right away.

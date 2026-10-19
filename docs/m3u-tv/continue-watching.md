@@ -14,7 +14,7 @@ Stop a movie or episode on your phone, and pick it up on the TV at the same seco
 - **Live channels** record when you last watched them, for a recently watched list.
 - **[AIOStreams](/docs/integrations/aiostreams_integration)** titles are included too.
 
-Progress belongs to the login, not the device. If each person has their own [Playlist Auth](/docs/resources/playlist-auth), each gets their own list. They're listed under **Playlist → Playlist Viewers**.
+Progress belongs to the viewer, not the device. Each login has at least one viewer, and you can add more for the people sharing it, like profiles on a streaming service: in M3U TV, go to **Settings → Account → Active Viewer** and choose **Add New Viewer**, or switch between them there. Each viewer has its own Continue Watching and favorites. Giving each person their own [Playlist Auth](/docs/resources/playlist-auth) works too. Viewers are listed in M3U Editor under **Playlist → Playlist Viewers**.
 
 ## Add or edit progress by hand
 

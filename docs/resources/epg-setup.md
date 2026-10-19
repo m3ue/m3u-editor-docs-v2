@@ -51,6 +51,8 @@ Lineups not yet on your Schedules Direct account are added on the next sync. Sta
 
 Each EPG syncs on its own schedule under **Scheduling**. **Auto resync on failure** retries a failed sync, or one that finds no channels, after 1 minute, then 2, then 3, up to **Max retry attempts**.
 
+*(v0.13.5+)* A bad download doesn't wipe your guide. If a source sends something that isn't XMLTV (an HTML error or login page, for example), or a file that ends partway through, the sync fails with the reason in your notifications and the EPG keeps its last good guide and channel mappings. Schedules Direct works the same way: when the service reports an error or returns no stations, the existing guide is kept.
+
 ### Combine guides
 
 A **Merged EPG** (**EPG → Merged EPGs**) combines several EPGs into one, for example a regional guide plus a sports guide. Drag the sources into order; when two sources have the same channel, the first one wins. Map the merged EPG to your channels like any other.
@@ -76,6 +78,15 @@ The map runs in the background, and the list shows its progress and how many cha
 
 </Step>
 </Steps>
+
+The **EPG Maps** list describes the latest run, not the playlist as a whole. Hover a column's header for its full meaning *(v0.13.4+)*:
+
+| Column | Counts |
+|---|---|
+| **Total Channels** | Live channels in the map's groups (or the whole playlist) with EPG mapping turned on |
+| **Currently Mapped** | Those that already had guide data when the run started, by hand or from earlier runs |
+| **Search & Map** | Channels the run searched. With **Overwrite** off, only unmapped ones. |
+| **Newly Mapped** | Channels the run matched. With **Overwrite** off, `0` is normal once everything is mapped. |
 
 ### Improve the matches
 

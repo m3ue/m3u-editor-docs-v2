@@ -49,7 +49,8 @@ Open a channel to change it. Leave a field empty to keep the provider's value.
 | **Logo Override** | Use a different logo. Upload logos under **Tools → Assets**. |
 | **URL Override** | Play a different stream URL. |
 | **EPG Channel** | Choose its guide data by hand. See [EPGs](epg-setup#map-guide-data-to-channels). |
-| **Time Shift**, **EPG Shift** | Shift the stream (for catch-up providers) or the guide by a number of hours. |
+| **Time Shift** | How many hours of [catch-up](#catch-up) the channel has. `0` turns catch-up off for it. |
+| **EPG Shift** | Move the channel's guide earlier or later by a number of hours, when the provider's guide times are off. *(v0.13.5+)* It applies to the Xtream API guide too, not only the XMLTV file. |
 | **Failover Channels** | Other channels to try, in order, when this one fails. Failover needs the [proxy](/docs/proxy/failover). |
 
 The **Play** button on each row opens the in-app player, which is handy for checking a stream before your players see it.
@@ -71,6 +72,26 @@ Select rows, then open **Bulk channel actions** (or **Bulk VOD actions**, **Bulk
 | **Enable / Disable** | **Enable selected**, **Disable selected** |
 
 To make the same change after every sync, set it up in the playlist instead: **Find & Replace Rules**, **Auto Enable/Disable Rules**, and **Sort Alpha Configs** under its [Processing tab](playlists#processing).
+
+## Catch-up
+
+Catch-up (also called timeshift or replay) lets players watch programmes that already aired, on channels your provider records.
+
+M3U Editor picks it up from your provider on each sync:
+
+- **Xtream playlists:** channels the provider marks as having an archive get catch-up, with the provider's archive length.
+- **M3U playlists:** from the `catchup` and `catchup-source` attributes, with the archive length from `catchup-days`, then `tvg-rec`, then `timeshift`, all in days (the order Kodi uses). *(v0.13.5+)* Every `catchup` mode Kodi IPTV Simple supports works (`default`, `append`, `shift`, `flussonic`, and `xc`), so plain M3U providers like EPGenius have working catch-up. `tvg-shift` is the guide offset, not catch-up.
+
+Your players reach catch-up through M3U Editor, not the provider, so it works with the proxy, failover, and your logins. The Xtream API reports each channel's archive, and *(v0.13.5+)* the M3U output uses the form Kodi IPTV Simple, TiviMate, and IPTVnator all understand (`catchup="default"`, with `catchup-days` in days).
+
+| To | Do this |
+|---|---|
+| Make replays line up with the guide | Set the playlist's **Provider Timezone** (**Output** tab). **Get from playlist status** fills it in. |
+| Change a channel's archive length | Edit its **Time Shift**, or use **Set Timeshift** on a selection. `0` turns catch-up off. |
+| Hide catch-up from players | Turn on **Disable catch-up** in the playlist's **Output** tab, for providers whose catch-up doesn't work. |
+| Change the length reported when the provider gives none | Set `DEFAULT_EPG_CATCHUP_DAYS` (default `7`). See [Environment Variables](/docs/advanced/environment-variables). |
+
+In [M3U TV](/docs/m3u-tv/guide-and-playback#catchup-replay), past programmes on these channels show **REPLAY**.
 
 ## Groups and categories
 
