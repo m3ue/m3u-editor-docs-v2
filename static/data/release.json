@@ -1,125 +1,49 @@
 {
-  "tag": "v0.13.5",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.5",
-  "publishedAt": "2026-10-19T16:29:38Z",
-  "features": [
-    {
-      "text": "Opt-in proxy setting to retry the same stream before failing over",
-      "scope": null,
-      "pr": 1632
-    },
-    {
-      "text": "Privacy mode blurs URLs and credentials across the app",
-      "scope": "settings",
-      "pr": 1625
-    },
-    {
-      "text": "One-click merge of provider playlist with unmatched local media",
-      "scope": "merged-playlists",
-      "pr": 1615
-    },
-    {
-      "text": "Start late / finish early padding with sec/min toggle",
-      "scope": "dvr",
-      "pr": 1622
-    }
-  ],
+  "tag": "v0.13.6",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.6",
+  "publishedAt": "2026-10-22T15:59:30Z",
+  "features": [],
   "fixes": [
     {
-      "text": "DVR test case failing with corrected playback URL",
+      "text": "Test case for sys health page",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Enable default downloaders on new managed libraries and publish movie genres",
-      "scope": "emby",
-      "pr": null
-    },
-    {
-      "text": "DVR recording URL construction missing port",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Keep TMDB season trailers through provider refreshes, and stop rechecking series TMDB has no seasons for",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Keep TMDB-filled plot/cover through blank provider refreshes, and recheck a reverted genre",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Stop repeat TMDB lookups on every sync, and scrubber logs for long titles",
-      "scope": null,
-      "pr": 1633
-    },
-    {
-      "text": "Keep the existing EPG guide when the file ends partway through, and drop queued chunk rows on failure",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Keep existing EPG data when a source returns non-XMLTV, plus import and SchedulesDirect integration tests",
-      "scope": null,
-      "pr": 1631
-    },
-    {
-      "text": "Catchup for plain M3U providers and Kodi/IPTVnator-compatible M3U catchup output (#1627)",
-      "scope": null,
-      "pr": 1630
-    },
-    {
-      "text": "Network playlist channels in merged playlists and Xtream re-imports",
-      "scope": null,
-      "pr": 1303
-    },
-    {
-      "text": "Apply channel EPG shift to Xtream EPG actions and viewer refresh",
+      "text": "Preserve merged guide when source files are unavailable",
       "scope": "epg",
-      "pr": 1629
+      "pr": 1653
     },
     {
-      "text": "Map EPG to selected now links custom channels",
-      "scope": null,
-      "pr": 1628
+      "text": "Recover from mid-sync token expiry instead of saving an empty guide",
+      "scope": "schedules-direct",
+      "pr": null
     },
     {
-      "text": "Stop misclassifying movie recordings as series episodes",
-      "scope": "dvr",
-      "pr": 1626
-    },
-    {
-      "text": "Managed Emby library preparation lifecycle",
-      "scope": "media-server",
-      "pr": 1603
-    },
-    {
-      "text": "Post process header hint works for Jellyfin 12",
+      "text": "Fail sync when batch fails to prevent clearing programme data",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Jellyfin 12 integration 401s from removed legacy auth",
-      "scope": null,
-      "pr": 1619
-    },
-    {
-      "text": "Playlist viewer watch progress relink",
-      "scope": null,
+      "text": "Use SD's rolling 24h login window and real /image error codes",
+      "scope": "schedules-direct",
       "pr": null
     },
     {
-      "text": "Distinguish missing TMDB seasons from lookup errors",
+      "text": "Move Xtream channels into the category the provider moved them to, and log added groups (#1636)",
       "scope": null,
-      "pr": 1613
+      "pr": 1640
+    },
+    {
+      "text": "Stop retrying /token on permanent login errors, back off on limits and server errors",
+      "scope": "schedules-direct",
+      "pr": 1638
     }
   ],
   "counts": {
-    "features": 4,
-    "fixes": 18,
-    "maintenance": 9
+    "features": 0,
+    "fixes": 7,
+    "maintenance": 4
   },
-  "fetchedAt": "2026-10-19T18:51:45.273Z"
+  "fetchedAt": "2026-10-22T16:00:20.185Z"
 }

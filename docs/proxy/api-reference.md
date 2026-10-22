@@ -23,7 +23,9 @@ curl "http://m3u-proxy:38085/health?api_token=your-token"
 
 A missing or wrong token gets a `401` response. In M3U Editor, **Settings → Proxy → API key** shows the token in use.
 
-Endpoints that serve video to players never need the token: `/stream/{id}`, `/hls/{id}/...`, `/dash/{id}/...`, and broadcast playlists and segments. The stream ID itself is hard to guess, and only M3U Editor hands it out.
+Endpoints that serve video to players never need the token: `/stream/{id}`, `/hls/{id}/...`, `/dash/{id}/...`, and broadcast playlists and segments. Instead, the proxy signs every URL it writes into a playlist or manifest, and the segment routes refuse any URL it didn't sign, so they can't be used to fetch other addresses or files. The `?url=` parameter, which starts a stream from a URL you pass in, needs a signed URL or the token.
+
+The signing key comes from `API_TOKEN`, and signed URLs are visible to anyone who can load a playlist, so use a long random token (`openssl rand -hex 32`), not a word or `changeme`.
 
 :::warning
 Keep the proxy on your Docker network, as the compose files do, and reach it through M3U Editor. Don't publish its port to the internet.
