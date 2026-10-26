@@ -82,9 +82,14 @@ Multiview works everywhere except the web app. Each tile is a separate stream, s
 ### On-screen details
 
 - *(v1.2.3+)* The player shows the current time, and **Ends at** with the time the movie, episode, or live programme finishes.
+- *(v1.2.4+)* While watching a series, an **Episodes** button opens a drawer to jump to another episode or season without leaving the player.
 - **Skip Intro** and **Skip Credits** appear on movies and episodes that [TheIntroDB](https://theintrodb.org) has timestamps for, and **Up next** offers the next episode as the credits start. *(v1.2.3+)* To turn this off, go to **Settings → Integrations → TheIntroDB**.
 - In [DVR](/docs/integrations/dvr_integration) recordings with commercial detection, marked breaks are skipped automatically. Turn off **Settings → Playback → Auto-skip commercials** to get a **Skip commercial** button instead.
 - *(v1.2.3+)* Movies and series played with a [transcoding profile](/docs/proxy/transcoding) can't be seeked, so the player hides the seek bar and shows **Seeking isn't available while transcoding**. The direct proxy, catchup, and live TV are not affected. To seek, choose **Direct (no transcoding)** under **Settings → Playback**.
+
+### Picture-in-picture on Android
+
+*(v1.2.4+)* On Android devices that support it, pressing Home or switching apps while a video is playing shrinks it into a small floating window instead of stopping it. Tap the window to return to M3U TV.
 
 ### Full screen on desktop
 

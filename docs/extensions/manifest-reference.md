@@ -153,6 +153,8 @@ Each entry in the `settings` array defines one setting field.
 | `options` | object | If `type=select` | `{ "value_key": "Display Label" }` map of options. |
 | `options_provider` | string | If `type=select` | Provider name for dynamic options via `PluginSelectOptionsProviderInterface`. Makes the field reactive. |
 | `depends_on` | array | No | Field IDs whose current values are forwarded to `options_provider` as context. Causes the dependent field to reset when the source changes. |
+| `visible_when` | object | No | *(v0.13.7+)* Show the field only when other fields have certain values, like `{ "source_mode": ["native_playlist"] }`. Every condition must match. See [Conditional fields](plugin-settings#show-fields-only-when-they-apply). |
+| `visibility_provider` | string | No | *(v0.13.7+)* For rules too complex for `visible_when`: a name your plugin's optional `isFieldVisible()` method answers. List the fields it reads in `visibility_depends_on`. |
 | `multiple` | boolean | No | Allow multiple selections for `select`, `model_select`, and `table_select` fields. Stored as an array. |
 | `model` | string | If `type=model_select` | Fully-qualified Eloquent model class (e.g. `App\Models\Playlist`). |
 | `label_attribute` | string | No | Model attribute to display in `model_select` options (default: `name`). |

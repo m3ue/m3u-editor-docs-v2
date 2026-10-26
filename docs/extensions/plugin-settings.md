@@ -165,6 +165,26 @@ For plugins with many settings, you can organise them into collapsible **section
 
 Settings declared at the top level (outside any section) are rendered above the sections. Sections can be nested by placing another `section` entry inside a `fields` array.
 
+## Show fields only when they apply
+
+*(v0.13.7+)* A long settings form is easier to use when it only shows what's relevant. Add `visible_when` to a field or section, naming another field and the values that should reveal it:
+
+```json
+{
+  "id": "source_playlist_id",
+  "type": "model_select",
+  "label": "Reference playlist",
+  "model": "App\\Models\\Playlist",
+  "visible_when": { "source_mode": ["native_playlist"] }
+}
+```
+
+Here the playlist picker only appears while **Source mode** is set to `native_playlist`. If you list more than one field, all of them must match.
+
+Hiding a field doesn't clear it or turn it off: its saved value stays, and it is still validated. Because of that, a field that can be hidden can't be `required`. Give it a sensible default, or check the value in your plugin's code. Older versions of M3U Editor ignore `visible_when` and show every field, so the form still works.
+
+For rules that need real logic, see `visibility_provider` in the [Manifest Reference](manifest-reference#settings-fields).
+
 ## Scheduled plugin settings
 
 Plugins with the `scheduled` capability typically include settings for the schedule itself:

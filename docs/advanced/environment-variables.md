@@ -39,8 +39,11 @@ M3U Proxy has its own variables, in the [proxy's Configuration Reference](/docs/
 | `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | `127.0.0.1`, `5432`, `m3ue` | Where the app connects. For embedded PostgreSQL, match the `PG_*` values. |
 | `SQLITE_MIGRATE` | `false` | Move an existing SQLite database into PostgreSQL on the next start. See [SQLite to PostgreSQL](sqlite-to-postgres). |
 | `TRGM_THRESHOLD` | `0.35` | Similarity threshold for [wider EPG matching](/docs/resources/epg-setup#improve-the-matches) on PostgreSQL. |
+| `POSTGRES_VERSION` | `17` | Which embedded PostgreSQL major to run. Set to `18` and restart to upgrade an existing install in place. See [Upgrading embedded PostgreSQL](postgres-upgrade). |
+| `POSTGRES_ROLLBACK` | `false` | Required alongside a lowered `POSTGRES_VERSION` to actually roll back after an upgrade. See [Upgrading embedded PostgreSQL](postgres-upgrade). |
+| `PG_CLIENT_VERSION` | Matches the embedded version | Which PostgreSQL client tools (`pg_dump`/`psql`) backup/restore uses. Only needs setting by hand for an *external* PostgreSQL server on a different major. |
 
-See [Editor Configuration](/docs/configuration#database) for each setup, and [SQLite to PostgreSQL](sqlite-to-postgres) to move an existing install.
+See [Editor Configuration](/docs/configuration#database) for each setup, [SQLite to PostgreSQL](sqlite-to-postgres) to move an existing install, and [Upgrading embedded PostgreSQL](postgres-upgrade) to move from 17 to 18.
 
 ## Redis
 

@@ -68,6 +68,8 @@ From any search or discover result:
 3. Click **Add to Sonarr** / **Add to Radarr**
 4. The item is added using the quality profile and root folder configured on the integration
 
+*(v0.13.7+)* If you have more than one Sonarr or Radarr integration and several of them can add the same title, the detail panel shows a **Request Destination** drop-down. Pick which instance should receive the request, for example your 4K Radarr instead of your HD one. With only one match, no drop-down appears.
+
 For TV shows you can also run an **Interactive Search** on a specific episode, which has Sonarr search all its indexers for that episode right away.
 
 ## Download Queue
@@ -110,6 +112,7 @@ With webhooks configured, the download queue in M3U Editor updates in near-real 
 |---|---|---|
 | **Use for caching** | Radarr and Sonarr | Send new cached titles here instead of downloading them from the provider. Titles already in the library are never changed or removed. |
 | **Fail back to the provider** *(v0.13.3+)* | Radarr and Sonarr | If a title fails to download, or still isn't downloaded or downloading after 24 hours, download it from the provider instead. The title is unmonitored in the arr; nothing is deleted from it. |
+| **Default for automatic caching** *(v0.13.7+)* | Radarr and Sonarr | With more than one integration set up for caching, Cache Now and dynamic group caching send titles to the default one. Only one default is kept per type. Without a default, the oldest integration is used. |
 | **Remove after leaving dynamic groups** | Radarr | Remove movies that dynamic group caching added here, files included, once they leave every dynamic group. |
 
 These options only appear when **Enable cache** is on in **Settings → Cache**. See [Caching Through Radarr or Sonarr](../advanced/cached-content.md#caching-through-radarr-or-sonarr) for the full behavior.

@@ -107,7 +107,8 @@ Each row in the **Managed Libraries** table has:
 - **Applied revision**: the content hash of the catalog that was last successfully synced
 - **Last success**: when the plugin last reported a successful sync
 - **Reconcile**: re-plans the mapping (creates a managed Emby library if it's missing, or checks an existing one for drift)
-- **Preview**: shows the exact catalog plan (items, revision hash) that the plugin will act on, capped at 50 items in the UI for large libraries (the full list is still what's hashed and synced)
+
+*(v0.13.7+)* Hover over a status, or over an icon button, to see what it means. The status tooltip shows the latest result, which is a quick way to find out why a mapping failed. The catalog **Preview** button was removed, since it was only a raw data dump.
 
 ## Granting access to Playlist Auth credentials
 

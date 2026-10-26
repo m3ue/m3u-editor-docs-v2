@@ -55,6 +55,7 @@ To back up on a schedule, turn on **Enable Automatic Database Backups** in **Set
 | **Assets** | Upload images to use as channel logos and placeholders. |
 | **Backup & Restore** | See [Backups](#backups). |
 | **Post Processing** | Run something after a sync (below). |
+| **System Health** | See at a glance whether everything is running: health checks, the container's background services, the database, Redis, and [M3U Proxy](/docs/proxy/overview), plus versions and free disk space. **Refresh** re-checks, and this is the first page to look at when something seems off. Admins only. |
 | **Debug Logs** | Read, download, or clear the app's logs. Include the relevant part when asking for help. |
 | **Release Logs** | Read the release notes for each version. |
 | **Job Monitor** | Follow background jobs, and retry failed ones. See [Job Monitor](job-monitoring). |
