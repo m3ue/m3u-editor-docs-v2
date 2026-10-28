@@ -2,12 +2,229 @@
   "tag": "v0.13.7",
   "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.7",
   "publishedAt": "2026-10-28T21:21:25Z",
-  "features": [],
-  "fixes": [],
+  "features": [
+    {
+      "text": "Allow and Block bouquets, plus your own custom groups and categories in aliases and bouquets",
+      "scope": "aliases",
+      "pr": 1787
+    },
+    {
+      "text": "Opt-in live normalization so players don't freeze when a stream fails over, with CPU, VAAPI or Intel Quick Sync encoding (requires M3U Proxy v0.4.37+)",
+      "scope": "proxy",
+      "pr": 1652
+    },
+    {
+      "text": "Opt-in PostgreSQL 18 upgrade for the embedded database, with rollback support",
+      "scope": "database",
+      "pr": 1786
+    },
+    {
+      "text": "Limit Auto-Add to Custom Playlist rules to specific channels or channel name patterns",
+      "scope": "playlists",
+      "pr": null
+    },
+    {
+      "text": "Category Auto Sort keeps series categories in the provider's order, and Group Auto Sort now follows it on Xtream playlists",
+      "scope": "playlists",
+      "pr": null
+    },
+    {
+      "text": "Choose which Sonarr or Radarr instance a request goes to from Discover, and set a default integration for automatic caching",
+      "scope": "arrs",
+      "pr": null
+    },
+    {
+      "text": "Plugin settings fields can be shown conditionally",
+      "scope": "plugins",
+      "pr": 1685
+    },
+    {
+      "text": "Series and categories the provider no longer lists are cleaned up on sync, and sync logs include added and removed categories",
+      "scope": "sync",
+      "pr": null
+    },
+    {
+      "text": "The backup client now matches your Postgres version",
+      "scope": "backups",
+      "pr": 1701
+    },
+    {
+      "text": "Optional isolated rate limits for proxy callbacks",
+      "scope": "proxy",
+      "pr": 1652
+    },
+    {
+      "text": "Clearer managed-library controls for library publishing",
+      "scope": "emby",
+      "pr": 1642
+    },
+    {
+      "text": "Shared standard playlists can be picked when assigning Playlist Auths",
+      "scope": "auth",
+      "pr": 1765
+    },
+    {
+      "text": "Xtream VOD endpoint returns your custom names and titles, and content requests include more metadata",
+      "scope": "api",
+      "pr": null
+    }
+  ],
+  "fixes": [
+    {
+      "text": "SSO (OIDC) sign-in no longer links an account already linked to a different SSO identity",
+      "scope": "security",
+      "pr": null
+    },
+    {
+      "text": "Asset uploads only accept raster images, SVG is rejected",
+      "scope": "security",
+      "pr": null
+    },
+    {
+      "text": "Provider-supplied EPG text is escaped in guide tooltips",
+      "scope": "security",
+      "pr": null
+    },
+    {
+      "text": "Auto-enable follows groups the provider renames mid-sync",
+      "scope": "sync",
+      "pr": 1649
+    },
+    {
+      "text": "Sync runs finish after feed connection failures",
+      "scope": "sync",
+      "pr": 1769
+    },
+    {
+      "text": "Live streams and movies that share a provider stream ID are kept separate",
+      "scope": "import",
+      "pr": 1782
+    },
+    {
+      "text": "Xtream live/VOD numbering matches M3U and XMLTV, and CSV imports go to the right live or VOD list",
+      "scope": "sync",
+      "pr": 1772
+    },
+    {
+      "text": "Auto-Add sync no longer removes channels you added by hand",
+      "scope": "playlists",
+      "pr": null
+    },
+    {
+      "text": "A failed scheduled backup is no longer reported as created",
+      "scope": "backups",
+      "pr": 1788
+    },
+    {
+      "text": "Values of \"0\" are no longer treated as empty, including a Custom Password of \"0\"",
+      "scope": "channels",
+      "pr": null
+    },
+    {
+      "text": "Channel names match across non-ASCII case",
+      "scope": "channels",
+      "pr": null
+    },
+    {
+      "text": "Find & Replace keeps empty and \"0\" replacement values",
+      "scope": "epg",
+      "pr": 1778
+    },
+    {
+      "text": "Parallel channel scrubber batches complete",
+      "scope": "channels",
+      "pr": 1777
+    },
+    {
+      "text": "EPG mapping, timezone and logo proxy fixes, and timezones for numeric timeshift timestamps",
+      "scope": "epg",
+      "pr": null
+    },
+    {
+      "text": "Manual TMDB search for TV shows, overwrite-metadata keeping a known TMDB ID, and the Missing/Has TMDB filters",
+      "scope": "tmdb",
+      "pr": null
+    },
+    {
+      "text": "VOD metadata sync no longer reports success on failure, plus STRM filename and cleanup fixes",
+      "scope": "vod",
+      "pr": null
+    },
+    {
+      "text": "Unicode movie names from WebDAV and Add Progress duration clamping",
+      "scope": "vod",
+      "pr": null
+    },
+    {
+      "text": "Retention, retry and scheduling, any-channel rules and dvr:enrich --all",
+      "scope": "dvr",
+      "pr": null
+    },
+    {
+      "text": "Network pin overlap and schedule regeneration",
+      "scope": "networks",
+      "pr": null
+    },
+    {
+      "text": "Dispatcharr, Sonarr and Post Processing fixes, and Dispatcharr profiles for an alias of a Custom Playlist",
+      "scope": "integrations",
+      "pr": null
+    },
+    {
+      "text": "Managed-library path collisions and status",
+      "scope": "emby",
+      "pr": 1762
+    },
+    {
+      "text": "Scheduled backups, navigation settings, queue and SMTP settings",
+      "scope": "admin",
+      "pr": null
+    },
+    {
+      "text": "Queue Monitor retries no longer report false success, and impossible cron expressions are rejected",
+      "scope": "admin",
+      "pr": null
+    },
+    {
+      "text": "Nginx routing and Compose proxy health checks",
+      "scope": "docker",
+      "pr": null
+    },
+    {
+      "text": "Bouquet name uniqueness and merged-group checks in the Group API",
+      "scope": "aliases",
+      "pr": null
+    },
+    {
+      "text": "System Health CPU count respects a narrower cpuset",
+      "scope": "admin",
+      "pr": 1780
+    },
+    {
+      "text": "Pending tool calls no longer show as successful",
+      "scope": "copilot",
+      "pr": 1779
+    },
+    {
+      "text": "Update reporting, with a warning when an updated plugin may still be running old code",
+      "scope": "plugins",
+      "pr": 1763
+    },
+    {
+      "text": "TV device sign-in respects the advertised polling interval",
+      "scope": "devices",
+      "pr": 1764
+    },
+    {
+      "text": "Playlist group, sort and copy-attributes tools, Copilot DVR search, guest filmography and the zh_CN translation",
+      "scope": "general",
+      "pr": null
+    }
+  ],
   "counts": {
-    "features": 0,
-    "fixes": 0,
-    "maintenance": 0
+    "features": 13,
+    "fixes": 30,
+    "maintenance": 1
   },
-  "fetchedAt": "2026-10-28T21:23:27.440Z"
+  "fetchedAt": "2026-10-28T21:26:08.663Z"
 }
