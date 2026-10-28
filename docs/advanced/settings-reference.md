@@ -87,7 +87,7 @@ Settings for [M3U TV](/docs/m3u-tv/overview): **Get the app**, [push notificatio
 |---|---|
 | **Enable Automatic Database Backups** | Back up the database on a schedule. |
 | **Backup Schedule** | When to back up, as a cron schedule. |
-| **Max Backups**, **Delete Backups After (Days)** | How many to keep, and for how long. `0` means no limit. |
+| **Max Backups**, **Delete Backups After (Days)** | How many to keep, and for how long. `0` means no limit. *(v0.13.7+)* Old backups are only deleted after a new scheduled backup succeeds. |
 
 Backups are listed, downloaded, uploaded, and restored under **Tools → Backup & Restore**. See [Users, Backups, and Tools](admin-tools#backups).
 

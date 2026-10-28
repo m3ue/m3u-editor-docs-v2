@@ -23,7 +23,7 @@ When OIDC is enabled, a login button (labelled "Login with SSO" by default) appe
 
 On first login, M3U Editor will:
 1. Search for an existing account by OIDC subject ID, then email, then username.
-2. If a match is found, link the OIDC identity to that account and sync the user's name, email, and avatar.
+2. If a match is found, link the OIDC identity to that account and sync the user's name, email, and avatar. *(v0.13.7+)* An account already linked to a different SSO identity isn't linked again, and login is denied.
 3. If no match is found and **auto-create** is enabled, a new account is created automatically.
 4. If no match is found and auto-create is disabled, login is denied and the user is shown an error.
 
@@ -228,6 +228,10 @@ The identity provider did not return an email claim. Ensure the `email` scope is
 ### "No account found for this email."
 
 `OIDC_AUTO_CREATE_USERS` is set to `false` and no existing local account matches the email returned by the provider. Either enable auto-create or manually create a local account with the matching email address first.
+
+### "This account is already linked to a different SSO identity."
+
+The email or username from your provider matches a local account that's already linked to another SSO user. This stops one SSO user from signing in as someone else. It also happens when the same person's account is recreated in the identity provider, since the new account has a new ID. In that case, an admin needs to clear the stored link (the user's `oidc_id` in the database) so the next login links the new one.
 
 ### Changes Not Applied
 

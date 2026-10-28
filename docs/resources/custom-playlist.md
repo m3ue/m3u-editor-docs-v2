@@ -28,9 +28,25 @@ There are three ways to fill it:
 
 - **From the channel lists:** in **Live Channels → Channels** (or VOD, or Series), select items, open the bulk actions, and choose **Add to Custom Playlist**. You can put them straight into a custom group.
 - **From the Custom Playlist:** on its **Channels**, **VOD**, or **Series** tab, choose **Attach** and search for items.
-- **Automatically after each sync:** in a source playlist's **Processing** tab, add an **Auto-Add to Custom Playlist** rule. It keeps chosen groups in the Custom Playlist, including channels the provider adds later.
+- **Automatically after each sync:** in a source playlist's **Processing** tab, add an **Auto-Add to Custom Playlist** rule. It keeps chosen groups in the Custom Playlist, including channels the provider adds later. See [Auto-Add rules](#auto-add-rules).
 
 You can also add streams of your own with **Create Custom Channel** on the **Channels** tab.
+
+### Auto-Add rules
+
+Each rule copies live groups, VOD groups, or series categories from the source playlist into a Custom Playlist after every sync.
+
+| Setting | What it does |
+|---|---|
+| **Group Filter** | **Selected Groups** syncs the groups you pick. **New Groups Only** syncs any group the provider adds, without picking them. |
+| **Limit to Channels** | *(v0.13.7+)* Only sync these channels from the selected groups. Leave empty for all of them. |
+| **Channel Name Patterns** | *(v0.13.7+)* Only sync channels whose name matches a regex, like `^ESPN`. Patterns are case-sensitive and have no delimiters. A channel is synced if it's picked under **Limit to Channels** or matches a pattern. |
+| **Sync Mode** | **Sync (add & remove)** also removes channels that left the source groups. **Add only** never removes anything. |
+| **Group Assignment** | Keep the original group name, or file the channels under an existing or new group in the Custom Playlist. |
+
+The channel filters aren't available for series or for **New Groups Only** rules.
+
+A rule only ever removes channels that a rule added. *(v0.13.7+)* Channels you added to the Custom Playlist yourself are never removed, and several rules feeding the same Custom Playlist don't remove each other's channels.
 
 ## Organize it
 

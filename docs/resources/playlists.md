@@ -109,13 +109,13 @@ Open a playlist and choose **Edit Playlist**. Settings are grouped in tabs:
 | **Find & Replace Rules** | Rename channels, groups, or other fields after each sync, with plain text or regex. |
 | **Auto Enable/Disable Rules** | Enable or disable channels whose name or title matches a pattern. The last matching rule wins. |
 | **Sort Alpha Configs** | Sort groups and channels after each sync. VOD and series can also sort by **Release Date** or **Rating**, and series by **Most Recent Activity**. |
-| **Auto-Add to Custom Playlist** | Copy chosen groups into a [Custom Playlist](custom-playlist) after each sync, so new channels in those groups show up there too. |
+| **Auto-Add to Custom Playlist** | Copy chosen groups into a [Custom Playlist](custom-playlist) after each sync, so new channels in those groups show up there too. See [Auto-Add rules](custom-playlist#auto-add-rules). |
 
 ### Output
 
 | Section | Use it to |
 |---|---|
-| **Playlist Output** | Turn off outputs you don't use (**Enabled output types**: HDHR, M3U, Xtream API, XMLTV), number channels automatically, *(v0.13.1+)* **Sort by channel number** instead of by group, strip catch-up, and add `tvg-type` tags. |
+| **Playlist Output** | Turn off outputs you don't use (**Enabled output types**: HDHR, M3U, Xtream API, XMLTV), number channels automatically, [keep the provider's order](#keep-the-providers-order), *(v0.13.1+)* **Sort by channel number** instead of by group, strip catch-up, and add `tvg-type` tags. |
 | **Streaming Output** | **Enable Stream Proxy** to send streams through [M3U Proxy](/docs/proxy/overview), proxy and cache logos, set connection limits, and choose [transcoding profiles](/docs/proxy/transcoding) and custom HTTP headers. |
 | **Cache** | Share [cached downloads](/docs/advanced/cached-content) with your other playlists, and override the retention mode. |
 | **EPG Output** | Generate a placeholder guide for channels without one (**Enable dummy EPG**), and choose which ID channels use in the guide. See [EPGs](epg-setup#placeholder-guides). |
@@ -126,6 +126,18 @@ A few output settings are worth knowing:
 - **Available Streams** caps how many streams the proxy will run for this playlist at once.
 - **Provider Timezone** is needed for [catch-up](channels-vod-series#catch-up) (timeshift) to line up. **Get from playlist status** fills it in from your provider.
 - **Disable Xtream URL format in M3U output** puts the provider's own stream URLs in the M3U file, for players that can't use the Xtream-style links.
+
+### Keep the provider's order
+
+Three toggles under **Playlist Output** set sort order from the provider on each sync:
+
+| Toggle | Default | Sorts |
+|---|---|---|
+| **Channel Auto Sort** | On | Channels, in playlist order. On M3U playlists, groups too. |
+| **Group Auto Sort** | On | Live and VOD groups on Xtream playlists, *(v0.13.7+)* in the provider's category order |
+| **Category Auto Sort** | Off | *(v0.13.7+)* Series categories, in the provider's order |
+
+Each one replaces any sort order you set by hand, from the next sync. While one is on, the **Sort Order** column on the matching **Groups**, **VOD Groups**, or **Categories** list is locked. To order them yourself, turn the toggle off. Groups and categories you created yourself can always be sorted.
 
 ## Media server sources
 

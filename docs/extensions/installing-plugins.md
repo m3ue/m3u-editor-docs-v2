@@ -99,6 +99,8 @@ To update a plugin to a new version:
 2. The system detects the matching plugin ID and treats the staged install as an **update** rather than a fresh install.
 3. Scan, approve, and trust the new version. The old files are replaced, settings are preserved, and trust is re-established with the new file hashes.
 
+*(v0.13.7+)* A background worker that already ran the plugin may keep using the old version until it restarts. The same applies after re-trusting changed files. To switch over right away, use **Reset Queue** on **Tools → [Job Monitor](/docs/advanced/job-monitoring)** (the notice links there). It also stops any running syncs, so pick a quiet moment.
+
 ### Reinstall
 
 If a plugin has been uninstalled but its registry record still exists, click **Reinstall** on the plugin edit page to mark it as installed again. Saved settings are preserved.

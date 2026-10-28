@@ -65,6 +65,9 @@ See [Editor Configuration](/docs/configuration#database) for each setup, [SQLite
 | `M3U_PROXY_FAILOVER_RESOLVER_URL` | None | The **Resolver URL** for [smart failover](/docs/proxy/failover#smart-failover). Locks the setting. |
 | `M3U_PROXY_LOG_LEVEL` | `ERROR` | Log level for the embedded proxy. |
 | `M3U_PROXY_ALLOW_UNAUTHENTICATED_CALLBACKS` | `false` | Accept calls from the proxy with no token. Only for a trusted local setup with no token set. |
+| `M3U_PROXY_ISOLATED_CALLBACK_RATE_LIMITS` | `false` | *(v0.13.7+)* Give each kind of proxy callback its own rate limit. Without it, they share one limit of 120 a minute, so a burst of webhooks can hold up failover lookups. |
+| `M3U_PROXY_CALLBACK_RESOLVER_PER_MINUTE`, `M3U_PROXY_CALLBACK_WEBHOOK_PER_MINUTE`, `M3U_PROXY_CALLBACK_BROADCAST_PER_MINUTE`, `M3U_PROXY_CALLBACK_DVR_PER_MINUTE` | `120` each | *(v0.13.7+)* The per-minute limits for failover lookups, webhooks, broadcasts, and DVR callbacks, used when the variable above is `true`. From `1` to `60000`; anything else uses `120`. |
+| `M3U_PROXY_NORMALIZE_LIVE_OUTPUT` | `false` | *(v0.13.7+)* The default for [live normalization](/docs/proxy/failover#when-the-player-freezes-after-a-failover) until the setting is saved in **Settings → Proxy**. |
 | `PROXY_URL_OVERRIDE`, `PROXY_URL_OVERRIDE_INCLUDE_LOGOS` | None | The proxy's **Override URL**, and whether logos use it. Lock the settings. |
 | `MEDIA_SERVER_PROXY_URL_VERSION` | `1` | Raise it to make every media server stream link generated before stop working. |
 | `ALLOW_PRIVATE_WEBHOOK_URLS` | `false` | Let post-process webhooks call private addresses, like a media server on your LAN. |

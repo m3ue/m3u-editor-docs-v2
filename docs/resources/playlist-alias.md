@@ -63,6 +63,8 @@ The **Channel Filter** tab limits which live groups, VOD groups, and series cate
 
 For an alias of a Merged Playlist, choices are tracked per source, so picking one provider's "Sports" group doesn't include another provider's. The picker shows a **Source Playlist** column when that matters.
 
+*(v0.13.7+)* For a regular playlist, [groups and categories](channels-vod-series#groups-and-categories) you created yourself, like genre categories from [TMDB](/docs/integrations/tmdb_integration#reclassify-to-tmdb-genres), are picked separately under **Custom groups** and **Custom categories**. They match every channel or series sitting in them, wherever it came from. A custom group with the same name as a provider group isn't listed; rename it to pick it.
+
 ### Custom group order
 
 To deliver live groups in your own order instead of the playlist's, turn on **Sort groups in custom order** under **Live channel groups** and drag the groups into place. The list includes groups from assigned bouquets, *(v0.13.2+)* with a **Bouquet** column showing where each came from.
@@ -73,15 +75,20 @@ New groups are added to the end. **Reset to playlist order** starts over from th
 
 A bouquet is a named, reusable set of groups and categories from one playlist. Instead of picking the same groups on every alias, assign them a bouquet.
 
+*(v0.13.7+)* A bouquet's **Bouquet type** sets what it does:
+
+- **Allow** adds its groups to the aliases using it, like a "Sports" package.
+- **Block** hides its groups from the aliases using it, even when something else allows them. Use it for an exclusion you reuse, like no adult content.
+
 **Create one** on the **Bouquets** tab:
 
-1. Choose **New bouquet**, enter a **Name**, and pick the **Target Playlist** (a regular or Custom Playlist). The playlist can't be changed later.
-2. Select the **Live channel groups**, **VOD groups**, and **Series categories** to include.
+1. Choose **New bouquet**, enter a **Name**, choose the **Bouquet type**, and pick the **Target Playlist** (a regular or Custom Playlist). The playlist can't be changed later.
+2. Select the **Live channel groups**, **VOD groups**, and **Series categories** to include. On a regular playlist, your own groups are under **Custom groups** and **Custom categories**, as in the [channel filter](#channel-filter).
 3. Optionally, turn on **Automatically include new live groups** or **Automatically include new VOD groups**, so groups the provider adds join the bouquet on each sync. *(v0.13.3+)* To only include some of them, add regex patterns under **Only include new live groups matching**, for example `^FR\|`. Patterns are case-sensitive and have no delimiters.
 
 You can also add groups to a bouquet from the **Groups**, **VOD Groups**, and **Categories** lists with **Add to Bouquet**.
 
-**Assign it** in an alias's **Channel Filter** tab, under **Assigned bouquets**. A channel is allowed if its group is in **any** assigned bouquet **or** in the alias's own selections, so a bouquet only ever adds. Editing a bouquet updates every alias that uses it.
+**Assign it** in an alias's **Channel Filter** tab, under **Assigned bouquets**. A channel is allowed if its group is in **any** assigned allow bouquet **or** in the alias's own selections. A group in an assigned block bouquet is always hidden, so an alias with only block bouquets shows everything else. Editing a bouquet updates every alias that uses it.
 
 Bouquets look after themselves:
 

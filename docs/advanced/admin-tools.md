@@ -52,7 +52,7 @@ To back up on a schedule, turn on **Enable Automatic Database Backups** in **Set
 | Page | Use it to |
 |---|---|
 | **API Tokens** | Create tokens for scripts and apps that use the M3U Editor API, each with a name, permissions (`view`, `create`, `update`, `delete`), and an optional expiry date. The API is documented in the app under **Settings → API → API Docs**. |
-| **Assets** | Upload images to use as channel logos and placeholders. |
+| **Assets** | Upload images to use as channel logos and placeholders: JPEG, PNG, GIF, WebP, BMP, or ICO. *(v0.13.7+)* SVG isn't accepted. |
 | **Backup & Restore** | See [Backups](#backups). |
 | **Post Processing** | Run something after a sync (below). |
 | **System Health** | See at a glance whether everything is running: health checks, the container's background services, the database, Redis, and [M3U Proxy](/docs/proxy/overview), plus versions and free disk space. **Refresh** re-checks, and this is the first page to look at when something seems off. Admins only. |

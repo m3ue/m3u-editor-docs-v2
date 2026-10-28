@@ -42,6 +42,17 @@ To reconnect to the same stream first, turn on **Retry the same stream before fa
 
 Without backups, the proxy always reconnects to the same stream after a healthy run, so this setting changes nothing there.
 
+### When the player freezes after a failover
+
+*(v0.13.7+)* Some players stop or freeze when the stream switches sources mid-playback, because the new source's timestamps or format don't line up with the old one. **Normalize live MPEG-TS output** re-encodes the stream through one FFmpeg process that keeps running across failovers, so the player sees one continuous stream.
+
+Turn it on in **Settings → Proxy → Failover & Recovery**, and choose a **Live normalization encoder**: **CPU (libx264)**, **GPU (VAAPI)**, or **Intel Quick Sync (QSV)**. The GPU options need the proxy to have [access to the GPU](hardware-acceleration). To turn it on or off for one channel, use **Normalize live MPEG-TS output** in the channel's proxy settings; channels left on **Inherit global setting** follow the global switch.
+
+- It only applies to direct live MPEG-TS channels. VOD, HLS, DASH, catch-up, and channels with a [transcoding profile](transcoding) are left alone.
+- Every normalized stream is transcoded, which costs CPU or GPU time and adds a little delay.
+- It needs M3U Proxy v0.4.37 or later. Without [Redis pooling](redis-pooling), also set `ENABLE_SINGLE_PROCESS_TRANSCODING=true` on the proxy.
+- If a stream can't be normalized, it doesn't play, rather than quietly playing without normalization.
+
 ## Smart failover
 
 By default, the proxy is given the list of backups and tries them in order. With **smart failover**, it asks M3U Editor for the best backup each time, and the editor skips any that can't take another stream right now:
