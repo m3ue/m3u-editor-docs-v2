@@ -1,49 +1,13 @@
 {
-  "tag": "v0.13.6",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.6",
-  "publishedAt": "2026-10-22T15:59:30Z",
+  "tag": "v0.13.7",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.13.7",
+  "publishedAt": "2026-10-28T21:21:25Z",
   "features": [],
-  "fixes": [
-    {
-      "text": "Test case for sys health page",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Preserve merged guide when source files are unavailable",
-      "scope": "epg",
-      "pr": 1653
-    },
-    {
-      "text": "Recover from mid-sync token expiry instead of saving an empty guide",
-      "scope": "schedules-direct",
-      "pr": null
-    },
-    {
-      "text": "Fail sync when batch fails to prevent clearing programme data",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Use SD's rolling 24h login window and real /image error codes",
-      "scope": "schedules-direct",
-      "pr": null
-    },
-    {
-      "text": "Move Xtream channels into the category the provider moved them to, and log added groups (#1636)",
-      "scope": null,
-      "pr": 1640
-    },
-    {
-      "text": "Stop retrying /token on permanent login errors, back off on limits and server errors",
-      "scope": "schedules-direct",
-      "pr": 1638
-    }
-  ],
+  "fixes": [],
   "counts": {
     "features": 0,
-    "fixes": 7,
-    "maintenance": 4
+    "fixes": 0,
+    "maintenance": 0
   },
-  "fetchedAt": "2026-10-26T21:16:23.874Z"
+  "fetchedAt": "2026-10-28T21:23:27.440Z"
 }
