@@ -5,7 +5,7 @@ description: Get help with the M3U TV app and m3u-editor - contact, community, b
 
 # Support
 
-Need help with the M3U TV app (Android, Android TV, Apple TV, iOS, iPadOS, macOS, Windows, and Linux) or m3u-editor? Here is how to reach us.
+Need help with the M3U TV app (Android, Android TV, Apple TV, iOS, iPadOS, macOS, Windows, and Linux) or M3U Editor? Here is how to reach us.
 
 ## Contact
 
@@ -26,16 +26,16 @@ For app problems, the [Logs and Diagnostics](/docs/m3u-tv/logs-diagnostics) scre
 ## Common Questions
 
 **Does the app include any channels or content?**
-No. M3U TV is a player for your own m3u-editor server. It does not include, sell, or provide any channels, playlists, or streams. You connect it to a server you run or have access to, and it plays only the media that server provides.
+No. M3U TV is a player for your own M3U Editor server. It does not include, sell, or provide any channels, playlists, or streams. You connect it to a server you run or have access to, and it plays only the media that server provides.
 
 **How do I connect the app?**
-Open the app, enter your m3u-editor server URL, username, and password, then select **Connect**. On a TV you can also sign in with a short code from your phone or computer using [Device Pairing](/docs/m3u-tv/device-pairing). See [Connect it](/docs/m3u-tv/overview#connect-it) for the full steps.
+Open the app, enter your M3U Editor server URL, username, and password, then select **Connect**. On a TV you can also sign in with a short code from your phone or computer using [Device Pairing](/docs/m3u-tv/device-pairing). See [Connect it](/docs/m3u-tv/overview#connect-it) for the full steps.
 
 **The app says "Server is currently unavailable."**
 The app could not reach your server, or the server did not respond in time. Check that the server is running, that the URL (including `http://` or `https://` and the port) is correct, and that your device can reach it on your network. Then try again.
 
-**Where do I get m3u-editor?**
-m3u-editor is free and open source. See [Getting Started](/docs/installation) to install it with Docker.
+**Where do I get M3U Editor?**
+M3U Editor is free and open source. See [Getting Started](/docs/installation) to install it with Docker.
 
 ## More
 
