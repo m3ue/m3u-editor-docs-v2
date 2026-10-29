@@ -298,6 +298,10 @@ const config = {
                 href: 'https://github.com/m3ue/m3u-editor/discussions',
               },
               {
+                label: 'Support',
+                to: '/support',
+              },
+              {
                 label: 'Blog',
                 to: '/blog',
               },
