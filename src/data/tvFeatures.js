@@ -10,7 +10,7 @@ export const STORE_LINKS = [
     name: 'App Store',
     badge: require('@site/static/img/badges/app-store-badge.png').default,
     href: 'https://apps.apple.com/us/app/m3u-tv/id6782398050',
-    note: 'iPhone, iPad, Apple TV & Mac',
+    note: 'iPhone, iPad & Apple TV',
   },
   {
     name: 'Google Play',
