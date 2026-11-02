@@ -132,7 +132,7 @@ The embedded proxy also reads these, which a separate proxy container sets for i
 
 ## Optional features
 
-*(v0.14.0+)* Switch off features you don't use to save memory. Set to `false`, each one is hidden in the app, its syncs, schedules, and hooks stop, and its [background worker](#background-workers) isn't started, which frees about 180 MB. Nothing is deleted: turn it back on and it carries on where it left off.
+*(v0.14.0+)* Switch off features you don't use to save memory. Set to `false`, each one is hidden in the app, its syncs, schedules, and hooks stop, and its [background worker](#background-workers) isn't started, which saves the memory it would use. Nothing is deleted: turn it back on and it carries on where it left off.
 
 | Variable | Default | Turns off |
 |---|---|---|

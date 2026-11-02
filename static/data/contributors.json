@@ -4,7 +4,7 @@
       "login": "sparkison",
       "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
       "html_url": "https://github.com/sparkison",
-      "contributions": 10343
+      "contributions": 10362
     },
     {
       "login": "Grimothy",
@@ -16,7 +16,7 @@
       "login": "Serph91P",
       "avatar_url": "https://avatars.githubusercontent.com/u/8904984?v=4",
       "html_url": "https://github.com/Serph91P",
-      "contributions": 420
+      "contributions": 421
     },
     {
       "login": "Warbs816",
@@ -109,15 +109,15 @@
       "contributions": 4
     },
     {
-      "login": "thanhvle94",
-      "avatar_url": "https://avatars.githubusercontent.com/u/103467285?v=4",
-      "html_url": "https://github.com/thanhvle94",
-      "contributions": 3
-    },
-    {
       "login": "KazeLiu",
       "avatar_url": "https://avatars.githubusercontent.com/u/22094581?v=4",
       "html_url": "https://github.com/KazeLiu",
+      "contributions": 3
+    },
+    {
+      "login": "thanhvle94",
+      "avatar_url": "https://avatars.githubusercontent.com/u/103467285?v=4",
+      "html_url": "https://github.com/thanhvle94",
       "contributions": 3
     },
     {
@@ -125,12 +125,6 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/66033020?v=4",
       "html_url": "https://github.com/zachhide",
       "contributions": 3
-    },
-    {
-      "login": "bmwagner18",
-      "avatar_url": "https://avatars.githubusercontent.com/u/64104085?v=4",
-      "html_url": "https://github.com/bmwagner18",
-      "contributions": 2
     },
     {
       "login": "r4y7s",
@@ -157,6 +151,12 @@
       "contributions": 2
     },
     {
+      "login": "bmwagner18",
+      "avatar_url": "https://avatars.githubusercontent.com/u/64104085?v=4",
+      "html_url": "https://github.com/bmwagner18",
+      "contributions": 2
+    },
+    {
       "login": "c0mputerguru",
       "avatar_url": "https://avatars.githubusercontent.com/u/23019447?v=4",
       "html_url": "https://github.com/c0mputerguru",
@@ -167,6 +167,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/24372620?v=4",
       "html_url": "https://github.com/martenumberto",
       "contributions": 2
+    },
+    {
+      "login": "avehlies",
+      "avatar_url": "https://avatars.githubusercontent.com/u/503806?v=4",
+      "html_url": "https://github.com/avehlies",
+      "contributions": 1
     },
     {
       "login": "funkypenguin",
@@ -229,7 +235,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 8822
+        "contributions": 8841
       },
       {
         "login": "Grimothy",
@@ -241,7 +247,7 @@
         "login": "Serph91P",
         "avatar_url": "https://avatars.githubusercontent.com/u/8904984?v=4",
         "html_url": "https://github.com/Serph91P",
-        "contributions": 309
+        "contributions": 310
       },
       {
         "login": "Warbs816",
@@ -334,22 +340,16 @@
         "contributions": 4
       },
       {
-        "login": "thanhvle94",
-        "avatar_url": "https://avatars.githubusercontent.com/u/103467285?v=4",
-        "html_url": "https://github.com/thanhvle94",
-        "contributions": 3
-      },
-      {
         "login": "KazeLiu",
         "avatar_url": "https://avatars.githubusercontent.com/u/22094581?v=4",
         "html_url": "https://github.com/KazeLiu",
         "contributions": 3
       },
       {
-        "login": "bmwagner18",
-        "avatar_url": "https://avatars.githubusercontent.com/u/64104085?v=4",
-        "html_url": "https://github.com/bmwagner18",
-        "contributions": 2
+        "login": "thanhvle94",
+        "avatar_url": "https://avatars.githubusercontent.com/u/103467285?v=4",
+        "html_url": "https://github.com/thanhvle94",
+        "contributions": 3
       },
       {
         "login": "r4y7s",
@@ -374,6 +374,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/213491109?v=4",
         "html_url": "https://github.com/m0pus",
         "contributions": 2
+      },
+      {
+        "login": "bmwagner18",
+        "avatar_url": "https://avatars.githubusercontent.com/u/64104085?v=4",
+        "html_url": "https://github.com/bmwagner18",
+        "contributions": 2
+      },
+      {
+        "login": "avehlies",
+        "avatar_url": "https://avatars.githubusercontent.com/u/503806?v=4",
+        "html_url": "https://github.com/avehlies",
+        "contributions": 1
       },
       {
         "login": "funkypenguin",
@@ -539,5 +551,5 @@
       }
     ]
   },
-  "fetchedAt": "2026-11-02T16:54:29.701Z"
+  "fetchedAt": "2026-11-02T17:53:41.134Z"
 }

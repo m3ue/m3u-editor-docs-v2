@@ -13,6 +13,10 @@ title: Upgrading Embedded PostgreSQL
 
 *(v0.13.7+)* The embedded PostgreSQL defaults to version 17. Setting `POSTGRES_VERSION=18` and restarting upgrades your existing data in place - this never happens automatically.
 
+:::warning 18 becomes the default in a later 0.14 release
+When it does, installs that haven't chosen a version will be upgraded the next time they start. To stay on 17, set `POSTGRES_VERSION=17` in the `m3u-editor` service's `environment:` now. To move on your own schedule, set `POSTGRES_VERSION=18` and follow the steps below.
+:::
+
 :::info Only for the embedded database
 This only applies when `ENABLE_POSTGRES=true`. An external PostgreSQL server is upgraded on its own schedule, independently of the editor; point `PG_CLIENT_VERSION` at its major if backup/restore needs a newer client. See [Environment Variables](environment-variables#database).
 :::
