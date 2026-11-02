@@ -19,7 +19,7 @@ M3U Editor works with any player, so M3U TV is optional. What it adds is tighter
 
 | Platform | Where |
 |---|---|
-| iPhone, iPad, Apple TV, Mac | [TestFlight beta](https://testflight.apple.com/join/hqJYVsJr) |
+| iPhone, iPad, Apple TV, Mac | [App Store](https://apps.apple.com/us/app/m3u-tv/id6782398050) |
 | Android phones, tablets, Android TV | [Google Play](https://play.google.com/store/apps/details?id=dev.sparkison.tv) |
 | Windows 10 and 11 | [Microsoft Store](https://apps.microsoft.com/detail/9P2PBHQ4XZ1L) |
 | Linux, and sideloading | [GitHub releases](https://github.com/m3ue/m3u-tv/releases): APK, IPA, macOS DMG, Windows installer and ZIP, Linux ZIP |
