@@ -14,6 +14,8 @@ Cached Content Downloads save provider VOD movies and series episodes to local s
 
 If caching is turned off, or a cached file is incomplete, missing, or unavailable, playback falls back to the provider stream as usual.
 
+*(v0.14.0+)* To switch caching off for the whole install, set [`CACHED_CONTENT_ENABLED=false`](environment-variables#optional-features). It overrides **Enable cache**, hides the cache pages and actions, and stops the download worker to save memory. Files already downloaded stay on disk.
+
 ## Enabling the Cache
 
 1. Go to **Settings → Cache**.

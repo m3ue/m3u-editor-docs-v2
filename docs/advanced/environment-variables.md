@@ -130,6 +130,19 @@ The embedded proxy also reads these, which a separate proxy container sets for i
 | `AUTO_LOGIN`, `AUTO_LOGIN_EMAIL` | `false`, `admin@test.com` | Sign in automatically as this user, with no password. Only for a private, single-user setup. |
 | `OIDC_*` | | Single sign-on. See [Single Sign-On](sso-oidc). |
 
+## Optional features
+
+*(v0.14.0+)* Switch off features you don't use to save memory. Set to `false`, each one is hidden in the app, its syncs, schedules, and hooks stop, and its [background worker](#background-workers) isn't started, which frees about 180 MB. Nothing is deleted: turn it back on and it carries on where it left off.
+
+| Variable | Default | Turns off |
+|---|---|---|
+| `PLUGINS_ENABLED` | `true` | [Plugins](/docs/extensions/overview): their pages, hooks, and scheduled runs. |
+| `SCHEDULES_DIRECT_ENABLED` | `true` | [Schedules Direct](/docs/resources/epg-setup#add-guide-data) guides: adding them, and syncing the ones you have. Guide data they already imported is still served. |
+| `AIOSTREAMS_ENABLED` | `true` | [AIOStreams](/docs/integrations/aiostreams_integration): its integrations, catalogs, and stream finding. Titles already in your library keep the streams found for them. |
+| `CACHED_CONTENT_ENABLED` | `true` | [Cached downloads](cached-content), whatever **Enable cache** is set to. Titles play from the provider instead. |
+
+Only the value `false` turns these off. A blank or any other value leaves them on, so an empty line in a templated `.env` can't switch a feature off by accident. `DVR_ENABLED` (below) turns the DVR off in the same way.
+
 ## Other features
 
 | Variable | Default | What it does |
@@ -180,3 +193,5 @@ Jobs like syncs, probing, and recordings run on background workers. Each queue's
 | Plugins | `HORIZON_PLUGIN_` | [Plugin](/docs/extensions/overview) runs | 1 |
 
 For example, `HORIZON_CACHE_MAX_PROCESSES=2` limits how many files download at once.
+
+Turning off the DVR or an [optional feature](#optional-features) also stops its worker.

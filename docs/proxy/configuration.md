@@ -139,7 +139,7 @@ See [Redis Pooling](redis-pooling).
 | `REDIS_ENABLED` | `false` | Connect to Redis. The compose files turn it on. |
 | `REDIS_HOST` | `localhost` | The Redis server. |
 | `REDIS_SERVER_PORT` | `6379` | The Redis port. |
-| `REDIS_PASSWORD` | Not set | The Redis password. |
+| `REDIS_PASSWORD` | Not set | The Redis password. *(v0.5.0+)* Characters such as `@`, `/`, `#`, and `:` work. |
 | `REDIS_DB` | `0` | The Redis database. Use `6` when sharing a Redis server with M3U Editor. |
 | `ENABLE_TRANSCODING_POOLING` | `true` | Share transcoding processes between viewers. |
 | `STREAM_SHARING_STRATEGY` | `url_profile` | `url_profile`, `url_only`, or `disabled`. |

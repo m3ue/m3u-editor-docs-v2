@@ -46,10 +46,18 @@ Lineups not yet on your Schedules Direct account are added on the next sync. Sta
 
 **Manage SD Lineups** removes lineups from your account to free up slots. When you delete a Schedules Direct EPG, **Also delete lineups from SchedulesDirect account** keeps any lineup another EPG still uses.
 
+*(v0.14.0+)* After the first sync, only what changed is downloaded. The lineups, schedules, and programs from earlier syncs are kept in `schedules-direct.sqlite` in the EPG's folder and checked against Schedules Direct's change markers, so later syncs are much faster and download far less. Program images are checked for updates every 7 days, or after a day for programs that had none.
+
+Schedules Direct asks apps not to sync more than once an hour, so scheduled syncs never run more often than that, whatever the schedule says. **Process** still syncs right away.
+
+If you don't use Schedules Direct, [`SCHEDULES_DIRECT_ENABLED=false`](/docs/advanced/environment-variables#optional-features) hides it and saves memory.
+
 </TabItem>
 </Tabs>
 
 Each EPG syncs on its own schedule under **Scheduling**. **Auto resync on failure** retries a failed sync, or one that finds no channels, after 1 minute, then 2, then 3, up to **Max retry attempts**.
+
+If a sync looks stuck, **Reset status** clears it so the EPG can sync again. *(v0.14.0+)* It also stops the sync that was running, so the next one doesn't run beside it and download the guide twice.
 
 *(v0.13.5+)* A bad download doesn't wipe your guide. If a source sends something that isn't XMLTV (an HTML error or login page, for example), or a file that ends partway through, the sync fails with the reason in your notifications and the EPG keeps its last good guide and channel mappings. Schedules Direct works the same way: when the service reports an error or returns no stations, the existing guide is kept.
 
@@ -75,6 +83,8 @@ Go to **EPG → EPG Maps** and choose **New EPG Map**. Pick the **EPG** (or Merg
 <Step title="Save and review">
 
 The map runs in the background, and the list shows its progress and how many channels it matched. Channels it wasn't sure about wait for you in **Review Candidates** (below).
+
+If a map looks stuck, **Restart Now** runs it again. *(v0.14.0+)* The earlier run stops instead of carrying on beside the new one.
 
 </Step>
 </Steps>

@@ -130,6 +130,14 @@ services:
         condition: service_healthy
 ```
 
+The shipped files check M3U Proxy with `/health?api_token=...`. *(v0.5.0+)* The proxy also answers `/health/live`, which needs no token, so the token stays out of your container's settings. Switch to it only once your proxy runs v0.5.0 or later; an older proxy would fail the check:
+
+```yaml
+  m3u-proxy:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:${M3U_PROXY_PORT:-38085}/health/live"]
+```
+
 ## Next steps
 
 <LinkCards

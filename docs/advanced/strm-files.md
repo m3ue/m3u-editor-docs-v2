@@ -48,6 +48,8 @@ Files are only written for **enabled** items. For series, episodes come from **F
 - turn on **Sync stream files** under the playlist's **VOD Processing** and **Series Processing**, to write files after every sync, or
 - select items and use **Sync VOD .strm files** or **Sync Series .strm files** from the bulk actions.
 
+Files for items you disable, or that leave the playlist, are removed the next time stream files are written. *(v0.14.0+)* That includes every episode of a disabled series, even when its episodes are still enabled.
+
 </Step>
 <Step title="Add the folder to your media server">
 

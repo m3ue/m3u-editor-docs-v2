@@ -14,6 +14,8 @@ tags:
 
 Unlike a media server, nothing is imported up front. Catalogs are browsed on demand, and a stream is found when someone presses play. Titles you want to keep can be added to your library, so they play in any player.
 
+*(v0.14.0+)* If you don't use AIOStreams, [`AIOSTREAMS_ENABLED=false`](/docs/advanced/environment-variables#optional-features) hides it and stops its background worker to save memory.
+
 ## Connect it
 
 You need a running AIOStreams instance and its **manifest URL**: the full address ending in `/manifest.json`, shown on the AIOStreams dashboard. It has your login built in, so treat it like a password.

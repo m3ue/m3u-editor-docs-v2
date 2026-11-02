@@ -12,7 +12,7 @@ import LinkCards from '@site/src/components/LinkCards';
 
 Plugins add your own automation to M3U Editor without changing the app itself. A plugin can react when a playlist or guide syncs, clean up channels or guide data, check streams, run on a schedule, or add buttons you trigger by hand. Each plugin has its own settings page, and keeps a history of its runs.
 
-Plugins are optional, and run with the same access as M3U Editor itself, so only install ones you trust.
+Plugins are optional, and run with the same access as M3U Editor itself, so only install ones you trust. *(v0.14.0+)* If you don't use them, [`PLUGINS_ENABLED=false`](/docs/advanced/environment-variables#optional-features) hides plugins and stops their background worker to save memory.
 
 ## Where to find them
 

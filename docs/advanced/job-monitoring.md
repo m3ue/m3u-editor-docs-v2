@@ -26,6 +26,6 @@ The queue indicator in the top bar shows the same activity at a glance, and link
 
 ## When jobs are stuck
 
-If jobs stay queued and nothing runs, the background workers may have stopped. **Reset Queue** in **Settings → Sync Options** restarts them, but it also removes every pending job, so use it only when things are really stuck. To check a single stuck playlist instead, use **Reset Processing State** on the playlist.
+If jobs stay queued and nothing runs, the background workers may have stopped. **Reset Queue** in **Settings → Sync Options** restarts them, but it also removes every pending job, so use it only when things are really stuck. To clear a single stuck playlist instead, use **Reset Processing State** on the playlist, which *(v0.14.0+)* also stops that playlist's running sync and leaves other jobs alone.
 
 The number of workers for each kind of job can be tuned with [environment variables](environment-variables#background-workers). To be told when jobs fail, turn on **Notify on queued job failures** in [Alerts](alerts).

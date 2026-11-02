@@ -23,7 +23,7 @@ curl "http://m3u-proxy:38085/health?api_token=your-token"
 
 A missing or wrong token gets a `401` response. In M3U Editor, **Settings → Proxy → API key** shows the token in use.
 
-Endpoints that serve video to players never need the token: `/stream/{id}`, `/hls/{id}/...`, `/dash/{id}/...`, and broadcast playlists and segments. Instead, the proxy signs every URL it writes into a playlist or manifest, and the segment routes refuse any URL it didn't sign, so they can't be used to fetch other addresses or files. The `?url=` parameter, which starts a stream from a URL you pass in, needs a signed URL or the token.
+Endpoints that serve video to players never need the token: `/stream/{id}`, `/hls/{id}/...`, `/dash/{id}/...`, and broadcast playlists and segments. Instead, the proxy signs every URL it writes into a playlist or manifest, and the segment routes refuse any URL it didn't sign, so they can't be used to fetch other addresses or files. *(v0.5.0+)* Each signature is also tied to the stream that issued it, so a URL from one stream's playlist can't be replayed through another stream, which may send different headers upstream. The `?url=` parameter, which starts a stream from a URL you pass in, needs a signed URL or the token.
 
 The signing key comes from `API_TOKEN`, and signed URLs are visible to anyone who can load a playlist, so use a long random token (`openssl rand -hex 32`), not a word or `changeme`.
 
@@ -37,8 +37,9 @@ All paths are relative to the proxy's root (`/m3u-proxy` when reached through M3
 
 | Method | Path | Does |
 |---|---|---|
-| `GET` | `/health` | Health check, with the proxy's version |
-| `GET` | `/info` | Version, hardware acceleration, FFmpeg, Streamlink, yt-dlp, and Redis details |
+| `GET` | `/health` | Health check, with the proxy's version. Answers `500` when the proxy reports an error. |
+| `GET` | `/health/live` | *(v0.5.0+)* Liveness check for container healthchecks. Needs no token, and returns only `{"status": "ok"}`. |
+| `GET` | `/info` | Version, hardware acceleration, FFmpeg, Streamlink, yt-dlp, and Redis details (never the Redis password) |
 | `POST` | `/streams` | Start proxying a stream, and get its ID and playback path |
 | `POST` | `/transcode` | Start a transcoded stream (see [Transcoding](transcoding)) |
 | `GET` | `/transcode/profiles` | List the built-in transcoding profiles |
@@ -53,7 +54,7 @@ All paths are relative to the proxy's root (`/m3u-proxy` when reached through M3
 | `GET` | `/clients` | List connected viewers |
 | `POST` | `/test-connection` | Check the proxy can reach a URL |
 | `POST`, `GET`, `DELETE` | `/webhooks` | Add, list, or remove webhooks (below) |
-| `POST` | `/webhooks/test` | Send a test event to a webhook |
+| `POST` | `/webhooks/test` | Send a test event to a webhook. Answers `502` if every delivery attempt fails. |
 | `POST`, `GET`, `DELETE` | `/broadcast/...` | Network broadcasts and DVR recordings, used by M3U Editor |
 
 ### Start a stream

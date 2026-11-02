@@ -78,7 +78,7 @@ An invalidated sync isn't retried early; it waits for the next scheduled sync. T
 
 **View Sync Runs** on the playlist lists each sync with its status and timing. With **Enable Sync Logs** on (under **Output → Playlist Output**), **View Sync Logs** shows what each sync added and removed. *(v0.13.3+)* Logs include series, and can be filtered by **Content Type** and by change.
 
-If a sync looks stuck, **Reset Processing State** clears its lock so a new sync can run.
+If a sync looks stuck, **Reset Processing State** clears its lock so a new sync can run, and **Reset status** also clears its status and progress. *(v0.14.0+)* Both stop the sync that was running: its remaining steps are skipped, so the sync you start next doesn't run beside it and contact your provider twice. A step that's already underway, such as a download, finishes first.
 
 ## Playlist settings
 
@@ -176,6 +176,8 @@ The actions menu on a playlist has more tools:
 1. **Configure:** choose the **Replacement playlist**, how channels are matched (shared TVG ID or stream ID, then normalized name or title), and what to copy (enabled state, group, order, number, names, logos, EPG mapping, and more). **Preserve EPG mappings** re-points mappings at the new provider's guide where it can. **Update Custom Playlist membership** swaps the new channels into your Custom Playlists.
 2. **Preview:** check every match. You can change a match, and include or exclude channels.
 3. **Apply migration:** it runs in the background, and you're notified when it's done.
+
+Your settings are copied onto the replacement playlist, and the original playlist is left as it was. Point your players at the replacement playlist's URLs to start using the new provider.
 
 **Disable channels that are not in this lineup** turns off unmatched channels on the new playlist. Nothing is deleted.
 

@@ -69,7 +69,7 @@ A post process does something when a playlist or EPG changes: calls a URL, runs 
 2. Pick the **Event**: **Synced**, **Created**, **Deleted**, or **VOD Stream Files Synced** and **Series Stream Files Synced** (after [`.strm` files](strm-files) are written). **Process failed** also runs it after failed syncs.
 3. Pick the **Type**:
    - **URL:** a `GET` or `POST` request, with your own headers, and variables such as the playlist's name, status, sync time, and the channels and groups added or removed. **Send as JSON body** sends them as JSON; **Send without body** sends an empty `POST`.
-   - **Local file:** a script inside the container, with the same values as environment variables. Admins only.
+   - **Local file:** a script inside the container, with the same values as environment variables. Admins only. *(v0.14.0+)* The script's exit status decides the result: `0` is a success, and anything it wrote to stderr is kept in the log under `[stderr]`. Any other status is logged as an error.
    - **Email:** an email, sent with your [SMTP settings](settings-reference#smtp).
 4. Save, then add the playlists and EPGs it applies to with **Assign processing to item**.
 
