@@ -17,6 +17,7 @@ Integrations connect M3U Editor to other services: your media servers, TMDB for 
 |---|---|---|
 | [TMDB](tmdb_integration) | Metadata, artwork, ratings, Trending and genre groups for movies and series | **Settings → Integrations** |
 | [DVR](dvr_integration) | Recording live TV from the guide | A playlist's **DVR** tab |
+| [Sports](sports) | Live scores, the channels showing each game, and guide entries for event channels | **Settings → Integrations → Sports API** |
 | [Media servers](emby_integration_settings) | Movies and series from Emby, Jellyfin, Plex, local folders, or WebDAV, served alongside your IPTV content | **Integrations → Media Servers** |
 | [Emby Library Publishing](emby_library_publishing) | Your M3U Editor movies and series as Emby libraries | An Emby media server's **Managed Libraries** tab |
 | [Networks](media_networks_integration) | 24/7 live channels built from your media server's content | **Integrations → Networks** |

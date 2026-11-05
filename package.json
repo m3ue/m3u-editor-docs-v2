@@ -19,6 +19,7 @@
     "build-copilot-index": "node ./scripts/build-copilot-index.js",
     "sync-tv-screenshots": "./scripts/sync-tv-screenshots.sh",
     "generate-social-cards": "./scripts/generate-social-cards.sh",
+    "generate-featured-image": "node ./scripts/generate-featured-image.js",
     "prestart": "npm run fetch-static-data && npm run build-copilot-index && npm run generate-screenshots",
     "prebuild": "npm run fetch-static-data && npm run build-copilot-index && npm run generate-screenshots",
     "update-release": "node update-release.js"

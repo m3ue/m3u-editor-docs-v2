@@ -30,6 +30,7 @@ The quickest way to build a lineup is by group. In **Live Channels → Groups**:
 
 - **Enable group channels** or **Disable group channels** switches a whole group on or off.
 - **Auto Enable New Channels** on a group enables channels the provider adds to it later. *(v0.13.4+)* It matches on the provider's group name, so it keeps working after you rename the group.
+- **Renaming a group or category** is safe. *(v0.14.1+)* Clear its name to go back to the provider's, and pick lists such as a playlist's processing filters show both, as `Your name (provider: Provider name)`.
 
 VOD groups and series categories work the same way.
 

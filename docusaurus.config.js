@@ -70,6 +70,7 @@ const MATERIAL_ICONS = [
   'skip_next',
   'smart_toy',
   'smartphone',
+  'stadium',
   'star',
   'sticky_note_2',
   'subtitles',

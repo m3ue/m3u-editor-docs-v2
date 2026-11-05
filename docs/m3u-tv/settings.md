@@ -33,13 +33,24 @@ What a login can use (the proxy, transcoding, DVR, requests, AIOStreams) is deci
 
 | Setting | Default | Shown on | What it does |
 |---|---|---|---|
-| **Default start page** | Home | All | The screen the app opens on: Home, Search, Live TV, Movies, or Series. |
+| **Default start page** | Home | All | The screen the app opens on: Home, Search, Live TV, Movies, or Series. *(v1.2.5+)* Also [Sports](sports). If the screen you pick isn't available for this login, the app opens on Home. |
 | **Home screen** | Simplified | TV, desktop | **Spotlight** adds a large hero above the Home rows. It shows the backdrop, title, and details of whatever you're focused on, and the rows dock beneath it as you move. For a live channel, the hero uses the current programme's artwork from the guide. Phones and tablets always use the simplified Home. |
 | **Live TV layout** | List | All | How Live TV opens: **List**, **Grid**, or **Timeline** (the programme guide). |
 | **Live TV channels column** | Logo Only | All | What the guide's channel column shows: **Logo + Title**, **Logo Only**, or **Title Only**. |
 | **EPG starts at** | Current time | All | Where the guide scrolls to when it opens: now, or **Prime time** (8 PM). |
 | **Guide preview playback** | Off | TV, desktop (not web) | Play the selected channel in the guide's preview panel. **Play after pausing** starts it once you rest on a live programme. **Press OK to preview** starts it on the first OK, and a second OK opens the full-screen player. **Off** shows artwork only. |
 | **Preview delay** | 5 seconds | With **Play after pausing** | How long to rest on a programme before the preview starts: 2, 3, 5, 8, or 10 seconds. |
+
+### Navigation & Home
+
+*(v1.2.5+)* **Navigation & Home**, under **Layout**, lets you clean up the app. It lists your sections (Live TV, Movies, Series, and so on), with two switches for each:
+
+- **Nav** shows the section in the sidebar or bottom bar.
+- **Home** shows its row on Home.
+
+The two are separate, so you can take a section out of the nav and still reach it from its Home row. The order applies to both. With a remote, press OK on a row to pick it up, move it with Up and Down, and press OK to drop it, or Back to cancel. On a touchscreen, drag a row by its handle. **Reset to default** restores the original order and switches.
+
+Home and Search stay at the top, Notifications and Settings stay at the bottom, and Continue Watching stays first on Home. AIOStreams and Requests have no Home row until you turn one on.
 
 ### Display
 

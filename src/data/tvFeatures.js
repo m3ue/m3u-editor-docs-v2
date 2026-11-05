@@ -113,6 +113,12 @@ export const TV_FEATURES = [
     description: 'Rich detail pages with artwork, title logos, ratings, cast, and a season picker with an episode strip.',
   },
   {
+    icon: 'stadium',
+    title: 'Sports',
+    description: 'See the day\'s games with live scores and stats, follow your teams, and press a game to start the channel showing it.',
+    link: '/docs/m3u-tv/sports',
+  },
+  {
     icon: 'history',
     title: 'Continue Watching',
     description: 'Progress lives on your M3U Editor instance, so you can stop on the TV and resume on your phone.',
@@ -139,6 +145,12 @@ export const TV_FEATURES = [
     icon: 'skip_next',
     title: 'Skip intro & up next',
     description: 'Jump past intros and roll straight into the next episode with an up next prompt near the end.',
+  },
+  {
+    icon: 'playlist_play',
+    title: 'Multiple playlists',
+    description: 'Keep several playlists on one device, from one server or many, and switch between them, each with its own favorites and guide.',
+    link: '/docs/m3u-tv/settings#playlists',
   },
   {
     icon: 'search',

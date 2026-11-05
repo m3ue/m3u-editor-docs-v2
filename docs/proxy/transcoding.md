@@ -88,7 +88,7 @@ An adaptive profile can't point at another adaptive profile, and a profile used 
 
 ## Share transcoding between viewers
 
-With [Redis pooling](redis-pooling), viewers watching the same channel with the same profile share one FFmpeg process instead of each getting their own.
+With [Redis pooling](redis-pooling), viewers watching the same channel with the same profile and variables share one FFmpeg process instead of each getting their own.
 
 <details>
 <summary>Transcoding through the proxy's API</summary>

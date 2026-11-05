@@ -57,18 +57,33 @@ With the [AI Copilot](/docs/ai-copilot/overview) set up, **AI Regex** writes the
 
 **Override** uses the profile even on channels that already have guide data mapped. Turn it on when the channel names are more accurate than your guide.
 
+## Match real games
+
+*(v0.14.1+)* Writing patterns works well when a provider's names all follow one format, but sports channels often don't. With [Sports](/docs/integrations/sports) turned on, a profile can recognize the game from the team names instead, however the name is written, and take the real start time, teams, and league from the schedule.
+
+Open the profile's **Sports API** section and turn on **Match real games**:
+
+| Field | Default | What it does |
+|---|---|---|
+| **Leagues** | All leagues | The leagues these channels carry. Choosing them is recommended: there are fewer wrong matches, and guides build faster. |
+| **Game Title Format** | `{away} at {home}` (`{home} vs {away}` for soccer) | The program title. Use `{home}`, `{away}`, `{league}`, `{venue}`, `{event}`, `{channel}`, `{date}`, and `{time}`. |
+| **Game Duration (minutes)** | By sport | How long the game lasts in the guide, from 15 to 720. Empty uses a typical length for the sport. |
+
+Channels that don't match a game fall back to your patterns, then to the **No Event Format**. If a name includes a time or date, your time and date patterns also help pick the right game when teams play more than once in the window. Timezone, pre- and post-event entries, category, and guide length apply to every channel. **Test Extraction** marks a channel that found a game with **Game match**.
+
+M3U Editor checks each profile's games every 15 minutes in the background, and rebuilds the guide only if something changed. For a schedule change you need right away, use **Refresh Games** from the profile's row in the list. Right after you first turn on matching, channels can use your patterns until the games have been fetched.
+
 ## Use a profile
 
 - **For a group:** set **AED Profile (Advanced EPG Dummy)** on the group in **Live Channels → Groups**. Every channel in it uses the profile, unless it has its own.
 - **For channels:** set **AED Profile** when editing a channel, or select channels and use **Set AED Profile** from the bulk actions.
 
-The playlist also needs **Enable dummy EPG** on, under **Output → EPG Output**.
-
 ## Troubleshooting
 
 | Problem | What to check |
 |---|---|
-| No entries appear | The channel or its group has a profile, and the playlist has **Enable dummy EPG** on. If the channel has guide data mapped, turn on **Override**. |
+| No entries appear | The channel or its group has a profile. If the channel has guide data mapped, turn on **Override**. |
 | Times are off by hours | **Timezone of Source** matches the time in the name, and **Time Format** matches how it's written. |
 | The date is wrong | Add a **Date Regex** and **Date Format**. |
 | Only the channel name shows | The patterns don't match this name. Check them with **Test Extraction**. The provider may not have put the next event in the name yet. |
+| **Match real games** finds nothing | [Sports](/docs/integrations/sports) needs to be on, and the game's league must be in the profile's **Leagues**. A name has to mention the teams. College teams are recognized by school, not nickname alone. |

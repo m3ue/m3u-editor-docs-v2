@@ -141,6 +141,16 @@ See [TMDB Integration](/docs/integrations/tmdb_integration).
 
 Once set up, each playlist's page has a **MediaFlow Proxy** tab with its MediaFlow M3U and EPG links.
 
+### Sports API
+
+*(v0.14.1+)* Live scores and game schedules for the Sports page, M3U TV, and AED profiles. See [Sports](/docs/integrations/sports).
+
+| Setting | What it does |
+|---|---|
+| **Use ESPN API (Unofficial)**, **API URL** | Read from ESPN's public API, which is undocumented and may change. **API URL** is optional, for a mirror or a new address. |
+| **Use TheSportsDB**, **TheSportsDB API Key** | Add leagues ESPN doesn't carry, or replace it, with a paid key. |
+| **Limit to Leagues** | Only fetch and offer these leagues. Empty uses every league. |
+
 ## AI Copilot
 
 The [AI Copilot](/docs/ai-copilot/overview): **Enable AI Copilot**, **Enable AI Copilot Management**, the provider, model, API key, and base URL, the **System Prompt**, **Enabled Tools**, and **Quick Actions**. See [Configuration](/docs/ai-copilot/configuration).

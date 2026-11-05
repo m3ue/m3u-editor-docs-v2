@@ -60,7 +60,7 @@ When you stop or leave a stream, the app tells M3U Editor right away so the prox
 
 ## Multiview
 
-Watch up to nine live channels at once. In Live TV, hold OK on a channel and choose **Add to Multiview**, then open **Multiview** from the Live TV screen once it has a channel.
+Watch up to nine live channels at once. In Live TV, hold OK on a channel and choose **Add to Multiview**, then open **Multiview** from the Live TV screen once it has a channel. *(v1.2.5+)* You can add a game from the [Sports](sports#watch-a-game) screen the same way.
 
 - Only one tile plays sound. Moving between tiles moves the sound with you, and OK makes a tile the sound source.
 - Hold OK on a tile for its menu: **Move** it, **Make Featured** (shown larger, with three channels or fewer), **Picture-in-Picture** (with exactly two), **Open Fullscreen** in the normal player, or **Remove from Multiview**.
@@ -111,7 +111,7 @@ The screen can briefly flash or go blank while it switches. On Windows, a short 
 
 ## Sorting
 
-On the Movies and Series screens, **Sort By** orders titles by the provider's order, rating, or release date. *(v1.2.3+)* Movies can also sort by **Recently Added**, and series by **Recently Updated**. With M3U Editor v0.13.5 or later, Recently Added uses the date your provider or media server added the title, not the date M3U Editor imported it.
+On the Movies and Series screens, **Sort By** orders titles by the provider's order, rating, or release date. *(v1.2.5+)* **Title (A-Z)** and **Title (Z-A)** sort them by name. *(v1.2.3+)* Movies can also sort by **Recently Added**, and series by **Recently Updated**. With M3U Editor v0.13.5 or later, Recently Added uses the date your provider or media server added the title, not the date M3U Editor imported it.
 
 *(v1.2.2+)* On Live TV, Movies, and Series, **Favorites First** (on by default) keeps your favorites at the top of whatever sort you pick. Each screen remembers its own sort when **Filter Persistence** is on in [Settings](settings#filters).
 

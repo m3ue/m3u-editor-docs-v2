@@ -11,9 +11,9 @@ import { Steps, Step } from '@site/src/components/Steps';
 
 # M3U TV
 
-M3U TV is a free, open-source player app made for M3U Editor. It has live TV with a guide, movies, series, search, favorites, and Continue Watching that follows you between devices. It runs on TVs, phones, tablets, and computers.
+M3U TV is a free, open-source player app made for M3U Editor. It has live TV with a guide, movies, series, search, favorites, sports, and Continue Watching that follows you between devices. It runs on TVs, phones, tablets, and computers.
 
-M3U Editor works with any player, so M3U TV is optional. What it adds is tighter integration: [pairing a TV without typing a password](device-pairing), [push notifications](push-notifications), [Continue Watching](continue-watching) across devices, DVR and request access, and [AIOStreams](/docs/integrations/aiostreams_integration).
+M3U Editor works with any player, so M3U TV is optional. What it adds is tighter integration: [pairing a TV without typing a password](device-pairing), [push notifications](push-notifications), [Continue Watching](continue-watching) across devices, DVR and request access, a [Sports](sports) screen that finds the channel showing a game, and [AIOStreams](/docs/integrations/aiostreams_integration).
 
 ## Get it
 
@@ -48,6 +48,8 @@ M3U TV respects the same limits as any other player. A Playlist Auth's settings 
 </Step>
 </Steps>
 
+Have more than one playlist, or more than one server? *(v1.2.5+)* You can [keep several on one device](settings#playlists) and switch between them, usually instantly.
+
 ## Platforms
 
 | Platform | Video player | HDR |
@@ -64,6 +66,7 @@ Video is decoded on the GPU on every platform, except Linux under X11. All platf
 
 - [Settings](settings): every setting, its default, and which devices show it
 - [Guide and Playback](guide-and-playback): the guide, catch-up, Multiview, the player, and trailers
+- [Sports](sports): today's games, finding the channel showing them, and following your teams
 - [Device Pairing](device-pairing): signing in a TV without typing a password
 - [Push Notifications](push-notifications): alerts on your phone, and what the relay does
 - [Continue Watching](continue-watching): resuming across devices

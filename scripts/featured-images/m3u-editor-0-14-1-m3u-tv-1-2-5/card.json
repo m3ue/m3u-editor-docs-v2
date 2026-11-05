@@ -1,0 +1,58 @@
+{
+  "logos": ["editor", "tv"],
+  "brand": "M3U Editor + M3U TV",
+  "title": "Find the game.",
+  "accent": "Press play.",
+  "text": "Live scores and the channels showing each game, in M3U Editor 0.14.1 and M3U TV 1.2.5.",
+  "shots": [
+    {
+      "name": "sports-page",
+      "label": "M3U Editor: the Sports page on a busy day, with Live Now and channel badges showing",
+      "size": "1600x1000",
+      "frame": "browser",
+      "box": [640, 44, 660, 412],
+      "z": 1
+    },
+    {
+      "name": "sports-tv",
+      "label": "M3U TV on a TV: the Sports screen, with live games and channel counts",
+      "size": "1920x1080",
+      "frame": "tv",
+      "box": [590, 244, 540, 304],
+      "z": 2
+    },
+    {
+      "name": "sports-phone",
+      "label": "M3U TV on a phone: the Sports screen",
+      "size": "1170x2532",
+      "frame": "phone",
+      "box": [1040, 300, 130, 280],
+      "z": 3
+    },
+    {
+      "name": "sports-details-tv",
+      "label": "M3U TV: Game details for a live game, with On Your Channels and team stats",
+      "size": "1920x1080"
+    },
+    {
+      "name": "sports-details-editor",
+      "label": "M3U Editor: a game's details slide-over on the Sports page",
+      "size": "1600x1000"
+    },
+    {
+      "name": "sports-aed",
+      "label": "M3U Editor: an AED profile with Match real games on, and Test Extraction showing Game match",
+      "size": "1600x1000"
+    },
+    {
+      "name": "nav-home",
+      "label": "M3U TV: Settings, Appearance, Navigation & Home, with a row picked up",
+      "size": "1920x1080"
+    },
+    {
+      "name": "playlists",
+      "label": "M3U TV: Settings, Account, Playlists, with two or three saved",
+      "size": "1920x1080"
+    }
+  ]
+}

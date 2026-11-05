@@ -57,7 +57,7 @@ Each playlist's **DVR** tab has its own settings:
 | **Max Concurrent Recordings** | 2 | How many recordings can run at once. Keep it within your provider's connection limit. |
 | **Start Early**, **End Late** | 30s, 60s | Padding before and after each show, up to 10 minutes. *(v0.13.5+)* Enter it in seconds or minutes. |
 | **Retention (days)** | 0 | Delete recordings older than this. `0` keeps them. |
-| **Disk Quota (GB)** | 0 | Delete the oldest recordings when this is exceeded. `0` means no limit. |
+| **Disk Quota (GB)** | 0 | Delete the oldest recordings when finished recordings exceed this, measured on disk. `0` means no limit. If half or more of your recordings are missing, the storage may not be mounted, so nothing is deleted. *(v0.14.1+)* |
 | **Enable Metadata Enrichment** | Off | Fetch artwork, descriptions, and episode details from TMDB and TVMaze after recording. |
 | **Enable Commercial Detection (Comskip)** | Off | Mark commercials after recording. |
 | **Generate NFO Files** | Off | Write `.nfo` files next to recordings, for Kodi, Jellyfin, and Plex. |

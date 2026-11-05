@@ -23,7 +23,7 @@ Go to **Playlist → Playlist Auths** and choose **New playlist auth**:
 | **Name** | A label for you, like "Living room TV" or "Sam". Players never see it. |
 | **Enabled** | Turn the login off without deleting it. |
 | **Username**, **Password** | What the person enters in their player. Both are case-sensitive. Avoid spaces and `/ \ ? # %`, since Xtream players put them in every stream URL. |
-| **Expiration (date & time)** | The login stops working at this moment. Leave empty to never expire. |
+| **Expiration (date & time)** | The login stops working at this moment, in every output. *(v0.14.1+)* That now includes M3U and HDHomeRun links. A playlist with UUID login doesn't turn public when its last login expires. Leave empty to never expire. |
 | **Max Connections** | How many streams this login can play at once. Leave empty for unlimited. |
 | **Stop Oldest Stream on Limit** | At the limit, stop this login's oldest stream to start the new one, instead of refusing it. When off, the global setting in **Settings → Proxy** applies. |
 | **Assigned to Playlist** | The playlist, Custom Playlist, Merged Playlist, or Alias this login opens. |
