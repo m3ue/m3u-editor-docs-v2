@@ -62,9 +62,21 @@ What a login can use (the proxy, transcoding, DVR, requests, AIOStreams) is deci
 |---|---|---|---|
 | **Streaming** | **Proxy Playback** | Off | Stream through [M3U Proxy](/docs/proxy/overview) on this device. Shown only when the login is allowed to use the proxy. If the playlist forces the proxy, this says so and can't be turned off. |
 | | **Live transcoding profile**, **VOD & Series transcoding profile** | Default | With the proxy on, pick a [transcoding profile](/docs/proxy/transcoding) for this device. **Default** uses the playlist's profile, and **Direct (no transcoding)** uses the proxy without transcoding. Only the profiles the login may use are listed. |
-| **Content Cache** | **EPG refresh interval** | 1 hour | How often guide data is refreshed in the background: 30 minutes, 1 hour, or 6 hours. |
-| | **Clear & Refresh** | | Clear cached content, guide data, or images, and reload them. See [Guide and Playback](guide-and-playback#clearing-the-cache). |
 | **DVR** | **Auto-skip commercials** | On | In [DVR](/docs/integrations/dvr_integration) recordings with commercial detection, skip marked breaks automatically. Off, the player offers **Skip commercial** instead. |
+
+## Storage
+
+*(v1.2.5+)* What M3U TV keeps on this device, with a way to clear each part. The summary at the top shows the **Total**, the space your **Playlists** take (each one's channels, movies, series, and guide), and the **Artwork** cache.
+
+| Section | Setting | Default | What it does |
+|---|---|---|---|
+| **Playlists** | One row per saved playlist | | How many items it has stored and their size, or **Not stored on this device**. Select it to clear what's stored. The active playlist downloads again right away, and any other the next time you switch to it. |
+| | **Playlists kept on this device** | The 3 most recent | How many playlists keep their content stored, most recently used first: 1, 2, 3, or 5. A stored playlist opens at once when you [switch](#playlists) to it. The rest are cleared after you connect or switch. |
+| **Guide** | **Guide data** | | The size of the active playlist's guide. Select it to download the guide again. The current guide stays visible while it reloads. |
+| | **EPG refresh interval** | 1 hour | How often guide data is refreshed in the background: 30 minutes, 1 hour, or 6 hours. |
+| **Artwork** | **Artwork cache** | | Posters and logos. Select it to clear them. They reload as you browse. |
+
+**Clear everything**, at the bottom, removes your other playlists' stored content and all artwork, and downloads the active playlist's channels, movies, series, and guide again.
 
 ## Integrations
 
@@ -81,8 +93,20 @@ The release notes for your version and every newer one. Left and Right change th
 
 | Setting | What it does |
 |---|---|
+| **Playlists** | The playlists saved on this device. See [Playlists](#playlists). |
 | **Active Viewer** | Switch between the viewers on this login, or add one with **Add New Viewer**. Each viewer has its own [Continue Watching](continue-watching) and favorites, like profiles on a streaming service. Shown when the login has viewers. |
-| **Disconnect** | Sign out. You'll need to [pair](device-pairing) or sign in again. |
+| **Disconnect** | Sign out of the active playlist and remove it from this device. Any other saved playlists stay, listed under **Saved Playlists** when you sign in. If it was the only one, you'll need to [pair](device-pairing) or sign in again. |
+
+### Playlists
+
+*(v1.2.5+)* M3U TV can keep several playlists on one device and switch between them. Each one is a login: a playlist's [default login](/docs/resources/playlist-auth#default-login), a [Playlist Auth](/docs/resources/playlist-auth), or a [playlist alias](/docs/resources/playlist-alias), on one server or several.
+
+**Settings → Account → Playlists** lists them and marks the active one. Select a playlist to **Switch to Playlist**, **Rename Playlist**, or **Remove Playlist**. **Add Playlist** pairs or signs in to another one, and it becomes the active playlist.
+
+- **Names:** a playlist is named after its login's username. When the same username is saved for two servers, the server is added, such as `admin@tv.example.com`. Your default login opens every playlist with the same username, so those are numbered. **Rename Playlist** gives one a clearer name.
+- **Switching:** a playlist with its content stored on the device opens at once, then signs in and refreshes in the background. If it can't sign in, it stays on screen with the error at the top of Home. A playlist that isn't stored downloads first. How many are kept is set under [Storage](#storage).
+- **What each playlist keeps:** its favorites, active viewer, proxy and transcoding choices, and guide. Your appearance and playback settings apply to every playlist.
+- **Notifications** come from the active playlist only.
 
 ## Related
 

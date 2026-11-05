@@ -117,16 +117,16 @@ On the Movies and Series screens, **Sort By** orders titles by the provider's or
 
 ## Clearing the Cache
 
-*(v1.2.0+)* **Clear & Refresh**, under **Settings → Playback → Content Cache**, lets you choose what to clear instead of wiping everything:
+*(v1.2.5+)* **Settings → Storage** shows what M3U TV keeps on the device and clears each part on its own:
 
 | Option | Clears |
 |---|---|
-| **Everything** | Channels, movies, series, guide data, and artwork |
-| **Content only** | Channels, movies, and series |
-| **Guide (EPG) only** | Guide data. The current guide stays visible while it reloads. |
-| **Images only** | Posters and logos. They reload as you browse. |
+| A playlist | Its channels, movies, series, and guide. The active playlist downloads again right away, and any other the next time you switch to it. |
+| **Guide data** | The active playlist's guide. The current guide stays visible while it reloads. |
+| **Artwork cache** | Posters and logos. They reload as you browse. |
+| **Clear everything** | Your other playlists' stored content and all artwork. The active playlist's channels, movies, series, and guide download again. |
 
-Cleared content is reloaded from your source in the background.
+In v1.2.0 to v1.2.4, **Clear & Refresh** under **Settings → Playback → Content Cache** did this instead. See [Storage](settings#storage) for every option.
 
 ## Related
 
