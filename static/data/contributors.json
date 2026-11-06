@@ -4,7 +4,7 @@
       "login": "sparkison",
       "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
       "html_url": "https://github.com/sparkison",
-      "contributions": 10367
+      "contributions": 10429
     },
     {
       "login": "Grimothy",
@@ -22,7 +22,7 @@
       "login": "Warbs816",
       "avatar_url": "https://avatars.githubusercontent.com/u/18269792?v=4",
       "html_url": "https://github.com/Warbs816",
-      "contributions": 136
+      "contributions": 137
     },
     {
       "login": "Aldione",
@@ -118,6 +118,12 @@
       "login": "thanhvle94",
       "avatar_url": "https://avatars.githubusercontent.com/u/103467285?v=4",
       "html_url": "https://github.com/thanhvle94",
+      "contributions": 3
+    },
+    {
+      "login": "macray76",
+      "avatar_url": "https://avatars.githubusercontent.com/u/231017?v=4",
+      "html_url": "https://github.com/macray76",
       "contributions": 3
     },
     {
@@ -227,6 +233,12 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/49639150?v=4",
       "html_url": "https://github.com/Ry3nlNaToR",
       "contributions": 1
+    },
+    {
+      "login": "cladkins",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4375452?v=4",
+      "html_url": "https://github.com/cladkins",
+      "contributions": 1
     }
   ],
   "repos": {
@@ -235,7 +247,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 8841
+        "contributions": 8869
       },
       {
         "login": "Grimothy",
@@ -253,7 +265,7 @@
         "login": "Warbs816",
         "avatar_url": "https://avatars.githubusercontent.com/u/18269792?v=4",
         "html_url": "https://github.com/Warbs816",
-        "contributions": 125
+        "contributions": 126
       },
       {
         "login": "Aldione",
@@ -376,6 +388,12 @@
         "contributions": 2
       },
       {
+        "login": "macray76",
+        "avatar_url": "https://avatars.githubusercontent.com/u/231017?v=4",
+        "html_url": "https://github.com/macray76",
+        "contributions": 2
+      },
+      {
         "login": "bmwagner18",
         "avatar_url": "https://avatars.githubusercontent.com/u/64104085?v=4",
         "html_url": "https://github.com/bmwagner18",
@@ -435,7 +453,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 492
+        "contributions": 495
       },
       {
         "login": "hektyc",
@@ -496,6 +514,18 @@
         "avatar_url": "https://avatars.githubusercontent.com/u/49639150?v=4",
         "html_url": "https://github.com/Ry3nlNaToR",
         "contributions": 1
+      },
+      {
+        "login": "cladkins",
+        "avatar_url": "https://avatars.githubusercontent.com/u/4375452?v=4",
+        "html_url": "https://github.com/cladkins",
+        "contributions": 1
+      },
+      {
+        "login": "macray76",
+        "avatar_url": "https://avatars.githubusercontent.com/u/231017?v=4",
+        "html_url": "https://github.com/macray76",
+        "contributions": 1
       }
     ],
     "m3u-editor-docs-v2": [
@@ -503,7 +533,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 247
+        "contributions": 252
       },
       {
         "login": "Grimothy",
@@ -529,7 +559,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 787
+        "contributions": 813
       },
       {
         "login": "Serph91P",
@@ -551,5 +581,5 @@
       }
     ]
   },
-  "fetchedAt": "2026-11-02T18:12:58.311Z"
+  "fetchedAt": "2026-11-06T15:05:13.902Z"
 }

@@ -1,36 +1,24 @@
 {
-  "tag": "v1.2.4",
-  "url": "https://github.com/m3ue/m3u-tv/releases/tag/v1.2.4",
-  "publishedAt": "2026-10-29T18:05:59Z",
+  "tag": "v1.2.5",
+  "url": "https://github.com/m3ue/m3u-tv/releases/tag/v1.2.5",
+  "publishedAt": "2026-11-06T15:04:58Z",
   "assets": {
     "android.apk": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-android.apk",
-      "size": 171552336
-    },
-    "ios.ipa": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-ios.ipa",
-      "size": 28610913
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.5/m3u-tv-v1.2.5-android.apk",
+      "size": 173537600
     },
     "linux.zip": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-linux.zip",
-      "size": 14909257
-    },
-    "macos.dmg": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-macos.dmg",
-      "size": 74813665
-    },
-    "tvos.ipa": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-tvos.ipa",
-      "size": 29233469
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.5/m3u-tv-v1.2.5-linux.zip",
+      "size": 15191218
     },
     "windows-setup.exe": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-windows-setup.exe",
-      "size": 47652467
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.5/m3u-tv-v1.2.5-windows-setup.exe",
+      "size": 47905509
     },
     "windows.zip": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.4/m3u-tv-v1.2.4-windows.zip",
-      "size": 65517595
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.2.5/m3u-tv-v1.2.5-windows.zip",
+      "size": 65892820
     }
   },
-  "fetchedAt": "2026-11-02T18:12:57.463Z"
+  "fetchedAt": "2026-11-06T15:05:12.934Z"
 }
