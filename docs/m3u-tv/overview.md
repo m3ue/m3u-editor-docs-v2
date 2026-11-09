@@ -24,6 +24,8 @@ M3U Editor works with any player, so M3U TV is optional. What it adds is tighter
 | Windows 10 and 11 | [Microsoft Store](https://apps.microsoft.com/detail/9P2PBHQ4XZ1L) |
 | Mac, Linux, and sideloading | [GitHub releases](https://github.com/m3ue/m3u-tv/releases): APK, IPA, macOS DMG, Windows installer and ZIP, Linux ZIP |
 
+On Windows, M3U TV needs a graphics card with DirectX 11 support. On older cards the window stays black.
+
 The [M3U TV page](/tv#download) has direct download links and screenshots. In M3U Editor, **Settings → TV App → Get the app** links there too.
 
 ## Connect it

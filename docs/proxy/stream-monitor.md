@@ -10,7 +10,7 @@ tags:
 
 # Stream Monitor
 
-**Proxy → Stream Monitor** shows every stream M3U Proxy is serving right now. It's the first place to look when someone says a channel isn't working.
+**Proxy → Stream Monitor** shows every stream M3U Proxy is serving right now. It's the first place to look when someone says a channel isn't working. For what was watched earlier, turn on [Watch History](watch-history).
 
 The top of the page totals active streams, viewers, and bandwidth, and shows how long the proxy has been running. Below, each stream has a card with:
 

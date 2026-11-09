@@ -23,6 +23,7 @@ Integrations connect M3U Editor to other services: your media servers, TMDB for 
 | [Networks](media_networks_integration) | 24/7 live channels built from your media server's content | **Integrations → Networks** |
 | [Sonarr and Radarr](arrs_integration) | Requesting shows and movies, for you and your guests | **Integrations → Media Servers → Sonarr & Radarr** |
 | [AIOStreams](aiostreams_integration) | On-demand movies and series from debrid services | **Integrations → Media Servers** |
+| [Trakt and SIMKL](trakt_simkl_integration) | Sending guests' watch progress to Trakt or SIMKL, and importing or exporting watch history | **Integrations → Trakt & SIMKL** |
 | [MediaFlow Proxy](/docs/advanced/settings-reference#mediaflow-proxy) | An alternative to M3U Proxy for routing your playlists | **Settings → Integrations** |
 
 Most integrations need the **Use Integrations** permission on your user account, which admins have.

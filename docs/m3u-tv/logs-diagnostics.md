@@ -26,6 +26,12 @@ Logs are kept in memory only, for the current session. Your username and passwor
 Clear the logs, reproduce the problem, then upload right away. That keeps the report short and focused on the problem.
 :::
 
+## Playback Diagnostics
+
+*(v1.3.0+)* Turn on **Settings → General → Show playback diagnostics** to see what the player is doing. While the player's controls are showing, a panel in the top corner lists the active player and, if it switched, from which player to which and why. Usernames and passwords inside stream URLs are removed, so you can include a photo of it in a report.
+
+Turn it off when you're done. It only affects what's shown on screen.
+
 ## In M3U Editor
 
 Uploaded logs are attached to the device that sent them. An admin can read them under **Administration → Devices → Registered Devices**: the **Logs** button on a device's row shows how many uploads it has and opens them in a slide-over.

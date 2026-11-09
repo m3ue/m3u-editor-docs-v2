@@ -60,6 +60,7 @@ If your source M3U sets per-channel request headers with `#EXTVLCOPT` (`http-use
     { to: '/docs/proxy/hardware-acceleration', icon: 'memory', title: 'Hardware acceleration', text: 'Transcode with NVIDIA, Intel, or AMD GPUs.' },
     { to: '/docs/proxy/failover', icon: 'swap_horiz', title: 'Failover and retries', text: 'Keep streams playing when a source fails.' },
     { to: '/docs/proxy/stream-monitor', icon: 'monitoring', title: 'Stream Monitor', text: 'See every active stream and who is watching.' },
+    { to: '/docs/proxy/watch-history', icon: 'history', title: 'Watch History', text: 'Keep a record of who watched what, and for how long.' },
   ]}
 />
 

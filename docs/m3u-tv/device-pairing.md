@@ -16,9 +16,15 @@ Typing a username and password with a TV remote is painful. With device pairing,
 
 1. In M3U TV, choose **Pair with code**. The TV shows a code like `XKQP-9F3T`, and a QR code that opens the right page. *(v1.2.3+)* On a desktop or phone, **Copy code** copies it so you can paste it into M3U Editor.
 2. In M3U Editor, go to **Administration → Devices → Device Pairing** (or scan the QR code), and enter the code.
-3. Choose which login the TV should use: a playlist's [default login](/docs/resources/playlist-auth#default-login) or a [Playlist Auth](/docs/resources/playlist-auth).
+3. Under **Grant Access As**, choose which login the TV should use: a playlist's [default login](/docs/resources/playlist-auth#default-login) or a [Playlist Auth](/docs/resources/playlist-auth).
 
-The TV signs in within a few seconds. Pairing doesn't create a new login: the TV gets the one you chose, exactly as if you'd typed it in.
+The TV signs in within a few seconds. Pairing doesn't create a new login: the TV gets the one you chose, exactly as if you'd typed it in. To set the TV up as well, give that login a [Settings Profile](tv-profiles).
+
+### Several playlists at once
+
+*(M3U Editor v0.14.2+ with M3U TV v1.3.0+)* **Add credential** grants more than one login in a single pairing. Drag them into the order you want: the TV saves each one as a playlist in that order, named after the Playlist Auth, and signs in with the first. Switch between them later under [**Settings → Playlists**](settings#playlists) on the TV.
+
+If the TV already has one of these playlists saved, it keeps its settings, and any name you gave it on the TV. Older versions of M3U TV sign in with the first login only.
 
 ## Why it's safe
 

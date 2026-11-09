@@ -87,6 +87,17 @@ Multiview works everywhere except the web app. Each tile is a separate stream, s
 - In [DVR](/docs/integrations/dvr_integration) recordings with commercial detection, marked breaks are skipped automatically. Turn off **Settings → Playback → Auto-skip commercials** to get a **Skip commercial** button instead.
 - *(v1.2.3+)* Movies and series played with a [transcoding profile](/docs/proxy/transcoding) can't be seeked, so the player hides the seek bar and shows **Seeking isn't available while transcoding**. The direct proxy, catchup, and live TV are not affected. To seek, choose **Direct (no transcoding)** under **Settings → Playback**.
 
+### Audio and subtitle sync
+
+*(v1.3.0+)* When the sound or subtitles are out of step with the picture, open **Audio** or **Subtitles** in the player and choose **Audio sync** or **Subtitle sync** at the bottom of the list. Holding OK on the button opens it directly.
+
+A bar appears across the top while the video keeps playing, so you can see and hear the change as you make it:
+
+- **+** delays the audio or subtitles, **-** plays them earlier. Audio moves in steps of 10 ms or 100 ms, subtitles in 50 ms or 1 s, up to a minute either way.
+- **Reset** goes back to 0, and **Done** or Back closes the bar.
+
+The offset is saved on the device for that channel, movie, or series (every episode shares one), so a stream that's always out of step stays fixed. It works with both of the Android players and with mpv everywhere else, but not in the web app.
+
 ### Picture-in-picture on Android
 
 *(v1.2.4+)* On Android devices that support it, pressing Home or switching apps while a video is playing shrinks it into a small floating window instead of stopping it. Tap the window to return to M3U TV.
@@ -103,7 +114,7 @@ Trailers open outside M3U TV: in the YouTube app where it's installed, otherwise
 
 ## Refresh-rate Matching
 
-**Settings → Appearance → Match display refresh rate** switches the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. It's available on Android TV and Android, Apple TV, and Windows. It's off by default, except on Apple TV.
+**Settings → Playback → Match display refresh rate** switches the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. It's available on Android TV and Android, Apple TV, and Windows. It's off by default, except on Apple TV.
 
 Refresh-rate matching *(v1.2.0+ on Android TV, improved in v1.2.2)* prefers clean multiples of the video's frame rate and matches NTSC rates (23.976, 29.97, 59.94) exactly. On Apple TV, v1.2.2 also fixes HDMI mode flapping, and *(v1.2.3+)* MKV files that don't declare a frame rate are matched too.
 

@@ -16,6 +16,8 @@ Some settings only appear where they do something. For example, there's no **Nav
 
 :::tip Settings that live in M3U Editor
 What a login can use (the proxy, transcoding, DVR, requests, AIOStreams) is decided in M3U Editor, on the login's [Playlist Auth](/docs/resources/playlist-auth#what-a-login-can-use). If a setting below is missing, check there first.
+
+*(v1.3.0+)* M3U Editor can also set many of the settings below with a [Settings Profile](tv-profiles). A setting with a lock next to it is set by your server and can't be changed in the app.
 :::
 
 ## General
@@ -25,6 +27,7 @@ What a login can use (the proxy, transcoding, DVR, requests, AIOStreams) is deci
 | **Language & Region** | **Language** | The app's language: **System language** (the default), English, German, Spanish, French, or Chinese (Simplified). |
 | **App** | Version | The installed version, and whether an update is available. **View release** opens the release page, or shows a QR code for your phone on a TV. |
 | | **Logs & Diagnostics** | Device details and this session's logs, with **Upload to server**. See [Logs and Diagnostics](logs-diagnostics). |
+| | **Show playback diagnostics** | *(v1.3.0+)* Off by default. Shows the active player and why it switched in the player's controls, for troubleshooting. See [Logs and Diagnostics](logs-diagnostics#playback-diagnostics). |
 | **Connection** | Status | The server you're connected to, its **Source**, **Server Timezone**, and the **Last error** if there was one. **Retry connection** and **Edit server settings** are here too. |
 
 ## Appearance
@@ -34,7 +37,7 @@ What a login can use (the proxy, transcoding, DVR, requests, AIOStreams) is deci
 | Setting | Default | Shown on | What it does |
 |---|---|---|---|
 | **Default start page** | Home | All | The screen the app opens on: Home, Search, Live TV, Movies, or Series. *(v1.2.5+)* Also [Sports](sports). If the screen you pick isn't available for this login, the app opens on Home. |
-| **Home screen** | Simplified | TV, desktop | **Spotlight** adds a large hero above the Home rows. It shows the backdrop, title, and details of whatever you're focused on, and the rows dock beneath it as you move. For a live channel, the hero uses the current programme's artwork from the guide. Phones and tablets always use the simplified Home. |
+| **Home screen** | Simplified (*v1.3.0+* Spotlight) | TV, desktop | **Spotlight** adds a large hero above the Home rows. It shows the backdrop, title, and details of whatever you're focused on, and the rows dock beneath it as you move. For a live channel, the hero uses the current programme's artwork from the guide. Phones and tablets always use the simplified Home. |
 | **Live TV layout** | List | All | How Live TV opens: **List**, **Grid**, or **Timeline** (the programme guide). |
 | **Live TV channels column** | Logo Only | All | What the guide's channel column shows: **Logo + Title**, **Logo Only**, or **Title Only**. |
 | **EPG starts at** | Current time | All | Where the guide scrolls to when it opens: now, or **Prime time** (8 PM). |
@@ -52,22 +55,32 @@ The two are separate, so you can take a section out of the nav and still reach i
 
 Home and Search stay at the top, Notifications and Settings stay at the bottom, and Continue Watching stays first on Home. AIOStreams and Requests have no Home row until you turn one on.
 
+*(v1.3.0+)* M3U Editor can also lay this out for your playlist with a [Home Screen](tv-home-screens), including extra rows under a section, each with its own **Home** switch. If it's locked, the page shows a lock and can't be changed.
+
 ### Display
 
 | Setting | Default | Shown on | What it does |
 |---|---|---|---|
-| **HDR mode** | On | Windows, Linux | Let HDR videos switch the display into HDR mode. |
-| **Match display refresh rate** | Off (on for Apple TV) | Android TV and Android, Apple TV, Windows | Switch the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. The screen can briefly flash or go blank while it switches. See [Guide and Playback](guide-and-playback#refresh-rate-matching). |
-| **Deinterlace video** | Off | Everything except Android | Smooth out comb lines on interlaced channels (such as 1080i and 576i). Uses more CPU. |
 | **Navigation sound** | On | TV, desktop | A click sound when you move focus with the remote or keyboard. |
 | **Optimize for** | Quality | All | **Quality** loads sharper images and uses more memory. **Speed** loads faster with lower-quality images, which helps on low-memory TV boxes. |
-| **Display size** | Very Large on TV, Normal elsewhere | All | Text and layout size: **Normal**, **Large**, or **Very Large**. |
+| **Display size** | Very Large on TV, Normal elsewhere | All | Text and layout size: **Very Small**, **Small**, **Normal**, **Large**, or **Very Large**. |
 
 ### Filters
 
-**Filter Persistence** (off by default) remembers each screen's sort and filters between visits, including the **Favorites First** switch. Off, they reset each time you open the screen.
+**Filter Persistence** (off by default, *v1.3.0+* on) remembers each screen's sort and filters between visits, including the **Favorites First** switch. Off, they reset each time you open the screen.
 
 ## Playback
+
+### Player
+
+| Setting | Default | Shown on | What it does |
+|---|---|---|---|
+| **Movies and series player** | Try ExoPlayer first | Android TV and Android | *(v1.3.0+)* **Try ExoPlayer first** starts movies, episodes, and catch-up with ExoPlayer, and switches to mpv if ExoPlayer can't play them. **Use mpv** starts them with mpv instead, which can help with a title that stops or stutters on ExoPlayer. Live TV always starts with ExoPlayer. |
+| **HDR mode** | On | Windows, Linux | Let HDR videos switch the display into HDR mode. |
+| **Match display refresh rate** | Off (on for Apple TV) | Android TV and Android, Apple TV, Windows | Switch the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. The screen can briefly flash or go blank while it switches. See [Guide and Playback](guide-and-playback#refresh-rate-matching). |
+| **Deinterlace video** | Off | Everything except Android | Smooth out comb lines on interlaced channels (such as 1080i and 576i). Uses more CPU. |
+
+### Streaming and DVR
 
 | Section | Setting | Default | What it does |
 |---|---|---|---|
@@ -93,8 +106,14 @@ Home and Search stay at the top, Notifications and Settings stay at the bottom, 
 
 | Setting | Default | What it does |
 |---|---|---|
-| **Trakt** | Not connected | **Connect with Trakt** syncs your watch history with [Trakt](https://trakt.tv). It signs in with a code, like [device pairing](device-pairing). |
+| **Simkl** | Not connected | **Connect with Simkl** syncs your watch history with [Simkl](https://simkl.com). It signs in with a code or QR code, and a title counts as watched once you stop at 80% or later. *(v1.3.0+)* Once connected, the card shows the account's name. |
+| **Trakt** | Not connected | **Connect with Trakt** syncs your watch history with [Trakt](https://trakt.tv). It signs in with a code, like [device pairing](device-pairing). *(v1.3.0+)* Once connected, the card shows the account's name. |
 | **TheIntroDB** | On | Show **Skip Intro** and **Skip Credits** for movies and episodes, using community timestamps from [TheIntroDB](https://theintrodb.org). There's no account or key. Turn it off and the player never contacts TheIntroDB, and **Up next** appears at its usual time near the end instead of when the credits start. |
+| **Online subtitles** | On | Adds **Search online** to the player's subtitle menu, for movies and episodes with an IMDb ID. It needs no account. **Subtitle source** can point to another Stremio subtitle add-on. |
+
+*(v1.3.0+ with M3U Editor v0.14.2+)* If M3U Editor already sends this login's progress to [Simkl or Trakt](/docs/integrations/trakt_simkl_integration), the card says so and names the account. Connecting on the TV takes over for this device: its playback goes to the account connected on the TV, and M3U Editor skips that service for this device. Disconnect on the TV to use the server account again.
+
+Leaving the page while a sign-in code is showing cancels that sign-in.
 
 ## What's New
 

@@ -45,6 +45,7 @@ Below the login details, each Playlist Auth has switches for the extra features 
 | **Content Requests** | Requesting movies and shows through [Sonarr and Radarr](/docs/integrations/arrs_integration). **Auto-approve Content Requests** skips your approval. |
 | **AIOStreams Access** | Browsing and playing [AIOStreams](/docs/integrations/aiostreams_integration) catalogs. |
 | **Library Publishing Access** | Letting the Emby plugin read [published libraries](/docs/integrations/emby_library_publishing) with this login. |
+| **M3U TV** | *(v0.14.2+)* The [Settings Profile](/docs/m3u-tv/tv-profiles) that sets up the app for this login. Leave it empty to use your default profile, if you have one. |
 
 ## Guest portal
 
