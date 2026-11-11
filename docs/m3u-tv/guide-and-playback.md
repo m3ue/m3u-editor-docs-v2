@@ -1,7 +1,7 @@
 ---
 sidebar_position: 2
 title: Guide and Playback
-description: The M3U TV programme guide and its preview player, catchup replay, Multiview, the player and its remote buttons, trailers, refresh-rate matching, sorting, and cache clearing
+description: The M3U TV programme guide and its preview player, catchup replay, Multiview, the player and its remote buttons, background audio, CarPlay and Android Auto, trailers, refresh-rate matching, sorting, and cache clearing
 tags:
   - M3U TV
   - EPG
@@ -78,6 +78,11 @@ Multiview works everywhere except the web app. Each tile is a separate stream, s
 |---|---|---|
 | **Channel up / down** | Next or previous channel | (no effect) |
 | **Fast forward / Rewind**, **Skip forward / back** | (no effect) | Seek 10 seconds |
+| **Next / Previous** *(v1.3.0+)* | Next or previous channel | Seek forward or back, like fast forward and rewind |
+| **Play**, **Pause**, **Play/Pause** *(v1.3.0+)* | Play or pause | Play or pause |
+| **Stop** *(v1.3.0+)* | Close the player | Close the player |
+
+**Play** only plays and **Pause** only pauses, so pressing one twice never flips playback back. Holding **Play/Pause** toggles once.
 
 ### On-screen details
 
@@ -98,9 +103,35 @@ A bar appears across the top while the video keeps playing, so you can see and h
 
 The offset is saved on the device for that channel, movie, or series (every episode shares one), so a stream that's always out of step stays fixed. It works with both of the Android players and with mpv everywhere else, but not in the web app.
 
-### Picture-in-picture on Android
+### Picture-in-picture and background audio
 
-*(v1.2.4+)* On Android devices that support it, pressing Home or switching apps while a video is playing shrinks it into a small floating window instead of stopping it. Tap the window to return to M3U TV.
+On phones and tablets, leaving the app doesn't have to stop what you're watching:
+
+- **Picture-in-picture** *(v1.2.4+ on Android, v1.3.0+ on iPhone and iPad)*: press Home or switch apps while a video plays and it shrinks into a small floating window. Tap the window to return to M3U TV.
+- **Background audio** *(v1.3.0+)*: close the floating window or lock the screen and the sound keeps playing, with controls on the lock screen and in the notification shade (Control Center on iPhone and iPad). On live TV, next and previous change channel. It's on by default, under **Settings → Playback → Background audio**. Off, leaving the player pauses it, and playback picks up again when you come back.
+
+Pause live TV for more than 30 seconds and **Play** picks up at the live point instead of where you paused. After 5 minutes paused, the stream is stopped so it doesn't hold one of your provider's connections, and **Play** starts it again.
+
+## In the car
+
+*(v1.3.0+)* M3U TV works with **CarPlay** on iPhone and **Android Auto** on Android phones. Cars only allow audio from apps like this one, so channels play as sound with the channel's logo and what's on.
+
+Sign in on the phone first. Then open M3U TV on the car's screen:
+
+| Tab | What it lists |
+|---|---|
+| **Favorites** | Your favorite live channels, the same ones as on the phone |
+| **Live TV** | Your Live TV categories, then each one's channels |
+
+Pick a channel and it plays, even with the phone locked. The car's player shows the channel and what's on now, with play, pause, and next and previous channel through the list you picked it from.
+
+The car and the phone share one player:
+
+- **Open the app on the phone** while a channel plays in the car, and it carries on in the full-screen player there.
+- **Pick a channel in the car** while the app is open on the phone, and it opens in the phone's player.
+- Whatever plays on the phone shows on the car's screen, and the car's controls work for it.
+
+Android Auto needs the app from Google Play, since it only lists apps installed from there unless you allow unknown sources in Android Auto's developer settings.
 
 ### Full screen on desktop
 

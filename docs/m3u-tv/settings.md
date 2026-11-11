@@ -79,6 +79,7 @@ Home and Search stay at the top, Notifications and Settings stay at the bottom, 
 | **HDR mode** | On | Windows, Linux | Let HDR videos switch the display into HDR mode. |
 | **Match display refresh rate** | Off (on for Apple TV) | Android TV and Android, Apple TV, Windows | Switch the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. The screen can briefly flash or go blank while it switches. See [Guide and Playback](guide-and-playback#refresh-rate-matching). |
 | **Deinterlace video** | Off | Everything except Android | Smooth out comb lines on interlaced channels (such as 1080i and 576i). Uses more CPU. |
+| **Background audio** | On | iPhone, iPad, Android phones and tablets | *(v1.3.0+)* Keep the sound playing when you leave the app or lock the screen, with controls on the lock screen and in notifications. Off, leaving the player pauses it. See [Picture-in-picture and background audio](guide-and-playback#picture-in-picture-and-background-audio). |
 
 ### Streaming and DVR
 

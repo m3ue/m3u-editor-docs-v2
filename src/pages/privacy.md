@@ -5,7 +5,7 @@ description: Privacy policy for the M3U TV app and m3u-editor.
 
 # Privacy Policy
 
-**Last updated:** November 6, 2026
+**Last updated:** November 10, 2026
 
 This privacy policy covers the M3U TV app (Android, Android TV, Apple TV, iOS, iPadOS, macOS, Windows, and Linux) and the m3u-editor web application (collectively, "the app"). The app is a client for your own self-hosted or third-party IPTV/media server - it is not a hosted service, and the developer does not operate a backend that stores your content or personal data.
 
@@ -28,7 +28,10 @@ The app uses **Firebase Cloud Messaging** (Google) solely for push notification 
 The following services are optional and only contacted when you use the related feature:
 
 - **Trakt** (trakt.tv). If you connect a Trakt account, the app sends your watch history to Trakt to keep it in sync. The Trakt access tokens are stored in your device's secure storage, and you can disconnect at any time in Settings. Trakt's handling of your data is governed by the [Trakt Privacy Policy](https://trakt.tv/privacy).
+- **SIMKL** (simkl.com). If you connect a SIMKL account, the app sends your watch history to SIMKL to keep it in sync. The SIMKL access tokens are stored in your device's secure storage, and you can disconnect at any time in Settings. SIMKL's handling of your data is governed by the [SIMKL Privacy Policy](https://simkl.com/privacy/).
 - **TheIntroDB** (theintrodb.org). When Skip Intro and Skip Credits are enabled, the app sends the public TMDB or IMDb ID (plus season and episode numbers) of the title you are watching to look up intro and credits timestamps. No account or personal information is sent. You can turn this off in Settings. See [TheIntroDB](https://theintrodb.org) for its terms.
+- **OpenSubtitles** (through its public Stremio add-on at opensubtitles-v3.strem.io). When you choose **Search online** in the player's subtitle menu, the app sends the public IMDb ID (plus season and episode numbers) of the title you are watching to find subtitles. No account or personal information is sent. You can turn this off, or point it at another subtitle add-on, in Settings.
+- **GitHub** (github.com). The app reads M3U TV's public release information from GitHub to show release notes and to tell you when a new version is available. Nothing about you is sent beyond what any web request includes.
 - **YouTube** (Google). Trailer links open on YouTube in your browser or the YouTube app. YouTube's handling of data is governed by [Google's Privacy Policy](https://policies.google.com/privacy).
 
 Artwork and metadata (such as posters and cast photos) are provided by your own server, which may source them from TMDB.
@@ -37,7 +40,7 @@ The app also connects to whatever media server you configure (self-hosted or thi
 
 ## Data Retention and Control
 
-Server credentials and Trakt tokens stored on your device can be removed at any time by logging out or disconnecting within the app, or by uninstalling it. Removing the app deletes all locally stored data. Data held on your own server (such as watch history, registered devices, and uploaded logs) is controlled by that server's administrator and can be deleted there.
+Server credentials and Trakt or SIMKL tokens stored on your device can be removed at any time by logging out or disconnecting within the app, or by uninstalling it. Removing the app deletes all locally stored data. Data held on your own server (such as watch history, registered devices, and uploaded logs) is controlled by that server's administrator and can be deleted there.
 
 ## Children's Privacy
 

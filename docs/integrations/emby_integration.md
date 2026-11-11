@@ -1,6 +1,6 @@
 ---
 sidebar_position: 4
-description: Connect an Emby or Jellyfin server to M3U Editor with an API key, and import its movies and series.
+description: Connect an Emby or Jellyfin server to M3U Editor with an API key or a user's login, and import its movies and series.
 title: Emby and Jellyfin
 tags:
   - Integrations
@@ -10,7 +10,7 @@ tags:
 
 # Emby and Jellyfin
 
-Emby and Jellyfin connect the same way: with the server's address and an API key.
+Emby and Jellyfin connect the same way: with the server's address and an API key. *(v0.14.2+)* If you can't get an API key, because you aren't an admin on that server, you can [sign in as a user](#sign-in-as-a-user) instead.
 
 ## Get an API key
 
@@ -41,6 +41,7 @@ Go to **Integrations → Media Servers** and choose **Add Media Server**:
 | **Host / IP Address** | The server's LAN IP or domain, for example `192.168.1.100` |
 | **Port** | `8096` by default |
 | **Use HTTPS** | On if you reach the server over HTTPS |
+| **Authentication** | *(v0.14.2+)* **API Key** (the default), or **Username & Password** to [sign in as a user](#sign-in-as-a-user) |
 | **API Key/Token** | The key from above |
 
 Choose **Test Connection & Discover Libraries**, select the movie, TV, or mixed libraries to import, and save. The first sync starts straight away.
@@ -48,6 +49,12 @@ Choose **Test Connection & Discover Libraries**, select the movie, TV, or mixed 
 :::note Jellyfin 12
 Jellyfin 12 no longer accepts the older way of sending the API key, so M3U Editor v0.13.4 and earlier fail to connect to it (**401 Unauthorized**). Update to v0.13.5 or later. Jellyfin 10.8 and later work either way.
 :::
+
+### Sign in as a user
+
+*(v0.14.2+)* Choose **Username & Password** under **Authentication** and enter an Emby or Jellyfin user's login instead of an API key. The user doesn't need admin rights. M3U Editor signs in once and keeps the session, and never stores the password. To sign in again, enter the password again; leave it blank to keep the current session.
+
+A user login can import the libraries that user can see, but it can't ask the server to refresh its libraries or use [Emby Library Publishing](emby_library_publishing). Those need an admin's API key.
 
 M3U Editor imports each movie and series with its details (plot, cast, genres, ratings, and artwork), plus every season and episode. The [Media Servers](emby_integration_settings) page covers the integration's other settings and actions.
 
