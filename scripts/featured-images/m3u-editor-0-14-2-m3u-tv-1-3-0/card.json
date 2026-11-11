@@ -1,0 +1,63 @@
+{
+  "logos": ["editor", "tv"],
+  "brand": "M3U Editor + M3U TV",
+  "title": "Set it up once.",
+  "accent": "Take it anywhere.",
+  "text": "Settings and Home from your server, and your channels in the car, in M3U Editor 0.14.2 and M3U TV 1.3.0.",
+  "shots": [
+    {
+      "name": "settings-profile",
+      "label": "M3U Editor: a Settings Profile, with a mix of Default and Enforced settings",
+      "size": "1600x1000",
+      "frame": "browser",
+      "box": [640, 44, 660, 412],
+      "z": 1
+    },
+    {
+      "name": "carplay-now-playing",
+      "label": "CarPlay: Now Playing for a live channel, with its logo and what's on",
+      "size": "800x480",
+      "frame": "tv",
+      "box": [600, 260, 450, 270],
+      "z": 2
+    },
+    {
+      "name": "phone-lock-screen",
+      "label": "iPhone or Android phone: the lock screen with M3U TV's playback controls",
+      "size": "1170x2532",
+      "frame": "phone",
+      "box": [1040, 300, 130, 280],
+      "z": 3
+    },
+    {
+      "name": "settings-profile-tv",
+      "label": "M3U TV: Settings showing a setting locked by a Settings Profile",
+      "size": "1920x1080"
+    },
+    {
+      "name": "home-screen-editor",
+      "label": "M3U Editor: a Home Screen with sections in order and a seasonal row added",
+      "size": "1600x1000"
+    },
+    {
+      "name": "trakt-simkl",
+      "label": "M3U Editor: Integrations, Trakt & SIMKL, with an account attached to Playlist Auths",
+      "size": "1600x1000"
+    },
+    {
+      "name": "watch-history",
+      "label": "M3U Editor: Proxy, Watch History, with a few entries and a Watching now badge",
+      "size": "1600x1000"
+    },
+    {
+      "name": "carplay-live",
+      "label": "CarPlay: the Live TV tab, or a category's channel list with logos",
+      "size": "800x480"
+    },
+    {
+      "name": "android-auto",
+      "label": "Android Auto: M3U TV's Favorites list",
+      "size": "800x480"
+    }
+  ]
+}
