@@ -1,115 +1,85 @@
 {
-  "tag": "v0.14.1",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.1",
-  "publishedAt": "2026-11-06T13:51:02Z",
+  "tag": "v0.14.2",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.2",
+  "publishedAt": "2026-11-11T01:53:58Z",
   "features": [
     {
-      "text": "Add on-demand channel matching for the M3U TV app",
-      "scope": "sports",
+      "text": "M3U TV Home Screens for server-driven Navigation & Home",
+      "scope": "tv",
       "pr": null
     },
     {
-      "text": "Add support for TheSportsDB",
+      "text": "M3U TV Profiles for editor-managed app settings",
+      "scope": "tv",
+      "pr": null
+    },
+    {
+      "text": "Watch history from m3u-proxy webhooks",
+      "scope": "proxy",
+      "pr": null
+    },
+    {
+      "text": "Server-side Trakt and SIMKL watch history",
+      "scope": "integrations",
+      "pr": null
+    },
+    {
+      "text": "Emby/Jellyfin login via user auth",
+      "scope": "media-server",
+      "pr": null
+    },
+    {
+      "text": "Grant several credentials in one device pairing",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Add AED profile using ESPN API for automated EPG generation",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Add ESPN API support",
+      "text": "List every Arr integration per request search result (m3u-tv #137)",
       "scope": null,
       "pr": null
     }
   ],
   "fixes": [
     {
-      "text": "Store the provider added date in the app timezone",
-      "scope": "vod",
-      "pr": null
-    },
-    {
-      "text": "Store provider last_modified in the app timezone",
-      "scope": "series",
-      "pr": null
-    },
-    {
-      "text": "Keep conversation switches from mixing streams or losing approvals (#1797, #1798)",
-      "scope": "copilot",
-      "pr": null
-    },
-    {
-      "text": "Stop overlapping metadata fetches deleting live episodes",
-      "scope": "series",
-      "pr": 1819
-    },
-    {
-      "text": "Select metadata batches by id cursor, not offset",
-      "scope": "series",
-      "pr": 1814
-    },
-    {
-      "text": "Detect quality from width as well as height",
-      "scope": "probe",
-      "pr": 1807
-    },
-    {
-      "text": "Report manifest transport failures as connection failures",
-      "scope": "aiostreams",
-      "pr": 1809
-    },
-    {
-      "text": "Reject expired Playlist Auths on M3U and HDHR output",
-      "scope": "auth",
-      "pr": 1817
-    },
-    {
-      "text": "Repoint merged groups and categories when duplicating",
-      "scope": "playlists",
-      "pr": 1816
-    },
-    {
-      "text": "Scope the channels heading to the selected playlist and type",
-      "scope": "easy-editor",
-      "pr": 1815
-    },
-    {
-      "text": "Keep the valid channel name 0 in fallback matching",
-      "scope": "merge",
-      "pr": 1813
-    },
-    {
-      "text": "Rate limiting applying universally instead of per route",
+      "text": "Custom channel saves on Easy Editor page missing data",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Count each library file once, as measured on disk, in the disk quota",
-      "scope": "dvr",
-      "pr": 1812
-    },
-    {
-      "text": "Give every recording its own output file",
-      "scope": "dvr",
-      "pr": 1811
-    },
-    {
-      "text": "Cache warming and response timeout fixes",
-      "scope": "espn-api",
+      "text": "Scope programme lookups to the mapped EPG, not just the XMLTV id",
+      "scope": "epg",
       "pr": null
     },
     {
-      "text": "Refresh expired provider covers on sync",
-      "scope": "series",
-      "pr": 1810
+      "text": "Qualify related-series columns for alias logins",
+      "scope": "xtream",
+      "pr": 1822
+    },
+    {
+      "text": "Check the connected IP on webhook requests to block DNS-rebinding SSRF",
+      "scope": null,
+      "pr": null
+    },
+    {
+      "text": "Retain selected artwork roles across EPG exports (#1750)",
+      "scope": null,
+      "pr": 1757
+    },
+    {
+      "text": "Honor Group Auto Sort on M3U playlists",
+      "scope": null,
+      "pr": 1821
+    },
+    {
+      "text": "Stable get_dvr_recordings paging when start times tie",
+      "scope": null,
+      "pr": null
     }
   ],
   "counts": {
-    "features": 4,
-    "fixes": 16,
-    "maintenance": 10
+    "features": 7,
+    "fixes": 7,
+    "maintenance": 4
   },
-  "fetchedAt": "2026-11-10T00:00:11.338Z"
+  "fetchedAt": "2026-11-11T02:20:54.379Z"
 }
