@@ -100,6 +100,11 @@
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
 
+/* Shared sections only pad their top, so the last one would sit on the footer */
+.main {
+  padding-bottom: 5rem;
+}
+
 .anchor {
   scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
 }

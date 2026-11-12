@@ -118,7 +118,7 @@ export default function TvAndroidPage() {
         </div>
       </header>
 
-      <main>
+      <main className={styles.main}>
         <section id="downloader" className={clsx('container', home.section, styles.anchor)}>
           <SectionHeader
             eyebrow="Fire TV & Google TV"

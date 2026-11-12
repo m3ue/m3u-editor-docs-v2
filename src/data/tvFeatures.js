@@ -215,7 +215,7 @@ export const ANDROID_APK_LATEST_URL = 'https://github.com/m3ue/m3u-tv/releases/l
 // Short code for the Downloader app by AFTVnews (go.aftvnews.com), pointing
 // at ANDROID_APK_LATEST_URL. Shown on /tv/android once set; leave null until
 // the code is registered.
-export const DOWNLOADER_CODE = null;
+export const DOWNLOADER_CODE = '3354688';
 
 export const DOWNLOADER_STEPS = [
   {
