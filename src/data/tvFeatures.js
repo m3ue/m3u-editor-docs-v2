@@ -207,6 +207,39 @@ export const DIRECT_DOWNLOADS = [
   { icon: 'terminal', platform: 'Linux', format: 'Portable ZIP', asset: 'linux.zip' },
 ];
 
+// Permanent link to the newest APK. The release workflow uploads a
+// version-less copy of the APK to every release, and GitHub redirects
+// releases/latest/download/<name> to the newest stable release's file.
+export const ANDROID_APK_LATEST_URL = 'https://github.com/m3ue/m3u-tv/releases/latest/download/m3u-tv-android.apk';
+
+// Short code for the Downloader app by AFTVnews (go.aftvnews.com), pointing
+// at ANDROID_APK_LATEST_URL. Shown on /tv/android once set; leave null until
+// the code is registered.
+export const DOWNLOADER_CODE = null;
+
+export const DOWNLOADER_STEPS = [
+  {
+    icon: 'cloud_download',
+    title: 'Get Downloader',
+    text: 'Search for "Downloader" on your Fire TV or Google TV and install the free app by AFTVnews.',
+  },
+  {
+    icon: 'tune',
+    title: 'Allow installs',
+    text: 'Fire TV: Settings, My Fire TV, Developer Options, Install unknown apps, then turn on Downloader. No Developer Options? Open My Fire TV, About, and select your device name seven times. Google TV: Settings, Apps, Security & Restrictions, Unknown sources.',
+  },
+  {
+    icon: 'input',
+    title: 'Enter the code',
+    text: 'Open Downloader, type the code into the URL box, and select Go. The latest APK downloads straight to your device.',
+  },
+  {
+    icon: 'play_circle',
+    title: 'Install and connect',
+    text: 'Select Install when prompted, open M3U TV, and sign in to your M3U Editor server.',
+  },
+];
+
 export const CONNECT_STEPS = [
   {
     icon: 'dns',
