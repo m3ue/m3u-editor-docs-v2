@@ -4,8 +4,10 @@
 #
 #   static/img/social-card.jpg     M3U Editor (site default, docusaurus.config.js)
 #   static/img/tv-social-card.jpg  M3U TV (/tv page)
+#   static/img/tv-android-social-card.jpg  M3U TV for Android (/tv/android)
+#   static/img/tv-apple-social-card.jpg    M3U TV for Apple (/tv/apple)
 #
-# Both are rendered from scripts/social-cards/card.html with headless Chrome,
+# All are rendered from scripts/social-cards/card.html with headless Chrome,
 # using the screenshots already in static/img/screenshots and static/img/tv.
 # Update those first (copy the editor screenshots in, or run
 # sync-tv-screenshots), then run this.
@@ -53,3 +55,5 @@ render() {
 
 render editor "$DOCS_DIR/static/img/social-card.jpg"
 render tv "$DOCS_DIR/static/img/tv-social-card.jpg"
+render android "$DOCS_DIR/static/img/tv-android-social-card.jpg"
+render apple "$DOCS_DIR/static/img/tv-apple-social-card.jpg"

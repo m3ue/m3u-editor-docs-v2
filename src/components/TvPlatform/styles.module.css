@@ -1,0 +1,229 @@
+/**
+ * Styles for the per-platform M3U TV landing pages (/tv/android, /tv/apple).
+ * Hero, step, store and download card styles come from index.module.css and
+ * tv.module.css.
+ */
+
+.heroInner {
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+}
+
+.storeBadge {
+  display: block;
+  height: 50px;
+  width: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero card (Downloader code, TestFlight)                             */
+/* ------------------------------------------------------------------ */
+
+.heroCard {
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  text-align: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 60px rgba(255, 32, 86, 0.2), 0 30px 60px rgba(0, 0, 0, 0.35);
+}
+
+.heroCardHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.heroCardHeader > span {
+  font-size: 1.15rem;
+  color: #fb7185;
+}
+
+.heroCardLead {
+  margin: 1.25rem 0 0.5rem;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.code {
+  font-family: var(--ifm-font-family-monospace);
+  /* Shared by the Downloader code and the TestFlight label so both heroes match */
+  font-size: clamp(2.5rem, 6vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+  background: linear-gradient(90deg, #fda4af 0%, #ff4d6d 50%, #fb2c36 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* A word in the code's size, set in the page font instead of monospace */
+.codeText {
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  /* background-clip: text clips to the box, so give descenders (the g) room */
+  padding-bottom: 0.12em;
+}
+
+/* An address is far longer than a code, so it wraps and shrinks */
+.codeUrl {
+  font-size: clamp(1.3rem, 3vw, 1.75rem);
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.codeAlt {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: rgba(226, 232, 240, 0.75);
+  overflow-wrap: anywhere;
+}
+
+.codeAlt strong {
+  color: #fff;
+}
+
+.heroCardLinks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.heroCardLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.heroCardLink:hover {
+  color: #fff;
+}
+
+.heroCardLink > span {
+  font-size: 1.1rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Sections                                                            */
+/* ------------------------------------------------------------------ */
+
+/* Shared sections only pad their top, so the last one would sit on the footer */
+.main {
+  padding-bottom: 5rem;
+}
+
+.anchor {
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 1rem);
+}
+
+.steps {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.sectionCta {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+.otherGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.otherGrid + .otherGrid {
+  margin-top: 0.9rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Release channels                                                    */
+/* ------------------------------------------------------------------ */
+
+.channels {
+  --card-bg: var(--ifm-background-surface-color);
+  --card-border: var(--ifm-color-emphasis-200);
+  --muted: var(--ifm-color-emphasis-700);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.channel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  color: inherit;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.channel:hover {
+  color: inherit;
+  text-decoration: none;
+  border-color: var(--ifm-color-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(99, 102, 241, 0.15);
+}
+
+.channelSpeed {
+  align-self: flex-start;
+  padding: 0.15rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ifm-color-primary);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.channelHead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.channelIcon {
+  font-size: 1.5rem !important;
+  color: var(--ifm-color-primary);
+}
+
+.channelText {
+  flex: 1;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.channelCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+.channelCta > span {
+  font-size: 1.1rem;
+}
+
+@media (max-width: 996px) {
+  .heroInner,
+  .channels {
+    grid-template-columns: 1fr;
+  }
+}

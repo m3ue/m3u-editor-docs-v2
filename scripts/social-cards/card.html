@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
   Social share card template (1200x630), rendered by
-  scripts/generate-social-cards.sh. Pick the card with ?card=editor or ?card=tv.
+  scripts/generate-social-cards.sh. Pick the card with ?card=editor, tv, android, or apple.
   Screenshots come straight from static/img, so re-running the script after
   updating them is all a new card needs.
 -->
@@ -157,11 +157,40 @@
   }
   .device-phone img { border-radius: 15px; }
 
+  /* Platform cards: narrower copy so it clears the tablet (left: 600px) */
+  .copy[data-card="android"],
+  .copy[data-card="apple"] { width: 500px; }
+
+  /* Platform cards: a pill row under the headline */
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    font-size: 17px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  .chip b {
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 19px;
+    letter-spacing: 0.05em;
+    /* Solid so it stays legible in small link previews */
+    color: #fff;
+  }
+
   [data-card] { display: none; }
   body.editor [data-card~="editor"],
-  body.tv [data-card~="tv"] { display: block; }
+  body.tv [data-card~="tv"],
+  body.android [data-card~="android"],
+  body.apple [data-card~="apple"] { display: block; }
   body.editor .copy[data-card~="editor"],
-  body.tv .copy[data-card~="tv"] { display: flex; }
+  body.tv .copy[data-card~="tv"],
+  body.android .copy[data-card~="android"],
+  body.apple .copy[data-card~="apple"] { display: flex; }
 
   body.editor {
     /* .heroTitleAccent and .logo in src/pages/index.module.css */
@@ -169,7 +198,9 @@
     --glow: 0 0 30px rgba(244, 63, 94, 0.35), 0 0 50px rgba(99, 102, 241, 0.25);
   }
 
-  body.tv {
+  body.tv,
+  body.android,
+  body.apple {
     /* .tvAccent and .tvLogo in src/pages/tv.module.css */
     --accent: linear-gradient(90deg, #fda4af 0%, #ff4d6d 50%, #fb2c36 100%);
     --glow: 0 0 30px rgba(255, 32, 86, 0.45), 0 0 50px rgba(251, 44, 54, 0.3);
@@ -199,11 +230,39 @@
     <div class="url">m3ue.sparkison.dev/tv</div>
   </div>
 
+  <div class="copy" data-card="android">
+    <div class="brand">
+      <div class="mark"><img src="../../static/img/tv-logo.svg" alt=""></div>
+      <span>M3U TV</span>
+    </div>
+    <h1>M3U TV<br><em>for Android.</em></h1>
+    <p>Phones, tablets, Android TV,<br>Google TV, and Fire TV.</p>
+    <div class="chips">
+      <span class="chip">Downloader code <b>3354688</b></span>
+      <span class="chip">Google Play &amp; beta</span>
+    </div>
+    <div class="url">m3ue.sparkison.dev/tv/android</div>
+  </div>
+
+  <div class="copy" data-card="apple">
+    <div class="brand">
+      <div class="mark"><img src="../../static/img/tv-logo.svg" alt=""></div>
+      <span>M3U TV</span>
+    </div>
+    <h1>M3U TV<br><em>for Apple.</em></h1>
+    <p>iPhone, iPad, Apple TV, and Mac.</p>
+    <div class="chips">
+      <span class="chip">App Store</span>
+      <span class="chip">TestFlight beta</span>
+    </div>
+    <div class="url">m3ue.sparkison.dev/tv/apple</div>
+  </div>
+
   <div class="stage" data-card="editor">
     <img class="editor-shot" src="../../static/img/screenshots/01_dashboard.png" alt="">
   </div>
 
-  <div class="stage" data-card="tv">
+  <div class="stage" data-card="tv android apple">
     <div class="device device-tv"><img src="../../static/img/tv/tv1.webp" alt=""></div>
     <div class="device device-tablet"><img src="../../static/img/tv/tablet3.webp" alt=""></div>
     <div class="device device-phone"><img src="../../static/img/tv/mobile5.webp" alt=""></div>

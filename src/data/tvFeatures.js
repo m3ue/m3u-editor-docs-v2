@@ -260,3 +260,49 @@ export const CONNECT_STEPS = [
     link: { to: '/docs/m3u-tv/overview#connect-it', label: 'Connecting' },
   },
 ];
+
+// Opt-in beta programs. New builds go to testers first and are promoted to
+// the public store listing afterwards. Shown on /tv/android and /tv/apple.
+export const PLAY_TESTING_URL = 'https://play.google.com/apps/testing/dev.sparkison.tv';
+export const TESTFLIGHT_URL = 'https://testflight.apple.com/join/hqJYVsJr';
+
+export const PLAY_TESTING_STEPS = [
+  {
+    icon: 'person',
+    title: 'Open the opt-in page',
+    text: 'Open the testing link in a browser signed in to the same Google account your phone, tablet, or TV uses for Google Play.',
+  },
+  {
+    icon: 'science',
+    title: 'Become a tester',
+    text: 'Select "Become a tester". The account is enrolled for every device signed in to it, including Android TV and Google TV.',
+  },
+  {
+    icon: 'system_update',
+    title: 'Update from Google Play',
+    text: 'Install or update M3U TV from Google Play as usual. The beta can take a few minutes to show up after you join.',
+  },
+];
+
+export const TESTFLIGHT_STEPS = [
+  {
+    icon: 'cloud_download',
+    title: 'Get TestFlight',
+    text: 'Install Apple\'s free TestFlight app from the App Store on your iPhone or iPad.',
+  },
+  {
+    icon: 'mail',
+    title: 'Open the invite',
+    text: 'Open the TestFlight link on that device and select Accept. This joins your Apple ID to the M3U TV beta.',
+  },
+  {
+    icon: 'play_circle',
+    title: 'Install the beta',
+    text: 'Select Install in TestFlight. Beta updates arrive there before they reach the App Store.',
+  },
+  {
+    icon: 'connected_tv',
+    title: 'Apple TV',
+    text: 'Install TestFlight on your Apple TV, signed in with the same Apple ID. M3U TV is already listed there, ready to install.',
+  },
+];
