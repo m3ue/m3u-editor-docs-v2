@@ -1,7 +1,7 @@
 {
-  "tag": "v0.14.2",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.2",
-  "publishedAt": "2026-11-11T01:53:58Z",
+  "tag": "v0.14.3",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.3",
+  "publishedAt": "2026-11-14T15:55:21Z",
   "features": [
     {
       "text": "M3U TV Home Screens for server-driven Navigation & Home",
@@ -81,5 +81,5 @@
     "fixes": 7,
     "maintenance": 4
   },
-  "fetchedAt": "2026-11-11T17:27:18.258Z"
+  "fetchedAt": "2026-11-14T15:55:36.204Z"
 }
