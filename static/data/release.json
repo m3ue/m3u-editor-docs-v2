@@ -4,82 +4,37 @@
   "publishedAt": "2026-11-14T15:55:21Z",
   "features": [
     {
-      "text": "M3U TV Home Screens for server-driven Navigation & Home",
-      "scope": "tv",
-      "pr": null
-    },
-    {
-      "text": "M3U TV Profiles for editor-managed app settings",
-      "scope": "tv",
-      "pr": null
-    },
-    {
-      "text": "Watch history from m3u-proxy webhooks",
-      "scope": "proxy",
-      "pr": null
-    },
-    {
-      "text": "Server-side Trakt and SIMKL watch history",
-      "scope": "integrations",
-      "pr": null
-    },
-    {
-      "text": "Emby/Jellyfin login via user auth",
-      "scope": "media-server",
-      "pr": null
-    },
-    {
-      "text": "Grant several credentials in one device pairing",
+      "text": "Add MDBList as a watch tracker integration",
       "scope": null,
       "pr": null
     },
     {
-      "text": "List every Arr integration per request search result (m3u-tv #137)",
+      "text": "Authenticated API endpoints for plugins (#1825)",
+      "scope": "plugins",
+      "pr": 1829
+    },
+    {
+      "text": "Provider Profiles support for M3U/M3U8 playlists (#1826)",
       "scope": null,
-      "pr": null
+      "pr": 1828
     }
   ],
   "fixes": [
     {
-      "text": "Custom channel saves on Easy Editor page missing data",
-      "scope": null,
+      "text": "Metadata enrichment missing fields; series not included in merged; other optimizations for DVR content",
+      "scope": "dvr",
       "pr": null
     },
     {
-      "text": "Scope programme lookups to the mapped EPG, not just the XMLTV id",
-      "scope": "epg",
-      "pr": null
-    },
-    {
-      "text": "Qualify related-series columns for alias logins",
-      "scope": "xtream",
-      "pr": 1822
-    },
-    {
-      "text": "Check the connected IP on webhook requests to block DNS-rebinding SSRF",
-      "scope": null,
-      "pr": null
-    },
-    {
-      "text": "Retain selected artwork roles across EPG exports (#1750)",
-      "scope": null,
-      "pr": 1757
-    },
-    {
-      "text": "Honor Group Auto Sort on M3U playlists",
-      "scope": null,
-      "pr": 1821
-    },
-    {
-      "text": "Stable get_dvr_recordings paging when start times tie",
+      "text": "Device pairing rejected codes as invalid or expired",
       "scope": null,
       "pr": null
     }
   ],
   "counts": {
-    "features": 7,
-    "fixes": 7,
-    "maintenance": 4
+    "features": 3,
+    "fixes": 2,
+    "maintenance": 5
   },
-  "fetchedAt": "2026-11-14T15:55:36.204Z"
+  "fetchedAt": "2026-11-14T18:50:30.977Z"
 }
