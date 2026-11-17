@@ -17,3 +17,7 @@ Everything in these docs applies, except the parts about installing and configur
 :::note M3U Proxy isn't available
 ElfHosted instances don't include [M3U Proxy](/docs/proxy/overview). For proxied playback, connect a [MediaFlow Proxy](/docs/advanced/settings-reference#mediaflow-proxy) instead, under **Settings → Integrations → MediaFlow Proxy**.
 :::
+
+:::tip AIOStreams in M3U TV
+Use M3U Editor v0.14.4+ and M3U TV v1.3.1+ for [AIOStreams](/docs/integrations/aiostreams_integration). Earlier versions fetched AIOStreams through paths ElfHosted's login gateway doesn't let through, so the rows stayed empty in M3U TV.
+:::

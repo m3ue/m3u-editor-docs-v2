@@ -44,7 +44,7 @@ The **Auth** tab also has the alias's [default login](playlist-auth#default-logi
 
 ## Provider credentials and URL replacement
 
-The **Providers** tab has an entry for each provider URL the source playlist's streams use. For each one, you can:
+The **Providers** tab has an entry for each provider URL the source playlist's streams use. *(v0.14.4+)* For an M3U source playlist, the entry is filled in from its stream URLs when they have the Xtream layout (`/username/password/...`), since that's the only kind whose login can be swapped. For each one, you can:
 
 - **Swap credentials:** enter a different **Xtream API Username** and **Xtream API Password**, such as a second line from the same provider. **Test connection** next to the URL checks them and shows the connection limit and expiry.
 - **Replace the provider URL:** turn on **Replace provider URL** and enter a **Replacement URL**. Players get this address instead of the provider's, with the rest of the stream URL kept. Use it for a VPN-only address or another host for the same provider.

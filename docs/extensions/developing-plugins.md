@@ -179,6 +179,7 @@ class Plugin implements PluginInterface, HookablePluginInterface, LifecyclePlugi
 | `HookablePluginInterface` | If hooks declared | Provides `runHook()` |
 | `ScheduledPluginInterface` | If `scheduled` capability | Provides `scheduledActions()` |
 | `LifecyclePluginInterface` | Optional | Provides `uninstall()` for custom cleanup |
+| `ApiEndpointPluginInterface` | If `api_endpoints` capability | *(v0.14.3+)* Provides `handleApiRequest()`. See [API endpoints](#api-endpoints). |
 | `PluginSelectOptionsProviderInterface` | If using `options_provider` on UI table columns | Provides `selectOptions()` for dynamic column select options |
 
 The validator checks that the interfaces you implement match the capabilities and hooks you declared in the manifest.
@@ -229,6 +230,60 @@ return PluginActionResult::cancelled('Run cancelled.', ['processed' => $count]);
 ```
 
 The `$data` array (second argument) is stored with the run record and shown in the run detail view in the admin UI.
+
+## API endpoints
+
+*(v0.14.3+)* A plugin can answer HTTP requests from players and other apps. Declare each endpoint under [`api_endpoints`](manifest-reference.md#api-endpoints) in the manifest, then implement `ApiEndpointPluginInterface`:
+
+```php
+use App\Plugins\Contracts\ApiEndpointPluginInterface;
+use App\Plugins\Support\PluginApiRequestContext;
+
+public function handleApiRequest(string $endpoint, array $payload, PluginApiRequestContext $context): array
+{
+    return match ($endpoint) {
+        'lookup' => ['results' => $this->lookup($payload['query'], $payload['limit'] ?? 10)],
+    };
+}
+```
+
+The return value must be JSON-encodable. `$payload` holds only the endpoint's declared fields, already validated. The context has:
+
+| Property / method | What it is |
+|---|---|
+| `$context->playlist` | The playlist the caller's login unlocks (a playlist, custom or merged playlist, or alias). The plugin never sees the login itself. |
+| `$context->playlistAuth` | The [Playlist Auth](/docs/resources/playlist-auth) used, or `null` for a playlist's own Xtream login. |
+| `$context->settings` | The plugin's saved settings. |
+| `$context->safeGet($url, $timeoutSeconds)` | An outbound GET that refuses private, link-local, and reserved addresses. Use it for any URL a payload can influence. Needs the `network_egress` permission. |
+
+### Calling an endpoint
+
+Send a JSON `POST` to `/api/plugins/{plugin-id}/{endpoint-id}`, with the fields under `payload`. Callers sign in with an Xtream login (a playlist's own, or a Playlist Auth), either as HTTP Basic auth or as `username` and `password` in the body. Credentials in the query string are ignored.
+
+```bash
+curl -X POST https://your-server/api/plugins/my-plugin/lookup \
+  -u 'username:password' \
+  -H 'Content-Type: application/json' \
+  -d '{"payload": {"query": "Big Buck Bunny"}}'
+```
+
+A successful response wraps your data:
+
+```json
+{ "api_version": 1, "plugin_id": "my-plugin", "endpoint": "lookup", "data": { "results": [] } }
+```
+
+| Status | `error` | Why |
+|---|---|---|
+| 401 | `unauthorized` | The login is wrong, disabled, or expired. |
+| 403 | `plugin_unavailable` | The plugin is disabled, not trusted, blocked, or failed validation. |
+| 404 | `not_found` | Plugins are turned off, the plugin isn't installed, or it doesn't declare that endpoint. |
+| 413 | `request_too_large`, `response_too_large` | The request is over 128 KB, or the response over 512 KB. |
+| 415 | `json_required` | The request isn't JSON. |
+| 422 | `invalid_payload` | The payload doesn't match the declared fields. `fields` lists the ones that failed. |
+| 500 | `plugin_request_failed` | The plugin threw an error. Details are in the log, not the response. |
+
+Each IP can make 120 requests a minute, set with the `PLUGIN_API_RATE_LIMIT` environment variable. The plugin's files are checked against its trusted snapshot before every request, just as for actions and hooks.
 
 ## Scheduled plugins
 

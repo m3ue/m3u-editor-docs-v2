@@ -1,10 +1,11 @@
 ---
 sidebar_position: 7
-description: Pool several accounts from the same Xtream provider into one playlist, so more people can watch at once.
+description: Pool several accounts from the same Xtream or M3U provider into one playlist, so more people can watch at once.
 tags:
   - Playlists
   - Advanced
   - Xtream
+  - M3U
 title: Provider Profiles
 ---
 
@@ -20,7 +21,7 @@ Profiles are for several accounts with **one** provider. Their stream addresses 
 
 ## Set it up
 
-Profiles work with Xtream playlists streamed through the [proxy](/docs/proxy/overview), which tracks how many streams each account is using. Turning them on turns on the playlist's proxy.
+Profiles work with Xtream playlists, and *(v0.14.3+)* M3U/M3U8 playlists, streamed through the [proxy](/docs/proxy/overview), which tracks how many streams each account is using. Turning them on turns on the playlist's proxy.
 
 1. Edit the playlist, open its **Type** tab, and expand **Provider Profiles**.
 2. Turn on **Enable Provider Profiles**. The playlist's own login becomes the **Primary Profile**. **Test Primary** checks it and fills in its connection limit.
@@ -36,6 +37,15 @@ Profiles work with Xtream playlists streamed through the [proxy](/docs/proxy/ove
 | **Enabled** | Turn an account off without removing it. |
 
 4. Save. The playlist's page shows how many streams each account is using.
+
+### M3U and M3U8 playlists
+
+*(v0.14.3+)* An M3U playlist from an Xtream-style provider can be pooled too. The differences from an Xtream playlist:
+
+- The primary account's login is read from the playlist's **URL** (a `get.php?username=...&password=...` link, or one with `/username/password/` in its path). If it can't be read from there, each stream's own address is used.
+- M3U providers can't be asked for their connection limits, so there's no **Test** button. Enter the primary account's limit in **Primary Max Streams**, and each additional account's in its **Max Streams**.
+- For an additional account, you can paste its full M3U link into **Provider URL**. The username and password are taken from it, and the link is shortened to the provider's address.
+- Streams from a CDN or another host keep that host; only the login in their address is swapped.
 
 ## Options
 
@@ -58,4 +68,5 @@ The playlist's **Available Streams** (in **Output → Streaming Output**) is sti
 |---|---|
 | **Test** fails | The username and password, and the **Provider URL** if you set one. Try the provider's main server. |
 | New streams won't start | Every enabled account is at its limit. Check the counts on the playlist's page, wait for a stream to end, or add an account. |
+| The primary account stays off after renewing | *(v0.14.4+)* An account the provider reports as expired is turned off automatically. The primary account turns back on once the provider reports it as active again, or as soon as you change the playlist's login. Before v0.14.4 it stayed off. |
 | Streams play on one account but not another | Each account must have the same channels. Some providers give different accounts different packages. |

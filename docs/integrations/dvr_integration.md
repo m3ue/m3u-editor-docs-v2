@@ -97,6 +97,16 @@ A series rule matches the show's title in the guide (not case-sensitive). If it 
 
 Finished recordings are added to the playlist as VOD, in a **DVR Recordings** group, so they reach your players like any other movie or episode. While a show is still recording, players can watch it and seek back to the start.
 
+### In M3U TV
+
+[M3U TV](/docs/m3u-tv/overview) has a **Recordings** screen for the DVR library, and *(M3U TV v1.3.1+ with M3U Editor v0.14.3+)*:
+
+- A recorded movie or episode shows a **DVR** badge, and a movie's page shows when and on which channel it was recorded.
+- **Delete** on a recorded movie or episode's page deletes the recording, after asking first. The movie or episode goes with it.
+- **Search** includes a **Recordings** row, and a recording plays straight from it.
+
+Delete is offered only to logins with DVR access, and only for recordings they can see: a guest's own recordings, or every recording for the playlist's owner.
+
 ### Recording through outages
 
 *(v0.13.3+ with proxy v0.4.33+)* A recording survives short problems:

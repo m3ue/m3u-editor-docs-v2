@@ -79,6 +79,7 @@ Home and Search stay at the top, Notifications and Settings stay at the bottom, 
 | **HDR mode** | On | Windows, Linux | Let HDR videos switch the display into HDR mode. |
 | **Match display refresh rate** | Off (on for Apple TV) | Android TV and Android, Apple TV, Windows | Switch the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. The screen can briefly flash or go blank while it switches. See [Guide and Playback](guide-and-playback#refresh-rate-matching). |
 | **Deinterlace video** | Off | Everything except Android | Smooth out comb lines on interlaced channels (such as 1080i and 576i). Uses more CPU. |
+| **Hide player overlay on start** | Off | All | *(v1.3.1+)* Open streams on just the picture, without the controls and channel info. Press any button or tap the screen to show them. |
 | **Background audio** | On | iPhone, iPad, Android phones and tablets | *(v1.3.0+)* Keep the sound playing when you leave the app or lock the screen, with controls on the lock screen and in notifications. Off, leaving the player pauses it. See [Picture-in-picture and background audio](guide-and-playback#picture-in-picture-and-background-audio). |
 
 ### Streaming and DVR
@@ -109,10 +110,11 @@ Home and Search stay at the top, Notifications and Settings stay at the bottom, 
 |---|---|---|
 | **Simkl** | Not connected | **Connect with Simkl** syncs your watch history with [Simkl](https://simkl.com). It signs in with a code or QR code, and a title counts as watched once you stop at 80% or later. *(v1.3.0+)* Once connected, the card shows the account's name. |
 | **Trakt** | Not connected | **Connect with Trakt** syncs your watch history with [Trakt](https://trakt.tv). It signs in with a code, like [device pairing](device-pairing). *(v1.3.0+)* Once connected, the card shows the account's name. |
+| **MDBList** | Not connected | *(v1.3.1+)* **Connect with MDBList** syncs your watch history with [MDBList](https://mdblist.com). It signs in with a code or QR code, and the card shows the account's name once connected. |
 | **TheIntroDB** | On | Show **Skip Intro** and **Skip Credits** for movies and episodes, using community timestamps from [TheIntroDB](https://theintrodb.org). There's no account or key. Turn it off and the player never contacts TheIntroDB, and **Up next** appears at its usual time near the end instead of when the credits start. |
 | **Online subtitles** | On | Adds **Search online** to the player's subtitle menu, for movies and episodes with an IMDb ID. It needs no account. **Subtitle source** can point to another Stremio subtitle add-on. |
 
-*(v1.3.0+ with M3U Editor v0.14.2+)* If M3U Editor already sends this login's progress to [Simkl or Trakt](/docs/integrations/trakt_simkl_integration), the card says so and names the account. Connecting on the TV takes over for this device: its playback goes to the account connected on the TV, and M3U Editor skips that service for this device. Disconnect on the TV to use the server account again.
+*(v1.3.0+ with M3U Editor v0.14.2+)* If M3U Editor already sends this login's progress to [Simkl, Trakt, or *(v0.14.4+)* MDBList](/docs/integrations/trakt_simkl_integration), the card says so and names the account. Connecting on the TV takes over for this device: its playback goes to the account connected on the TV, and M3U Editor skips that service for this device. Disconnect on the TV to use the server account again.
 
 Leaving the page while a sign-in code is showing cancels that sign-in.
 

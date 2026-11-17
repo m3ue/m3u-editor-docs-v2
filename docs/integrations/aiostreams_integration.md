@@ -34,9 +34,11 @@ AIOStreams is reached through a playlist:
 1. In the playlist's **AIOStreams** tab, choose the **AIOStreams Integration** to expose.
 2. For people with a [Playlist Auth](/docs/resources/playlist-auth), also turn on **AIOStreams Access** on their login.
 
-In M3U TV, they get an **AIOStreams** section with the catalogs, search, detail pages, a stream picker to choose quality and source, and Continue Watching.
+In M3U TV, they get an **AIOStreams** section with the catalogs, search, detail pages, a stream picker to choose quality and source, and Continue Watching. *(M3U TV v1.3.1+)* **View All** on a catalog row opens the whole catalog as a grid, loading more as you scroll.
 
-To browse as an admin, choose **Browse Catalog** on the integration.
+*(v0.14.4+ with M3U TV v1.3.1+)* M3U TV fetches catalogs, details, and streams through the same Xtream API paths it uses for everything else (`player_api.php`, `/movie/`, `/series/`). Servers behind an auth gateway that only lets the Xtream paths through, such as [ElfHosted](/docs/deployment/elfhosted), work without extra rules. Older versions of M3U TV keep using the `/{username}/{password}/aiostreams/` routes, which still work.
+
+To browse as an admin, choose **Browse Catalog** on the integration. *(v0.14.4+)* **Load more** at the bottom of a catalog row fetches its next page.
 
 ## Add titles to your library
 
@@ -72,4 +74,5 @@ Added titles manage their own failover, so stream probing, merging, and failover
 | No catalogs are found | The manifest URL ends in `/manifest.json` and loads in a browser. If you added catalogs in AIOStreams recently, check they were saved there. |
 | A catalog browses but finds no streams | M3U Editor only asks this one AIOStreams instance for streams. Make sure it's set up to find streams for that catalog's content, not just list it. |
 | Streams don't load | Your debrid account is active, and AIOStreams itself returns streams for the title. |
+| AIOStreams rows are empty in M3U TV, but **Browse Catalog** works | A reverse proxy or auth gateway may be blocking the `/aiostreams/` paths. Update to M3U Editor v0.14.4+ and M3U TV v1.3.1+, which only use the Xtream paths. |
 | An added title is stuck on `failed` or `pending` | Use **Rescan**, or wait for the hourly sweep. |

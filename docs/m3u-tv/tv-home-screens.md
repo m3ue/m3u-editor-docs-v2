@@ -40,6 +40,7 @@ A row can also have **Show from** and **Show until** dates. Only the month and d
 
 - **Navigation & Home** lists your rows under their section, each with its own **Home** switch, so people can turn rows off when the layout isn't enforced. **Reset to default** brings back your layout and every row.
 - An enforced layout shows a lock and can't be changed.
+- *(M3U TV v1.3.1+)* **View all** on a category row opens that section on the row's category, not the whole section. The row's tile at the end also previews what's in it.
 - Changes reach an open app within a few seconds, and a device that's off or offline picks them up when it next connects.
 
 ## Copy a Home Screen

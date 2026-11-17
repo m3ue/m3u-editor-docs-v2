@@ -91,6 +91,7 @@ Multiview works everywhere except the web app. Each tile is a separate stream, s
 - **Skip Intro** and **Skip Credits** appear on movies and episodes that [TheIntroDB](https://theintrodb.org) has timestamps for, and **Up next** offers the next episode as the credits start. *(v1.2.3+)* To turn this off, go to **Settings → Integrations → TheIntroDB**.
 - In [DVR](/docs/integrations/dvr_integration) recordings with commercial detection, marked breaks are skipped automatically. Turn off **Settings → Playback → Auto-skip commercials** to get a **Skip commercial** button instead.
 - *(v1.2.3+)* Movies and series played with a [transcoding profile](/docs/proxy/transcoding) can't be seeked, so the player hides the seek bar and shows **Seeking isn't available while transcoding**. The direct proxy, catchup, and live TV are not affected. To seek, choose **Direct (no transcoding)** under **Settings → Playback**.
+- *(v1.3.1+)* To open streams on just the picture, turn on **Settings → Playback → Hide player overlay on start**. Any button press or tap still brings the controls up.
 
 ### Audio and subtitle sync
 
@@ -102,6 +103,10 @@ A bar appears across the top while the video keeps playing, so you can see and h
 - **Reset** goes back to 0, and **Done** or Back closes the bar.
 
 The offset is saved on the device for that channel, movie, or series (every episode shares one), so a stream that's always out of step stays fixed. It works with both of the Android players and with mpv everywhere else, but not in the web app.
+
+### Closed captions on over-the-air channels
+
+*(v1.3.1+ on Android TV and Android)* Some over-the-air broadcasters send closed captions in every frame but leave out the marker that tells players they're there, so their channels never offered captions. M3U TV now looks for captions on those MPEG-2 channels anyway, so they show up in the **Subtitles** menu. Channels that already had captions, and H.264 or HEVC streams, aren't affected.
 
 ### Picture-in-picture and background audio
 
@@ -135,7 +140,7 @@ Android Auto needs the app from Google Play, since it only lists apps installed 
 
 ### Full screen on desktop
 
-*(v1.2.3+)* On Mac, Windows, and Linux, press **F11** to go full screen, or use the full-screen button next to the volume slider. On Windows and Linux, **Alt+Enter** works too, and on a Mac the green window button and **Ctrl+Cmd+F** stay in sync with it. **Escape** leaves full screen first, before it goes back.
+*(v1.2.3+)* On Mac, Windows, and Linux, press **F11** to go full screen, or use the full-screen button next to the volume slider. On Windows and Linux, **Alt+Enter** works too, and on a Mac the green window button and **Ctrl+Cmd+F** stay in sync with it. *(v1.3.1+)* **Escape** always goes back, in full screen too, so keyboard navigation works the same either way. Use **F11** (or **Alt+Enter**) to leave full screen. Before v1.3.1, Escape left full screen first.
 
 ## Trailers
 
@@ -148,6 +153,8 @@ Trailers open outside M3U TV: in the YouTube app where it's installed, otherwise
 **Settings → Playback → Match display refresh rate** switches the display to the video's frame rate when playback starts, so 24p films and 50 Hz broadcasts play without judder. It's available on Android TV and Android, Apple TV, and Windows. It's off by default, except on Apple TV.
 
 Refresh-rate matching *(v1.2.0+ on Android TV, improved in v1.2.2)* prefers clean multiples of the video's frame rate and matches NTSC rates (23.976, 29.97, 59.94) exactly. On Apple TV, v1.2.2 also fixes HDMI mode flapping, and *(v1.2.3+)* MKV files that don't declare a frame rate are matched too.
+
+*(v1.3.1+ on Android TV and Windows)* 25 and 30 fps video, which covers most live broadcasts, now switches to 50 or 60 Hz rather than 25 or 30 Hz. Each frame is shown twice, so there's no judder, and the menus and subtitles stay smooth. A display already at a clean multiple, such as 120 Hz, stays there, and 29.97 fps video picks 59.94 Hz over 60 Hz when the display has it.
 
 The screen can briefly flash or go blank while it switches. On Windows, a short blank screen before playback is the display changing mode.
 

@@ -102,6 +102,7 @@ Declare the capabilities your plugin provides. The validator checks that your PH
 | `stream_analysis` | `StreamAnalysisPluginInterface` |
 | `scheduled` | `ScheduledPluginInterface` |
 | `epg_cache_enrichment` | `EpgProcessorPluginInterface` (see [EPG cache enrichment](developing-plugins.md#epg-cache-enrichment)) |
+| `api_endpoints` | `ApiEndpointPluginInterface` *(v0.14.3+, see [API endpoints](#api-endpoints))* |
 
 ---
 
@@ -134,6 +135,7 @@ Declare every permission your plugin needs. These are informational (the host do
 | `queue_jobs` | Medium | Dispatch Laravel queue jobs |
 | `hook_subscriptions` | Low | Required if any hooks are declared |
 | `scheduled_runs` | Low | Required if the `scheduled` capability is declared |
+| `api_endpoints` | Medium | *(v0.14.3+)* Required if the `api_endpoints` capability is declared. Lets players call the plugin over HTTP. |
 
 ---
 
@@ -251,6 +253,36 @@ Action fields (form inputs shown in the confirmation modal):
 ```
 
 The values the user fills in are passed as `$payload` to `runAction()`.
+
+---
+
+## API endpoints
+
+*(v0.14.3+)* `api_endpoints` lists the endpoints players and other apps can call at `POST /api/plugins/{plugin-id}/{endpoint-id}`. Declaring any needs both the `api_endpoints` capability and the `api_endpoints` permission.
+
+```json
+"capabilities": ["api_endpoints"],
+"permissions": ["api_endpoints"],
+"api_endpoints": [
+  {
+    "id": "lookup",
+    "label": "Lookup",
+    "description": "Find a title by name.",
+    "fields": [
+      { "id": "query", "type": "text", "label": "Query", "required": true },
+      { "id": "limit", "type": "number", "label": "Limit", "default": 10 }
+    ]
+  }
+]
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | 1-64 lowercase letters, digits, `-` or `_`, starting with a letter or digit. Unique within the plugin. Used in the URL. |
+| `label`, `description` | string | Optional, for people reading the manifest. |
+| `fields` | array | The payload the endpoint accepts, declared like [settings fields](#settings-fields). Only `boolean`, `number`, `text`, `textarea`, `tags`, and `select` are allowed, without `options_provider`, `visible_when`, or `visibility_provider`. |
+
+The host checks the payload against `fields` before your plugin sees it, and passes only those fields. See [Developing Plugins](developing-plugins.md#api-endpoints) for the request format and the PHP side.
 
 ---
 

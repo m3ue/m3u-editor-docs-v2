@@ -93,7 +93,7 @@ Backups are listed, downloaded, uploaded, and restored under **Tools → Backup 
 
 ## SMTP
 
-Settings for sending email, such as password resets: **SMTP Host**, **SMTP Port**, **SMTP Username**, **SMTP Password**, **SMTP Encryption**, and **SMTP From Address**. **Send Test Email** at the top checks them.
+Settings for sending email, such as password resets, post-process emails and *(v0.14.4+)* [email alerts](alerts): **SMTP Host**, **SMTP Port**, **SMTP Username**, **SMTP Password**, **SMTP Encryption**, and **SMTP From Address**. **Send Test Email** at the top checks them.
 
 ## API
 
@@ -157,4 +157,4 @@ The [AI Copilot](/docs/ai-copilot/overview): **Enable AI Copilot**, **Enable AI 
 
 ## Alerts
 
-Send errors and other events to Discord, Slack, or Telegram. See [Alerts](alerts).
+Send errors and other events to Discord, Slack, Telegram, or *(v0.14.4+)* email. See [Alerts](alerts).

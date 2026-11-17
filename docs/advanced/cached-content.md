@@ -43,9 +43,9 @@ Use **Cache Now** on:
 - A VOD movie (**VOD Channels → Channels**)
 - A series episode (the **Episodes** table on a series)
 
-Use **Cache all episodes** on a series to queue every episode it has.
+Use **Cache all episodes** on a series to queue every episode it has. *(v0.14.4+)* To cache only part of a series, use **Cache seasons** on the series' page and pick the seasons.
 
-*(v0.13.2+)* Both also work as bulk actions: select several movies and use **Cache Now**, or several series and use **Cache all episodes**. They are available on the **VOD** and **Series** tables and on a dynamic group's member list. Items that are already cached, already queued, or have no cacheable source URL are skipped.
+*(v0.13.2+)* Both also work as bulk actions: select several movies and use **Cache Now**, or several series and use **Cache all episodes**. They are available on the **VOD** and **Series** tables and on a dynamic group's member list. *(v0.14.4+)* On a series' **Episodes** table, select episodes and use **Cache selected episodes**. Items that are already cached, already queued, or have no cacheable source URL are skipped.
 
 The download is queued and runs in the background. If the item is already cached or already queued, you'll be told so instead of getting a second download.
 
@@ -97,7 +97,7 @@ How titles are handled:
 
 - Only titles the arr doesn't have yet are sent. Nothing already in its library is changed or removed.
 - A title the arr already has, with a file, counts as cached. If it has no file yet, Cache Now downloads it from the provider instead, so running Cache Now again gets past an arr that can't find a release.
-- For a single episode, Cache Now asks Sonarr for that episode only. Caching a whole series adds it to Sonarr. Dynamic group caching adds the series with only its latest season monitored.
+- For a single episode, Cache Now asks Sonarr for that episode only. Caching a whole series adds it to Sonarr. *(v0.14.4+)* **Cache seasons** adds it with only the chosen seasons monitored. Dynamic group caching adds the series with only its latest season monitored.
 - If the arr is unreachable or rejects the title, the provider is used instead.
 - Progress is shown on **Integrations → Download Queue**, and the **Cached** column shows the clock icon until the download lands on your media server.
 
