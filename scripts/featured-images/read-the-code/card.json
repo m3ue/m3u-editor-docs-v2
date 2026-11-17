@@ -1,0 +1,17 @@
+{
+  "logos": ["editor", "proxy", "tv"],
+  "brand": "M3U Editor + M3U Proxy + M3U TV",
+  "title": "Read the code.",
+  "accent": "Then trust it.",
+  "text": "How we build with AI, why performance matters, and what to ask any app you install.",
+  "shots": [
+    {
+      "name": "checklist",
+      "label": "The before-you-install checklist from the post, six questions with checkmarks",
+      "size": "1000x860",
+      "frame": "browser",
+      "box": [640, 88, 500, 454],
+      "z": 1
+    }
+  ]
+}

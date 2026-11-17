@@ -83,10 +83,9 @@ export const DEVICE_GALLERIES = [
     breakpoints: { 600: { slidesPerView: 2.6, spaceBetween: 24 }, 996: { slidesPerView: 3.6, spaceBetween: 32 } },
     items: [
       { src: require('@site/static/img/tv/mobile1.webp').default, alt: 'Home' },
-      { src: require('@site/static/img/tv/mobile2.webp').default, alt: 'Live TV list' },
+      { src: require('@site/static/img/tv/mobile2.webp').default, alt: 'Series details' },
       { src: require('@site/static/img/tv/mobile3.webp').default, alt: 'Movie library' },
-      { src: require('@site/static/img/tv/mobile4.webp').default, alt: 'Movie details' },
-      { src: require('@site/static/img/tv/mobile5.webp').default, alt: 'Series details' },
+      { src: require('@site/static/img/tv/mobile4.webp').default, alt: 'Live TV list' },
     ],
   },
 ];

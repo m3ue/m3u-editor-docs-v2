@@ -131,7 +131,7 @@ function Hero() {
               <img src={require('@site/static/img/tv/tablet3.webp').default} alt="M3U TV movie details on a tablet" />
             </div>
             <div className={styles.heroPhone}>
-              <img src={require('@site/static/img/tv/mobile5.webp').default} alt="M3U TV series details on a phone" />
+              <img src={require('@site/static/img/tv/mobile2.webp').default} alt="M3U TV series details on a phone" />
             </div>
           </div>
         </div>
