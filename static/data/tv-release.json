@@ -1,36 +1,36 @@
 {
-  "tag": "v1.3.0",
-  "url": "https://github.com/m3ue/m3u-tv/releases/tag/v1.3.0",
-  "publishedAt": "2026-11-11T17:12:44Z",
+  "tag": "v1.3.1",
+  "url": "https://github.com/m3ue/m3u-tv/releases/tag/v1.3.1",
+  "publishedAt": "2026-11-17T22:23:46Z",
   "assets": {
     "android.apk": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-android.apk",
-      "size": 175174559
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-android.apk",
+      "size": 176704679
     },
     "ios.ipa": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-ios.ipa",
-      "size": 29884713
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-ios.ipa",
+      "size": 30317040
     },
     "linux.zip": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-linux.zip",
-      "size": 15378285
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-linux.zip",
+      "size": 16297193
     },
     "macos.dmg": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-macos.dmg",
-      "size": 77121857
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-macos.dmg",
+      "size": 78359028
     },
     "tvos.ipa": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-tvos.ipa",
-      "size": 30374650
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-tvos.ipa",
+      "size": 30469599
     },
     "windows-setup.exe": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-windows-setup.exe",
-      "size": 48679209
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-windows-setup.exe",
+      "size": 49084939
     },
     "windows.zip": {
-      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.0/m3u-tv-v1.3.0-windows.zip",
-      "size": 67124445
+      "url": "https://github.com/m3ue/m3u-tv/releases/download/v1.3.1/m3u-tv-v1.3.1-windows.zip",
+      "size": 67743688
     }
   },
-  "fetchedAt": "2026-11-17T20:41:02.565Z"
+  "fetchedAt": "2026-11-17T22:30:59.822Z"
 }
