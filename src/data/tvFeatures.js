@@ -41,7 +41,6 @@ export const DEVICE_GALLERIES = [
       { src: require('@site/static/img/tv/tv2.webp').default, alt: 'Live TV guide' },
       { src: require('@site/static/img/tv/tv3.webp').default, alt: 'Movie library' },
       { src: require('@site/static/img/tv/tv4.webp').default, alt: 'Movie details and cast' },
-      { src: require('@site/static/img/tv/tv5.webp').default, alt: 'Series details' },
     ],
   },
   {
