@@ -1,40 +1,40 @@
 {
-  "tag": "v0.14.3",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.3",
-  "publishedAt": "2026-11-14T15:55:21Z",
+  "tag": "v0.14.4",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.4",
+  "publishedAt": "2026-11-17T18:28:35Z",
   "features": [
     {
-      "text": "Add MDBList as a watch tracker integration",
+      "text": "Add infinite scroll to AIOStreams API",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Authenticated API endpoints for plugins (#1825)",
-      "scope": "plugins",
-      "pr": 1829
+      "text": "Add email alert channel using shared SMTP settings",
+      "scope": null,
+      "pr": 1833
     },
     {
-      "text": "Provider Profiles support for M3U/M3U8 playlists (#1826)",
+      "text": "Add subscription expiry alerts for Xtream playlists and provider profiles",
       "scope": null,
-      "pr": 1828
+      "pr": 1832
     }
   ],
   "fixes": [
     {
-      "text": "Metadata enrichment missing fields; series not included in merged; other optimizations for DVR content",
-      "scope": "dvr",
-      "pr": null
+      "text": "Prefill M3U provider entries from stream URLs for credential swap",
+      "scope": "aliases",
+      "pr": 1835
     },
     {
-      "text": "Device pairing rejected codes as invalid or expired",
+      "text": "Re-enable primary provider profile after expiry auto-disable (#1831)",
       "scope": null,
-      "pr": null
+      "pr": 1834
     }
   ],
   "counts": {
     "features": 3,
     "fixes": 2,
-    "maintenance": 5
+    "maintenance": 6
   },
-  "fetchedAt": "2026-11-14T18:50:30.977Z"
+  "fetchedAt": "2026-11-17T20:20:05.391Z"
 }

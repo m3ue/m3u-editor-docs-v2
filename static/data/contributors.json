@@ -4,7 +4,7 @@
       "login": "sparkison",
       "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
       "html_url": "https://github.com/sparkison",
-      "contributions": 10536
+      "contributions": 10572
     },
     {
       "login": "Grimothy",
@@ -46,7 +46,7 @@
       "login": "djrarky",
       "avatar_url": "https://avatars.githubusercontent.com/u/10834935?v=4",
       "html_url": "https://github.com/djrarky",
-      "contributions": 51
+      "contributions": 53
     },
     {
       "login": "pozzuoli",
@@ -73,15 +73,15 @@
       "contributions": 8
     },
     {
-      "login": "wschwa",
-      "avatar_url": "https://avatars.githubusercontent.com/u/3751799?v=4",
-      "html_url": "https://github.com/wschwa",
-      "contributions": 6
-    },
-    {
       "login": "ethan-manny",
       "avatar_url": "https://avatars.githubusercontent.com/u/143646617?v=4",
       "html_url": "https://github.com/ethan-manny",
+      "contributions": 7
+    },
+    {
+      "login": "wschwa",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3751799?v=4",
+      "html_url": "https://github.com/wschwa",
       "contributions": 6
     },
     {
@@ -253,7 +253,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 8896
+        "contributions": 8905
       },
       {
         "login": "Grimothy",
@@ -295,7 +295,7 @@
         "login": "djrarky",
         "avatar_url": "https://avatars.githubusercontent.com/u/10834935?v=4",
         "html_url": "https://github.com/djrarky",
-        "contributions": 51
+        "contributions": 53
       },
       {
         "login": "pozzuoli",
@@ -322,15 +322,15 @@
         "contributions": 8
       },
       {
-        "login": "wschwa",
-        "avatar_url": "https://avatars.githubusercontent.com/u/3751799?v=4",
-        "html_url": "https://github.com/wschwa",
-        "contributions": 6
-      },
-      {
         "login": "ethan-manny",
         "avatar_url": "https://avatars.githubusercontent.com/u/143646617?v=4",
         "html_url": "https://github.com/ethan-manny",
+        "contributions": 7
+      },
+      {
+        "login": "wschwa",
+        "avatar_url": "https://avatars.githubusercontent.com/u/3751799?v=4",
+        "html_url": "https://github.com/wschwa",
         "contributions": 6
       },
       {
@@ -545,7 +545,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 267
+        "contributions": 268
       },
       {
         "login": "Grimothy",
@@ -571,7 +571,7 @@
         "login": "sparkison",
         "avatar_url": "https://avatars.githubusercontent.com/u/4400104?v=4",
         "html_url": "https://github.com/sparkison",
-        "contributions": 871
+        "contributions": 897
       },
       {
         "login": "Serph91P",
@@ -593,5 +593,5 @@
       }
     ]
   },
-  "fetchedAt": "2026-11-14T18:50:35.325Z"
+  "fetchedAt": "2026-11-17T20:20:06.712Z"
 }
