@@ -233,17 +233,31 @@
   }
 }
 
-/* Pagination: small dots, active one stretches into a brand gradient pill */
-.carousel :global(.swiper-pagination-bullet) {
+/* Pagination: small dots, active one stretches into a brand gradient pill.
+   Rendered by the component (not Swiper) so repeated loop copies share dots */
+.pagination {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bullet {
   width: 8px;
   height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
   background: var(--ifm-color-emphasis-400);
-  opacity: 1;
+  cursor: pointer;
   transition: width 0.3s ease, background 0.3s ease;
 }
 
-.carousel :global(.swiper-pagination-bullet-active) {
+.bulletActive {
   width: 24px;
-  border-radius: 9999px;
   background: linear-gradient(90deg, #f43f5e 0%, #6366f1 100%);
 }
