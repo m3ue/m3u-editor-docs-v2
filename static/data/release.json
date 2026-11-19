@@ -1,40 +1,45 @@
 {
-  "tag": "v0.14.4",
-  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.4",
-  "publishedAt": "2026-11-17T18:28:35Z",
+  "tag": "v0.14.5",
+  "url": "https://github.com/m3ue/m3u-editor/releases/tag/v0.14.5",
+  "publishedAt": "2026-11-19T20:46:54Z",
   "features": [
     {
-      "text": "Add infinite scroll to AIOStreams API",
+      "text": "Series failover, plus separate Live/VOD/Series auto-merge",
+      "scope": null,
+      "pr": 1840
+    },
+    {
+      "text": "Add bulk selection + add to library to AIOStreams integrations",
       "scope": null,
       "pr": null
     },
     {
-      "text": "Add email alert channel using shared SMTP settings",
+      "text": "AIOStreams match profiles for stream auto-selection",
       "scope": null,
-      "pr": 1833
-    },
-    {
-      "text": "Add subscription expiry alerts for Xtream playlists and provider profiles",
-      "scope": null,
-      "pr": 1832
+      "pr": 1839
     }
   ],
   "fixes": [
     {
-      "text": "Prefill M3U provider entries from stream URLs for credential swap",
-      "scope": "aliases",
-      "pr": 1835
+      "text": "Provider sync overriding Series metadata values",
+      "scope": null,
+      "pr": null
     },
     {
-      "text": "Re-enable primary provider profile after expiry auto-disable (#1831)",
+      "text": "Keep cross-playlist failover links intact when merging",
       "scope": null,
-      "pr": 1834
+      "pr": null
+    },
+    {
+      "text": "Ensure broken alert configs don't trigger alert loops",
+      "scope": null,
+      "pr": null
     }
   ],
   "counts": {
     "features": 3,
-    "fixes": 2,
-    "maintenance": 6
+    "fixes": 3,
+    "maintenance": 8
   },
-  "fetchedAt": "2026-11-17T22:30:59.823Z"
+  "fetchedAt": "2026-11-19T20:47:21.405Z"
 }
